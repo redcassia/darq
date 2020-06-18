@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:darq/views/shared/button.dart';
 import 'package:darq/res/path_files.dart';
 import 'package:darq/elements/app_fonts.dart';
-
+import 'package:darq/views/home/main.dart';
 class SelectLanguage extends StatelessWidget {
 
   final ImageProvider bg = AssetImage(PathFiles.ImgPath + "select_language_bg.png");
@@ -30,7 +30,10 @@ class SelectLanguage extends StatelessWidget {
                   width: 109.w,
                   buttonName: "English",
                   color: Color(0xFF426676),
-                  onButtonPressed: () => print("pressed")),
+                  onButtonPressed: () => Navigator.push(context,
+                      MaterialPageRoute(builder: (context) {
+                        return Home();
+                      }))),
               SizedBox(height: 16.h),
               CustomButton(
                   borderRadius: 34.1,

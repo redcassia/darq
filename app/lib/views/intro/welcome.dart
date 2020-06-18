@@ -3,6 +3,7 @@ import 'package:darq/elements/app_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:darq/views/shared/button.dart';
 import 'package:darq/utilities/screen_info.dart';
+import 'package:darq/views/intro/select_language.dart';
 
 class Welcome extends StatefulWidget {
   @override
@@ -48,7 +49,10 @@ class _WelcomeState extends State<Welcome> {
                           width: 109.w,
                           buttonName: "Continue",
                           color: Color(0xFFE1A854),
-                          onButtonPressed: () => print("pressed"))
+                          onButtonPressed: () => Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                                return SelectLanguage();
+                              })))
                     ]))));
   }
 }

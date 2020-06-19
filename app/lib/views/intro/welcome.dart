@@ -13,10 +13,9 @@ class Welcome extends StatefulWidget {
 class _WelcomeState extends State<Welcome> {
   @override
   Widget build(BuildContext context) {
-    ///initializing screen dimensions according to design template
     ScreenUtil.init(context, width: 375, height: 667, allowFontScaling: true);
-    SI.setScreenHeight(MediaQuery.of(context).size.height);
-    SI.setScreenWidth(MediaQuery.of(context).size.width);
+    SI.setScreenDimensions(
+        MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
 
     return Scaffold(
         // TODO: Turn colors into names ...
@@ -50,7 +49,7 @@ class _WelcomeState extends State<Welcome> {
                           buttonName: "Continue",
                           color: Color(0xFFE1A854),
                           onButtonPressed: () => Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
+                                  MaterialPageRoute(builder: (context) {
                                 return SelectLanguage();
                               })))
                     ]))));

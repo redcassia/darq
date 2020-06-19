@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:darq/utilities/screen_info.dart';
 import 'package:darq/views/shared/drawer/drawer_item.dart';
 import 'package:darq/views/home/community_screens/main/community.dart';
+import 'package:darq/views/home/drawer_screens/children_education_centers.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({Key key}) : super(key: key);
@@ -35,7 +36,10 @@ class CustomDrawer extends StatelessWidget {
           DrawerItem(
               txt: "Q Children Education Centers",
               icon: "education_center.png",
-              onClick: () => {}),
+              onClick: () =>
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return ChildrenEducationCenters();
+                  }))),
           DrawerItem(
               txt: "Made in Qatar",
               icon: "made_in_qatar.png",

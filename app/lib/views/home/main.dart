@@ -6,7 +6,7 @@ import 'package:darq/views/shared/drawer/drawer.dart';
 import 'package:darq/views/shared/app_bars/default_appbar.dart';
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/presentation/custom_icons.dart';
-import 'package:darq/views/home/shared/combo_burger.dart';
+import 'package:darq/views/shared/drawer/combo_burger.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 import 'package:chewie/src/chewie_player.dart';

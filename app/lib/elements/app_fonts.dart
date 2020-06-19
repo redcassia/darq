@@ -77,6 +77,13 @@ class AppFonts {
         fontWeight: FontWeight.bold,
         color: color);
   }
+  static TextStyle title10({Color color}) {
+    return GoogleFonts.roboto(
+        fontSize: ScreenUtil().setSp(10, allowFontScalingSelf: true),
+        fontWeight: FontWeight.bold,
+        color: color);
+  }
+
 
   static TextStyle title10Odd({Color color}) {
     return GoogleFonts.roboto(

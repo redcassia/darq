@@ -6,6 +6,7 @@ import 'package:darq/views/shared/app_bars/default_appbar.dart';
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/res/path_files.dart';
 import 'package:darq/views/shared/capsule/right_rounded_capsule.dart';
+import 'package:darq/views/home/community_screens/children/self_employed.dart';
 
 class Community extends StatefulWidget {
   @override
@@ -93,7 +94,10 @@ class _CommunityState extends State<Community> {
               color: Color(0xFF86C2C2),
               height: 55.h,
               leading: "self_employed.png",
-              onButtonPressed: () => {},
+              onButtonPressed: () =>
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return SelfEmployed();
+                  })),
               textStyle: AppFonts.title9(color: Color(0xFF426676))),
           SizedBox(height: 20.h),
           CustomButton(

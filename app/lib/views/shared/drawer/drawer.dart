@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:darq/utilities/screen_info.dart';
 import 'package:darq/views/shared/drawer/drawer_item.dart';
+import 'package:darq/views/home/community_screens/main/community.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({Key key}) : super(key: key);
@@ -19,7 +20,12 @@ class CustomDrawer extends StatelessWidget {
             Widget>[
           SizedBox(height: 60.h),
           DrawerItem(
-              txt: "Q Community", icon: "community.png", onClick: () => {}),
+              txt: "Q Community",
+              icon: "community.png",
+              onClick: () =>
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return Community();
+                  }))),
           DrawerItem(txt: "Q Events", icon: "events.png", onClick: () => {}),
           DrawerItem(txt: "Q Cuisine", icon: "cuisine.png", onClick: () => {}),
           DrawerItem(

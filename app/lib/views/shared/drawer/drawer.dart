@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:darq/utilities/screen_info.dart';
 import 'package:darq/views/shared/drawer/drawer_item.dart';
-import 'package:darq/views/home/community_screens/main/community.dart';
-import 'package:darq/views/home/drawer_screens/children_education_centers.dart';
+import 'package:darq/views/home/community.dart';
+import 'package:darq/views/home/widgets/profile_display_template.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({Key key}) : super(key: key);
@@ -27,23 +27,47 @@ class CustomDrawer extends StatelessWidget {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return Community();
                   }))),
-          DrawerItem(txt: "Q Events", icon: "events.png", onClick: () => {}),
-          DrawerItem(txt: "Q Cuisine", icon: "cuisine.png", onClick: () => {}),
+          DrawerItem(
+              txt: "Q Events",
+              icon: "events.png",
+              onClick: () =>
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return ProfileDisplayTemplate(
+                        title: "Events", descriptionWidget: true,subtitle: false);
+                  }))),
+          DrawerItem(
+              txt: "Q Cuisine",
+              icon: "cuisine.png",
+              onClick: () =>
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return ProfileDisplayTemplate(
+                        title: "Cuisines", filter: true);
+                  }))),
           DrawerItem(
               txt: "Q Entertainment",
               icon: "entertainment.png",
-              onClick: () => {}),
+              onClick: () =>
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return ProfileDisplayTemplate(
+                        title: "Entertainment", filter: true);
+                  }))),
           DrawerItem(
               txt: "Q Children Education Centers",
               icon: "education_center.png",
               onClick: () =>
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return ChildrenEducationCenters();
+                    return ProfileDisplayTemplate(
+                        title: "Children Education Centers",
+                        filter: true,
+                        descriptionWidget: true);
                   }))),
           DrawerItem(
               txt: "Made in Qatar",
               icon: "made_in_qatar.png",
-              onClick: () => {})
+              onClick: () =>
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return ProfileDisplayTemplate(title: "Made In Qatar");
+                  })))
         ]));
   }
 }

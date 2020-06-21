@@ -6,7 +6,7 @@ import 'package:darq/views/shared/app_bars/default_appbar.dart';
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/res/path_files.dart';
 import 'package:darq/views/shared/capsule/right_rounded_capsule.dart';
-import 'package:darq/views/home/community_screens/children/self_employed.dart';
+import 'package:darq/views/home/widgets/profile_display_template.dart';
 
 class Community extends StatefulWidget {
   @override
@@ -44,7 +44,11 @@ class _CommunityState extends State<Community> {
               color: Color(0xFF86C2C2),
               height: 55.h,
               leading: "beauty_spa.png",
-              onButtonPressed: () => print("hi"),
+              onButtonPressed: () =>
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return ProfileDisplayTemplate(
+                        title: "Beauty & Spa");
+                  })),
               textStyle: AppFonts.title9(color: Color(0xFF426676))),
           SizedBox(height: 20.h),
           CustomButton(
@@ -54,7 +58,11 @@ class _CommunityState extends State<Community> {
               color: Color(0xFF86C2C2),
               height: 55.h,
               leading: "sports.png",
-              onButtonPressed: () => print("hi"),
+              onButtonPressed: () =>
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return ProfileDisplayTemplate(
+                        title: "Sports", filter: true);
+                  })),
               textStyle: AppFonts.title9(color: Color(0xFF426676))),
           SizedBox(height: 20.h),
           CustomButton(
@@ -64,7 +72,10 @@ class _CommunityState extends State<Community> {
               color: Color(0xFF86C2C2),
               height: 55.h,
               leading: "limousine.png",
-              onButtonPressed: () => print("hi"),
+              onButtonPressed: () =>
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return ProfileDisplayTemplate(title: "Limousine");
+                  })),
               textStyle: AppFonts.title9(color: Color(0xFF426676))),
           SizedBox(height: 20.h),
           CustomButton(
@@ -74,7 +85,10 @@ class _CommunityState extends State<Community> {
               color: Color(0xFF86C2C2),
               height: 55.h,
               leading: "hospitality.png",
-              onButtonPressed: () => print("hi"),
+              onButtonPressed: () =>
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return ProfileDisplayTemplate(title: "Hospitality");
+                  })),
               textStyle: AppFonts.title9(color: Color(0xFF426676))),
           SizedBox(height: 20.h),
           CustomButton(
@@ -84,7 +98,10 @@ class _CommunityState extends State<Community> {
               color: Color(0xFF86C2C2),
               height: 55.h,
               leading: "cleaning_maintenance.png",
-              onButtonPressed: () => print("hi"),
+              onButtonPressed: () =>
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return ProfileDisplayTemplate(title: "Cleaning & Maintenance");
+                  })),
               textStyle: AppFonts.title9(color: Color(0xFF426676))),
           SizedBox(height: 20.h),
           CustomButton(
@@ -96,7 +113,7 @@ class _CommunityState extends State<Community> {
               leading: "self_employed.png",
               onButtonPressed: () =>
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return SelfEmployed();
+                    return ProfileDisplayTemplate(title: "Self Employed",filter: true);
                   })),
               textStyle: AppFonts.title9(color: Color(0xFF426676))),
           SizedBox(height: 20.h),
@@ -107,17 +124,23 @@ class _CommunityState extends State<Community> {
               color: Color(0xFF86C2C2),
               height: 55.h,
               leading: "domestic_help.png",
-              onButtonPressed: () => print("hi"),
+              onButtonPressed: () =>
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return ProfileDisplayTemplate(title: "Domestic Help");
+                  })),
               textStyle: AppFonts.title9(color: Color(0xFF426676))),
           SizedBox(height: 20.h),
           CustomButton(
               borderRadius: 29.5,
-              buttonName: "Stationaries",
+              buttonName: "Stationeries",
               width: 229.w,
               color: Color(0xFF86C2C2),
               height: 55.h,
-              leading: "stationaries.png",
-              onButtonPressed: () => print("hi"),
+              leading: "stationeries.png",
+              onButtonPressed: () =>
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return ProfileDisplayTemplate(title: "Stationeries");
+                  })),
               textStyle: AppFonts.title9(color: Color(0xFF426676))),
           SizedBox(height: 20.h),
         ]))));

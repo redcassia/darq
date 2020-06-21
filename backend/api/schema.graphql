@@ -1,0 +1,11 @@
+type BusinessUser {
+  id: ID!,
+  email: String!,
+  password: String!,
+  create_time: String!,
+  last_login: String!
+}
+
+type Query {
+  businessUserExists(email: String!): Boolean!
+}

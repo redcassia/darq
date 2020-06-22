@@ -1,6 +1,13 @@
-var api = require('./api')
-var webui = require('./webui')
+require('dotenv').config()
+var api_app = require('./api')
+var webui_app = require('./webui')
 
-api.app.listen(7070, () => console.log('API server started on localhost:7070/api'));
+api_app.listen(
+    process.env.API_PORT, 
+    () => console.log('GraphQL API server started on localhost:' + process.env.API_PORT + '/api')
+);
 
-webui.app.listen(3000, () => console.log('WebUI server started on localhost:3000'))
+webui_app.listen(
+    process.env.WEBUI_PORT,
+    () => console.log('WebUI server started on localhost:' + process.env.WEBUI_PORT)
+);

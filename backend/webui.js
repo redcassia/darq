@@ -1,5 +1,7 @@
 var express = require('express');
 var path = require('path')
 
-exports.app = express();
-exports.app.use('/', express.static(path.join(__dirname, 'webui')))
+const app = express();
+app.use('/', express.static(path.join(__dirname, 'webui')))
+
+module.exports = app

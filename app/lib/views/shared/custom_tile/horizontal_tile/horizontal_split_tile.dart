@@ -3,8 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class CustomTile extends StatelessWidget {
-  const CustomTile({
+class HorizontalSplitTile extends StatelessWidget {
+  const HorizontalSplitTile({
     Key key,
     @required this.leftWidget,
     @required this.rightWidget,
@@ -16,9 +16,7 @@ class CustomTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipRRect(
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          bottomRight: Radius.circular(20),
-        ),
+            topLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
         child: IntrinsicHeight(
             child: Container(
                 width: double.infinity,
@@ -41,7 +39,7 @@ class CustomTile extends StatelessWidget {
                         left: 11.w, right: 18.w, top: 9.h, bottom: 7.h),
                     child: Row(children: <Widget>[
                       leftWidget,
-                      SizedBox(width: 19.w),
+                      SizedBox(width: 17.w),
                       rightWidget
                     ])))));
   }

@@ -2,13 +2,11 @@ import 'dart:ui';
 import 'package:darq/res/path_files.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class CustomProfilePicture extends StatelessWidget {
-  const CustomProfilePicture(
-      {Key key,
-        @required this.height,
-        @required this.width,
-        @required this.img})
+class Picture extends StatelessWidget {
+  const Picture(
+      {Key key, @required this.height, @required this.width, this.img})
       : super(key: key);
 
   final double width;
@@ -28,7 +26,8 @@ class CustomProfilePicture extends StatelessWidget {
         margin: EdgeInsets.only(bottom: 3.0, right: 1),
         decoration: BoxDecoration(
             image: DecorationImage(
-                image: AssetImage(PathFiles.ImgPath + img), fit: BoxFit.cover),
+                image: AssetImage(PathFiles.ImgPath + img),
+                fit: BoxFit.cover),
             boxShadow: [
               BoxShadow(
                   color: Color.fromRGBO(0, 0, 0, 0.15),

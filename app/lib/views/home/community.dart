@@ -6,7 +6,7 @@ import 'package:darq/views/shared/app_bars/default_appbar.dart';
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/res/path_files.dart';
 import 'package:darq/views/shared/capsule/right_rounded_capsule.dart';
-import 'package:darq/views/home/widgets/profile_display_template.dart';
+import 'package:darq/views/home/widgets/general_profile_template.dart';
 
 class Community extends StatefulWidget {
   @override
@@ -26,6 +26,7 @@ class _CommunityState extends State<Community> {
                 title: "Community",
                 bgImage: "rounded_app_bar.png",
                 leading: RightRoundedCapsule(
+                    iconColor: Color.fromRGBO(134, 194, 194, 0.69),
                     verticalPadding: 5.h,
                     horizontalPadding: 19.w,
                     icon: Image(
@@ -46,7 +47,7 @@ class _CommunityState extends State<Community> {
               leading: "beauty_spa.png",
               onButtonPressed: () =>
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return ProfileDisplayTemplate(
+                    return GeneralProfileTemplate(
                         title: "Beauty & Spa");
                   })),
               textStyle: AppFonts.title9(color: Color(0xFF426676))),
@@ -60,7 +61,7 @@ class _CommunityState extends State<Community> {
               leading: "sports.png",
               onButtonPressed: () =>
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return ProfileDisplayTemplate(
+                    return GeneralProfileTemplate(
                         title: "Sports", filter: true);
                   })),
               textStyle: AppFonts.title9(color: Color(0xFF426676))),
@@ -74,7 +75,7 @@ class _CommunityState extends State<Community> {
               leading: "limousine.png",
               onButtonPressed: () =>
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return ProfileDisplayTemplate(title: "Limousine");
+                    return GeneralProfileTemplate(title: "Limousine");
                   })),
               textStyle: AppFonts.title9(color: Color(0xFF426676))),
           SizedBox(height: 20.h),
@@ -87,7 +88,7 @@ class _CommunityState extends State<Community> {
               leading: "hospitality.png",
               onButtonPressed: () =>
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return ProfileDisplayTemplate(title: "Hospitality");
+                    return GeneralProfileTemplate(title: "Hospitality");
                   })),
               textStyle: AppFonts.title9(color: Color(0xFF426676))),
           SizedBox(height: 20.h),
@@ -100,7 +101,7 @@ class _CommunityState extends State<Community> {
               leading: "cleaning_maintenance.png",
               onButtonPressed: () =>
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return ProfileDisplayTemplate(title: "Cleaning & Maintenance");
+                    return GeneralProfileTemplate(title: "Cleaning & Maintenance");
                   })),
               textStyle: AppFonts.title9(color: Color(0xFF426676))),
           SizedBox(height: 20.h),
@@ -113,7 +114,7 @@ class _CommunityState extends State<Community> {
               leading: "self_employed.png",
               onButtonPressed: () =>
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return ProfileDisplayTemplate(title: "Self Employed",filter: true);
+                    return GeneralProfileTemplate(title: "Self Employed",filter: true);
                   })),
               textStyle: AppFonts.title9(color: Color(0xFF426676))),
           SizedBox(height: 20.h),
@@ -126,7 +127,7 @@ class _CommunityState extends State<Community> {
               leading: "domestic_help.png",
               onButtonPressed: () =>
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return ProfileDisplayTemplate(title: "Domestic Help");
+                    return GeneralProfileTemplate(title: "Domestic Help");
                   })),
               textStyle: AppFonts.title9(color: Color(0xFF426676))),
           SizedBox(height: 20.h),
@@ -139,7 +140,7 @@ class _CommunityState extends State<Community> {
               leading: "stationeries.png",
               onButtonPressed: () =>
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return ProfileDisplayTemplate(title: "Stationeries");
+                    return GeneralProfileTemplate(title: "Stationeries");
                   })),
               textStyle: AppFonts.title9(color: Color(0xFF426676))),
           SizedBox(height: 20.h),

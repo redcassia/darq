@@ -11,19 +11,20 @@ class TileContentLeading extends StatelessWidget {
       {Key key,
         @required this.rating,
         @required this.profilePic,
-        @required this.onRatingChange})
+        @required this.onRatingChange,@required this.imgHeight, @required this.imgWidth})
       : super(key: key);
 
   final double rating;
   final String profilePic;
   final Function(double) onRatingChange;
-
+  final double imgWidth;
+  final double imgHeight;
   @override
   Widget build(BuildContext context) {
     return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          CustomProfilePicture(height: 70.w, width: 70.w, img: profilePic),
+          Picture(height: imgHeight, width: imgWidth, img: profilePic),
           SizedBox(height: 3.h),
           SmoothStarRating(
               allowHalfRating: true,

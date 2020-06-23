@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:darq/utilities/screen_info.dart';
 import 'package:darq/views/shared/drawer/drawer_item.dart';
 import 'package:darq/views/home/community.dart';
-import 'package:darq/views/home/widgets/profile_display_template.dart';
+import 'package:darq/views/home/widgets/general_profile_template.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({Key key}) : super(key: key);
@@ -32,7 +32,7 @@ class CustomDrawer extends StatelessWidget {
               icon: "events.png",
               onClick: () =>
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return ProfileDisplayTemplate(
+                    return GeneralProfileTemplate(
                         title: "Events", descriptionWidget: true,subtitle: false);
                   }))),
           DrawerItem(
@@ -40,7 +40,7 @@ class CustomDrawer extends StatelessWidget {
               icon: "cuisine.png",
               onClick: () =>
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return ProfileDisplayTemplate(
+                    return GeneralProfileTemplate(
                         title: "Cuisines", filter: true);
                   }))),
           DrawerItem(
@@ -48,7 +48,7 @@ class CustomDrawer extends StatelessWidget {
               icon: "entertainment.png",
               onClick: () =>
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return ProfileDisplayTemplate(
+                    return GeneralProfileTemplate(
                         title: "Entertainment", filter: true);
                   }))),
           DrawerItem(
@@ -56,7 +56,7 @@ class CustomDrawer extends StatelessWidget {
               icon: "education_center.png",
               onClick: () =>
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return ProfileDisplayTemplate(
+                    return GeneralProfileTemplate(
                         title: "Children Education Centers",
                         filter: true,
                         descriptionWidget: true);
@@ -66,7 +66,7 @@ class CustomDrawer extends StatelessWidget {
               icon: "made_in_qatar.png",
               onClick: () =>
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return ProfileDisplayTemplate(title: "Made In Qatar");
+                    return GeneralProfileTemplate(title: "Made In Qatar");
                   })))
         ]));
   }

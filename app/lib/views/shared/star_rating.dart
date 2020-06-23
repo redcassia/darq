@@ -1,7 +1,6 @@
 library smooth_star_rating;
+import 'package:flutter/material.dart';
 
-import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 
 typedef void RatingChangeCallback(double rating);
 

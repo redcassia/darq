@@ -91,6 +91,14 @@ class AppFonts {
         fontWeight: FontWeight.bold,
         color: color);
   }
+  static TextStyle title10OddUnderlined({Color color}) {
+    return GoogleFonts.roboto(
+        fontSize: ScreenUtil().setSp(11, allowFontScalingSelf: true),
+        fontWeight: FontWeight.bold, decoration: TextDecoration.underline,
+        decorationThickness: 2,
+        decorationColor: color,
+        color: color);
+  }
   static TextStyle tinyTitle({Color color}) {
     return GoogleFonts.roboto(
         fontSize: ScreenUtil().setSp(8, allowFontScalingSelf: true),
@@ -151,6 +159,12 @@ class AppFonts {
     return GoogleFonts.roboto(
         fontSize: ScreenUtil().setSp(12, allowFontScalingSelf: true),
         fontWeight: FontWeight.normal,
+        color: color);
+  }
+  static TextStyle text6w500({Color color}) {
+    return GoogleFonts.roboto(
+        fontSize: ScreenUtil().setSp(12, allowFontScalingSelf: true),
+        fontWeight: FontWeight.w500,
         color: color);
   }
   static TextStyle text9({Color color}) {

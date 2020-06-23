@@ -1,0 +1,5 @@
+{
+  "col1" : ["picture","rating"],
+  "col2": ["title", "subtitle", "gender" ,"nationality" , "address","number"],
+  "col3": ["description","skills","exp", "salary","photos"]
+}

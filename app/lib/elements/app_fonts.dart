@@ -167,7 +167,13 @@ class AppFonts {
         fontWeight: FontWeight.w500,
         color: color);
   }
-  static TextStyle text9({Color color}) {
+  static TextStyle text9odd({Color color}) {
+    return GoogleFonts.roboto(
+        fontSize: ScreenUtil().setSp(11, allowFontScalingSelf: true),
+        fontWeight: FontWeight.w500,
+        color: color);
+  }
+  static TextStyle text10({Color color}) {
     return GoogleFonts.roboto(
         fontSize: ScreenUtil().setSp(10, allowFontScalingSelf: true),
         fontWeight: FontWeight.normal,

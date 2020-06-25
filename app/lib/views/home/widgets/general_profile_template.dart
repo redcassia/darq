@@ -9,9 +9,9 @@ import 'package:darq/res/path_files.dart';
 import 'package:darq/views/shared/app_bars/default_appbar.dart';
 import 'package:darq/views/shared/capsule/right_rounded_capsule.dart';
 import 'package:darq/views/shared/capsule/left_rounded_capsule.dart';
-import 'package:darq/views/home/widgets/profile_template.dart';
 import 'package:darq/views/home/widgets/description_widget.dart';
-import 'package:darq/views/home/widgets/profile_ex.dart';
+import 'package:darq/views/home/widgets/profile_template.dart';
+
 class GeneralProfileTemplate extends StatefulWidget {
   ///profile title [title] of String type
   @required
@@ -83,27 +83,103 @@ class _GeneralProfileTemplateState extends State<GeneralProfileTemplate> {
                                   ? "Contact Me"
                                   : "Contact Us",
                               onButtonClicked: (_) => _
-                                  ?
-                              {
-                                if(widget.title == "Beauty & Spa")
-                                Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) {
-                                      return ProfileEx(jsonFile: "beauty_spa.json");
-//                                        ProfileTemplate(
-//                                        title: widget.title,
-//                                      );
-                                    }))
-                                else
-                                  Navigator.push(context,
-                                      MaterialPageRoute(builder: (context) {
-                                        return ProfileEx(jsonFile: "self_employed.json");
-//                                        ProfileTemplate(
-//                                        title: widget.title,
-//                                      );
-                                      }))
-                              }
-
-
+                                  ? {
+                                      if (widget.title == "Beauty & Spa")
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                          return ProfileTemplate(
+                                              jsonFile: "beauty_spa.json");
+                                        }))
+                                      else if (widget.title == "Sports")
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                          return ProfileTemplate(
+                                              jsonFile: "club.json");
+                                        }))
+                                      else if (widget.title == "Limousine")
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                          return ProfileTemplate(
+                                              jsonFile: "limousine.json");
+                                        }))
+                                      else if (widget.title == "Hospitality")
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                          return ProfileTemplate(
+                                              jsonFile: "hospitality.json");
+                                        }))
+                                      else if (widget.title ==
+                                          "Cleaning & Maintenance")
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                          return ProfileTemplate(
+                                              jsonFile:
+                                                  "cleaning_maintenance.json");
+                                        }))
+                                      else if (widget.title == "Self Employed")
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                          return ProfileTemplate(
+                                              jsonFile: "self_employed.json");
+                                        }))
+                                      else if (widget.title == "Domestic Help")
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                          return ProfileTemplate(
+                                              jsonFile: "domestic_help.json");
+                                        }))
+                                      else if (widget.title == "Stationeries")
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                          return ProfileTemplate(
+                                              jsonFile: "stationeries.json");
+                                        }))
+                                      else if (widget.title == "Events")
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                          return ProfileTemplate(
+                                              jsonFile: "events.json");
+                                        }))
+                                      else if (widget.title == "Cuisines")
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                          return ProfileTemplate(
+                                              jsonFile: "cuisine.json");
+                                        }))
+                                      else if (widget.title == "Entertainment")
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                          return ProfileTemplate(
+                                              jsonFile: "entertainment.json");
+                                        }))
+                                      else if (widget.title ==
+                                          "Children Education Centers")
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                          return ProfileTemplate(
+                                              jsonFile:
+                                                  "children_education_center.json");
+                                        }))
+                                      else if (widget.title == "Made In Qatar")
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                          return ProfileTemplate(
+                                              jsonFile: "made_in_qatar.json");
+                                        }))
+                                    }
                                   : {})));
                 })));
   }

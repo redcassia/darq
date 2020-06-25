@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:darq/elements/app_fonts.dart';
-import 'package:darq/views/home/widgets/custom_row.dart';
+import 'package:darq/views/home/widgets/txt_leading_row.dart';
 
 class UntitledDescription extends StatelessWidget {
   const UntitledDescription(
@@ -46,9 +46,10 @@ class TitledDescription extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(children: <Widget>[
-      CustomRow(title: "Address: ", txt: address),
-      CustomRow(title: "Founded: ", txt: founded),
-      CustomRow(title: "Curriculum: ", txt: curriculum)
+      TextLeadingRow(title: "Address: ", txt: address ,titleStyle: AppFonts.title10(color: Color.fromRGBO(0, 0, 0, 0.7)),txtStyle: AppFonts.text10(color: Color.fromRGBO(0, 0, 0, 0.7))),
+      TextLeadingRow(title: "Founded: ", txt: founded,titleStyle: AppFonts.title10(color: Color.fromRGBO(0, 0, 0, 0.7)),txtStyle: AppFonts.text10(color: Color.fromRGBO(0, 0, 0, 0.7))),
+      TextLeadingRow(title: "Curriculum: ", txt: curriculum,titleStyle: AppFonts.title10(color: Color.fromRGBO(0, 0, 0, 0.7)),txtStyle: AppFonts.text10(color: Color.fromRGBO(0, 0, 0, 0.7)))
     ]);
   }
 }
+

@@ -1,5 +1,5 @@
 {
-  "col1" : ["picture","rating"],
-  "col2": ["title", "subtitle", "gender" ,"nationality" , "address","number"],
-  "col3": ["description","skills","exp", "salary","photos"]
+  "col1" : ["picture","sized_box_9","rating"],
+  "col2": ["business_name", "business_type","sized_box_4", "gender" ,"sized_box_5","nationality","sized_box_5_86" , "address","sized_box_5","number"],
+  "col3": ["sized_box_9","description","sized_box_17","divider","sized_box_17","skills","sized_box_17","divider","sized_box_17","experience","sized_box_17","divider","sized_box_17", "salary","sized_box_17","divider","sized_box_17","photos"]
 }

@@ -18,10 +18,7 @@ class IconLeadingRow extends StatelessWidget {
     return Row(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
       Image(image: AssetImage(PathFiles.ImgPath + imgName)),
       SizedBox(width: 4.5.w),
-      Expanded(
-          child: Text(txt,
-              style: textStyle ??
-                  AppFonts.title10Odd(color: Color.fromRGBO(0, 0, 0, 0.5))))
+      Expanded(child: Text(txt, style: textStyle))
     ]);
   }
 }

@@ -1,0 +1,5 @@
+{
+  "col1" : ["picture","rating"],
+  "col2": ["business_name", "business_type" , "address","time","number"],
+  "col3": ["sized_box_9","description","sized_box_17","divider","sized_box_17","profile"]
+}

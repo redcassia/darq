@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:darq/res/path_files.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 
 class Picture extends StatelessWidget {
   const Picture(

@@ -37,7 +37,7 @@ class TileContentExpanded extends StatelessWidget {
           child: descriptionWidget ??
               Text(description,
                   maxLines: 3,
-                  style: AppFonts.text9(color: Color.fromRGBO(0, 0, 0, 0.37)))),
+                  style: AppFonts.text10(color: Color.fromRGBO(0, 0, 0, 0.37)))),
       SizedBox(height:  descriptionWidget!= null ? 9.h : 2.h),
       Text("View Details..",
           style: AppFonts.title10Odd(color: Color(0xFFE1A854))),

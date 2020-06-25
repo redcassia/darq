@@ -1,0 +1,8 @@
+{
+  "col1" : ["picture"],
+  "col2": ["business_name", "business_type" , "address","time","number"],
+  "col3": ["sized_box_9","description","sized_box_17","divider",
+    "sized_box_17","duration","sized_box_17","divider","sized_box_17"
+  ,"reservation","sized_box_17","divider","sized_box_17","price","sized_box_17",
+    "divider","sized_box_17","organizer","sized_box_17","divider","sized_box_17","photos"]
+}

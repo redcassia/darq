@@ -1,0 +1,152 @@
+:root {
+    --main-color: #86C2C2;
+    --accent: #E1A854;
+    --red: #D31111;
+    --green: #4ED16B;
+
+    --dark: #426676;
+    --medium-dark: rgba(66, 102, 118, 0.72);
+    --medium: rgba(66, 102, 118, 0.36);
+    --medium-light: rgba(245, 249, 250, 0.26);
+    --light: #F5F9FA;
+    --white: #FFFFFF
+}
+
+.dark {
+    color: var(--dark);
+}
+
+.medium-dark {
+    color: var(--medium-dark);
+}
+
+.medium {
+    color: var(--medium);
+}
+
+.medium-light {
+    color: var(--medium-light);
+}
+
+.light {
+    color: var(--light);
+}
+
+.white {
+    color: var(--white);
+}
+
+.main-color {
+    color: var(--main-color);
+}
+
+.accent {
+    color: var(--accent);
+}
+
+html, body {
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    font-family: 'Roboto', sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 21px;
+}
+
+h1, .h1 {
+    font-weight: 500;
+    font-size: 64px;
+    line-height: 75px;
+}
+
+h2, .h2 {
+    font-weight: 500;
+    font-size: 40px;
+    line-height: 47px;
+}
+
+h3, .h3 {
+    font-weight: bold;
+    font-size: 35px;
+    line-height: 41px;
+}
+
+h4, .h4 {
+    font-weight: 500;
+    font-size: 25px;
+    line-height: 29px;
+}
+
+h5, .h5 {
+    font-weight: normal;
+    font-size: 20px;
+    line-height: 23px;
+}
+
+h6, .h6 {
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 21px;
+}
+
+button {
+    text-align: center;
+
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 21px;
+
+    padding: 12px 26px;
+    margin: 20px 0px;
+
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
+    border: 0;
+    border-radius: 34.0741px 0px;
+
+    background-color: var(--dark);
+    color: var(--white);
+}
+
+button:focus {
+    outline: none;
+}
+
+button:active {
+    box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.15);
+}
+
+input {
+    border: 0.5px solid var(--medium);
+    box-sizing: border-box;
+    border-radius: 0px;
+    padding: 6px;
+    margin: 10px 0px;
+
+    font-size: 14px;
+    line-height: 16px;
+}
+
+hr {
+    border: 0.5px solid var(--medium);
+    margin: 10px 0px;
+}
+
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.clickable {
+    color: var(--accent);
+}
+.clickable:hover {
+    cursor: pointer;
+}

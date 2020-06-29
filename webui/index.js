@@ -1,7 +1,7 @@
 const slideDisplacement = $("#signin-screen > .inactive-home-pane").offset().left;
 const slideSpeed = 150;
 
-const welcomeSpeed = 300;
+const welcomeSpeed = 200;
 
 function switchToSignup() {
     $(".inactive-home-pane > .home-pane-content").hide();
@@ -66,16 +66,16 @@ function switchToWelcome() {
     $("#signin-screen").hide();
     $("#signup-screen").hide();
 
-    $("#welcome-screen > .inactive-home-pane").animate({
-        width: '100%',
-        left: '0'
-    }, welcomeSpeed, function() {
-        welcomeToDarQ(0);
-    });
+    welcomeToDarQ(0);
 }
 
 function welcomeToDarQ(d) {
-    $("#welcome-screen").delay(d).fadeOut(welcomeSpeed, "swing", function() {
+    $("#welcome-screen > .inactive-home-pane").delay(d).animate({
+        height: '64px',
+        width: '100%',
+        left: '0'
+    }, welcomeSpeed, "easeInQuad", function() {
+        $("#welcome-screen").hide();
         $("#main-screen").show();
     });
 }
@@ -84,7 +84,7 @@ function welcomeToSignin(d) {
     $("#welcome-screen > .inactive-home-pane").delay(d).animate({
         width: '45%',
         left: '55%'
-    }, welcomeSpeed, function() {
+    }, welcomeSpeed, "easeInQuad", function() {
         $("#welcome-screen").hide();
     });
 }
@@ -104,6 +104,17 @@ $(document).ready(function() {
         $("#signin-form").show();
         welcomeToSignin(200);
     }
+
+    // change the side bar icons to darker versions when 'active' class changes
+    $(".side-bar-btn").on('classChange', function() {
+        var icon = $(this).children('img');
+        if ($(this).hasClass('active')) {
+            icon.attr('src', "assets/" + icon.attr('data-icon-name') + "-icon-dark.png");
+        }
+        else {
+            icon.attr('src', "assets/" + icon.attr('data-icon-name') + "-icon.png");
+        }
+    });
 });
 
 function signup() {
@@ -129,4 +140,8 @@ function resetPassword() {
     $("#reset-password-form").animate({
         height: 'toggle'
     }, slideSpeed);
+}
+
+function toggleHamburger() {
+    $(".side-bar").toggleClass('open');
 }

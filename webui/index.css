@@ -88,14 +88,5 @@
 
 #welcome-screen > .inactive-home-pane::after {
     content: url('assets/logo.png');
-
-    pointer-events: none;
-    display: block;
-    position: absolute;
-    top: 150px;
-    left: 0;
-    width: 100%;
-    height: calc(100% - 150px);
-
     background: none;
 }

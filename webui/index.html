@@ -72,12 +72,51 @@
         </div>
 
         <div id="main-screen" class="screen" style="display: none;">
-            <h1>Hello!</h1>
-            <h3>Please implement me :)</h3>
-            <!-- TODO: implement -->
+            <div class="screen-body">
+                <div class="side-bar open">
+                    <div class="side-bar-btn" style="text-align: right;">
+                        <img id="hamburger-btn" class="clickable" onClick="toggleHamburger()" src="assets/hamburger-icon.png" data-icon-name="hamburger" class="clickable" />
+                    </div>
+    
+                    <div class="side-bar-btn clickable">
+                        <img id="profile-btn" src="assets/user-icon.png" data-icon-name="user"/>
+                        <span>Your Profile</span>
+                    </div>
+    
+                    <div class="side-bar-btn clickable">
+                        <img id="messages-btn" src="assets/msg-icon.png" data-icon-name="msg" class="clickable" />
+                        <span>Inbox</span>
+                    </div>
+    
+                    <div class="side-bar-btn clickable">
+                        <img src="assets/briefcase-icon.png" data-icon-name="briefcase" class="clickable" />
+                        <span>Add Your Business</span>
+                    </div>
+    
+                    <div class="side-bar-btn clickable">
+                        <img id="events-btn" src="assets/calendar-icon.png" data-icon-name="calendar" class="clickable" />
+                        <span>Create an Event</span>
+                    </div>
+    
+                    <div class="side-bar-btn clickable">
+                        <img id="settings-btn" src="assets/gear-icon.png" data-icon-name="gear" class="clickable" />
+                        <span>Settings</span>
+                    </div>
+                </div>
+    
+                <div class="screen-content">
+                    <h1>Hello!</h1>
+                    <h3>Please implement me :)</h3>
+                    <!-- TODO: implement -->
+                </div>
+            </div>
         </div>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+            integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+            crossorigin="anonymous">
+        </script>
         <script src="index.js"></script>
     </body>
 </html>

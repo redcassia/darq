@@ -1,0 +1,20 @@
+type Query {
+  user: User
+}
+
+type Mutation {
+  createPublicUser: String
+  createBusinessUser(email: String!, password: String!): String
+  authenticatePublicUser(id: ID!): String
+  authenticateBusinessUser(email: String!, password: String!): String
+}
+
+type User {
+  id: ID!
+  type: String!
+  create_time: String!
+  last_login: String!
+  first_name: String
+  last_name: String
+  email: String
+}

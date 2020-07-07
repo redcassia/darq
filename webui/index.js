@@ -1,9 +1,9 @@
-const slideDisplacement = $("#signin-screen > .inactive-home-pane").offset().left;
 const slideSpeed = 150;
-
 const welcomeSpeed = 200;
 
 function switchToSignup() {
+    const slideDisplacement = $("#signin-screen > .inactive-home-pane").offset().left;
+
     $(".inactive-home-pane > .home-pane-content").hide();
     $("#signin-form").hide();
     $("#forgot-password-form").hide();
@@ -28,6 +28,8 @@ function switchToSignup() {
 }
 
 function switchToSignin() {
+    const slideDisplacement = $("#signin-screen > .inactive-home-pane").offset().left;
+
     $(".inactive-home-pane > .home-pane-content").hide();
     $("#signup-form").hide();
 
@@ -88,6 +90,86 @@ function welcomeToSignin(d) {
         $("#welcome-screen").hide();
     });
 }
+function setGlobalEventHandlers() {
+    // change the side bar icons to darker versions when 'active' class changes
+    $(".side-bar-btn").on('classChange', function() {
+        var icon = $(this).children('img');
+        if ($(this).hasClass('active')) {
+            icon.attr('src', "assets/" + icon.attr('data-icon-name') + "-icon-dark.png");
+        }
+        else {
+            icon.attr('src', "assets/" + icon.attr('data-icon-name') + "-icon.png");
+        }
+    });
+
+    $("form").submit(function(e) {
+        e.preventDefault();
+    });
+
+    $(".img-input").click(function() {
+        $(this).children()[0].click();
+    });
+    $(".img-input > input").change(function() {
+        var input = $(this);
+        if (input.get()[0].files) {
+            for (file of input.get()[0].files) {
+                var reader = new FileReader();
+    
+                reader.onload = function(e) {
+                    var div = document.createElement("div");
+                    div.setAttribute('class', 'img-upload-obj');
+                    div.setAttribute('data-file', file);
+    
+                    var img = document.createElement("img");
+                    img.setAttribute('src', e.target.result);
+    
+                    var btn = document.createElement("button");
+                    btn.onclick = function() {
+                        div.remove();
+                    }
+    
+                    div.appendChild(img);
+                    div.appendChild(btn);
+    
+                    var parent = input.parent();
+                    if (! parent.hasClass('multiple')) {
+                        parent.parent().children(".img-upload-obj").remove();
+                    }
+                    parent.before(div);
+                };
+    
+                reader.readAsDataURL(file);
+            }
+        }
+    });
+}
+
+var loadedScripts = []
+function addScript(src) {
+    if (loadedScripts.indexOf(src) == -1) {
+        loadedScripts.push(src);
+
+        var s = document.createElement('script');
+        s.setAttribute('src', src);
+        document.body.appendChild(s);
+    }
+}
+
+function loadContent(target, extraScript = "") {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', target, true);
+    xhr.onreadystatechange = function() {
+        if (this.readyState !== 4) return;
+        if (this.status !== 200) return;
+        document.getElementById('content').innerHTML= this.responseText;
+        setGlobalEventHandlers();
+    };
+    xhr.send();
+
+    if (extraScript != "") {
+        addScript(extraScript);
+    }
+}
 
 $(document).ready(function() {
     var hash = window.location.hash;
@@ -105,16 +187,9 @@ $(document).ready(function() {
         welcomeToSignin(200);
     }
 
-    // change the side bar icons to darker versions when 'active' class changes
-    $(".side-bar-btn").on('classChange', function() {
-        var icon = $(this).children('img');
-        if ($(this).hasClass('active')) {
-            icon.attr('src', "assets/" + icon.attr('data-icon-name') + "-icon-dark.png");
-        }
-        else {
-            icon.attr('src', "assets/" + icon.attr('data-icon-name') + "-icon.png");
-        }
-    });
+    setGlobalEventHandlers();
+
+    loadContent('welcome.html', '');
 });
 
 function signup() {

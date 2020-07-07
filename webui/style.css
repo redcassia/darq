@@ -39,9 +39,15 @@
 .main-color {
     color: var(--main-color);
 }
+.main-color-bg {
+    background-color: var(--main-color);
+}
 
 .accent {
     color: var(--accent);
+}
+.accent-bg {
+    background-color: var(--accent);
 }
 
 html, body {
@@ -92,10 +98,33 @@ h6, .h6 {
     line-height: 21px;
 }
 
-button {
-    text-align: center;
+label {
+    position: relative;
+    display: block;
 
-    font-weight: bold;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+
+    color: var(--medium-dark);
+}
+
+form {
+    position: relative;
+    width: auto;
+}
+
+form > input[type='submit'] {
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+
+button,
+input[type='submit'] {
+    text-align: center;
+    width: auto;
+
     font-size: 18px;
     line-height: 21px;
 
@@ -110,15 +139,35 @@ button {
     color: var(--white);
 }
 
-button:focus {
+button:focus,
+input[type='submit']:focus {
     outline: none;
 }
 
-button:active {
+button:active,
+input[type='submit']:active {
     box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.15);
 }
 
-input {
+.form-line {
+    position: relative;
+    display: block;
+    padding: 0;
+    margin: 16px 0 0 0;
+}
+
+.form-box {
+    position: relative;
+    display: inline-block;
+    padding: 0;
+    margin: 0 0 0 32px;
+}
+.form-box:first-child {
+    margin: 0;
+}
+
+input,
+textarea {
     border: 0.5px solid var(--medium);
     box-sizing: border-box;
     border-radius: 0px;
@@ -127,11 +176,126 @@ input {
 
     font-size: 14px;
     line-height: 16px;
+    color: var(--dark);
+    background-color: var(--white);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+}
+
+input,
+select {
+    width: 260px;
+}
+
+textarea {
+    resize: none;
+    overflow-y: auto;
+    width: 552px;
+    height: 100px;
+}
+
+.select select {
+    /* background: transparent; */
+    -webkit-appearance: none;
+
+    border: 0.5px solid var(--medium);
+    box-sizing: border-box;
+    border-radius: 0px;
+    padding: 6px;
+    margin: 10px 0px;
+
+    font-size: 14px;
+    line-height: 16px;
+    color: var(--dark);
+
+    background: url('assets/arrow-down-icon.png') no-repeat right 8px center;
+}
+.select {
+    display: inline-block;
+}
+select:active {
+    background-image: url('assets/arrow-up-icon.png');
+}
+
+.img-input > input {
+    clip-path: rect(0, 0, 0, 0);
+    height: 1px;
+    width: 1px; 
+    overflow: hidden;
+    padding: 0;
+    border: 0;
+    margin: 0;
+    position: absolute;
+    white-space: nowrap;
+    opacity: 0;
+}
+.img-input {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    width: 100px;
+    height: 100px;
+    margin: 10px 20px 10px 0px;
+
+    background: url('assets/picture-icon.png') no-repeat;
+    background-position: center;
+    background-color: var(--light);
+}
+.img-input:hover {
+    background-color: var(--medium);
+}
+.img-upload-obj {
+    position: relative;
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+    margin: 10px 20px 10px 0px;
+    overflow: hidden;
+
+    background-color: var(--light);
+}
+.img-upload-obj > img {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    max-width: 100%;
+    max-height: 100%;
+}
+.img-upload-obj > button {
+    display: inline-block;
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 0;
+    right: 0;
+    margin: 3px;
+    padding: 0;
+    border: 0;
+    border-radius: 10px;
+    z-index: 10;
+
+    background: url('assets/cross-icon.png') no-repeat;
+    background-position: center;
+    background-color: var(--light);
+    pointer-events: all;
+}
+.img-upload-obj + .img-input {
+    display: none;
+}
+.img-upload-obj + .img-input.multiple {
+    display: inline-block;
 }
 
 hr {
-    border: 0.5px solid var(--medium);
-    margin: 10px 0px;
+    border: none;
+    border-top: 1px solid var(--medium);
+    margin: 25px 0px;
 }
 
 .screen {
@@ -151,6 +315,29 @@ hr {
     cursor: pointer;
 }
 
+.fill {
+    width: 100%;
+    height: 100%;
+}
+
+.fill-width {
+    width: 100%;
+}
+
+.centered-content,
+.centered > * {
+    text-align: center;
+}
+
+.left-aligned-content {
+    position: relative;
+    width: auto;
+    display: inline-block;
+    text-align: left;
+}
+
+/* specialized styles for screen arrangement */
+
 #main-screen {
     height: calc(100% - 60px);
 }
@@ -165,6 +352,8 @@ hr {
     background-position: center top 15px;
     background-size: auto 30px;
     background-color: var(--main-color);
+
+    padding-left: 64px;
 }
 
 .screen-body {
@@ -217,9 +406,16 @@ hr {
 }
 
 .screen-content {
+    position: relative;
     width: 100%;
-    height: 100%;
+    max-height: calc(100% - 60px);
+    overflow-y: auto;
+
+    padding: 32px;
 
     background-color: var(--white);
     color: var(--dark);
+
+    z-index: 10;
+    background-color: transparent;
 }

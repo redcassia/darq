@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:darq/elements/app_fonts.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:darq/utilities/constants.dart';
 
 class RightRoundedCapsule extends StatelessWidget {
   const RightRoundedCapsule(
@@ -9,32 +11,31 @@ class RightRoundedCapsule extends StatelessWidget {
       @required this.horizontalPadding,
       this.title,
       this.icon,
-      @required this.iconColor})
+      @required this.iconBgColor})
       : super(key: key);
 
   final double verticalPadding;
   final double horizontalPadding;
   final String title;
   final Widget icon;
-  final Color iconColor;
+  final Color iconBgColor;
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.only(
-          topRight: Radius.circular(45.0), bottomRight: Radius.circular(45.0)),
+          topRight: Radius.circular(ConsDimensions.CapsuleRadius),
+          bottomRight: Radius.circular(ConsDimensions.CapsuleRadius)),
       child: Container(
-          margin: EdgeInsets.only(bottom: 6.0, top: 1, right: 6),
+          margin: EdgeInsets.only(
+              bottom: ConsDimensions.CapsuleBottomShadow.h,
+              top: ConsDimensions.CapsuleUpperShadow.h,
+              right: ConsDimensions.CapsuleHorizontalShadow.w),
           decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                    color: Color.fromRGBO(0, 0, 0, 0.25),
-                    blurRadius: 6.0,
-                    offset: Offset(0.0, 0.5))
-              ],
-              color: iconColor,
+              boxShadow: ConsDimensions.CapsuleBoxShadow,
+              color: iconBgColor,
               borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(45.0),
-                  bottomRight: Radius.circular(45.0))),
+                  topRight: Radius.circular(ConsDimensions.CapsuleRadius),
+                  bottomRight: Radius.circular(ConsDimensions.CapsuleRadius))),
           child: Padding(
               padding: EdgeInsets.symmetric(
                   vertical: verticalPadding, horizontal: horizontalPadding),

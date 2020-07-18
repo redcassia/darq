@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:darq/res/path_files.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:darq/utilities/constants.dart';
 
 class Picture extends StatelessWidget {
   const Picture(
@@ -23,7 +23,7 @@ class Picture extends StatelessWidget {
       child: Container(
         height: height,
         width: width,
-        margin: EdgeInsets.only(bottom: 3.0, right: 1),
+        margin: EdgeInsets.only(bottom: ConsDimensions.ImageBottomShadow, right: ConsDimensions.ImageRightShadow),
         decoration: BoxDecoration(
             image: DecorationImage(
                 image: AssetImage(PathFiles.ImgPath + img),

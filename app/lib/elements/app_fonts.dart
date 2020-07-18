@@ -79,13 +79,19 @@ class AppFonts {
   }
   static TextStyle title10({Color color}) {
     return GoogleFonts.roboto(
+        fontSize: ScreenUtil().setSp(12, allowFontScalingSelf: true),
+        fontWeight: FontWeight.bold,
+        color: color);
+  }
+  static TextStyle title11({Color color}) {
+    return GoogleFonts.roboto(
         fontSize: ScreenUtil().setSp(10, allowFontScalingSelf: true),
         fontWeight: FontWeight.bold,
         color: color);
   }
 
 
-  static TextStyle title10Odd({Color color}) {
+  static TextStyle title11Odd({Color color}) {
     return GoogleFonts.roboto(
         fontSize: ScreenUtil().setSp(11, allowFontScalingSelf: true),
         fontWeight: FontWeight.bold,
@@ -177,6 +183,12 @@ class AppFonts {
     return GoogleFonts.roboto(
         fontSize: ScreenUtil().setSp(10, allowFontScalingSelf: true),
         fontWeight: FontWeight.normal,
+        color: color);
+  }
+  static TextStyle text10w500({Color color}) {
+    return GoogleFonts.roboto(
+        fontSize: ScreenUtil().setSp(10, allowFontScalingSelf: true),
+        fontWeight: FontWeight.w500,
         color: color);
   }
 }

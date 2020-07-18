@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:darq/utilities/constants.dart';
 class CustomClipRRect extends StatelessWidget {
   const CustomClipRRect(
       {Key key,
@@ -26,7 +27,7 @@ class CustomClipRRect extends StatelessWidget {
         child: Container(
             height: height,
             width: width,
-            margin: EdgeInsets.only(bottom: 6.0, right: 6),
+            margin: EdgeInsets.only(bottom: ConsDimensions.ButtonBottomShadow.h, right: ConsDimensions.ButtonHorizontalShadow.w),
             decoration: BoxDecoration(
                 boxShadow: [
                   BoxShadow(

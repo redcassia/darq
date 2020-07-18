@@ -11,7 +11,7 @@ class ComboBurger extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Image(
-        width: 28.7.w,
+        width: 26.w,
         fit: BoxFit.fill,
         image: AssetImage(PathFiles.ImgPath + "combo_burger.png"));
   }

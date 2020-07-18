@@ -57,7 +57,9 @@ flutter:
     - assets/images/2.0x/
     - assets/images/3.0x/
     - assets/images/4.0x/
-    - assets/json_files/
+    - assets/json/
+    - assets/json/entertainment/
+    - assets/json/sports/
 
   fonts:
     - family: News

@@ -1,0 +1,140 @@
+<div class="content-submenu medium-light-bg">
+    <h5>Business type</h5>
+
+    <div class="select">
+        <select id="business-type-select" onchange="changeForm(this.value)">
+            <option value="" disabled selected>Choose business type</option>
+            <option value="self-employed-form">Self-employed</option>
+        </select>
+    </div>
+</div>
+
+<div class="left-aligned-content with-submenu">
+    <form id="self-employed-form" class="inactive">
+        <div class="form-line">
+            <div class="form-box">
+                <label for="picture">Profile picture</label>
+                <div class="img-input">
+                    <input type="file" name="picture"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="sub-type">Business sub-type</label>
+                <div class="select">
+                    <select name="sub-type">
+                        <option value="" disabled selected>Choose business sub-type</option>
+                        <option>Subtype A</option>
+                        <option>Subtype B</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="first-name">First name</label>
+                <input type="text" name="first-name" />
+            </div>
+            <div class="form-box">
+                <label for="last-name">Last name</label>
+                <input type="text" name="last-name" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="gender">Gender</label>
+
+                <input type="radio" id="female" name="gender" value="FEMALE"/>
+                <label>Female<label>
+                <input type="radio" id="male" name="gender" value="MALE"/>
+                <label>Male<label>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="nationality">Nationality</label>
+                <div class="select">
+                    <select name="nationality">
+                        <option value="" disabled selected>Choose nationality</option>
+                        <option>Nationality A</option>
+                        <option>Nationality B</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="city">City</label>
+                <div class="select">
+                    <select name="city">
+                        <option value="" disabled selected>Choose city </option>
+                        <option>Doha</option>
+                        <option>City A</option>
+                        <option>City B</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="phone">Phone Number</label>
+                <input type="text" name="phone" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="email">Email</label>
+                <input type="text" name="email" />
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="description">Description</label>
+                <textarea name="description"></textarea>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="charge">Charge</label>
+                <input type="text" name="charge" /><span>QAR/hr</span>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="govt-id">Government-issued ID</label>
+                <div class="img-input">
+                    <input type="file" name="govt-id"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="gallery">Gallery</label>
+                <div class="img-input multiple">
+                    <input type="file" name="gallery" />
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <input type="submit" onclick="submitEvent($('#create-event-form'))">
+    </form>
+</div>

@@ -161,10 +161,18 @@ function loadContent(target, extraScript = "") {
     xhr.onreadystatechange = function() {
         if (this.readyState !== 4) return;
         if (this.status !== 200) return;
-        document.getElementById('content').innerHTML= this.responseText;
+        document.getElementById('content').innerHTML = this.responseText;
         setGlobalEventHandlers();
     };
     xhr.send();
+
+    if (extraScript != "") {
+        addScript(extraScript);
+    }
+}
+
+function clearContent(target, extraScript = "") {
+    document.getElementById('content').innerHTML = '';
 
     if (extraScript != "") {
         addScript(extraScript);
@@ -219,4 +227,18 @@ function resetPassword() {
 
 function toggleHamburger() {
     $(".side-bar").toggleClass('open');
+}
+
+function navigateTo(btn, content) {
+    $(".side-bar").children().removeClass("active");
+    if (btn) btn.addClass("active");
+    $(".side-bar").children().trigger("classChange");
+
+    switch(content) {
+        case 'messages':    loadContent('messages.html', ''); break;
+        case 'business':    loadContent('add_business.html', 'add_business.js'); break;
+        case 'event':       loadContent('create_event.html', 'create_event.js'); break;
+        case 'payment':     loadContent('payment.html', ''); break;
+        default: clearContent();
+    }
 }

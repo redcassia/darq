@@ -77,33 +77,33 @@
                     <div class="side-bar-btn" style="text-align: right;">
                         <img id="hamburger-btn" class="clickable" onClick="toggleHamburger()" src="assets/hamburger-icon.png" data-icon-name="hamburger" class="clickable" />
                     </div>
-    
-                    <div class="side-bar-btn clickable">
-                        <img id="profile-btn" src="assets/user-icon.png" data-icon-name="user"/>
+
+                    <div id="profile-btn" class="side-bar-btn clickable" onclick="navigateTo($(this))">
+                        <img src="assets/user-icon.png" data-icon-name="user"/>
                         <span>Your Profile</span>
                     </div>
-    
-                    <div class="side-bar-btn clickable">
-                        <img id="messages-btn" src="assets/msg-icon.png" data-icon-name="msg" class="clickable" />
+
+                    <div id="messages-btn" class="side-bar-btn clickable" onclick="navigateTo($(this), 'messages')">
+                        <img src="assets/msg-icon.png" data-icon-name="msg" class="clickable" />
                         <span>Inbox</span>
                     </div>
-    
-                    <div class="side-bar-btn clickable">
+
+                    <div id="business-btn" class="side-bar-btn clickable" onclick="navigateTo($(this), 'business')">
                         <img src="assets/briefcase-icon.png" data-icon-name="briefcase" class="clickable" />
                         <span>Add Your Business</span>
                     </div>
-    
-                    <div class="side-bar-btn clickable">
-                        <img id="events-btn" src="assets/calendar-icon.png" data-icon-name="calendar" class="clickable" />
+
+                    <div id="events-btn" class="side-bar-btn clickable" onclick="navigateTo($(this), 'event')">
+                        <img src="assets/calendar-icon.png" data-icon-name="calendar" class="clickable" />
                         <span>Create an Event</span>
                     </div>
-    
-                    <div class="side-bar-btn clickable">
-                        <img id="settings-btn" src="assets/gear-icon.png" data-icon-name="gear" class="clickable" />
-                        <span>Settings</span>
+
+                    <div id="payment-btn" class="side-bar-btn clickable" onclick="navigateTo($(this), 'payment')">
+                        <img src="assets/card-icon.png" data-icon-name="card" class="clickable" />
+                        <span>Payment</span>
                     </div>
                 </div>
-    
+
                 <div id="content" class="screen-content"></div>
             </div>
         </div>

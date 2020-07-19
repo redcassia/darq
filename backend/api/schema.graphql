@@ -1,12 +1,56 @@
 type Query {
   user: User
+  businesses(limit: Int = 100, offset: Int = 0, type: BusinessType, sub_type: String): [Business!]!
+  events(limit: Int = 100, offset: Int = 0, type: EventType): [Event!]!
 }
 
 type Mutation {
   createPublicUser: String
   createBusinessUser(email: String!, password: String!): String
+
   authenticatePublicUser(id: ID!): String
   authenticateBusinessUser(email: String!, password: String!): String
+
+  changeBusinessUserPassword(oldPassword: String!, newPassword: String!): String
+
+  addSelfEmployedBusiness(data: NewSelfEmployedBusinessInput!): SelfEmployedBusiness!
+  updateSelfEmployedBusiness(id: ID!, data: UpdateSelfEmployedBusinessInput!): SelfEmployedBusiness!
+
+  addChildEducationBusiness(data: NewChildEducationBusinessInput!): ChildEducationBusiness!
+  updateChildEducationBusiness(id: ID!, data: UpdateStationaryBusinessInput!): ChildEducationBusiness!
+
+  addDomesticHelpBusiness(data: NewDomesticHelpBusinessInput!): DomesticHelpBusiness!
+  updateDomesticHelpBusiness(id: ID!, data: UpdateDomesticHelpBusinessInput!): DomesticHelpBusiness!
+
+  addBeautyBusiness(data: NewBeautyBusinessInput!): BeautyBusiness!
+  updateBeautyBusiness(id: ID!, data: UpdateDomesticHelpBusinessInput!): BeautyBusiness!
+
+  addLimousineBusiness(data: NewLimousineBusinessInput!): LimousineBusiness!
+  updateLimousineBusiness(id: ID!, data: UpdateLimousineBusinessInput!): LimousineBusiness!
+
+  addHospitalityBusiness(data: NewHospitalityBusinessInput!): HospitalityBusiness!
+  updateHospitalityBusiness(id: ID!, data: UpdateHospitalityBusinessInput!): HospitalityBusiness!
+
+  addStationaryBusiness(data: NewStationaryBusinessInput!): StationaryBusiness!
+  updateStationaryBusiness(id: ID!, data: UpdateStationaryBusinessInput!): StationaryBusiness!
+
+  addMadeInQatarBusiness(data: NewMadeInQatarBusinessInput!): MadeInQatarBusiness!
+  updateMadeInQatarBusiness(id: ID!, data: UpdateMadeInQatarBusinessInput!): MadeInQatarBusiness!
+
+  addSportsBusiness(data: NewSportsBusinessInput!): SportsBusiness!
+  updateSportsBusiness(id: ID!, data: UpdateSportsBusinessInput!): SportsBusiness!
+
+  addEntertainmentBusiness(data: NewEntertainmentBusinessInput!): EntertainmentBusiness!
+  updateEntertainmentBusiness(id: ID!, data: UpdateEntertainmentBusinessInput!): EntertainmentBusiness!
+
+  addFoodBusiness(data: NewFoodBusinessInput!): FoodBusiness!
+  updateFoodBusiness(id: ID!, data: UpdateFoodBusinessInput!): FoodBusiness!
+
+  addMaintenanceBusiness(data: NewMaintenanceBusinessInput!): MaintenanceBusiness!
+  updateMaintenanceBusiness(id: ID!, data: UpdateMaintenanceBusinessInput!): MaintenanceBusiness!
+
+  addEvent(data: NewEventInput!): Event!
+  updateEvent(id: ID!, data: UpdateEventInput!): Event!
 }
 
 type User {
@@ -17,4 +61,1415 @@ type User {
   first_name: String
   last_name: String
   email: String
+  owned_businesses: [Business!]
+  owned_events: [Event!]
+}
+
+interface Business {
+  id: ID!
+  approved: Boolean!
+  rating: Float!
+  display_name: String!
+  display_picture: String!
+  cities: [City!]
+  type: BusinessType!
+}
+
+# self-employed
+
+type SelfEmployedBusiness implements Business {
+  id: ID!
+  approved: Boolean!
+  rating: Float!
+  display_name: String!
+  display_picture: String!
+  cities: [City!]
+  type: BusinessType!
+  # specialization
+  sub_type: SelfEmployedSubType!
+  sub_type_string: String!
+  gender: Gender!
+  nationality: Nationality!
+  phone_number: String!
+  description: String!
+  skills: [String!]
+  experience: [PersonalExperience!]!
+  charge: Float!
+  government_id: String!
+  attachments: [String!]
+}
+
+input NewSelfEmployedBusinessInput {
+  display_name: String!
+  display_picture: String!
+  cities: [City!]
+  sub_type: SelfEmployedSubType!
+  sub_type_string: String!
+  gender: Gender!
+  nationality: Nationality!
+  phone_number: String!
+  description: String!
+  skills: [String!]
+  experience: [PersonalExperienceInput!]!
+  charge: Float!
+  government_id: String!
+  attachments: [String!]
+}
+
+input UpdateSelfEmployedBusinessInput {
+  display_name: String
+  display_picture: String
+  cities: [City!]
+  sub_type: SelfEmployedSubType
+  sub_type_string: String
+  gender: Gender
+  nationality: Nationality
+  phone_number: String
+  description: String
+  skills: [String!]
+  experience: [PersonalExperienceInput!]
+  charge: Float
+  government_id: String
+  attachments: [String!]
+}
+
+# child education
+
+type ChildEducationBusiness implements Business {
+  id: ID!
+  approved: Boolean!
+  rating: Float!
+  display_name: String!
+  display_picture: String!
+  cities: [City!]
+  type: BusinessType!
+  # specialization
+  sub_type: ChildEducationSubType!
+  institution_number: String!
+  street_address: String!
+  phone_number: [String!]!
+  description: String!
+  year_founded: String!
+  curriculum: [String!]!
+  attachments: [String!]
+}
+
+input NewChildEducationBusinessInput {
+  display_name: String!
+  display_picture: String!
+  cities: [City!]
+  sub_type: ChildEducationSubType!
+  institution_number: String!
+  street_address: String!
+  phone_number: [String!]!
+  description: String!
+  year_founded: String!
+  curriculum: [String!]!
+  attachments: [String!]
+}
+
+input UpdateChildEducationBusinessInput {
+  display_name: String
+  display_picture: String
+  cities: [City!]
+  sub_type: ChildEducationSubType
+  institution_number: String
+  street_address: String
+  phone_number: [String!]
+  description: String
+  year_founded: String
+  curriculum: [String!]
+  attachments: [String!]
+}
+
+# domestic help
+
+type DomesticHelpBusiness implements Business {
+  id: ID!
+  approved: Boolean!
+  rating: Float!
+  display_name: String!
+  display_picture: String!
+  cities: [City!]
+  type: BusinessType!
+  # specialization
+  institution_number: String!
+  street_address: String!
+  phone_number: [String!]!
+  description: String!
+  personnel: [DomesticHelpPersonnel!]!
+}
+
+input NewDomesticHelpBusinessInput {
+  display_name: String!
+  display_picture: String!
+  cities: [City!]
+  institution_number: String!
+  street_address: String!
+  phone_number: [String!]!
+  description: String!
+  personnel: [DomesticHelpPersonnel!]!
+}
+
+input UpdateDomesticHelpBusinessInput {
+  display_name: String
+  display_picture: String
+  cities: [City!]
+  institution_number: String
+  street_address: String
+  phone_number: [String!]
+  description: String
+  personnel: [DomesticHelpPersonnel!]
+}
+
+# beauty
+
+type BeautyBusiness implements Business {
+  id: ID!
+  approved: Boolean!
+  rating: Float!
+  display_name: String!
+  display_picture: String!
+  cities: [City!]
+  type: BusinessType!
+  # specialization
+  sub_type: BeautyBusinessSubType!
+  institution_number: String!
+  street_address: String!
+  operating_hours: OperatingHours!
+  phone_number: [String!]!
+  description: String!
+  home_service_available: Boolean!
+  services: [String!]
+  website: String
+  attachments: [String!]
+}
+
+input NewBeautyBusinessInput {
+  display_name: String!
+  display_picture: String!
+  cities: [City!]
+  sub_type: BeautyBusinessSubType!
+  institution_number: String!
+  street_address: String!
+  operating_hours: OperatingHours!
+  phone_number: [String!]!
+  description: String!
+  home_service_available: Boolean!
+  services: [String!]
+  website: String
+  attachments: [String!]
+}
+
+input UpdateBeautyBusinessInput {
+  display_name: String
+  display_picture: String
+  cities: [City!]
+  sub_type: BeautyBusinessSubType
+  institution_number: String
+  street_address: String
+  operating_hours: OperatingHours
+  phone_number: [String!]
+  description: String
+  home_service_available: Boolean
+  services: [String!]
+  website: String
+  attachments: [String!]
+}
+
+# limousine
+
+type LimousineBusiness implements Business {
+  id: ID!
+  approved: Boolean!
+  rating: Float!
+  display_name: String!
+  display_picture: String!
+  cities: [City!]
+  type: BusinessType!
+  # specialization
+  sub_type: LimousineBusinessSubType!
+  institution_number: String!
+  street_address: String!
+  operating_hours: OperatingHours!
+  phone_number: [String!]!
+  description: String!
+  services: [String!]
+  website: String
+  attachments: [String!]
+}
+
+input NewLimousineBusinessInput {
+  display_name: String!
+  display_picture: String!
+  cities: [City!]
+  sub_type: LimousineBusinessSubType!
+  institution_number: String!
+  street_address: String!
+  operating_hours: OperatingHours!
+  phone_number: [String!]!
+  description: String!
+  services: [String!]
+  website: String
+  attachments: [String!]
+}
+
+input UpdateLimousineBusinessInput {
+  display_name: String
+  display_picture: String
+  cities: [City!]
+  sub_type: LimousineBusinessSubType
+  institution_number: String
+  street_address: String
+  operating_hours: OperatingHours
+  phone_number: [String!]
+  description: String
+  services: [String!]
+  website: String
+  attachments: [String!]
+}
+
+# hospitality
+
+type HospitalityBusiness implements Business {
+  id: ID!
+  approved: Boolean!
+  rating: Float!
+  display_name: String!
+  display_picture: String!
+  cities: [City!]
+  type: BusinessType!
+  # specialization
+  sub_type: HospitalityBusinessSubType!
+  institution_number: String!
+  street_address: String!
+  phone_number: [String!]!
+  description: String!
+  home_service_available: Boolean!
+  charge: Float
+  services: [String!]
+  website: String
+  attachments: [String!]
+}
+
+input NewHospitalityBusinessInput {
+  display_name: String!
+  display_picture: String!
+  cities: [City!]
+  sub_type: HospitalityBusinessSubType!
+  institution_number: String!
+  street_address: String!
+  phone_number: [String!]!
+  description: String!
+  home_service_available: Boolean!
+  charge: Float
+  services: [String!]
+  website: String
+  attachments: [String!]
+}
+
+input UpdateHospitalityBusinessInput {
+  display_name: String
+  display_picture: String
+  cities: [City!]
+  sub_type: HospitalityBusinessSubType
+  institution_number: String
+  street_address: String
+  phone_number: [String!]
+  description: String
+  home_service_available: Boolean
+  charge: Float
+  services: [String!]
+  website: String
+  attachments: [String!]
+}
+
+# stationary
+
+type StationaryBusiness implements Business {
+  id: ID!
+  approved: Boolean!
+  rating: Float!
+  display_name: String!
+  display_picture: String!
+  cities: [City!]
+  type: BusinessType!
+  # specialization
+  institution_number: String!
+  street_address: String!
+  phone_number: [String!]!
+  website: String
+  attachments: [String!]
+}
+
+input NewStationaryBusinessInput {
+  display_name: String!
+  display_picture: String!
+  cities: [City!]
+  institution_number: String!
+  street_address: String!
+  phone_number: [String!]!
+  website: String
+  attachments: [String!]
+}
+
+input UpdateStationaryBusinessInput {
+  display_name: String
+  display_picture: String
+  cities: [City!]
+  institution_number: String
+  street_address: String
+  phone_number: [String!]
+  website: String
+  attachments: [String!]
+}
+
+# made in qatar
+
+type MadeInQatarBusiness implements Business {
+  id: ID!
+  approved: Boolean!
+  rating: Float!
+  display_name: String!
+  display_picture: String!
+  cities: [City!]
+  type: BusinessType!
+  # specialization
+  sub_type: MadeInQatarBusinessSubType!
+  street_address: String!
+  phone_number: [String!]!
+  description: String!
+  home_delivery_available: Boolean!
+  products: [String!]!
+  website: String
+  attachments: [String!]
+}
+
+input NewMadeInQatarBusinessInput {
+  display_name: String!
+  display_picture: String!
+  cities: [City!]
+  sub_type: MadeInQatarBusinessSubType!
+  street_address: String!
+  phone_number: [String!]!
+  description: String!
+  home_delivery_available: Boolean!
+  products: [String!]!
+  website: String
+  attachments: [String!]
+}
+
+input UpdateMadeInQatarBusinessInput {
+  display_name: String
+  display_picture: String
+  cities: [City!]
+  sub_type: MadeInQatarBusinessSubType
+  street_address: String
+  phone_number: [String!]
+  description: String
+  home_delivery_available: Boolean
+  products: [String!]
+  website: String
+  attachments: [String!]
+}
+
+# sports
+
+type SportsBusiness implements Business {
+  id: ID!
+  approved: Boolean!
+  rating: Float!
+  display_name: String!
+  display_picture: String!
+  cities: [City!]
+  type: BusinessType!
+  # specialization
+  sub_type: SportsBusinessSubType!
+  institution_number: String!
+  street_address: String!
+  operating_hours: OperatingHours!
+  phone_number: [String!]!
+  home_training_available: Boolean
+  classes: [String!]
+  owner: String
+  teams: [String!]
+  website: String
+  attachments: [String!]
+}
+
+input NewSportsBusinessInput {
+  display_name: String!
+  display_picture: String!
+  cities: [City!]
+  sub_type: SportsBusinessSubType!
+  institution_number: String!
+  street_address: String!
+  operating_hours: OperatingHours!
+  phone_number: [String!]!
+  home_training_available: Boolean
+  classes: [String!]
+  owner: String
+  teams: [String!]
+  website: String
+  attachments: [String!]
+}
+
+input UpdateSportsBusinessInput {
+  display_name: String
+  display_picture: String
+  cities: [City!]
+  sub_type: SportsBusinessSubType
+  institution_number: String
+  street_address: String
+  operating_hours: OperatingHours
+  phone_number: [String!]
+  home_training_available: Boolean
+  classes: [String!]
+  owner: String
+  teams: [String!]
+  website: String
+  attachments: [String!]
+}
+
+# entertainment
+
+type EntertainmentBusiness implements Business {
+  id: ID!
+  approved: Boolean!
+  rating: Float!
+  display_name: String!
+  display_picture: String!
+  cities: [City!]
+  type: BusinessType!
+  # specialization
+  sub_type: EntertainmentBusinessSubType!
+  institution_number: String!
+  street_address: String!
+  operating_hours: OperatingHours!
+  phone_number: [String!]!
+  description: String!
+  website: String
+  attachments: [String!]
+}
+
+input NewEntertainmentBusinessInput {
+  display_name: String!
+  display_picture: String!
+  cities: [City!]
+  sub_type: EntertainmentBusinessSubType!
+  institution_number: String!
+  street_address: String!
+  operating_hours: OperatingHours!
+  phone_number: [String!]!
+  description: String!
+  website: String
+  attachments: [String!]
+}
+
+input UpdateEntertainmentBusinessInput {
+  display_name: String
+  display_picture: String
+  cities: [City!]
+  sub_type: EntertainmentBusinessSubType
+  institution_number: String
+  street_address: String
+  operating_hours: OperatingHours
+  phone_number: [String!]
+  description: String
+  website: String
+  attachments: [String!]
+}
+
+# food
+
+type FoodBusiness implements Business {
+  id: ID!
+  approved: Boolean!
+  rating: Float!
+  display_name: String!
+  display_picture: String!
+  cities: [City!]
+  type: BusinessType!
+  # specialization
+  sub_type: FoodBusinessSubType!
+  institution_number: String!
+  street_address: String!
+  operating_hours: OperatingHours!
+  phone_number: [String!]!
+  description: String!
+  website: String
+  attachments: [String!]
+}
+
+input NewFoodBusinessInput {
+  display_name: String!
+  display_picture: String!
+  cities: [City!]
+  sub_type: FoodBusinessSubType!
+  institution_number: String!
+  street_address: String!
+  operating_hours: OperatingHours!
+  phone_number: [String!]!
+  description: String!
+  website: String
+  attachments: [String!]
+}
+
+input UpdateFoodBusinessInput {
+  display_name: String
+  display_picture: String
+  cities: [City!]
+  sub_type: FoodBusinessSubType
+  institution_number: String
+  street_address: String
+  operating_hours: OperatingHours
+  phone_number: [String!]
+  description: String
+  website: String
+  attachments: [String!]
+}
+
+# maintenance
+
+type MaintenanceBusiness implements Business {
+  id: ID!
+  approved: Boolean!
+  rating: Float!
+  display_name: String!
+  display_picture: String!
+  cities: [City!]
+  type: BusinessType!
+  # specialization
+  sub_type: MaintenanceBusinessSubType!
+  institution_number: String!
+  street_address: String!
+  operating_hours: OperatingHours!
+  phone_number: [String!]!
+  description: String!
+  home_service_available: Boolean!
+  charge: Float
+  website: String
+  attachments: [String!]
+}
+
+input NewMaintenanceBusinessInput {
+  display_name: String!
+  display_picture: String!
+  cities: [City!]
+  sub_type: MaintenanceBusinessSubType!
+  institution_number: String!
+  street_address: String!
+  operating_hours: OperatingHours!
+  phone_number: [String!]!
+  description: String!
+  home_service_available: Boolean!
+  charge: Float
+  website: String
+  attachments: [String!]
+}
+
+input UpdateMaintenanceBusinessInput {
+  display_name: String
+  display_picture: String
+  cities: [City!]
+  sub_type: MaintenanceBusinessSubType
+  institution_number: String
+  street_address: String
+  operating_hours: OperatingHours
+  phone_number: [String!]
+  description: String
+  home_service_available: Boolean
+  charge: Float
+  website: String
+  attachments: [String!]
+}
+
+# event
+
+type Event {
+  id: ID!
+  display_name: String!
+  display_picture: String!
+  type: EventType!
+  city: City!
+  street_address: String
+  phone_number: [String!]
+  description: String!
+  start: String!
+  end: String!
+  ticket_website: String
+  ticket_price: Float
+  organizer: String!
+  attachments: [String!]
+}
+
+input NewEventInput {
+  display_name: String!
+  display_picture: String!
+  type: EventType!
+  city: City!
+  street_address: String
+  phone_number: [String!]
+  description: String!
+  start: String!
+  end: String!
+  ticket_website: String
+  ticket_price: Float
+  organizer: String!
+  attachments: [String!]
+}
+
+input UpdateEventInput {
+  display_name: String
+  display_picture: String
+  type: EventType
+  city: City!
+  street_address: String
+  phone_number: [String!]
+  description: String
+  start: String
+  end: String
+  ticket_website: String
+  ticket_price: Float
+  organizer: String
+  attachments: [String!]
+}
+
+# helping types
+
+type OperatingHours {
+  open: String
+  close: String
+  all_day: Boolean!
+}
+
+type PersonalExperience {
+  country: Country!,
+  from: String!,
+  to: String,
+  in_position: Boolean!
+}
+
+input PersonalExperienceInput {
+  country: Country!,
+  from: String!,
+  to: String,
+  in_position: Boolean!
+}
+
+interface DomesticHelpPersonnel {
+  name: String!
+  picture: String!
+  profession: Profession!
+  gender: Gender!
+  nationality: Nationality!
+  religion: String!
+  salary: Float!
+  date_of_birth: String!
+  marital_status: MaritalStatus!
+  languages: [String!]!
+  experience: [PersonalExperience!]!
+}
+
+type Driver implements DomesticHelpPersonnel {
+  name: String!
+  picture: String!
+  profession: Profession!
+  gender: Gender!
+  nationality: Nationality!
+  religion: String!
+  salary: Float!
+  date_of_birth: String!
+  marital_status: MaritalStatus!
+  languages: [String!]!
+  experience: [PersonalExperience!]!
+  # specialization
+  license_expiry_date: String!
+}
+
+type Nanny implements DomesticHelpPersonnel {
+  name: String!
+  picture: String!
+  profession: Profession!
+  gender: Gender!
+  nationality: Nationality!
+  religion: String!
+  salary: Float!
+  date_of_birth: String!
+  marital_status: MaritalStatus!
+  languages: [String!]!
+  experience: [PersonalExperience!]!
+  # specialization
+  education: Education!
+  height: String!
+  weight: String!
+  skills: [String!]!
+}
+
+type Maid implements DomesticHelpPersonnel {
+  name: String!
+  picture: String!
+  profession: Profession!
+  gender: Gender!
+  nationality: Nationality!
+  religion: String!
+  salary: Float!
+  date_of_birth: String!
+  marital_status: MaritalStatus!
+  languages: [String!]!
+  experience: [PersonalExperience!]!
+  # specialization
+  education: Education!
+  height: String!
+  weight: String!
+  skills: [String!]!
+}
+
+type Cook implements DomesticHelpPersonnel {
+  name: String!
+  picture: String!
+  profession: Profession!
+  gender: Gender!
+  nationality: Nationality!
+  religion: String!
+  salary: Float!
+  date_of_birth: String!
+  marital_status: MaritalStatus!
+  languages: [String!]!
+  experience: [PersonalExperience!]!
+  # specialization
+  education: Education!
+  height: String!
+  weight: String!
+  skills: [String!]!
+}
+
+# enumerations
+
+enum BusinessType {
+  SelfEmployedBusiness
+  ChildEducationBusiness
+  DomesticHelpBusiness
+  BeautyBusiness
+  LimousineBusiness
+  HospitalityBusiness
+  StationaryBusiness
+  MadeInQatarBusiness
+  SportsBusiness
+  EntertainmentBusiness
+  FoodBusiness
+  MaintenanceBusiness
+}
+
+enum SelfEmployedSubType {
+  A
+  B
+}
+
+enum ChildEducationSubType {
+  A
+  B
+}
+
+enum DomesticHelpSubType {
+  A
+  B
+}
+
+enum BeautyBusinessSubType {
+  A
+  B
+}
+
+enum LimousineBusinessSubType {
+  A
+  B
+}
+
+enum HospitalityBusinessSubType {
+  A
+  B
+}
+
+enum MadeInQatarBusinessSubType {
+  A
+  B
+}
+
+enum SportsBusinessSubType {
+  GYM
+  CLUB
+}
+
+enum EntertainmentBusinessSubType {
+  A
+  B
+}
+
+enum FoodBusinessSubType {
+  A
+  B
+}
+
+enum MaintenanceBusinessSubType {
+  A
+  B
+}
+
+enum EventType {
+  A
+  B
+}
+
+enum Profession {
+  Driver
+  Nanny
+  Maid
+  Cook
+}
+
+enum MaritalStatus {
+  SINGLE
+  MARRIED
+  DIVORCED
+  WIDOWED
+}
+
+enum Education {
+  NONE
+  SECONDARY
+  POST_SECONDARY
+  POST_GRADUATE
+}
+
+enum City {
+  DOHA
+  ABU_AZ_ZULUF
+  ABU_THAYLAH
+  AD_DAWHAH_AL_JADIDAH
+  AL_ARISH
+  AL_BIDA_ASH_SHARQIYAH
+  AL_GHANIM
+  AL_GHUWARIYAH
+  AL_HILAL_AL_GHARBIYAH
+  AL_HILAL_ASH_SHARQIYAH
+  AL_HITMI
+  AL_JASRAH
+  AL_JUMALIYAH
+  AL_KA_BIYAH
+  AL_KHALIFAT
+  AL_KHOR
+  AL_KHAWR
+  AL_KHUWAYR
+  AL_MAFJAR
+  AL_QA_ABIYAH
+  AL_WAKRAH_SECOND_CITY
+  AL_ADHBAH
+  AN_NAJMAH
+  AR_RAKIYAT
+  AL_RAYYAN
+  AR_RUAYS
+  AS_SALATAH
+  AS_SALATAH_AL_JADIDAH
+  AS_SANI
+  AS_SAWQ
+  ATH_THAQAB
+  BLARE
+  DUKHAN
+  RAS_LAFFAN_INDUSTRIAL_CITY
+  UMM_BAB
+  UMM_SAID
+  UMM_SALAL_ALI
+  UMM_SALAL_MOHAMMED
+  OTHER
+}
+
+enum Gender {
+  FEMALE
+  MALE
+}
+
+enum Country {
+  AFGHANISTAN
+  ALAND_ISLANDS
+  ALBANIA
+  ALGERIA
+  AMERICAN_SAMOA
+  ANDORRA
+  ANGOLA
+  ANGUILLA
+  ANTARCTICA
+  ANTIGUA_AND_BARBUDA
+  ARGENTINA
+  ARMENIA
+  ARUBA
+  AUSTRALIA
+  AUSTRIA
+  AZERBAIJAN
+  BAHAMAS
+  BAHRAIN
+  BANGLADESH
+  BARBADOS
+  BELARUS
+  BELGIUM
+  BELIZE
+  BENIN
+  BERMUDA
+  BHUTAN
+  BOLIVIA
+  BONAIRE_SINT_EUSTATIUS_AND_SABA
+  BOSNIA_AND_HERZEGOVINA
+  BOTSWANA
+  BOUVET_ISLAND
+  BRAZIL
+  BRITISH_INDIAN_OCEAN_TERRITORY
+  BRUNEI_DARUSSALAM
+  BULGARIA
+  BURKINA_FASO
+  BURUNDI
+  CAMBODIA
+  CAMEROON
+  CANADA
+  CAPE_VERDE
+  CAYMAN_ISLANDS
+  CENTRAL_AFRICAN_REPUBLIC
+  CHAD
+  CHILE
+  CHINA
+  CHRISTMAS_ISLAND
+  COCOS_KEELING_ISLANDS
+  COLOMBIA
+  COMOROS
+  CONGO
+  CONGO_THE_DEMOCRATIC_REPUBLIC_OF_THE
+  COOK_ISLANDS
+  COSTA_RICA
+  CROATIA
+  CUBA
+  CURACAO
+  CYPRUS
+  CZECH_REPUBLIC
+  DENMARK
+  DJIBOUTI
+  DOMINICA
+  DOMINICAN_REPUBLIC
+  EAST_TIMOR
+  ECUADOR
+  EGYPT
+  EL_SALVADOR
+  ENGLAND
+  EQUATORIAL_GUINEA
+  ERITREA
+  ESTONIA
+  ETHIOPIA
+  FALKLAND_ISLANDS
+  FAROE_ISLANDS
+  FIJI
+  FINLAND
+  FRANCE
+  FRENCH_GUIANA
+  FRENCH_POLYNESIA
+  FRENCH_SOUTHERN_TERRITORIES
+  GABON
+  GAMBIA
+  GEORGIA
+  GERMANY
+  GHANA
+  GIBRALTAR
+  GREECE
+  GREENLAND
+  GRENADA
+  GUADELOUPE
+  GUAM
+  GUATEMALA
+  GUERNSEY
+  GUINEA
+  GUINEA_BISSAU
+  GUYANA
+  HAITI
+  HEARD_ISLAND_AND_MCDONALD_ISLANDS
+  HONDURAS
+  HONG_KONG
+  HUNGARY
+  ICELAND
+  INDIA
+  INDONESIA
+  IRAN
+  IRAQ
+  IRELAND
+  ISLE_OF_MAN
+  ISRAEL
+  ITALY
+  IVORY_COAST
+  JAMAICA
+  JAPAN
+  JERSEY
+  JORDAN
+  KAZAKHSTAN
+  KENYA
+  KIRIBATI
+  KOSOVO
+  KUWAIT
+  KYRGYZSTAN
+  LAOS
+  LATVIA
+  LEBANON
+  LESOTHO
+  LIBERIA
+  LIBYA
+  LIECHTENSTEIN
+  LITHUANIA
+  LUXEMBOURG
+  MACAO
+  MACEDONIA
+  MADAGASCAR
+  MALAWI
+  MALAYSIA
+  MALDIVES
+  MALI
+  MALTA
+  MARSHALL_ISLANDS
+  MARTINIQUE
+  MAURITANIA
+  MAURITIUS
+  MAYOTTE
+  MEXICO
+  MICRONESIA
+  MOLDOVA
+  MONACO
+  MONGOLIA
+  MONTENEGRO
+  MONTSERRAT
+  MOROCCO
+  MOZAMBIQUE
+  MYANMAR
+  NAMIBIA
+  NAURU
+  NEPAL
+  NETHERLANDS
+  NEW_CALEDONIA
+  NEW_ZEALAND
+  NICARAGUA
+  NIGER
+  NIGERIA
+  NIUE
+  NORFOLK_ISLAND
+  NORTH_KOREA
+  NORTHERN_IRELAND
+  NORTHERN_MARIANA_ISLANDS
+  NORWAY
+  OMAN
+  PAKISTAN
+  PALAU
+  PALESTINE
+  PANAMA
+  PAPUA_NEW_GUINEA
+  PARAGUAY
+  PERU
+  PHILIPPINES
+  PITCAIRN
+  POLAND
+  PORTUGAL
+  PUERTO_RICO
+  QATAR
+  REUNION
+  ROMANIA
+  RUSSIA
+  RWANDA
+  SAINT_BARTHELEMY
+  SAINT_HELENA_ASCENSION_AND_TRISTAN_DA_CUNHA
+  SAINT_KITTS_AND_NEVIS
+  SAINT_LUCIA
+  SAINT_MARTIN_FRENCH_PART
+  SAINT_PIERRE_AND_MIQUELON
+  SAINT_VINCENT_AND_THE_GRENADINES
+  SAMOA
+  SAN_MARINO
+  SAO_TOME_AND_PRINCIPE
+  SAUDI_ARABIA
+  SCOTLAND
+  SENEGAL
+  SERBIA
+  SEYCHELLES
+  SIERRA_LEONE
+  SINGAPORE
+  SINT_MAARTEN_DUTCH_PART
+  SLOVAKIA
+  SLOVENIA
+  SOLOMON_ISLANDS
+  SOMALIA
+  SOUTH_AFRICA
+  SOUTH_GEORGIA_AND_THE_SOUTH_SANDWICH_ISLANDS
+  SOUTH_KOREA
+  SOUTH_SUDAN
+  SPAIN
+  SRI_LANKA
+  SUDAN
+  SURINAME
+  SVALBARD_AND_JAN_MAYEN
+  SWAZILAND
+  SWEDEN
+  SWITZERLAND
+  SYRIA
+  TAIWAN
+  TAJIKISTAN
+  TANZANIA
+  THAILAND
+  TOGO
+  TOKELAU
+  TONGA
+  TRINIDAD_AND_TOBAGO
+  TUNISIA
+  TURKEY
+  TURKMENISTAN
+  TURKS_AND_CAICOS_ISLANDS
+  TUVALU
+  UGANDA
+  UKRAINE
+  UNITED_ARAB_EMIRATES
+  UNITED_KINGDOM
+  UNITED_STATES
+  UNITED_STATES_MINOR_OUTLYING_ISLANDS
+  URUGUAY
+  UZBEKISTAN
+  VANUATU
+  VATICAN_CITY
+  VENEZUELA
+  VIETNAM
+  VIRGIN_ISLANDS_BRITISH
+  VIRGIN_ISLANDS_US
+  WALES
+  WALLIS_AND_FUTUNA
+  WESTERN_SAHARA
+  YEMEN
+  ZAMBIA
+  ZIMBABWE
+}
+
+enum Nationality {
+  AFGHAN
+  ALBANIAN
+  ALGERIAN
+  AMERICAN
+  ANDORRAN
+  ANGOLAN
+  ANGUILLAN
+  CITIZEN_OF_ANTIGUA_AND_BARBUDA
+  ARGENTINE
+  ARMENIAN
+  AUSTRALIAN
+  AUSTRIAN
+  AZERBAIJANI
+  BAHAMIAN
+  BAHRAINI
+  BANGLADESHI
+  BARBADIAN
+  BELARUSIAN
+  BELGIAN
+  BELIZEAN
+  BENINESE
+  BERMUDIAN
+  BHUTANESE
+  BOLIVIAN
+  CITIZEN_OF_BOSNIA_AND_HERZEGOVINA
+  BOTSWANAN
+  BRAZILIAN
+  BRITISH
+  BRITISH_VIRGIN_ISLANDER
+  BRUNEIAN
+  BULGARIAN
+  BURKINAN
+  BURMESE
+  BURUNDIAN
+  CAMBODIAN
+  CAMEROONIAN
+  CANADIAN
+  CAPE_VERDEAN
+  CAYMAN_ISLANDER
+  CENTRAL_AFRICAN
+  CHADIAN
+  CHILEAN
+  CHINESE
+  COLOMBIAN
+  COMORAN
+  CONGOLESE_CONGO
+  CONGOLESE_DRC
+  COOK_ISLANDER
+  COSTA_RICAN
+  CROATIAN
+  CUBAN
+  CYMRAES
+  CYMRO
+  CYPRIOT
+  CZECH
+  DANISH
+  DJIBOUTIAN
+  DOMINICAN
+  CITIZEN_OF_THE_DOMINICAN_REPUBLIC
+  DUTCH
+  EAST_TIMORESE
+  ECUADOREAN
+  EGYPTIAN
+  EMIRATI
+  ENGLISH
+  EQUATORIAL_GUINEAN
+  ERITREAN
+  ESTONIAN
+  ETHIOPIAN
+  FAROESE
+  FIJIAN
+  FILIPINO
+  FINNISH
+  FRENCH
+  GABONESE
+  GAMBIAN
+  GEORGIAN
+  GERMAN
+  GHANAIAN
+  GIBRALTARIAN
+  GREEK
+  GREENLANDIC
+  GRENADIAN
+  GUAMANIAN
+  GUATEMALAN
+  CITIZEN_OF_GUINEA_BISSAU
+  GUINEAN
+  GUYANESE
+  HAITIAN
+  HONDURAN
+  HONG_KONGER
+  HUNGARIAN
+  ICELANDIC
+  INDIAN
+  INDONESIAN
+  IRANIAN
+  IRAQI
+  IRISH
+  ISRAELI
+  ITALIAN
+  IVORIAN
+  JAMAICAN
+  JAPANESE
+  JORDANIAN
+  KAZAKH
+  KENYAN
+  KITTITIAN
+  CITIZEN_OF_KIRIBATI
+  KOSOVAN
+  KUWAITI
+  KYRGYZ
+  LAO
+  LATVIAN
+  LEBANESE
+  LIBERIAN
+  LIBYAN
+  LIECHTENSTEIN_CITIZEN
+  LITHUANIAN
+  LUXEMBOURGER
+  MACANESE
+  MACEDONIAN
+  MALAGASY
+  MALAWIAN
+  MALAYSIAN
+  MALDIVIAN
+  MALIAN
+  MALTESE
+  MARSHALLESE
+  MARTINIQUAIS
+  MAURITANIAN
+  MAURITIAN
+  MEXICAN
+  MICRONESIAN
+  MOLDOVAN
+  MONEGASQUE
+  MONGOLIAN
+  MONTENEGRIN
+  MONTSERRATIAN
+  MOROCCAN
+  MOSOTHO
+  MOZAMBICAN
+  NAMIBIAN
+  NAURUAN
+  NEPALESE
+  NEW_ZEALANDER
+  NICARAGUAN
+  NIGERIAN
+  NIGERIEN
+  NIUEAN
+  NORTH_KOREAN
+  NORTHERN_IRISH
+  NORWEGIAN
+  OMANI
+  PAKISTANI
+  PALAUAN
+  PALESTINIAN
+  PANAMANIAN
+  PAPUA_NEW_GUINEAN
+  PARAGUAYAN
+  PERUVIAN
+  PITCAIRN_ISLANDER
+  POLISH
+  PORTUGUESE
+  PRYDEINIG
+  PUERTO_RICAN
+  QATARI
+  ROMANIAN
+  RUSSIAN
+  RWANDAN
+  SALVADOREAN
+  SAMMARINESE
+  SAMOAN
+  SAO_TOMEAN
+  SAUDI_ARABIAN
+  SCOTTISH
+  SENEGALESE
+  SERBIAN
+  CITIZEN_OF_SEYCHELLES
+  SIERRA_LEONEAN
+  SINGAPOREAN
+  SLOVAK
+  SLOVENIAN
+  SOLOMON_ISLANDER
+  SOMALI
+  SOUTH_AFRICAN
+  SOUTH_KOREAN
+  SOUTH_SUDANESE
+  SPANISH
+  SRI_LANKAN
+  ST_HELENIAN
+  ST_LUCIAN
+  STATELESS
+  SUDANESE
+  SURINAMESE
+  SWAZI
+  SWEDISH
+  SWISS
+  SYRIAN
+  TAIWANESE
+  TAJIK
+  TANZANIAN
+  THAI
+  TOGOLESE
+  TONGAN
+  TRINIDADIAN
+  TRISTANIAN
+  TUNISIAN
+  TURKISH
+  TURKMEN
+  TURKS_AND_CAICOS_ISLANDER
+  TUVALUAN
+  UGANDAN
+  UKRAINIAN
+  URUGUAYAN
+  UZBEK
+  VATICAN_CITIZEN
+  CITIZEN_OF_VANUATU
+  VENEZUELAN
+  VIETNAMESE
+  VINCENTIAN
+  WALLISIAN
+  WELSH
+  YEMENI
+  ZAMBIAN
+  ZIMBABWEAN
 }

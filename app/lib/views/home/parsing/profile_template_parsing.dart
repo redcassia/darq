@@ -15,11 +15,8 @@ import 'package:darq/views/home/variables/home_screens_variables.dart'
 import 'package:darq/views/home/shared/txt_leading_row.dart';
 import 'package:darq/views/home/style_const/home_screens_style_const.dart';
 import 'package:darq/views/shared/custom_chip.dart';
-import 'package:darq/res/path_files.dart';
-import 'package:darq/views/shared/capsule/right_rounded_capsule.dart';
-import 'package:darq/views/shared/capsule/left_rounded_capsule.dart';
-import 'package:darq/views/shared/button.dart';
-
+import 'package:darq/views/shared/custom_card.dart';
+import 'package:darq/views/home/screens/domestic_personnel_template.dart';
 
 parseC1({int index, rating}) {
   switch (global.col1[index]) {
@@ -242,7 +239,44 @@ parseC3({int index, BuildContext context}) {
       );
       break;
     case 'profile':
-      global.col3[index] = Text("A profile should be shown here");
+      global.col3[index] = Padding(
+          padding: EdgeInsets.only(left: 24.w, right: 28.w),
+          child: GridView.count(
+              physics: NeverScrollableScrollPhysics(),
+              crossAxisSpacing: 30.w,
+              mainAxisSpacing: 17.h,
+              shrinkWrap: true,
+              crossAxisCount: 2,
+              children: List.generate(13, (index) {
+                return GestureDetector(
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DomesticPersonnelTemplate(
+                                jsonFile: "default_personnel.json"))),
+                    child: DefaultCard(
+                        margin: EdgeInsets.zero,
+                        padding: EdgeInsets.only(
+                            top: 6.h, left: 10.w, right: 9.w),
+                        color: Color(0xFFF5F9FA),
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+
+                          Picture(
+                              height: 43.h, width: 44.w, img: "avatar.png"),
+                          SizedBox(height: 6.h),
+                          Text("Ahmed Mohamed",
+                              style: AppFonts.title11Odd(
+                                  color: Color(0xFF545454))),
+                          Text("Syrian",
+                              style: AppFonts.title11Odd(
+                                  color: Color.fromRGBO(0, 0, 0, 0.5))),
+                          Text("Driver",
+                              style: AppFonts.text10w500(
+                                  color: Color.fromRGBO(0, 0, 0, 0.37))),
+                        ])));
+              })));
       break;
 
     case 'home_service':
@@ -369,27 +403,24 @@ parseC3({int index, BuildContext context}) {
       break;
     case 'menu':
       global.col3[index] = Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text("Menu:", style: kTitle9Rgb_67),
-          SizedBox(height: 11.h),
-          InkWell(
-            child: Image(
-              image: AssetImage(PathFiles.ImgPath + "gallery.png"),
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => FullImageWrapper(
-                    imageProvider: AssetImage("assets/images/gallery.png"),
-                  ),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text("Menu:", style: kTitle9Rgb_67),
+            SizedBox(height: 11.h),
+            InkWell(
+                child: Image(
+                  image: AssetImage(PathFiles.ImgPath + "gallery.png"),
                 ),
-              );
-            },
-          ),
-        ],
-      );
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => FullImageWrapper(
+                                imageProvider:
+                                    AssetImage("assets/images/gallery.png"),
+                              )));
+                })
+          ]);
       break;
     case 'photos':
       global.col3[index] = SizedBox(

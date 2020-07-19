@@ -1,4 +1,12 @@
 {
+  "profile_appbar": [
+    "no_filter",
+    "Contact Us"
+  ],
+  "list_appbar": [
+    "no_filter",
+    "Made In Qatar"
+  ],
   "general_c1": [
     "picture",
     "sized_box_7",

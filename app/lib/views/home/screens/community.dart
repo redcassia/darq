@@ -1,15 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:darq/views/shared/button.dart';
-import 'package:darq/views/shared/app_bars/profile_appbar.dart';
+import 'package:darq/views/shared/buttons/button.dart';
+import 'package:darq/views/shared/app_bars/default_appbar.dart';
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/res/path_files.dart';
 import 'package:darq/views/shared/capsule/right_rounded_capsule.dart';
-import 'package:darq/views/home/screens/list_profile_template.dart';
+import 'package:darq/views/home/screens/list.dart';
 import 'package:darq/utilities/constants.dart';
-import 'package:darq/views/home/screens/example.dart';
-import 'package:darq/views/home/variables/home_screens_variables.dart' as global;
+import 'dart:ui';
+import 'package:flutter/rendering.dart';
+
 
 class Community extends StatefulWidget {
   @override
@@ -17,6 +18,8 @@ class Community extends StatefulWidget {
 }
 
 class _CommunityState extends State<Community> {
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,7 +54,7 @@ class _CommunityState extends State<Community> {
                     leading: "beauty_spa.png",
                     onButtonPressed: () => Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
-                          return Example(jsonFile: "beauty_spa.json");
+                          return List(jsonFile: "beauty_spa.json");
                         })),
                     textStyle: AppFonts.title9(color: Color(0xFF426676))),
                 CustomButton(
@@ -63,7 +66,7 @@ class _CommunityState extends State<Community> {
                     leading: "sports.png",
                     onButtonPressed: () => Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
-                          return  Example(jsonFile: "sports/default-club.json");
+                          return  List(jsonFile: "sports/default-club.json");
                         })),
                     textStyle: AppFonts.title9(color: Color(0xFF426676))),
                 CustomButton(
@@ -75,7 +78,7 @@ class _CommunityState extends State<Community> {
                     leading: "limousine.png",
                     onButtonPressed: () => Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
-                          return  Example(jsonFile:  "limousine.json");
+                          return  List(jsonFile:  "limousine.json");
                         })),
                     textStyle: AppFonts.title9(color: Color(0xFF426676))),
                 CustomButton(
@@ -88,7 +91,7 @@ class _CommunityState extends State<Community> {
                     onButtonPressed: () {
                       Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
-                          return  Example(jsonFile:"hospitality.json");
+                          return  List(jsonFile:"hospitality.json");
                         }));},
                     textStyle: AppFonts.title9(color: Color(0xFF426676))),
                 CustomButton(
@@ -101,7 +104,7 @@ class _CommunityState extends State<Community> {
                     onButtonPressed: () {
                       Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
-                          return  Example(jsonFile:"cleaning_maintenance.json");
+                          return  List(jsonFile:"cleaning_maintenance.json");
                         })); },
                     textStyle: AppFonts.title9(color: Color(0xFF426676))),
                 CustomButton(
@@ -113,7 +116,7 @@ class _CommunityState extends State<Community> {
                     leading: "self_employed.png",
                     onButtonPressed: () => Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
-                          return  Example(jsonFile: "self_employed.json");
+                          return  List(jsonFile: "self_employed.json");
                         })),
                     textStyle: AppFonts.title9(color: Color(0xFF426676))),
                 CustomButton(
@@ -125,7 +128,7 @@ class _CommunityState extends State<Community> {
                     leading: "domestic_help.png",
                     onButtonPressed: () => Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
-                          return  Example(jsonFile:  "domestic_help.json");
+                          return  List(jsonFile:  "domestic_help.json");
                         })),
                     textStyle: AppFonts.title9(color: Color(0xFF426676))),
                 CustomButton(
@@ -137,7 +140,7 @@ class _CommunityState extends State<Community> {
                     leading: "stationeries.png",
                     onButtonPressed: () => Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
-                          return  Example(jsonFile:  "stationeries.json");
+                          return  List(jsonFile:  "stationeries.json");
                         })),
                     textStyle: AppFonts.title9(color: Color(0xFF426676)))
               ])),

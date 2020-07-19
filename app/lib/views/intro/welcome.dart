@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:darq/elements/app_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:darq/views/shared/button.dart';
+import 'package:darq/views/shared/buttons/button.dart';
 import 'package:darq/utilities/screen_info.dart';
 import 'package:darq/views/intro/select_language.dart';
 

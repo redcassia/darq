@@ -1,4 +1,12 @@
 {
+  "profile_appbar": [
+    "no_filter",
+    "Contact Us"
+  ],
+  "list_appbar": [
+    "no_filter",
+    "Cleaning & Maintenance"
+  ],
   "general_c1": [
     "picture",
     "sized_box_7",
@@ -12,10 +20,6 @@
     "sized_box_2",
     "view_details",
     "sized_box_10",
-    "contact_us"
-  ],
-  "profile_appbar": [
-    "no_filter",
     "contact_us"
   ],
   "col1": [

@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:darq/views/shared/custom_card/default_tile.dart';
+import 'package:darq/views/shared/custom_card.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:darq/views/home/parsing/profile_template_parsing.dart';
@@ -11,7 +11,7 @@ import 'package:darq/views/home/variables/home_screens_variables.dart'
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:darq/res/path_files.dart';
 import 'package:darq/utilities/constants.dart';
-import 'package:darq/views/home/shared/profile_appbar.dart';
+import 'package:darq/views/shared/app_bars/profile_appbar.dart';
 class ProfileTemplate extends StatefulWidget {
   final String jsonFile;
 
@@ -47,6 +47,7 @@ class _ProfileTemplateState extends State<ProfileTemplate> {
       global.col2 = map["col2"];
       global.col3 = map["col3"];
       global.profileAppBar = map["profile_appbar"];
+      print(global.profileAppBar);
       parseColumn1(global.col1);
       parseColumn2(global.col2);
       parseColumn3(global.col3);
@@ -74,9 +75,13 @@ class _ProfileTemplateState extends State<ProfileTemplate> {
     return Scaffold(
         backgroundColor: Color(0xFF86C2C2),
         appBar: PreferredSize(
-            preferredSize: Size.fromHeight(ConsDimensions.SmallAppBarHeight.w),
+            preferredSize: Size.fromHeight(ConsDimensions.SmallAppBarHeight.h),
             child: ProfileAppBar()),
-        body: DefaultTile(
+        body: DefaultCard(
+            margin: EdgeInsets.only(
+                bottom: 33.h, right: 19.w, left: 20.w, top: 6.h),
+            padding:EdgeInsets.only(
+                left: 21.w, right: 19.w, top: 12.h, bottom: 17.h),
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[

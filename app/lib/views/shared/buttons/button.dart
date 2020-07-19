@@ -1,7 +1,7 @@
 import 'package:darq/res/path_files.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:darq/views/shared/custom_clip_rrect.dart';
+import 'package:darq/views/shared/buttons/custom_clip_rrect.dart';
 
 class CustomButton extends StatelessWidget {
   const CustomButton(

@@ -1,4 +1,12 @@
 {
+  "profile_appbar": [
+    "no_filter",
+    "Contact Us"
+  ],
+  "list_appbar": [
+    "filter",
+    "Children Education Centers"
+  ],
   "general_c1": [
     "picture",
     "sized_box_7",
@@ -17,10 +25,7 @@
     "sized_box_10",
     "contact_us"
   ],
-  "profile_appbar": [
-    "no_filter",
-    "contact_us"
-  ],
+
   "col1": [
     "picture",
     "sized_box_6",

@@ -1,12 +1,14 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class DefaultTile extends StatelessWidget {
-  const DefaultTile({Key key, @required this.child}) : super(key: key);
+class DefaultCard extends StatelessWidget {
+  const DefaultCard({Key key,this.color, @required this.child, this.margin, this.padding}) : super(key: key);
 
   final Widget child;
+ final EdgeInsets margin;
+ final EdgeInsets padding;
+ final Color color;
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
@@ -14,10 +16,9 @@ class DefaultTile extends StatelessWidget {
             topLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
         child: Container(
             width: double.infinity,
-            margin: EdgeInsets.only(
-                bottom: 33.h, right: 19.w, left: 20.w, top: 6.h),
+            margin: margin,
             decoration: BoxDecoration(
-                color: Colors.white,
+                color: color?? Colors.white,
                 boxShadow: [
                   BoxShadow(
                       color: Color.fromRGBO(0, 0, 0, 0.37),
@@ -28,8 +29,7 @@ class DefaultTile extends StatelessWidget {
                     topLeft: Radius.circular(20),
                     bottomRight: Radius.circular(20))),
             child: Padding(
-                padding: EdgeInsets.only(
-                    left: 21.w, right: 19.w, top: 12.h, bottom: 17.h),
+                padding: padding,
                 child: child)));
   }
 }

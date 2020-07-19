@@ -10,10 +10,9 @@ import 'package:darq/views/home/variables/home_screens_variables.dart'
     as global;
 import 'package:darq/views/home/shared/txt_leading_row.dart';
 import 'package:darq/views/home/style_const/home_screens_style_const.dart';
-import 'package:darq/views/shared/button.dart';
+import 'package:darq/views/shared/buttons/button.dart';
 import 'package:darq/views/home/screens/profile_template.dart';
-import 'package:darq/views/home/variables/home_screens_variables.dart'
-    as global;
+
 
 parseGeneralC1({int index, double rating}) {
   switch (global.generalC1[index]) {

@@ -1,4 +1,12 @@
 {
+  "profile_appbar": [
+    "no_filter",
+    "Contact Me"
+  ],
+  "list_appbar": [
+    "filter",
+    "Self Employed"
+  ],
   "general_c1": [
     "picture",
     "sized_box_7",
@@ -12,10 +20,6 @@
     "sized_box_2",
     "view_details",
     "sized_box_10",
-    "contact_me"
-  ],
-  "profile_appbar": [
-    "no_filter",
     "contact_me"
   ],
   "col1" : [

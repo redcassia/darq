@@ -173,6 +173,7 @@ input[type='submit']:active {
     display: inline-block;
     padding: 0;
     margin: 0 0 0 32px;
+    vertical-align: top;
 }
 .form-box:first-child {
     margin: 0;
@@ -200,6 +201,7 @@ select:focus {
 
 input[type='text'],
 input[type='datetime-local'],
+input[type='tel'],
 select {
     width: 260px;
     max-width: 100%;
@@ -304,7 +306,6 @@ select:active {
     right: 0;
     margin: 3px;
     padding: 0;
-    border: 0;
     border-radius: 10px;
     z-index: 10;
 
@@ -318,6 +319,67 @@ select:active {
 }
 .img-upload-obj + .img-input.multiple {
     display: inline-block;
+}
+
+.multistring-input > .data {
+    max-width: 552px;
+}
+.multistring-input > button {
+    padding: 6px 20px;
+    border-radius: 20px 0;
+    margin: 0 0 0 20px;
+
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 16px;
+}
+.string-obj {
+    position: relative;
+    display: inline-block;
+    padding: 6px;
+    border: 0.5px solid var(--medium);
+
+    margin: 10px 20px 10px 0px;
+}
+.string-obj > p {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+}
+
+.remove-btn {
+    position: relative;
+    cursor: pointer;
+    width: 10px;
+    height: 10px;
+    margin: 6px 6px 6px 10px;
+    padding: 0;
+    border-radius: unset;
+    box-shadow: unset;
+
+    background: url('assets/cross-icon.png') no-repeat;
+    background-size: 10px 10px;
+    pointer-events: all;
+}
+.remove-btn:active {
+    box-shadow: unset;
+}
+
+.multiform > button {
+    background: transparent;
+    color: var(--accent);
+    box-shadow: unset;
+    text-decoration: underline;
+    padding: 0;
+    margin: 20px 0 0 0;
+    cursor: pointer;
+}
+.multiform > .template {
+    display: none;
 }
 
 hr {

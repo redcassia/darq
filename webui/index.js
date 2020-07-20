@@ -142,6 +142,40 @@ function setGlobalEventHandlers() {
             }
         }
     });
+
+    $(".multistring-input > button").click(function() {
+        var input = $(this).parent().children('input')[0];
+        var val = input.value;
+
+        if (val.length > 0) {
+            var div = document.createElement("div");
+            div.setAttribute('class', 'string-obj');
+            div.setAttribute('data-string', val);
+    
+            var p = document.createElement("p");
+            p.textContent = val;
+    
+            var btn = document.createElement("button");
+            btn.setAttribute('class', 'remove-btn');
+            btn.onclick = function() {
+                div.remove();
+            }
+    
+            div.appendChild(p);
+            div.appendChild(btn);
+    
+            $(this).parent().children('div')[0].append(div);
+        }
+    });
+
+    $(".multiform > button").click(function() {
+        $(this).parent().append($($(this).parent().children('.template')[0]).clone().removeClass("template"));
+
+        $(".remove-btn").click(function() {
+            this.parentElement.remove();
+        });
+    });
+
 }
 
 var loadedScripts = []

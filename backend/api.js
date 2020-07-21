@@ -24,7 +24,10 @@ const server = new ApolloServer({
 });
 
 const app = express();
-app.use('*', auth);
+app.use('/api', auth, function (err, req, res, next) {
+  if (err) return next();
+  return next(err);
+});
 server.applyMiddleware({ app, path: '/api' });
 
 module.exports = app

@@ -127,7 +127,7 @@ function _validateAuthenticatedPublicUser(user) {
   }
 }
 
-function _validateBusinessOwner(user, businessId) {
+async function _validateBusinessOwner(user, businessId) {
   var business = await businessLoader.load(businessId);
   if (business.owner != user.id) {
     throw new ApolloError(
@@ -137,7 +137,7 @@ function _validateBusinessOwner(user, businessId) {
   }
 }
 
-function _validateBusinessOwnerAndType(user, businessId, type) {
+async function _validateBusinessOwnerAndType(user, businessId, type) {
   var business = await businessLoader.load(businessId);
   if (business.owner != user.id) {
     throw new ApolloError(
@@ -153,7 +153,7 @@ function _validateBusinessOwnerAndType(user, businessId, type) {
   }
 }
 
-function _validateEventOwner(user, eventId) {
+async function _validateEventOwner(user, eventId) {
   var event = await eventLoader.load(eventId);
   if (event.owner != user.id) {
     throw new ApolloError(
@@ -361,7 +361,7 @@ const resolvers = {
     },
 
     async businesses(_, { limit, offset, type, sub_type }, { user }) {
-      _validateAuthenticatedPublicUser();
+      _validateAuthenticatedPublicUser(user);
 
       var result;
       if (type && sub_type) {
@@ -589,9 +589,9 @@ const resolvers = {
 
     async updateSelfEmployedBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
-      _validateBusinessOwnerAndType(user, id, 'SelfEmployedBusiness');
+      await _validateBusinessOwnerAndType(user, id, 'SelfEmployedBusiness');
 
-      id = await _updateBusiness(id, data);
+      await _updateBusiness(id, data);
       var business = await businessLoader.load(id);
       return business;
     },
@@ -608,9 +608,9 @@ const resolvers = {
 
     async updateChildEducationBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
-      _validateBusinessOwnerAndType(user, id, 'ChildEducationBusiness');
+      await _validateBusinessOwnerAndType(user, id, 'ChildEducationBusiness');
 
-      id = await _updateBusiness(id, data);
+      await _updateBusiness(id, data);
       var business = await businessLoader.load(id);
       return business;
     },
@@ -627,9 +627,9 @@ const resolvers = {
 
     async updateDomesticHelpBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
-      _validateBusinessOwnerAndType(user, id, 'DomesticHelpBusiness');
+      await _validateBusinessOwnerAndType(user, id, 'DomesticHelpBusiness');
 
-      id = await _updateBusiness(id, data);
+      await _updateBusiness(id, data);
       var business = await businessLoader.load(id);
       return business;
     },
@@ -646,28 +646,28 @@ const resolvers = {
 
     async updateBeautyBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
-      _validateBusinessOwnerAndType(user, id, 'BeautyBusiness');
+      await _validateBusinessOwnerAndType(user, id, 'BeautyBusiness');
 
-      id = await _updateBusiness(id, data);
+      await _updateBusiness(id, data);
       var business = await businessLoader.load(id);
       return business;
     },
 
-    async addLimousineBusiness(_, { data }, { user }) {
+    async addTransportationBusiness(_, { data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
 
-      data.type = 'LimousineBusiness';
+      data.type = 'TransportationBusiness';
 
       var id = await _addBusiness(data, user.id);
       var business = await businessLoader.load(id);
       return business;
     },
 
-    async updateLimousineBusiness(_, { id, data }, { user }) {
+    async updateTransportationBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
-      _validateBusinessOwnerAndType(user, id, 'LimousineBusiness');
+      await _validateBusinessOwnerAndType(user, id, 'TransportationBusiness');
 
-      id = await _updateBusiness(id, data);
+      await _updateBusiness(id, data);
       var business = await businessLoader.load(id);
       return business;
     },
@@ -684,9 +684,9 @@ const resolvers = {
 
     async updateHospitalityBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
-      _validateBusinessOwnerAndType(user, id, 'HospitalityBusiness');
+      await _validateBusinessOwnerAndType(user, id, 'HospitalityBusiness');
 
-      id = await _updateBusiness(id, data);
+      await _updateBusiness(id, data);
       var business = await businessLoader.load(id);
       return business;
     },
@@ -703,9 +703,9 @@ const resolvers = {
 
     async updateStationaryBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
-      _validateBusinessOwnerAndType(user, id, 'StationaryBusiness');
+      await _validateBusinessOwnerAndType(user, id, 'StationaryBusiness');
 
-      id = await _updateBusiness(id, data);
+      await _updateBusiness(id, data);
       var business = await businessLoader.load(id);
       return business;
     },
@@ -722,9 +722,9 @@ const resolvers = {
 
     async updateMadeInQatarBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
-      _validateBusinessOwnerAndType(user, id, 'MadeInQatarBusiness');
+      await _validateBusinessOwnerAndType(user, id, 'MadeInQatarBusiness');
 
-      id = await _updateBusiness(id, data);
+      await _updateBusiness(id, data);
       var business = await businessLoader.load(id);
       return business;
     },
@@ -741,9 +741,9 @@ const resolvers = {
 
     async updateSportsBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
-      _validateBusinessOwnerAndType(user, id, 'SportsBusiness');
+      await _validateBusinessOwnerAndType(user, id, 'SportsBusiness');
 
-      id = await _updateBusiness(id, data);
+      await _updateBusiness(id, data);
       var business = await businessLoader.load(id);
       return business;
     },
@@ -760,9 +760,9 @@ const resolvers = {
 
     async updateEntertainmentBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
-      _validateBusinessOwnerAndType(user, id, 'EntertainmentBusiness');
+      await _validateBusinessOwnerAndType(user, id, 'EntertainmentBusiness');
 
-      id = await _updateBusiness(id, data);
+      await _updateBusiness(id, data);
       var business = await businessLoader.load(id);
       return business;
     },
@@ -779,28 +779,28 @@ const resolvers = {
 
     async updateFoodBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
-      _validateBusinessOwnerAndType(user, id, 'FoodBusiness');
+      await _validateBusinessOwnerAndType(user, id, 'FoodBusiness');
 
-      id = await _updateBusiness(id, data);
+      await _updateBusiness(id, data);
       var business = await businessLoader.load(id);
       return business;
     },
 
-    async addMaintenanceBusiness(_, { data }, { user }) {
+    async addCleaningAndMaintenanceBusiness(_, { data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
 
-      data.type = 'MaintenanceBusiness';
+      data.type = 'CleaningAndMaintenanceBusiness';
 
       var id = await _addBusiness(data, user.id);
       var business = await businessLoader.load(id);
       return business;
     },
 
-    async updateMaintenanceBusiness(_, { id, data }, { user }) {
+    async updateCleaningAndMaintenanceBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
-      _validateBusinessOwnerAndType(user, id, 'MaintenanceBusiness');
+      await _validateBusinessOwnerAndType(user, id, 'CleaningAndMaintenanceBusiness');
 
-      id = await _updateBusiness(id, data);
+      await _updateBusiness(id, data);
       var business = await businessLoader.load(id);
       return business;
     },
@@ -815,7 +815,7 @@ const resolvers = {
 
     async updateEvent(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
-      _validateEventOwner(user, id);
+      await _validateEventOwner(user, id);
 
       id = await _updateEvent(id, data);
       var event = await eventLoader.clear(id).load(id);

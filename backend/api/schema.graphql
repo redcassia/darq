@@ -1,6 +1,8 @@
 type Query {
   user: User
+  business(id: ID!): Business!
   businesses(limit: Int = 100, offset: Int = 0, type: BusinessType, sub_type: String): [Business!]!
+  event(id: ID!): Event!
   events(limit: Int = 100, offset: Int = 0, type: EventType): [Event!]!
 }
 
@@ -23,10 +25,10 @@ type Mutation {
   updateDomesticHelpBusiness(id: ID!, data: UpdateDomesticHelpBusinessInput!): DomesticHelpBusiness!
 
   addBeautyBusiness(data: NewBeautyBusinessInput!): BeautyBusiness!
-  updateBeautyBusiness(id: ID!, data: UpdateDomesticHelpBusinessInput!): BeautyBusiness!
+  updateBeautyBusiness(id: ID!, data: UpdateBeautyBusinessInput!): BeautyBusiness!
 
-  addLimousineBusiness(data: NewLimousineBusinessInput!): LimousineBusiness!
-  updateLimousineBusiness(id: ID!, data: UpdateLimousineBusinessInput!): LimousineBusiness!
+  addTransportationBusiness(data: NewTransportationBusinessInput!): TransportationBusiness!
+  updateTransportationBusiness(id: ID!, data: UpdateTransportationBusinessInput!): TransportationBusiness!
 
   addHospitalityBusiness(data: NewHospitalityBusinessInput!): HospitalityBusiness!
   updateHospitalityBusiness(id: ID!, data: UpdateHospitalityBusinessInput!): HospitalityBusiness!
@@ -46,8 +48,8 @@ type Mutation {
   addFoodBusiness(data: NewFoodBusinessInput!): FoodBusiness!
   updateFoodBusiness(id: ID!, data: UpdateFoodBusinessInput!): FoodBusiness!
 
-  addMaintenanceBusiness(data: NewMaintenanceBusinessInput!): MaintenanceBusiness!
-  updateMaintenanceBusiness(id: ID!, data: UpdateMaintenanceBusinessInput!): MaintenanceBusiness!
+  addCleaningAndMaintenanceBusiness(data: NewCleaningAndMaintenanceBusinessInput!): CleaningAndMaintenanceBusiness!
+  updateCleaningAndMaintenanceBusiness(id: ID!, data: UpdateCleaningAndMaintenanceBusinessInput!): CleaningAndMaintenanceBusiness!
 
   addEvent(data: NewEventInput!): Event!
   updateEvent(id: ID!, data: UpdateEventInput!): Event!
@@ -208,7 +210,7 @@ input NewDomesticHelpBusinessInput {
   street_address: String!
   phone_number: [String!]!
   description: String!
-  personnel: [DomesticHelpPersonnel!]!
+  personnel: [DomesticHelpPersonnelInput!]!
 }
 
 input UpdateDomesticHelpBusinessInput {
@@ -219,7 +221,7 @@ input UpdateDomesticHelpBusinessInput {
   street_address: String
   phone_number: [String!]
   description: String
-  personnel: [DomesticHelpPersonnel!]
+  personnel: [DomesticHelpPersonnelInput!]
 }
 
 # beauty
@@ -252,7 +254,7 @@ input NewBeautyBusinessInput {
   sub_type: BeautyBusinessSubType!
   institution_number: String!
   street_address: String!
-  operating_hours: OperatingHours!
+  operating_hours: OperatingHoursInput!
   phone_number: [String!]!
   description: String!
   home_service_available: Boolean!
@@ -268,7 +270,7 @@ input UpdateBeautyBusinessInput {
   sub_type: BeautyBusinessSubType
   institution_number: String
   street_address: String
-  operating_hours: OperatingHours
+  operating_hours: OperatingHoursInput
   phone_number: [String!]
   description: String
   home_service_available: Boolean
@@ -277,9 +279,9 @@ input UpdateBeautyBusinessInput {
   attachments: [String!]
 }
 
-# limousine
+# transportation
 
-type LimousineBusiness implements Business {
+type TransportationBusiness implements Business {
   id: ID!
   approved: Boolean!
   rating: Float!
@@ -288,7 +290,7 @@ type LimousineBusiness implements Business {
   cities: [City!]
   type: BusinessType!
   # specialization
-  sub_type: LimousineBusinessSubType!
+  sub_type: TransportationBusinessSubType!
   institution_number: String!
   street_address: String!
   operating_hours: OperatingHours!
@@ -299,14 +301,14 @@ type LimousineBusiness implements Business {
   attachments: [String!]
 }
 
-input NewLimousineBusinessInput {
+input NewTransportationBusinessInput {
   display_name: String!
   display_picture: String!
   cities: [City!]
-  sub_type: LimousineBusinessSubType!
+  sub_type: TransportationBusinessSubType!
   institution_number: String!
   street_address: String!
-  operating_hours: OperatingHours!
+  operating_hours: OperatingHoursInput!
   phone_number: [String!]!
   description: String!
   services: [String!]
@@ -314,14 +316,14 @@ input NewLimousineBusinessInput {
   attachments: [String!]
 }
 
-input UpdateLimousineBusinessInput {
+input UpdateTransportationBusinessInput {
   display_name: String
   display_picture: String
   cities: [City!]
-  sub_type: LimousineBusinessSubType
+  sub_type: TransportationBusinessSubType
   institution_number: String
   street_address: String
-  operating_hours: OperatingHours
+  operating_hours: OperatingHoursInput
   phone_number: [String!]
   description: String
   services: [String!]
@@ -504,7 +506,7 @@ input NewSportsBusinessInput {
   sub_type: SportsBusinessSubType!
   institution_number: String!
   street_address: String!
-  operating_hours: OperatingHours!
+  operating_hours: OperatingHoursInput!
   phone_number: [String!]!
   home_training_available: Boolean
   classes: [String!]
@@ -521,7 +523,7 @@ input UpdateSportsBusinessInput {
   sub_type: SportsBusinessSubType
   institution_number: String
   street_address: String
-  operating_hours: OperatingHours
+  operating_hours: OperatingHoursInput
   phone_number: [String!]
   home_training_available: Boolean
   classes: [String!]
@@ -559,7 +561,7 @@ input NewEntertainmentBusinessInput {
   sub_type: EntertainmentBusinessSubType!
   institution_number: String!
   street_address: String!
-  operating_hours: OperatingHours!
+  operating_hours: OperatingHoursInput!
   phone_number: [String!]!
   description: String!
   website: String
@@ -573,7 +575,7 @@ input UpdateEntertainmentBusinessInput {
   sub_type: EntertainmentBusinessSubType
   institution_number: String
   street_address: String
-  operating_hours: OperatingHours
+  operating_hours: OperatingHoursInput
   phone_number: [String!]
   description: String
   website: String
@@ -608,7 +610,7 @@ input NewFoodBusinessInput {
   sub_type: FoodBusinessSubType!
   institution_number: String!
   street_address: String!
-  operating_hours: OperatingHours!
+  operating_hours: OperatingHoursInput!
   phone_number: [String!]!
   description: String!
   website: String
@@ -622,16 +624,16 @@ input UpdateFoodBusinessInput {
   sub_type: FoodBusinessSubType
   institution_number: String
   street_address: String
-  operating_hours: OperatingHours
+  operating_hours: OperatingHoursInput
   phone_number: [String!]
   description: String
   website: String
   attachments: [String!]
 }
 
-# maintenance
+# cleaning and maintenance
 
-type MaintenanceBusiness implements Business {
+type CleaningAndMaintenanceBusiness implements Business {
   id: ID!
   approved: Boolean!
   rating: Float!
@@ -640,7 +642,7 @@ type MaintenanceBusiness implements Business {
   cities: [City!]
   type: BusinessType!
   # specialization
-  sub_type: MaintenanceBusinessSubType!
+  sub_type: CleaningAndMaintenanceBusinessSubType!
   institution_number: String!
   street_address: String!
   operating_hours: OperatingHours!
@@ -652,14 +654,14 @@ type MaintenanceBusiness implements Business {
   attachments: [String!]
 }
 
-input NewMaintenanceBusinessInput {
+input NewCleaningAndMaintenanceBusinessInput {
   display_name: String!
   display_picture: String!
   cities: [City!]
-  sub_type: MaintenanceBusinessSubType!
+  sub_type: CleaningAndMaintenanceBusinessSubType!
   institution_number: String!
   street_address: String!
-  operating_hours: OperatingHours!
+  operating_hours: OperatingHoursInput!
   phone_number: [String!]!
   description: String!
   home_service_available: Boolean!
@@ -668,14 +670,14 @@ input NewMaintenanceBusinessInput {
   attachments: [String!]
 }
 
-input UpdateMaintenanceBusinessInput {
+input UpdateCleaningAndMaintenanceBusinessInput {
   display_name: String
   display_picture: String
   cities: [City!]
-  sub_type: MaintenanceBusinessSubType
+  sub_type: CleaningAndMaintenanceBusinessSubType
   institution_number: String
   street_address: String
-  operating_hours: OperatingHours
+  operating_hours: OperatingHoursInput
   phone_number: [String!]
   description: String
   home_service_available: Boolean
@@ -743,6 +745,12 @@ type OperatingHours {
   all_day: Boolean!
 }
 
+input OperatingHoursInput {
+  open: String
+  close: String
+  all_day: Boolean!
+}
+
 type PersonalExperience {
   country: Country!,
   from: String!,
@@ -769,6 +777,26 @@ interface DomesticHelpPersonnel {
   marital_status: MaritalStatus!
   languages: [String!]!
   experience: [PersonalExperience!]!
+}
+
+input DomesticHelpPersonnelInput {
+  name: String!
+  picture: String!
+  profession: Profession!
+  gender: Gender!
+  nationality: Nationality!
+  religion: String!
+  salary: Float!
+  date_of_birth: String!
+  marital_status: MaritalStatus!
+  languages: [String!]!
+  experience: [PersonalExperienceInput!]!
+  # extras
+  license_expiry_date: String
+  education: Education
+  height: String
+  weight: String
+  skills: [String!]
 }
 
 type Driver implements DomesticHelpPersonnel {
@@ -851,14 +879,14 @@ enum BusinessType {
   ChildEducationBusiness
   DomesticHelpBusiness
   BeautyBusiness
-  LimousineBusiness
+  TransportationBusiness
   HospitalityBusiness
   StationaryBusiness
   MadeInQatarBusiness
   SportsBusiness
   EntertainmentBusiness
   FoodBusiness
-  MaintenanceBusiness
+  CleaningAndMaintenanceBusiness
 }
 
 enum SelfEmployedSubType {
@@ -881,7 +909,7 @@ enum BeautyBusinessSubType {
   B
 }
 
-enum LimousineBusinessSubType {
+enum TransportationBusinessSubType {
   A
   B
 }
@@ -911,7 +939,7 @@ enum FoodBusinessSubType {
   B
 }
 
-enum MaintenanceBusinessSubType {
+enum CleaningAndMaintenanceBusinessSubType {
   A
   B
 }

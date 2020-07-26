@@ -1,0 +1,63 @@
+{
+  "profile_appbar": [
+    "no_filter",
+    "Contact Us"
+  ],
+  "list_appbar": [
+    "no_filter",
+    "Events"
+  ],
+  "general_c1": [
+    "picture"
+  ],
+  "general_c2": [
+    "business_name",
+    "sized_box_7",
+    "address_text",
+    "sized_box_3",
+    "time_text",
+    "sized_box_3",
+    "business_type_text",
+    "sized_box_5_56",
+    "view_details",
+    "sized_box_7",
+    "contact_us"
+  ],
+  "col1": [
+    "picture"
+  ],
+  "col2": [
+    "business_name",
+    "business_type",
+    "sized_box_4",
+    "address",
+    "sized_box_6",
+    "time",
+    "sized_box_5",
+    "number"
+  ],
+  "col3": [
+    "sized_box_9",
+    "description",
+    "sized_box_17",
+    "divider",
+    "sized_box_17",
+    "duration",
+    "sized_box_17",
+    "divider",
+    "sized_box_17",
+    "reservation",
+    "sized_box_17",
+    "divider",
+    "sized_box_17",
+    "price",
+    "sized_box_17",
+    "divider",
+    "sized_box_17",
+    "organizer",
+    "sized_box_17",
+    "divider",
+    "sized_box_17",
+    "photos"
+  ]
+}

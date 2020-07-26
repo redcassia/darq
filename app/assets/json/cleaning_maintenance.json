@@ -1,0 +1,54 @@
+{
+  "profile_appbar": [
+    "no_filter",
+    "Contact Us"
+  ],
+  "list_appbar": [
+    "no_filter",
+    "Cleaning & Maintenance"
+  ],
+  "general_c1": [
+    "picture",
+    "sized_box_7",
+    "rating"
+  ],
+  "general_c2": [
+    "business_name",
+    "business_type",
+    "sized_box_3",
+    "description",
+    "sized_box_2",
+    "view_details",
+    "sized_box_10",
+    "contact_us"
+  ],
+  "col1": [
+    "picture",
+    "sized_box_6",
+    "rating"
+  ],
+  "col2": [
+    "business_name",
+    "business_type",
+    "sized_box_4",
+    "address",
+    "sized_box_6",
+    "number"
+  ],
+  "col3": [
+    "sized_box_9",
+    "description",
+    "sized_box_17",
+    "divider",
+    "sized_box_17",
+    "home_service",
+    "sized_box_17",
+    "divider",
+    "sized_box_17",
+    "salary",
+    "sized_box_17",
+    "divider",
+    "sized_box_17",
+    "photos"
+  ]
+}

@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:darq/utilities/screen_info.dart';
 import 'package:darq/views/shared/drawer/drawer_item.dart';
 import 'package:darq/views/home/screens/community.dart';
-import 'package:darq/views/home/screens/list.dart';
+import 'package:darq/views/home/screens/list_template.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({Key key}) : super(key: key);
@@ -32,35 +32,36 @@ class CustomDrawer extends StatelessWidget {
               icon: "events.png",
               onClick: () =>
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return List(jsonFile: "events.json");
+                    return ListTemplate(jsonFile: "events.json");
                   }))),
           DrawerItem(
               txt: "Q Cuisine",
               icon: "cuisine.png",
               onClick: () =>
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return List(jsonFile: "cuisine.json");
+                    return ListTemplate(jsonFile: "cuisine.json");
                   }))),
           DrawerItem(
               txt: "Q Entertainment",
               icon: "entertainment.png",
               onClick: () =>
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return List(jsonFile: "entertainment/default.json");
+                    return ListTemplate(jsonFile: "entertainment.json");
                   }))),
           DrawerItem(
               txt: "Q Children Education Centers",
               icon: "education_center.png",
               onClick: () =>
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return List(jsonFile: "children_education_center.json");
+                    return ListTemplate(
+                        jsonFile: "children_education_center.json");
                   }))),
           DrawerItem(
               txt: "Made in Qatar",
               icon: "made_in_qatar.png",
               onClick: () =>
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return List(jsonFile: "made_in_qatar.json");
+                    return ListTemplate(jsonFile: "made_in_qatar.json");
                   })))
         ]));
   }

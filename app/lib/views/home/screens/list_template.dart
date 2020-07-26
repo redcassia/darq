@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:darq/views/home/variables/home_screens_variables.dart'
-    as global;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:darq/res/path_files.dart';
 import 'package:darq/utilities/constants.dart';
@@ -16,53 +14,41 @@ import 'package:darq/views/shared/capsule/left_rounded_capsule.dart';
 import 'package:darq/views/shared/custom_card.dart';
 import 'package:darq/views/home/screens/filter.dart';
 
-class List extends StatefulWidget {
+class ListTemplate extends StatefulWidget {
   final String jsonFile;
 
-  List({this.jsonFile});
+  ListTemplate({this.jsonFile});
   @override
-  _ListState createState() => _ListState();
+  _ListTemplateState createState() => _ListTemplateState();
 }
 
-class _ListState extends State<List> {
+class _ListTemplateState extends State<ListTemplate> {
   double rating = 0.0;
+  List<dynamic> generalC1 = [];
+  List<dynamic> generalC2 = [];
+  List<dynamic> listAppBar = [];
 
-  parseGeneralColumn1(data) {
-    for (int i = 0; i < global.generalC1.length; i++)
-      setState(() => parseGeneralC1(index: i, rating: rating));
-  }
-
-  parseGeneralColumn2(data) {
-    for (int i = 0; i < global.generalC2.length; i++)
-      setState(() => parseGeneralC2(
-          index: i, context: context, pagePath: widget.jsonFile));
-  }
-
-  Future<String> loadJsonData() async {
-    var jsonText =
-        await rootBundle.loadString(PathFiles.ProfilePath + widget.jsonFile);
-    setState(() {
-      Map<String, dynamic> map = json.decode(jsonText);
-      global.generalC1 = map["general_c1"];
-      global.generalC2 = map["general_c2"];
-      global.listAppBar = map["list_appbar"];
-
-      parseGeneralColumn1(global.generalC1);
-      parseGeneralColumn2(global.generalC2);
-    });
-    return "Success";
+  loadJsonData() {
+    rootBundle
+        .loadString(PathFiles.ProfilePath + widget.jsonFile)
+        .then((value) => setState(() {
+              Map<String, dynamic> map = json.decode(value);
+              generalC1 = map["general_c1"];
+              generalC2 = map["general_c2"];
+              listAppBar = map["list_appbar"];
+            }));
   }
 
   @override
   void initState() {
-    this.loadJsonData();
     super.initState();
+    this.loadJsonData();
   }
 
   @override
   void dispose() {
-    global.generalC1.clear();
-    global.generalC2.clear();
+    generalC1.clear();
+    generalC2.clear();
     super.dispose();
   }
 
@@ -74,7 +60,7 @@ class _ListState extends State<List> {
             preferredSize: Size.fromHeight(ConsDimensions.LargeAppBarHeight.h),
             child: DefaultAppBar(
                 allowHorizontalPadding: false,
-                title: global.listAppBar[1],
+                title: listAppBar.length > 1 ? listAppBar[1] : "",
                 bgImage: "app_bar_rectangle.png",
                 leading: RightRoundedCapsule(
                     iconBgColor: Color.fromRGBO(134, 194, 194, 0.69),
@@ -85,7 +71,7 @@ class _ListState extends State<List> {
                         fit: BoxFit.fill,
                         image: AssetImage(PathFiles.ImgPath + "back.png"))),
                 onLeadingClicked: () => Navigator.pop(context),
-                trailing: global.listAppBar[0] == "filter"
+                trailing: listAppBar.length > 0 && listAppBar[0] == "filter"
                     ? GestureDetector(
                         onTap: () {
                           Navigator.push(context,
@@ -127,10 +113,12 @@ class _ListState extends State<List> {
                                         shrinkWrap: true,
                                         physics: NeverScrollableScrollPhysics(),
                                         padding: EdgeInsets.zero,
-                                        itemCount: global.generalC1.length,
+                                        itemCount: generalC1.length,
                                         itemBuilder:
                                             (BuildContext context, int index) {
-                                          return global.generalC1[index];
+                                          return parseGeneralC1(
+                                              data: generalC1[index],
+                                              rating: rating);
                                         })),
                                 SizedBox(width: 17.w),
                                 Expanded(
@@ -138,10 +126,13 @@ class _ListState extends State<List> {
                                         shrinkWrap: true,
                                         physics: NeverScrollableScrollPhysics(),
                                         padding: EdgeInsets.zero,
-                                        itemCount: global.generalC2.length,
+                                        itemCount: generalC2.length,
                                         itemBuilder:
                                             (BuildContext context, int index) {
-                                          return global.generalC2[index];
+                                          return parseGeneralC2(
+                                              data: generalC2[index],
+                                              context: context,
+                                              pagePath: widget.jsonFile);
                                         }))
                               ]))));
             }));

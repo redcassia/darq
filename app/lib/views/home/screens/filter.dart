@@ -1,20 +1,11 @@
-import 'package:darq/views/home/parsing/personnel_template_parsing.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:darq/res/path_files.dart';
 import 'package:darq/utilities/constants.dart';
 import 'dart:ui';
 import 'package:flutter/rendering.dart';
-import 'dart:convert';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:darq/views/home/variables/home_screens_variables.dart'
-    as global;
-import 'package:darq/views/shared/custom_card.dart';
-import 'package:darq/views/shared/app_bars/profile_appbar.dart';
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/views/shared/buttons/button.dart';
-import 'dart:developer';
 import 'package:darq/model/item_model_class.dart';
 
 class Filter extends StatefulWidget {

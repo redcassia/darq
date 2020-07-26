@@ -8,19 +8,20 @@ import 'package:darq/res/path_files.dart';
 import 'package:darq/views/shared/capsule/right_rounded_capsule.dart';
 import 'package:darq/views/shared/capsule/left_rounded_capsule.dart';
 import 'package:darq/views/shared/buttons/button.dart';
-import 'package:darq/views/home/variables/home_screens_variables.dart'
-    as global;
 
 class ProfileAppBar extends StatelessWidget {
-  const ProfileAppBar({Key key, this.backArrowBgColor}) : super(key: key);
+  const ProfileAppBar({Key key, this.backArrowBgColor, this.filterIndicator, this.buttonName})
+      : super(key: key);
 
   final Color backArrowBgColor;
+  final String filterIndicator;
+  final String buttonName;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
         padding: EdgeInsets.only(
-            right: global.profileAppBar[0] == "no_filter" ? 14.w : 0.w,
-            top: 35.h),
+            right: filterIndicator == "no_filter" ? 14.w : 0.w, top: 35.h),
         child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
@@ -28,7 +29,7 @@ class ProfileAppBar extends StatelessWidget {
                 child: RightRoundedCapsule(
                     verticalPadding: 5.h,
                     horizontalPadding: 19.w,
-                    iconBgColor: backArrowBgColor?? Color(0xFF426676),
+                    iconBgColor: backArrowBgColor ?? Color(0xFF426676),
                     icon: Image(
                         width: 9.73.w,
                         fit: BoxFit.fill,
@@ -39,12 +40,12 @@ class ProfileAppBar extends StatelessWidget {
                 CustomButton(
                     height: 23.h,
                     width: 93.w,
-                    buttonName: global.profileAppBar[1],
+                    buttonName: buttonName,
                     color: Color(0xFFE1A854),
                     borderRadius: 27,
                     textStyle: AppFonts.title11Odd(color: Colors.white),
                     onButtonPressed: () => {}),
-                global.profileAppBar[0] == "no_filter"
+                filterIndicator == "no_filter"
                     ? Container(height: 0.h)
                     : LeftRoundedCapsule(
                         horizontalPadding: 16.w,

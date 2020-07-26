@@ -1,6 +1,25 @@
 {
   "profile_appbar": [
     "no_filter",
+    "Contact Us"
+  ],
+  "list_appbar": [
+    "filter",
+    "Entertainment"
+  ],
+  "general_c1": [
+    "picture",
+    "sized_box_7",
+    "rating"
+  ],
+  "general_c2": [
+    "business_name",
+    "business_type",
+    "sized_box_3",
+    "description",
+    "sized_box_2",
+    "view_details",
+    "sized_box_10",
     "contact_us"
   ],
   "col1": [
@@ -24,15 +43,11 @@
     "sized_box_17",
     "divider",
     "sized_box_17",
-    "home_service",
-    "sized_box_17",
-    "divider",
-    "sized_box_17",
     "website",
     "sized_box_17",
     "divider",
     "sized_box_17",
-    "classes",
+    "activities",
     "sized_box_17",
     "divider",
     "sized_box_17",

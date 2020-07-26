@@ -5,8 +5,9 @@
   ],
   "list_appbar": [
     "filter",
-    "Entertainment"
+    "Sports"
   ],
+
   "general_c1": [
     "picture",
     "sized_box_7",
@@ -43,7 +44,16 @@
     "sized_box_17",
     "divider",
     "sized_box_17",
+    "owner",
+    "sized_box_17",
+    "divider",
+    "sized_box_17",
     "website",
+    "sized_box_17",
+    "divider",
+    "sized_box_17",
+    "classes",
+    "teams",
     "sized_box_17",
     "divider",
     "sized_box_17",

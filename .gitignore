@@ -442,3 +442,7 @@ fabric.properties
 
 .DS_store
 
+.vscode/
+
+# MySQL workbench backup file
+*.mwb.bak

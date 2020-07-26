@@ -1,0 +1,1664 @@
+<div class="content-submenu medium-light-bg">
+    <h5>Business type</h5>
+
+    <div class="select">
+        <select id="business-type-select" onchange="changeForm(this.value)">
+            <option value="" disabled selected>Choose business type</option>
+            <option value="self-employed-form">Self-employed</option>
+            <option value="child-education-form">Child Education</option>
+            <option value="domestic-help-form">Domestic Help</option>
+            <option value="beauty-form">Beauty & Spa</option>
+            <option value="transportation-form">Transportation</option>
+            <option value="hospitality-form">Hospitality</option>
+            <option value="stationary-form">Stationary</option>
+            <option value="made-in-qatar-form">Made In Qatar</option>
+            <option value="gym-form">Gym</option>
+            <option value="club-form">Club</option>
+            <option value="entertainment-form">Entertainment</option>
+            <option value="cuisine-form">Cuisine</option>
+            <option value="cleaning-maintenance-form">Cleaning & Maintenance</option>
+        </select>
+    </div>
+</div>
+
+<div class="left-aligned-content with-submenu">
+    <form id="self-employed-form" class="inactive">
+        <div class="form-line">
+            <div class="form-box">
+                <label for="picture">Profile picture</label>
+                <div class="img-input">
+                    <input type="file" name="picture"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="sub-type">Business sub-type</label>
+                <div class="select">
+                    <select name="sub-type">
+                        <option value="" disabled selected>Choose business sub-type</option>
+                        <option>Subtype A</option>
+                        <option>Subtype B</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="first-name">First name</label>
+                <input type="text" name="first-name" />
+            </div>
+            <div class="form-box">
+                <label for="last-name">Last name</label>
+                <input type="text" name="last-name" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="gender">Gender</label>
+
+                <input type="radio" id="female" name="gender" value="FEMALE"/>
+                <label>Female<label>
+                <input type="radio" id="male" name="gender" value="MALE"/>
+                <label>Male<label>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="nationality">Nationality</label>
+                <div class="select">
+                    <select name="nationality">
+                        <option value="" disabled selected>Choose nationality</option>
+                        <option>Nationality A</option>
+                        <option>Nationality B</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="city">City</label>
+                <div class="select">
+                    <select name="city">
+                        <option value="" disabled selected>Choose city </option>
+                        <option>Doha</option>
+                        <option>City A</option>
+                        <option>City B</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="phone">Phone Number</label>
+                <input type="tel" name="phone" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="email">Email</label>
+                <input type="text" name="email" />
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="description">Description</label>
+                <textarea name="description"></textarea>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="skills">Skills</label>
+                <div class="multistring-input">
+                    <div class="data"></div>
+                    <input type="text" name="skills" />
+                    <button>Add</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="charge">Charge</label>
+                <input type="text" name="charge" /><span>QAR/hr</span>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="experience">Experience</label>
+                <div class="multiform">
+                    <button>+ Add</button>
+                    <div class="template">
+                        <hr />
+                        <button class="remove-btn" style="left: calc(100% - 36px);"></button>
+                        <div class="form-line">
+                            <div class="form-box">
+                                <label>Country</label>
+                                <div class="select">
+                                    <select name="country">
+                                        <option value="" disabled selected>Choose country</option>
+                                        <option>Qatar</option>
+                                        <option>Country A</option>
+                                        <option>Country B</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-line">
+                            <div class="form-box">
+                                <label>From</label>
+                                <input type="date" name="from" />
+                            </div>
+                            <div class="form-box">
+                                <label>To</label>
+                                <input type="date" name="to" />
+                            </div>
+                        </div>
+                        <div class="form-line">
+                            <div class="form-box">
+                                <label>In position</label>
+                                <input type="radio" name="in-position" value="true"/>
+                                <label>Yes<label>
+                                <input type="radio" name="in-position" value="false"/>
+                                <label>No<label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="govt-id">Government-issued ID</label>
+                <div class="img-input">
+                    <input type="file" name="govt-id"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="gallery">Gallery</label>
+                <div class="img-input multiple">
+                    <input type="file" name="gallery" />
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <input type="submit">
+    </form>
+
+    <form id="child-education-form" class="inactive">
+        <div class="form-line">
+            <div class="form-box">
+                <label for="picture">Profile picture</label>
+                <div class="img-input">
+                    <input type="file" name="picture"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="sub-type">Business sub-type</label>
+                <div class="select">
+                    <select name="sub-type">
+                        <option value="" disabled selected>Choose business sub-type</option>
+                        <option>Subtype A</option>
+                        <option>Subtype B</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="display_name">Display Name</label>
+                <input type="text" name="diaply_name" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="address">Address</label>
+                <input type="text" name="address" />
+            </div>
+
+            <div class="form-box">
+                <label for="city">City</label>
+                <div class="select">
+                    <select name="city">
+                        <option>City A</option>
+                        <option>City B</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="phone">Phone Number</label>
+                <input type="tel" name="phone" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="email">Email</label>
+                <input type="text" name="email" />
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="description">Description</label>
+                <textarea name="description"></textarea>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="curriculumn">Curriculum</label>
+                <div class="multistring-input">
+                    <div class="data"></div>
+                    <input type="text" name="curriculumn" />
+                    <button>Add</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="year_founded">Year founded</label>
+                <input type="text" name="year_founded" />
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="trade_license">Trade License</label>
+                <div class="img-input">
+                    <input type="file" name="trade_license"/>
+                </div>
+            </div>
+            <div class="form-box">
+                <label for="trade_license_num">Trade License Number</label>
+                <input type="text" name="trade_license_num" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="gallery">Gallery</label>
+                <div class="img-input multiple">
+                    <input type="file" name="gallery" />
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <input type="submit">
+    </form>
+
+    <form id="domestic-help-form" class="inactive">
+        <div class="form-line">
+            <div class="form-box">
+                <label for="picture">Profile picture</label>
+                <div class="img-input">
+                    <input type="file" name="picture"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="sub-type">Business sub-type</label>
+                <div class="select">
+                    <select name="sub-type">
+                        <option value="" disabled selected>Choose business sub-type</option>
+                        <option>Subtype A</option>
+                        <option>Subtype B</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="display_name">Display Name</label>
+                <input type="text" name="diaply_name" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="address">Address</label>
+                <input type="text" name="address" />
+            </div>
+
+            <div class="form-box">
+                <label for="city">City</label>
+                <div class="select">
+                    <select name="city">
+                        <option>City A</option>
+                        <option>City B</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="phone">Phone Number</label>
+                <input type="tel" name="phone" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="email">Email</label>
+                <input type="text" name="email" />
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="description">Description</label>
+                <textarea name="description"></textarea>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="website">Website</label>
+                <input type="text" name="website" />
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="trade_license">Trade License</label>
+                <div class="img-input">
+                    <input type="file" name="trade_license"/>
+                </div>
+            </div>
+            <div class="form-box">
+                <label for="trade_license_num">Trade License Number</label>
+                <input type="text" name="trade_license_num" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="gallery">Gallery</label>
+                <div class="img-input multiple">
+                    <input type="file" name="gallery" />
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <input type="submit">
+    </form>
+
+    <form id="beauty-form" class="inactive">
+        <div class="form-line">
+            <div class="form-box">
+                <label for="picture">Profile picture</label>
+                <div class="img-input">
+                    <input type="file" name="picture"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="sub-type">Business sub-type</label>
+                <div class="select">
+                    <select name="sub-type">
+                        <option value="" disabled selected>Choose business sub-type</option>
+                        <option>Subtype A</option>
+                        <option>Subtype B</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="display_name">Display Name</label>
+                <input type="text" name="diaply_name" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="address">Address</label>
+                <input type="text" name="address" />
+            </div>
+
+            <div class="form-box">
+                <label for="city">City</label>
+                <div class="select">
+                    <select name="city">
+                        <option>City A</option>
+                        <option>City B</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="phone">Phone Number</label>
+                <input type="tel" name="phone" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="email">Email</label>
+                <input type="text" name="email" />
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="description">Description</label>
+                <textarea name="description"></textarea>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="operating_hours">Operating Hours</label>
+                <input  type="time" name="open" />
+                <input  type="time" name="close" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="service">Services</label>
+                <div class="multistring-input">
+                    <div class="data"></div>
+                    <input type="text" name="services" />
+                    <button>Add</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label>Home Service Availability</label>
+                <input type="radio" name="home_service_availability" value="true"/>
+                <label>Available<label>
+                <input type="radio" name="home_service_availability" value="false"/>
+                <label>Not available<label>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="website">Website</label>
+                <input type="text" name="website" />
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="trade_license">Trade License</label>
+                <div class="img-input">
+                    <input type="file" name="trade_license"/>
+                </div>
+            </div>
+            <div class="form-box">
+                <label for="trade_license_num">Trade License Number</label>
+                <input type="text" name="trade_license_num" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="gallery">Gallery</label>
+                <div class="img-input multiple">
+                    <input type="file" name="gallery" />
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <input type="submit">
+    </form>
+
+    <form id="transportation-form" class="inactive">
+        <div class="form-line">
+            <div class="form-box">
+                <label for="picture">Profile picture</label>
+                <div class="img-input">
+                    <input type="file" name="picture"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="sub-type">Business sub-type</label>
+                <div class="select">
+                    <select name="sub-type">
+                        <option value="" disabled selected>Choose business sub-type</option>
+                        <option>Subtype A</option>
+                        <option>Subtype B</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="display_name">Display Name</label>
+                <input type="text" name="diaply_name" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="address">Address</label>
+                <input type="text" name="address" />
+            </div>
+
+            <div class="form-box">
+                <label for="city">City</label>
+                <div class="select">
+                    <select name="city">
+                        <option>City A</option>
+                        <option>City B</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="phone">Phone Number</label>
+                <input type="tel" name="phone" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="email">Email</label>
+                <input type="text" name="email" />
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="description">Description</label>
+                <textarea name="description"></textarea>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="operating_hours">Operating Hours</label>
+                <input  type="time" name="open" />
+                <input  type="time" name="close" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="service">Services</label>
+                <div class="multistring-input">
+                    <div class="data"></div>
+                    <input type="text" name="services" />
+                    <button>Add</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="website">Website</label>
+                <input type="text" name="website" />
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="trade_license">Trade License</label>
+                <div class="img-input">
+                    <input type="file" name="trade_license"/>
+                </div>
+            </div>
+            <div class="form-box">
+                <label for="trade_license_num">Trade License Number</label>
+                <input type="text" name="trade_license_num" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="gallery">Gallery</label>
+                <div class="img-input multiple">
+                    <input type="file" name="gallery" />
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <input type="submit">
+    </form>
+
+    <form id="hospitality-form" class="inactive">
+        <div class="form-line">
+            <div class="form-box">
+                <label for="picture">Profile picture</label>
+                <div class="img-input">
+                    <input type="file" name="picture"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="sub-type">Business sub-type</label>
+                <div class="select">
+                    <select name="sub-type">
+                        <option value="" disabled selected>Choose business sub-type</option>
+                        <option>Subtype A</option>
+                        <option>Subtype B</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="display_name">Display Name</label>
+                <input type="text" name="diaply_name" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="address">Address</label>
+                <input type="text" name="address" />
+            </div>
+
+            <div class="form-box">
+                <label for="city">City</label>
+                <div class="select">
+                    <select name="city">
+                        <option>City A</option>
+                        <option>City B</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="phone">Phone Number</label>
+                <input type="tel" name="phone" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="email">Email</label>
+                <input type="text" name="email" />
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="description">Description</label>
+                <textarea name="description"></textarea>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="fees">Fees</label>
+                <input  type="text" name="fees" /><span>QAR/hr</span>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="service">Services</label>
+                <div class="multistring-input">
+                    <div class="data"></div>
+                    <input type="text" name="services" />
+                    <button>Add</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label>Home Service Availability</label>
+                <input type="radio" name="home_service_availability" value="true"/>
+                <label>Available<label>
+                <input type="radio" name="home_service_availability" value="false"/>
+                <label>Not available<label>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="website">Website</label>
+                <input type="text" name="website" />
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="trade_license">Trade License</label>
+                <div class="img-input">
+                    <input type="file" name="trade_license"/>
+                </div>
+            </div>
+            <div class="form-box">
+                <label for="trade_license_num">Trade License Number</label>
+                <input type="text" name="trade_license_num" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="gallery">Gallery</label>
+                <div class="img-input multiple">
+                    <input type="file" name="gallery" />
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <input type="submit">
+    </form>
+
+    <form id="stationary-form" class="inactive">
+        <div class="form-line">
+            <div class="form-box">
+                <label for="picture">Profile picture</label>
+                <div class="img-input">
+                    <input type="file" name="picture"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="sub-type">Business sub-type</label>
+                <div class="select">
+                    <select name="sub-type">
+                        <option value="" disabled selected>Choose business sub-type</option>
+                        <option>Subtype A</option>
+                        <option>Subtype B</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="display_name">Display Name</label>
+                <input type="text" name="diaply_name" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="address">Address</label>
+                <input type="text" name="address" />
+            </div>
+
+            <div class="form-box">
+                <label for="city">City</label>
+                <div class="select">
+                    <select name="city">
+                        <option>City A</option>
+                        <option>City B</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="phone">Phone Number</label>
+                <input type="tel" name="phone" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="email">Email</label>
+                <input type="text" name="email" />
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="description">Description</label>
+                <textarea name="description"></textarea>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="website">Website</label>
+                <input type="text" name="website" />
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="trade_license">Trade License</label>
+                <div class="img-input">
+                    <input type="file" name="trade_license"/>
+                </div>
+            </div>
+            <div class="form-box">
+                <label for="trade_license_num">Trade License Number</label>
+                <input type="text" name="trade_license_num" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="gallery">Gallery</label>
+                <div class="img-input multiple">
+                    <input type="file" name="gallery" />
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <input type="submit">
+    </form>
+
+    <form id="made-in-qatar-form" class="inactive">
+        <div class="form-line">
+            <div class="form-box">
+                <label for="picture">Profile picture</label>
+                <div class="img-input">
+                    <input type="file" name="picture"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="sub-type">Business sub-type</label>
+                <div class="select">
+                    <select name="sub-type">
+                        <option value="" disabled selected>Choose business sub-type</option>
+                        <option>Subtype A</option>
+                        <option>Subtype B</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="display_name">Display Name</label>
+                <input type="text" name="diaply_name" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="address">Address</label>
+                <input type="text" name="address" />
+            </div>
+
+            <div class="form-box">
+                <label for="city">City</label>
+                <div class="select">
+                    <select name="city">
+                        <option>City A</option>
+                        <option>City B</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="phone">Phone Number</label>
+                <input type="tel" name="phone" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="email">Email</label>
+                <input type="text" name="email" />
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="description">Description</label>
+                <textarea name="description"></textarea>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="products">Products</label>
+                <div class="multistring-input">
+                    <div class="data"></div>
+                    <input type="text" name="products" />
+                    <button>Add</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label>Home Delivery</label>
+                <input type="radio" name="home_delivery" value="true"/>
+                <label>Available<label>
+                <input type="radio" name="home_delivery" value="false"/>
+                <label>Not available<label>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="website">Website</label>
+                <input type="text" name="website" />
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="trade_license">Trade License</label>
+                <div class="img-input">
+                    <input type="file" name="trade_license"/>
+                </div>
+            </div>
+            <div class="form-box">
+                <label for="trade_license_num">Trade License Number</label>
+                <input type="text" name="trade_license_num" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="gallery">Gallery</label>
+                <div class="img-input multiple">
+                    <input type="file" name="gallery" />
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <input type="submit">
+    </form>
+
+    <form id="gym-form" class="inactive">
+        <div class="form-line">
+            <div class="form-box">
+                <label for="picture">Profile picture</label>
+                <div class="img-input">
+                    <input type="file" name="picture"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="display_name">Display Name</label>
+                <input type="text" name="diaply_name" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="address">Address</label>
+                <input type="text" name="address" />
+            </div>
+
+            <div class="form-box">
+                <label for="city">City</label>
+                <div class="select">
+                    <select name="city">
+                        <option>City A</option>
+                        <option>City B</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="phone">Phone Number</label>
+                <input type="tel" name="phone" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="email">Email</label>
+                <input type="text" name="email" />
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="description">Description</label>
+                <textarea name="description"></textarea>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="operating_hours">Operating Hours</label>
+                <input  type="time" name="open" />
+                <input  type="time" name="close" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="classes">Classes</label>
+                <div class="multistring-input">
+                    <div class="data"></div>
+                    <input type="text" name="classes" />
+                    <button>Add</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label>Home Training</label>
+                <input type="radio" name="home_training_available" value="true"/>
+                <label>Available<label>
+                <input type="radio" name="home_training_available" value="false"/>
+                <label>Not available<label>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="website">Website</label>
+                <input type="text" name="website" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label>Gender</label>
+                <input type="radio" name="gender" value="male"/>
+                <label>Male only<label>
+                <input type="radio" name="gender" value="female"/>
+                <label>Female only<label>
+                <input type="radio" name="gender" value="mixed"/>
+                <label>Mixed<label>
+                </div>
+        </div>
+
+        <hr />
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="trade_license">Trade License</label>
+                <div class="img-input">
+                    <input type="file" name="trade_license"/>
+                </div>
+            </div>
+            <div class="form-box">
+                <label for="trade_license_num">Trade License Number</label>
+                <input type="text" name="trade_license_num" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="gallery">Gallery</label>
+                <div class="img-input multiple">
+                    <input type="file" name="gallery" />
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <input type="submit">
+    </form>
+
+    <form id="club-form" class="inactive">
+        <div class="form-line">
+            <div class="form-box">
+                <label for="picture">Profile picture</label>
+                <div class="img-input">
+                    <input type="file" name="picture"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="display_name">Display Name</label>
+                <input type="text" name="diaply_name" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="address">Address</label>
+                <input type="text" name="address" />
+            </div>
+
+            <div class="form-box">
+                <label for="city">City</label>
+                <div class="select">
+                    <select name="city">
+                        <option>City A</option>
+                        <option>City B</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="phone">Phone Number</label>
+                <input type="tel" name="phone" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="email">Email</label>
+                <input type="text" name="email" />
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="description">Description</label>
+                <textarea name="description"></textarea>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="operating_hours">Operating Hours</label>
+                <input  type="time" name="open" />
+                <input  type="time" name="close" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="teams">Teams</label>
+                <div class="multistring-input">
+                    <div class="data"></div>
+                    <input type="text" name="teams" />
+                    <button>Add</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="owner">Owner</label>
+                <input type="text" name="owner" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="website">Website</label>
+                <input type="text" name="website" />
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="trade_license">Trade License</label>
+                <div class="img-input">
+                    <input type="file" name="trade_license"/>
+                </div>
+            </div>
+            <div class="form-box">
+                <label for="trade_license_num">Trade License Number</label>
+                <input type="text" name="trade_license_num" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="gallery">Gallery</label>
+                <div class="img-input multiple">
+                    <input type="file" name="gallery" />
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <input type="submit">
+    </form>
+
+    <form id="entertainment-form" class="inactive">
+        <div class="form-line">
+            <div class="form-box">
+                <label for="picture">Profile picture</label>
+                <div class="img-input">
+                    <input type="file" name="picture"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="sub-type">Business sub-type</label>
+                <div class="select">
+                    <select name="sub-type">
+                        <option value="" disabled selected>Choose business sub-type</option>
+                        <option>Subtype A</option>
+                        <option>Subtype B</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="display_name">Display Name</label>
+                <input type="text" name="diaply_name" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="address">Address</label>
+                <input type="text" name="address" />
+            </div>
+
+            <div class="form-box">
+                <label for="city">City</label>
+                <div class="select">
+                    <select name="city">
+                        <option>City A</option>
+                        <option>City B</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="phone">Phone Number</label>
+                <input type="tel" name="phone" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="email">Email</label>
+                <input type="text" name="email" />
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="description">Description</label>
+                <textarea name="description"></textarea>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="operating_hours">Operating Hours</label>
+                <input  type="time" name="open" />
+                <input  type="time" name="close" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="website">Website</label>
+                <input type="text" name="website" />
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="trade_license">Trade License</label>
+                <div class="img-input">
+                    <input type="file" name="trade_license"/>
+                </div>
+            </div>
+            <div class="form-box">
+                <label for="trade_license_num">Trade License Number</label>
+                <input type="text" name="trade_license_num" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="gallery">Gallery</label>
+                <div class="img-input multiple">
+                    <input type="file" name="gallery" />
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <input type="submit">
+    </form>
+
+    <form id="cuisine-form" class="inactive">
+        <div class="form-line">
+            <div class="form-box">
+                <label for="picture">Profile picture</label>
+                <div class="img-input">
+                    <input type="file" name="picture"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="sub-type">Business sub-type</label>
+                <div class="select">
+                    <select name="sub-type">
+                        <option value="" disabled selected>Choose business sub-type</option>
+                        <option>Subtype A</option>
+                        <option>Subtype B</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="display_name">Display Name</label>
+                <input type="text" name="diaply_name" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="address">Address</label>
+                <input type="text" name="address" />
+            </div>
+
+            <div class="form-box">
+                <label for="city">City</label>
+                <div class="select">
+                    <select name="city">
+                        <option>City A</option>
+                        <option>City B</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="phone">Phone Number</label>
+                <input type="tel" name="phone" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="email">Email</label>
+                <input type="text" name="email" />
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="description">Description</label>
+                <textarea name="description"></textarea>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="operating_hours">Operating Hours</label>
+                <input  type="time" name="open" />
+                <input  type="time" name="close" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="website">Website</label>
+                <input type="text" name="website" />
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="trade_license">Trade License</label>
+                <div class="img-input">
+                    <input type="file" name="trade_license"/>
+                </div>
+            </div>
+            <div class="form-box">
+                <label for="trade_license_num">Trade License Number</label>
+                <input type="text" name="trade_license_num" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="gallery">Gallery</label>
+                <div class="img-input multiple">
+                    <input type="file" name="gallery" />
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <input type="submit">
+    </form>
+
+    <form id="cleaning-maintenance-form" class="inactive">
+        <div class="form-line">
+            <div class="form-box">
+                <label for="picture">Profile picture</label>
+                <div class="img-input">
+                    <input type="file" name="picture"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="sub-type">Business sub-type</label>
+                <div class="select">
+                    <select name="sub-type">
+                        <option value="" disabled selected>Choose business sub-type</option>
+                        <option>Subtype A</option>
+                        <option>Subtype B</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="display_name">Display Name</label>
+                <input type="text" name="diaply_name" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="address">Address</label>
+                <input type="text" name="address" />
+            </div>
+
+            <div class="form-box">
+                <label for="city">City</label>
+                <div class="select">
+                    <select name="city">
+                        <option>City A</option>
+                        <option>City B</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="phone">Phone Number</label>
+                <input type="tel" name="phone" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="email">Email</label>
+                <input type="text" name="email" />
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="description">Description</label>
+                <textarea name="description"></textarea>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="fees">Fees</label>
+                <input  type="text" name="fees" /><span>QAR/hr</span>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label>Home Service Availability</label>
+                <input type="radio" name="home_service_availability" value="true"/>
+                <label>Available<label>
+                <input type="radio" name="home_service_availability" value="false"/>
+                <label>Not available<label>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="website">Website</label>
+                <input type="text" name="website" />
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="trade_license">Trade License</label>
+                <div class="img-input">
+                    <input type="file" name="trade_license"/>
+                </div>
+            </div>
+            <div class="form-box">
+                <label for="trade_license_num">Trade License Number</label>
+                <input type="text" name="trade_license_num" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="gallery">Gallery</label>
+                <div class="img-input multiple">
+                    <input type="file" name="gallery" />
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <input type="submit">
+    </form>
+</div>

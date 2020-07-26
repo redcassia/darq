@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="index.css">
+    </head>
+    <body>
+        <div id="signup-screen" class="screen" style="z-index: 0;">
+            <div class="home-pane inactive-home-pane">
+                <div class="home-pane-content white">
+                    <h3>Welcome Back</h3>
+                    <button onclick="switchToSignin()">Sign in</button>
+                </div>
+            </div>
+
+            <div class="home-pane active-home-pane">
+                <div id="signup-form" class="home-pane-content dark">
+                    <h4>
+                        <span>Create an account to <br/> engage with customers on</span>
+                        <br/>
+                        <span class="accent h3">DarQ</span>
+                    </h4>
+                    <input type="email" placeholder="Email"/> <br/>
+                    <input type="password" placeholder="Password"/> <br/>
+                    <input type="password" placeholder="Confirm Password"/> <br/>
+                    <button onclick="signup()">Create Account</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="signin-screen" class="screen" style="z-index: 1;">
+            <div class="home-pane active-home-pane">
+                <div id="signin-form" class="home-pane-content dark" style="display: none;">
+                    <h4>
+                        <span>Sign in to <br/> engage with customers on</span>
+                        <br/>
+                        <span class="accent h3">DarQ</span>
+                    </h4>
+                    <input type="email" placeholder="Email"/> <br/>
+                    <input type="password" placeholder="Password"/> <br/>
+                    <div style="text-align: right;">
+                        <span class="clickable" onclick="switchToForgotPassword()">Forgot password?</span>
+                    </div>
+                    <button onclick="signin()">Sign in</button>
+                </div>
+
+                <div id="forgot-password-form" class="home-pane-content dark" style="display: none;">
+                    <h4>Forgot password?</h4>
+                    <input type="email" placeholder="Email"/> <br/>
+                    <button onclick="requestPasswordReset()">Reset Password</button>
+                </div>
+
+                <div id="reset-password-form" class="home-pane-content dark" style="display: none;">
+                    <input type="password" placeholder="Password"/> <br/>
+                    <input type="password" placeholder="Confirm Password"/> <br/>
+                    <button onclick="resetPassword()">Reset Password</button>
+                </div>
+            </div>
+
+            <div class="home-pane inactive-home-pane">
+                <div class="home-pane-content white">
+                    <h3>Become a partner</h3>
+                    <button onclick="switchToSignup()">Create Account</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="welcome-screen" class="screen" style="z-index: 2;">
+            <div class="home-pane inactive-home-pane"></div>
+        </div>
+
+        <div id="main-screen" class="screen" style="display: none;">
+            <div class="screen-body">
+                <div class="side-bar">
+                    <div class="side-bar-btn" style="text-align: right;">
+                        <img id="hamburger-btn" class="clickable" onClick="toggleHamburger()" src="assets/hamburger-icon.png" data-icon-name="hamburger" class="clickable" />
+                    </div>
+
+                    <div id="profile-btn" class="side-bar-btn clickable" onclick="navigateTo($(this))">
+                        <img src="assets/user-icon.png" data-icon-name="user"/>
+                        <span>Your Profile</span>
+                    </div>
+
+                    <div id="messages-btn" class="side-bar-btn clickable" onclick="navigateTo($(this), 'messages')">
+                        <img src="assets/msg-icon.png" data-icon-name="msg" class="clickable" />
+                        <span>Inbox</span>
+                    </div>
+
+                    <div id="business-btn" class="side-bar-btn clickable" onclick="navigateTo($(this), 'business')">
+                        <img src="assets/briefcase-icon.png" data-icon-name="briefcase" class="clickable" />
+                        <span>Add Your Business</span>
+                    </div>
+
+                    <div id="events-btn" class="side-bar-btn clickable" onclick="navigateTo($(this), 'event')">
+                        <img src="assets/calendar-icon.png" data-icon-name="calendar" class="clickable" />
+                        <span>Create an Event</span>
+                    </div>
+
+                    <div id="payment-btn" class="side-bar-btn clickable" onclick="navigateTo($(this), 'payment')">
+                        <img src="assets/card-icon.png" data-icon-name="card" class="clickable" />
+                        <span>Payment</span>
+                    </div>
+                </div>
+
+                <div id="content" class="screen-content"></div>
+            </div>
+        </div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+            integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+            crossorigin="anonymous">
+        </script>
+        <script src="index.js"></script>
+    </body>
+</html>

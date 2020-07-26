@@ -1,0 +1,111 @@
+<div class="left-aligned-content">
+    <form id="create-event-form" >
+        <div class="form-line">
+            <div class="form-box">
+                <label for="event-picture">Event Picture</label>
+                <div class="img-input">
+                    <input type="file" name="event-picture"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="event-name">Event name</label>
+                <input type="text" name="event-name" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="event-type">Event Type</label>
+                <div class="select">
+                    <select name="event-type">
+                        <option>Event A</option>
+                        <option>Event B</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="address">Address</label>
+                <input type="text" name="address" />
+            </div>
+
+            <div class="form-box">
+                <label for="city">City</label>
+                <div class="select">
+                    <select name="city">
+                        <option>City A</option>
+                        <option>City B</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="phone">Phone Number</label>
+                <input type="text" name="phone" />
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="description">Description</label>
+                <textarea name="description"></textarea>
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="start">Start</label>
+                <input type="datetime-local" name="start" />
+            </div>
+            <div class="form-box">
+                <label for="end">End</label>
+                <input type="datetime-local" name="end" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="ticket-website">Ticket reservation website</label>
+                <input type="text" name="ticket-website" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="ticket-price">Ticket price</label>
+                <input type="text" name="ticket-price" />
+            </div>
+        </div>
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="organizer">Organizer</label>
+                <input type="text" name="organizer" />
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-line">
+            <div class="form-box">
+                <label for="gallery">Gallery</label>
+                <div class="img-input multiple">
+                    <input type="file" name="gallery" />
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <input type="submit" onclick="submitEvent($('#create-event-form'))">
+    </form>
+</div>

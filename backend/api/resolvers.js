@@ -39,11 +39,12 @@ var db = new Database({
 
 const businessUserLoader = new DataLoader(
   async (ids) => {
-    return ids.map((id) => {
-      return db.query(
+    return ids.map(async (id) => {
+      const rows = await db.query(
         "SELECT * FROM business_user WHERE id = ?",
-        [ id ]
-      ).then(rows => rows[0]);
+        [id]
+      );
+      return rows[0];
     });
   }
 );
@@ -72,9 +73,57 @@ const publicUserLoader = new DataLoader(
 
 const businessLoader = new DataLoader(
   async (ids) => {
-    return ids.map((id) => {
-      return db.query(
+    return ids.map(async (id) => {
+      const rows = await db.query(
         `
+        SELECT
+          JSON_INSERT(
+            props,
+            '$.id', id,
+            '$.owner', owner,
+            '$.approved', approved,
+            '$.rating', calculated_rating,
+            '$.display_name', display_name,
+            '$.display_picture', display_picture,
+            '$.type', \`type\`,
+            '$.sub_type', sub_type
+          ) AS data
+        FROM
+          business
+        WHERE
+          id = ?
+        `,
+        [id]
+      );
+      return rows[0] ? JSON.parse(rows[0].data) : null;
+    });
+  }
+);
+
+const orderedBusinessLoader = new Map(
+  [
+    'SelfEmployedBusiness',
+    'ChildEducationBusiness',
+    'DomesticHelpBusiness',
+    'BeautyBusiness',
+    'TransportationBusiness',
+    'HospitalityBusiness',
+    'StationaryBusiness',
+    'MadeInQatarBusiness',
+    'SportsBusiness',
+    'EntertainmentBusiness',
+    'FoodBusiness',
+    'CleaningAndMaintenanceBusiness'
+  ].map(type => 
+  [
+    type,
+    new DataLoader(
+      async (keys) => {
+        const offset = keys[0];
+        const limit = keys[keys.length - 1] - offset + 1;
+
+        const rows = await db.query(
+          `
           SELECT
             JSON_INSERT(
               props,
@@ -90,20 +139,29 @@ const businessLoader = new DataLoader(
           FROM
             business
           WHERE
-            id = ?
-        `,
-        [ id ]
-      ).then(rows => JSON.parse(rows[0].data));
-    });
-  }
-);
+            \`type\` = ?
+          ORDER BY calculated_rating DESC
+          LIMIT ?
+          OFFSET ?
+          `,
+          [ type, limit, offset ]
+        );
+
+        return keys.map(key => {
+          if (rows[key - offset]) return JSON.parse(rows[key - offset].data);
+          else return null;
+        });
+      }
+    )
+  ]
+));
 
 const eventLoader = new DataLoader(
   async (ids) => {
-    return ids.map((id) => {
-      return db.query(
+    return ids.map(async (id) => {
+      const rows = await db.query(
         `
-          SELECT
+        SELECT
           JSON_INSERT(
             props,
             '$.id', id,
@@ -113,15 +171,51 @@ const eventLoader = new DataLoader(
             '$.type', \`type\`,
             '$.city', city,
             '$.start', start,
-            '$.end', end,
+            '$.end', end
           ) AS data
         FROM
-            event
-          WHERE
-            id = ?
+          event
+        WHERE
+          id = ?
         `,
-        [ id ]
-      ).then(rows => JSON.parse(rows[0].data));
+        [id]
+      );
+      return rows[0] ? JSON.parse(rows[0].data) : null;
+    });
+  }
+);
+
+const orderedEventLoader = new DataLoader(
+  async (keys) => {
+    const offset = keys[0];
+    const limit = keys[keys.length - 1] - offset + 1;
+
+    const rows = await db.query(
+      `
+      SELECT
+        JSON_INSERT(
+          props,
+          '$.id', id,
+          '$.owner', owner,
+          '$.display_name', display_name,
+          '$.display_picture', display_picture,
+          '$.type', \`type\`,
+          '$.city', city,
+          '$.start', start,
+          '$.end', end
+        ) AS data
+      FROM
+        event
+      ORDER BY calculated_popularity DESC
+      LIMIT ?
+      OFFSET ?
+      `,
+      [ limit, offset ]
+    );
+
+    return keys.map(key => {
+      if (rows[key - offset]) return JSON.parse(rows[key - offset].data);
+      else return null;
     });
   }
 );
@@ -371,89 +465,120 @@ const resolvers = {
       }
     },
 
-    async businesses(_, { limit, offset, type, sub_type }, { user }) {
+    async business(_, { id }, { user }) {
       _validateAuthenticatedPublicUser(user);
 
-      var result;
-      if (type && sub_type) {
-        result = await db.query(
-          `
-            SELECT
-              JSON_INSERT(
-                props,
-                '$.id', id,
-                '$.approved', approved,
-                '$.rating', calculated_rating,
-                '$.display_name', display_name,
-                '$.display_picture', display_picture,
-                '$.type', \`type\`,
-                '$.sub_type', sub_type
-              ) AS data
-            FROM
-              business
-            WHERE
-              type = ? AND
-              sub_type = ?
-            LIMIT ?
-            OFFSET ?
-          `,
-          [type, sub_type, limit, offset]
-        );
-      }
-      else if (type) {
-        result = await db.query(
-          `
-            SELECT
-              JSON_INSERT(
-                props,
-                '$.id', id,
-                '$.approved', approved,
-                '$.rating', calculated_rating,
-                '$.display_name', display_name,
-                '$.display_picture', display_picture,
-                '$.type', \`type\`,
-                '$.sub_type', sub_type
-              ) AS data
-            FROM
-              business
-            WHERE
-              type = ?
-            LIMIT ?
-            OFFSET ?
-          `,
-          [type, limit, offset]
-        );
+      return await businessLoader.load(id);
+    },
+
+    async businesses(_, { limit, offset, type, sub_types }, { user }) {
+      _validateAuthenticatedPublicUser(user);
+
+      var res = [];
+
+      if (sub_types) {
+        var count = 0;
+        var realOffset = 0;
+
+        // find the real offset according to this filter
+        while (count < offset) {
+          (await orderedBusinessLoader[type].loadMany(
+            Array.from(Array(offset - count), (_, i) => i + realOffset)
+          )).forEach(_ => {
+            if (_) {
+              if (sub_types.includes(_.sub_type)) ++count;
+              ++realOffset;
+            }
+            else {
+              count = offset;
+            }
+          });
+        }
+
+        // collect the result
+        count = 0;
+        while (count < limit) {
+          (await orderedBusinessLoader[type].loadMany(
+            Array.from(Array(limit - count), (_, i) => i + realOffset)
+          )).forEach(_ => {
+            if (_) {
+              if (sub_types.includes(_.sub_type)) {
+                res.push(_);
+                ++count;
+              }
+              ++realOffset;
+            }
+            else {
+              count = limit;
+            }
+          });
+        }
       }
       else {
-        result = await db.query(
-          `
-            SELECT
-              JSON_INSERT(
-                props,
-                '$.id', id,
-                '$.approved', approved,
-                '$.rating', calculated_rating,
-                '$.display_name', display_name,
-                '$.display_picture', display_picture,
-                '$.type', \`type\`,
-                '$.sub_type', sub_type
-              ) AS data
-            FROM
-              business
-            LIMIT ?
-            OFFSET ?
-          `,
-          [limit, offset]
+        res = await orderedBusinessLoader.get(type).loadMany(
+          Array.from(Array(limit), (_, i) => i + offset)
         );
       }
 
-      return result.map(row => JSON.parse(row.data))
+      return res.filter(_ => _ != null);
+    },
+
+    async event(_, { id }, { user }) {
+      _validateAuthenticatedPublicUser(user);
+
+      return await eventLoader.load(id);
     },
 
     async events(_, { limit, offset, type }, { user }) {
       _validateAuthenticatedPublicUser(user);
 
-      return [];
+      var res = [];
+
+      if (type) {
+        var count = 0;
+        var realOffset = 0;
+
+        // find the real offset according to this filter
+        while (count < offset) {
+          (await orderedEventLoader.loadMany(
+            Array.from(Array(offset - count), (_, i) => i + realOffset)
+          )).forEach(_ => {
+            if (_) {
+              if (_.type == type) ++count;
+              ++realOffset;
+            }
+            else {
+              count = offset;
+            }
+          });
+        }
+
+        // collect the result
+        count = 0;
+        while (count < limit) {
+          (await orderedEventLoader.loadMany(
+            Array.from(Array(limit - count), (_, i) => i + realOffset)
+          )).forEach(_ => {
+            if (_) {
+              if (_.type == type) {
+                res.push(_);
+                ++count;
+              }
+              ++realOffset;
+            }
+            else {
+              count = limit;
+            }
+          });
+        }
+      }
+      else {
+        res = await orderedEventLoader.loadMany(
+          Array.from(Array(limit), (_, i) => i + offset)
+        );
+      }
+
+      return res.filter(_ => _ != null);
     }
   },
 

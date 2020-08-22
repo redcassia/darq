@@ -1,8 +1,8 @@
 type Query {
   user: User
-  business(id: ID!): Business!
-  businesses(limit: Int = 100, offset: Int = 0, type: BusinessType, sub_type: String): [Business!]!
-  event(id: ID!): Event!
+  business(id: ID!): Business
+  businesses(limit: Int = 100, offset: Int = 0, type: BusinessType!, sub_types: [String]): [Business!]!
+  event(id: ID!): Event
   events(limit: Int = 100, offset: Int = 0, type: EventType): [Event!]!
 }
 

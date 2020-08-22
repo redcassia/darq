@@ -1,16 +1,16 @@
 import 'dart:ui';
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/res/path_files.dart';
+import 'package:darq/views/home/shared/custom_divider.dart';
+import 'package:darq/views/home/shared/full_img_wrapper.dart';
+import 'package:darq/views/home/shared/leading_row.dart';
+import 'package:darq/views/home/style_const/home_screens_style_const.dart';
+import 'package:darq/views/shared/custom_chip.dart';
+import 'package:darq/views/shared/image_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:darq/views/home/shared/custom_divider.dart';
-import 'package:darq/views/shared/image_container.dart';
-import 'package:darq/views/home/shared/full_img_wrapper.dart';
-import 'package:darq/views/home/shared/txt_leading_row.dart';
-import 'package:darq/views/home/style_const/home_screens_style_const.dart';
-import 'package:darq/views/shared/custom_chip.dart';
 
 parsePersonnelC1({String data}) {
   switch (data) {
@@ -23,24 +23,21 @@ parsePersonnelC2({String data}) {
   switch (data) {
     case "sized_box_7":
       return SizedBox(height: 7.h);
-      
+
     case "sized_box_10":
       return SizedBox(height: 10.h);
-      
 
     case 'personnel_name':
       return Text("Job Title Name", style: kTitle9Rgb_67);
-      
+
     case 'job_type':
-      return
-          Text("Job subtitle", style: kTitle11OddRgb_05);
-      
+      return Text("Job subtitle", style: kTitle11OddRgb_05);
+
     case 'gender':
       return Text("Male", style: kTitle11OddRgb_05);
-      
+
     case 'nationality':
       return Text("Syrian", style: kTitle11OddRgb_05);
-      
   }
 }
 
@@ -48,20 +45,20 @@ parsePersonnelC3({String data, BuildContext context}) {
   switch (data) {
     case "sized_box_14":
       return SizedBox(height: 14.h);
-      
+
     case "sized_box_17":
       return SizedBox(height: 17.h);
-      
+
     case "divider":
       return CustomDivider();
-      
+
     case 'application_number':
       return TextLeadingRow(
           title: "Application Number:",
           titleStyle: kTitle9Rgb_67,
           txt: "225",
           txtStyle: kText9OddRgb_05);
-      
+
     case 'religion_salary':
       return Row(children: [
         SizedBox(
@@ -86,21 +83,21 @@ parsePersonnelC3({String data, BuildContext context}) {
                           AppFonts.title10(color: Color.fromRGBO(0, 0, 0, 0.7)))
                 ])))
       ]);
-      
+
     case 'date_of_birth':
       return TextLeadingRow(
           title: "Date of Birth:",
           titleStyle: kTitle9Rgb_67,
           txt: "December 18, 1989",
           txtStyle: kText9OddRgb_05);
-      
+
     case 'license_exp_date':
       return TextLeadingRow(
           title: "License Expiration Date:",
           titleStyle: kTitle9Rgb_67,
           txt: "Jan 2020",
           txtStyle: kText9OddRgb_05);
-      
+
     case 'status_age':
       return Row(children: [
         SizedBox(
@@ -119,7 +116,7 @@ parsePersonnelC3({String data, BuildContext context}) {
             txt: "31",
             txtStyle: kText9OddRgb_05)
       ]);
-      
+
     case 'contact_kids':
       return Row(children: [
         SizedBox(
@@ -138,7 +135,7 @@ parsePersonnelC3({String data, BuildContext context}) {
             txt: "3",
             txtStyle: kText9OddRgb_05)
       ]);
-      
+
     case 'contact':
       return Row(children: [
         SizedBox(
@@ -151,14 +148,14 @@ parsePersonnelC3({String data, BuildContext context}) {
         ),
         Container(height: 45.h, width: 1.5.h, color: Color(0xFFE5E5E5)),
       ]);
-      
+
     case 'education':
       return TextLeadingRow(
           title: "Education:",
           titleStyle: kTitle9Rgb_67,
           txt: "High School",
           txtStyle: kText9OddRgb_05);
-      
+
     case 'languages':
       return TextLeadingRow(
           title: "Languages:",
@@ -188,7 +185,7 @@ parsePersonnelC3({String data, BuildContext context}) {
               ],
             ),
           ));
-      
+
     case 'years_of_exp':
       return TextLeadingRow(
           title: "Experience:",
@@ -216,7 +213,7 @@ parsePersonnelC3({String data, BuildContext context}) {
                       ]);
                 })
           ])));
-      
+
     case 'height_weight':
       return Row(children: [
         SizedBox(
@@ -248,14 +245,14 @@ parsePersonnelC3({String data, BuildContext context}) {
                           AppFonts.title10(color: Color.fromRGBO(0, 0, 0, 0.7)))
                 ])))
       ]);
-      
+
     case 'skills':
       return Wrap(spacing: 6.w, children: <Widget>[
         Text("Skills:", style: kTitle9Rgb_67),
         SizedBox(height: 17.h),
         for (int i = 0; i < 4; i++) CustomChip(text: "TeamWork")
       ]);
-      
+
     case 'photos':
       return SizedBox(
           height: 125.h,
@@ -294,6 +291,5 @@ parsePersonnelC3({String data, BuildContext context}) {
                                   }));
                         }))
               ]));
-      
   }
 }

@@ -6,9 +6,9 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:darq/views/shared/image_container.dart';
 import 'package:darq/views/shared/star_rating.dart';
-import 'package:darq/views/home/shared/txt_leading_row.dart';
+import 'package:darq/views/home/shared/leading_row.dart';
 import 'package:darq/views/home/style_const/home_screens_style_const.dart';
-import 'package:darq/views/shared/buttons/button.dart';
+import 'package:darq/views/shared/button.dart';
 import 'package:darq/views/home/screens/profile_template.dart';
 
 

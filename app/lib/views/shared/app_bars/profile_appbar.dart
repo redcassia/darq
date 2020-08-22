@@ -7,7 +7,7 @@ import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/res/path_files.dart';
 import 'package:darq/views/shared/capsule/right_rounded_capsule.dart';
 import 'package:darq/views/shared/capsule/left_rounded_capsule.dart';
-import 'package:darq/views/shared/buttons/button.dart';
+import 'package:darq/views/shared/button.dart';
 
 class ProfileAppBar extends StatelessWidget {
   const ProfileAppBar({Key key, this.backArrowBgColor, this.filterIndicator, this.buttonName})

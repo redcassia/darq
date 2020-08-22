@@ -51,12 +51,22 @@ const businessUserLoader = new DataLoader(
 
 const publicUserLoader = new DataLoader(
   async (ids) => {
-    return ids.map(async (id) => {
-      const rows = await db.query(
-        "SELECT * FROM public_user WHERE id = ?",
-        [id]
-      );
-      return rows[0];
+    return ids.map((id) => {
+      return db.query(
+        `
+        SELECT
+          CAST(id AS CHAR(18)) AS id,
+          create_time,
+          last_login,
+          first_name,
+          last_name
+        FROM
+          public_user
+        WHERE
+          id = ?
+        `,
+        [ id ]
+      ).then(rows => rows[0]);
     });
   }
 );
@@ -620,34 +630,38 @@ const resolvers = {
     },
 
     async authenticatePublicUser(_, { id }) {
+      var valid = false;
       try {
         const result = await db.query(
           "UPDATE public_user SET last_login=CURRENT_TIMESTAMP WHERE id=?",
           [ id ]
         );
 
-        if (result.affectedRows == 1) {
-          // clear cached data
-          publicUserLoader.clear(id);
-
-          // return json web token
-          return jsonwebtoken.sign(
-            { id: id, type: 'public' },
-            process.env.JWT_SECRET,
-            { expiresIn: '1d' }
-          );
-        }
-        else {
-          throw new ApolloError(
-            "Invalid ID. Please make sure the user ID is correct or signup again to obtain a new ID",
-            'PUBLIC_USER_LOGIN_REJECTED'
-          );
-        }
+        valid = result.affectedRows == 1;
       }
       catch(e) {
+        console.log(e);
         throw new ApolloError(
           "Failed to login.",
           'PUBLIC_USER_LOGIN_FAILED'
+        );
+      }
+
+      if (valid) {
+        // clear cached data
+        publicUserLoader.clear(id);
+
+        // return json web token
+        return jsonwebtoken.sign(
+          { id: id, type: 'public' },
+          process.env.JWT_SECRET,
+          { expiresIn: '1d' }
+        );
+      }
+      else {
+        throw new ApolloError(
+          "Invalid ID. Please make sure the user ID is correct or signup again to obtain a new ID",
+          'PUBLIC_USER_LOGIN_REJECTED'
         );
       }
     },
@@ -677,7 +691,9 @@ const resolvers = {
             [ id ]
           );
         }
-        catch(e) { }
+        catch(e) {
+          console.log(e);
+        }
 
         // delete cached information
         businessUserLoader.clear(id);

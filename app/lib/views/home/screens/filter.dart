@@ -5,7 +5,7 @@ import 'package:darq/utilities/constants.dart';
 import 'dart:ui';
 import 'package:flutter/rendering.dart';
 import 'package:darq/elements/app_fonts.dart';
-import 'package:darq/views/shared/buttons/button.dart';
+import 'package:darq/views/shared/button.dart';
 import 'package:darq/model/item_model_class.dart';
 
 class Filter extends StatefulWidget {

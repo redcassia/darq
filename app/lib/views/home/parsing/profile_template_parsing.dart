@@ -8,9 +8,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:darq/views/home/shared/custom_divider.dart';
 import 'package:darq/views/shared/image_container.dart';
 import 'package:darq/views/shared/star_rating.dart';
-import 'package:darq/views/home/shared/icon_leading_row.dart';
 import 'package:darq/views/home/shared/full_img_wrapper.dart';
-import 'package:darq/views/home/shared/txt_leading_row.dart';
+import 'package:darq/views/home/shared/leading_row.dart';
 import 'package:darq/views/home/style_const/home_screens_style_const.dart';
 import 'package:darq/views/shared/custom_chip.dart';
 import 'package:darq/views/shared/custom_card.dart';
@@ -465,3 +464,4 @@ parseC3({String data, BuildContext context}) {
       );
   }
 }
+

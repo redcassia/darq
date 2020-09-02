@@ -749,24 +749,24 @@ type Price {
   value: Float
   valueLower: Float
   valueUpper: Float
-  currency: Currency
+  currency: Currency!
 }
 
 input PriceInput {
   value: Float
   valueLower: Float
   valueUpper: Float
-  currency: Currency
+  currency: Currency!
 }
 
 type Duration {
-  start: String
-  end: String
+  start: String!
+  end: String!
 }
 
 input DurationInput {
-  start: String
-  end: String
+  start: String!
+  end: String!
 }
 
 type Hours {

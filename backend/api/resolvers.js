@@ -8,7 +8,30 @@ const { ApolloError } = require('apollo-server-express');
 
 class Database {
   constructor(config) {
-      this.connection = mysql.createConnection( config );
+    this.config = config;
+    this.connect();
+  }
+
+  connect() {
+    this.connection = mysql.createConnection(this.config);
+    
+    this.connection.connect(function(err) {
+      if(err) {
+        console.log('Error connecting to DB. ', err);
+        setTimeout(handleDisconnect, 2000);
+      }
+    });
+
+    this.connection.on('error', function(err) {
+      if(err.code === 'PROTOCOL_CONNECTION_LOST') {
+        console.log('Connection to DB lost. Renewing connection.');
+        this.connect();
+      }
+      else {
+        console.log('DB connection error. ', err);
+        throw err;
+      }
+    });
   }
 
   query(sql, args) {

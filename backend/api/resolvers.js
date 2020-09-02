@@ -8,7 +8,30 @@ const { ApolloError } = require('apollo-server-express');
 
 class Database {
   constructor(config) {
-      this.connection = mysql.createConnection( config );
+    this.config = config;
+    this.connect();
+  }
+
+  connect() {
+    this.connection = mysql.createConnection(this.config);
+    
+    this.connection.connect(function(err) {
+      if(err) {
+        console.log('Error connecting to DB. ', err);
+        setTimeout(handleDisconnect, 2000);
+      }
+    });
+
+    this.connection.on('error', function(err) {
+      if(err.code === 'PROTOCOL_CONNECTION_LOST') {
+        console.log('Connection to DB lost. Renewing connection.');
+        this.connect();
+      }
+      else {
+        console.log('DB connection error. ', err);
+        throw err;
+      }
+    });
   }
 
   query(sql, args) {
@@ -108,7 +131,7 @@ const orderedBusinessLoader = new Map(
     'BeautyBusiness',
     'TransportationBusiness',
     'HospitalityBusiness',
-    'StationaryBusiness',
+    'StationeryBusiness',
     'MadeInQatarBusiness',
     'SportsBusiness',
     'EntertainmentBusiness',
@@ -301,7 +324,7 @@ async function _addBusiness(data, owner) {
   }
   catch(e) {
     console.log(e);
-    throw new ApolloError("Failed to add businesss.", 'ADD_BUSINESS_FAILED');
+    throw new ApolloError("Failed to add business.", 'ADD_BUSINESS_FAILED');
   }
 }
 
@@ -328,7 +351,7 @@ async function _updateBusiness(id, data) {
   }
   catch(e) {
     console.log(e);
-    throw new ApolloError("Failed to update businesss.", 'UPDATE_BUSINESS_FAILED');
+    throw new ApolloError("Failed to update business.", 'UPDATE_BUSINESS_FAILED');
   }
 }
 
@@ -833,19 +856,19 @@ const resolvers = {
       return business;
     },
 
-    async addStationaryBusiness(_, { data }, { user }) {
+    async addStationeryBusiness(_, { data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
 
-      data.type = 'StationaryBusiness';
+      data.type = 'StationeryBusiness';
 
       var id = await _addBusiness(data, user.id);
       var business = await businessLoader.load(id);
       return business;
     },
 
-    async updateStationaryBusiness(_, { id, data }, { user }) {
+    async updateStationeryBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
-      await _validateBusinessOwnerAndType(user, id, 'StationaryBusiness');
+      await _validateBusinessOwnerAndType(user, id, 'StationeryBusiness');
 
       await _updateBusiness(id, data);
       var business = await businessLoader.load(id);

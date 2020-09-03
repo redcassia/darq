@@ -192,9 +192,7 @@ const eventLoader = new DataLoader(
             '$.display_name', display_name,
             '$.display_picture', display_picture,
             '$.type', \`type\`,
-            '$.city', city,
-            '$.start', start,
-            '$.end', end
+            '$.city', city
           ) AS data
         FROM
           event
@@ -223,9 +221,7 @@ const orderedEventLoader = new DataLoader(
           '$.display_name', display_name,
           '$.display_picture', display_picture,
           '$.type', \`type\`,
-          '$.city', city,
-          '$.start', start,
-          '$.end', end
+          '$.city', city
         ) AS data
       FROM
         event
@@ -364,8 +360,8 @@ async function _addEvent(data, owner) {
     var display_picture = data.display_picture; delete props.display_picture;
     var type = data.type; delete props.type;
     var city = data.city; delete props.city;
-    var start = data.start; delete props.start;
-    var end = data.end; delete props.end;
+    var start = data.duration.start;
+    var end = data.duration.end;
 
     const result = await db.query(
       `
@@ -435,16 +431,11 @@ async function _updateEvent(id, data) {
       delete data.city;
     }
 
-    if (data.start) {
+    if (data.duration) {
       fields.push("start = ?");
-      args.push(data.start);
-      delete data.start;
-    }
-
-    if (data.end) {
+      args.push(data.duration.start);
       fields.push("end = ?");
-      args.push(data.end);
-      delete data.end;
+      args.push(data.duration.end);
     }
 
     if (Object.keys(data).length > 0) {

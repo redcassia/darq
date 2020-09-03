@@ -9,45 +9,24 @@ const { ApolloError } = require('apollo-server-express');
 class Database {
   constructor(config) {
     this.config = config;
-    this.connect();
-  }
-
-  connect() {
-    this.connection = mysql.createConnection(this.config);
-    
-    this.connection.connect(function(err) {
-      if(err) {
-        console.log('Error connecting to DB. ', err);
-        setTimeout(handleDisconnect, 2000);
-      }
-    });
-
-    this.connection.on('error', function(err) {
-      if(err.code === 'PROTOCOL_CONNECTION_LOST') {
-        console.log('Connection to DB lost. Renewing connection.');
-        this.connect();
-      }
-      else {
-        console.log('DB connection error. ', err);
-        throw err;
-      }
-    });
+    this.pool = mysql.createPool(this.config);
   }
 
   query(sql, args) {
     return new Promise((resolve, reject) => {
-      this.connection.query(sql, args, (err, rows) => {
-        if (err) return reject(err);
-        resolve(rows);
-      });
-    });
-  }
+      this.pool.getConnection(function(err, connection) {
+        if (err) {
+          connection.release();
+          console.log("Error getting a MySQL connection from pool. ", err);
+          reject(err);
+        }
 
-  close() {
-    return new Promise((resolve, reject) => {
-      this.connection.end(err => {
-          if (err) return reject(err);
-          resolve();
+        connection.query(sql, args, (err, rows) => {
+          if (err) reject(err);
+          else resolve(rows);
+
+          connection.release();
+        });
       });
     });
   }
@@ -57,7 +36,8 @@ var db = new Database({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
+  database: process.env.DB_NAME,
+  connectionLimit: process.env.DB_CONNECTION_LIMIT
 });
 
 const businessUserLoader = new DataLoader(

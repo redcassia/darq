@@ -415,6 +415,7 @@ type StationeryBusiness implements Business {
   cities: [City!]
   type: BusinessType!
   # specialization
+  description: String!
   institution_number: String!
   street_address: String!
   phone_number: [String!]!
@@ -426,6 +427,7 @@ input NewStationeryBusinessInput {
   display_name: String!
   display_picture: String!
   cities: [City!]
+  description: String!
   institution_number: String!
   street_address: String!
   phone_number: [String!]!
@@ -437,6 +439,7 @@ input UpdateStationeryBusinessInput {
   display_name: String
   display_picture: String
   cities: [City!]
+  description: String
   institution_number: String
   street_address: String
   phone_number: [String!]

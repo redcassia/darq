@@ -9,45 +9,24 @@ const { ApolloError } = require('apollo-server-express');
 class Database {
   constructor(config) {
     this.config = config;
-    this.connect();
-  }
-
-  connect() {
-    this.connection = mysql.createConnection(this.config);
-    
-    this.connection.connect(function(err) {
-      if(err) {
-        console.log('Error connecting to DB. ', err);
-        setTimeout(handleDisconnect, 2000);
-      }
-    });
-
-    this.connection.on('error', function(err) {
-      if(err.code === 'PROTOCOL_CONNECTION_LOST') {
-        console.log('Connection to DB lost. Renewing connection.');
-        this.connect();
-      }
-      else {
-        console.log('DB connection error. ', err);
-        throw err;
-      }
-    });
+    this.pool = mysql.createPool(this.config);
   }
 
   query(sql, args) {
     return new Promise((resolve, reject) => {
-      this.connection.query(sql, args, (err, rows) => {
-        if (err) return reject(err);
-        resolve(rows);
-      });
-    });
-  }
+      this.pool.getConnection(function(err, connection) {
+        if (err) {
+          connection.release();
+          console.log("Error getting a MySQL connection from pool. ", err);
+          reject(err);
+        }
 
-  close() {
-    return new Promise((resolve, reject) => {
-      this.connection.end(err => {
-          if (err) return reject(err);
-          resolve();
+        connection.query(sql, args, (err, rows) => {
+          if (err) reject(err);
+          else resolve(rows);
+
+          connection.release();
+        });
       });
     });
   }
@@ -57,7 +36,8 @@ var db = new Database({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
+  database: process.env.DB_NAME,
+  connectionLimit: process.env.DB_CONNECTION_LIMIT
 });
 
 const businessUserLoader = new DataLoader(
@@ -192,9 +172,7 @@ const eventLoader = new DataLoader(
             '$.display_name', display_name,
             '$.display_picture', display_picture,
             '$.type', \`type\`,
-            '$.city', city,
-            '$.start', start,
-            '$.end', end
+            '$.city', city
           ) AS data
         FROM
           event
@@ -223,9 +201,7 @@ const orderedEventLoader = new DataLoader(
           '$.display_name', display_name,
           '$.display_picture', display_picture,
           '$.type', \`type\`,
-          '$.city', city,
-          '$.start', start,
-          '$.end', end
+          '$.city', city
         ) AS data
       FROM
         event
@@ -364,8 +340,8 @@ async function _addEvent(data, owner) {
     var display_picture = data.display_picture; delete props.display_picture;
     var type = data.type; delete props.type;
     var city = data.city; delete props.city;
-    var start = data.start; delete props.start;
-    var end = data.end; delete props.end;
+    var start = data.duration.start;
+    var end = data.duration.end;
 
     const result = await db.query(
       `
@@ -435,16 +411,11 @@ async function _updateEvent(id, data) {
       delete data.city;
     }
 
-    if (data.start) {
+    if (data.duration) {
       fields.push("start = ?");
-      args.push(data.start);
-      delete data.start;
-    }
-
-    if (data.end) {
+      args.push(data.duration.start);
       fields.push("end = ?");
-      args.push(data.end);
-      delete data.end;
+      args.push(data.duration.end);
     }
 
     if (Object.keys(data).length > 0) {

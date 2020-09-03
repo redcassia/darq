@@ -298,6 +298,7 @@ async function _addBusiness(data, owner) {
     var display_name = data.display_name; delete props.display_name;
     var display_picture = data.display_picture; delete props.display_picture;
     var type = data.type; delete props.type;
+    if (! props.sub_type_string) props.sub_type_string = props.sub_type;
     var sub_type = data.sub_type; delete props.sub_type;
 
     const result = await db.query(
@@ -860,6 +861,7 @@ const resolvers = {
       _validateAuthenticatedBusinessUser(user);
 
       data.type = 'StationeryBusiness';
+      data.sub_type = 'Stationery';
 
       var id = await _addBusiness(data, user.id);
       var business = await businessLoader.load(id);

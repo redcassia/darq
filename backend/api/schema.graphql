@@ -106,7 +106,7 @@ input NewSelfEmployedBusinessInput {
   display_picture: String!
   cities: [City!]
   sub_type: SelfEmployedSubType!
-  sub_type_string: String!
+  sub_type_string: String
   gender: Gender!
   nationality: Nationality!
   phone_number: String!
@@ -147,6 +147,7 @@ type ChildEducationBusiness implements Business {
   type: BusinessType!
   # specialization
   sub_type: ChildEducationSubType!
+  sub_type_string: String!
   institution_number: String!
   street_address: String!
   phone_number: [String!]!
@@ -161,6 +162,7 @@ input NewChildEducationBusinessInput {
   display_picture: String!
   cities: [City!]
   sub_type: ChildEducationSubType!
+  sub_type_string: String
   institution_number: String!
   street_address: String!
   phone_number: [String!]!
@@ -175,6 +177,7 @@ input UpdateChildEducationBusinessInput {
   display_picture: String
   cities: [City!]
   sub_type: ChildEducationSubType
+  sub_type_string: String
   institution_number: String
   street_address: String
   phone_number: [String!]
@@ -195,6 +198,8 @@ type DomesticHelpBusiness implements Business {
   cities: [City!]
   type: BusinessType!
   # specialization
+  sub_type: DomesticHelpSubType!
+  sub_type_string: String!
   institution_number: String!
   street_address: String!
   phone_number: [String!]!
@@ -206,6 +211,8 @@ input NewDomesticHelpBusinessInput {
   display_name: String!
   display_picture: String!
   cities: [City!]
+  sub_type: DomesticHelpSubType!
+  sub_type_string: String
   institution_number: String!
   street_address: String!
   phone_number: [String!]!
@@ -217,6 +224,8 @@ input UpdateDomesticHelpBusinessInput {
   display_name: String
   display_picture: String
   cities: [City!]
+  sub_type: DomesticHelpSubType
+  sub_type_string: String
   institution_number: String
   street_address: String
   phone_number: [String!]
@@ -236,6 +245,7 @@ type BeautyBusiness implements Business {
   type: BusinessType!
   # specialization
   sub_type: BeautyBusinessSubType!
+  sub_type_string: String!
   institution_number: String!
   street_address: String!
   operating_hours: Hours!
@@ -252,6 +262,7 @@ input NewBeautyBusinessInput {
   display_picture: String!
   cities: [City!]
   sub_type: BeautyBusinessSubType!
+  sub_type_string: String
   institution_number: String!
   street_address: String!
   operating_hours: HoursInput!
@@ -268,6 +279,7 @@ input UpdateBeautyBusinessInput {
   display_picture: String
   cities: [City!]
   sub_type: BeautyBusinessSubType
+  sub_type_string: String
   institution_number: String
   street_address: String
   operating_hours: HoursInput
@@ -291,6 +303,7 @@ type TransportationBusiness implements Business {
   type: BusinessType!
   # specialization
   sub_type: TransportationBusinessSubType!
+  sub_type_string: String!
   institution_number: String!
   street_address: String!
   operating_hours: Hours!
@@ -306,6 +319,7 @@ input NewTransportationBusinessInput {
   display_picture: String!
   cities: [City!]
   sub_type: TransportationBusinessSubType!
+  sub_type_string: String
   institution_number: String!
   street_address: String!
   operating_hours: HoursInput!
@@ -321,6 +335,7 @@ input UpdateTransportationBusinessInput {
   display_picture: String
   cities: [City!]
   sub_type: TransportationBusinessSubType
+  sub_type_string: String
   institution_number: String
   street_address: String
   operating_hours: HoursInput
@@ -343,6 +358,7 @@ type HospitalityBusiness implements Business {
   type: BusinessType!
   # specialization
   sub_type: HospitalityBusinessSubType!
+  sub_type_string: String!
   institution_number: String!
   street_address: String!
   phone_number: [String!]!
@@ -359,6 +375,7 @@ input NewHospitalityBusinessInput {
   display_picture: String!
   cities: [City!]
   sub_type: HospitalityBusinessSubType!
+  sub_type_string: String
   institution_number: String!
   street_address: String!
   phone_number: [String!]!
@@ -375,6 +392,7 @@ input UpdateHospitalityBusinessInput {
   display_picture: String
   cities: [City!]
   sub_type: HospitalityBusinessSubType
+  sub_type_string: String
   institution_number: String
   street_address: String
   phone_number: [String!]
@@ -438,6 +456,7 @@ type MadeInQatarBusiness implements Business {
   type: BusinessType!
   # specialization
   sub_type: MadeInQatarBusinessSubType!
+  sub_type_string: String!
   street_address: String!
   phone_number: [String!]!
   description: String!
@@ -452,6 +471,7 @@ input NewMadeInQatarBusinessInput {
   display_picture: String!
   cities: [City!]
   sub_type: MadeInQatarBusinessSubType!
+  sub_type_string: String
   street_address: String!
   phone_number: [String!]!
   description: String!
@@ -466,6 +486,7 @@ input UpdateMadeInQatarBusinessInput {
   display_picture: String
   cities: [City!]
   sub_type: MadeInQatarBusinessSubType
+  sub_type_string: String
   street_address: String
   phone_number: [String!]
   description: String
@@ -487,6 +508,7 @@ type SportsBusiness implements Business {
   type: BusinessType!
   # specialization
   sub_type: SportsBusinessSubType!
+  sub_type_string: String!
   institution_number: String!
   street_address: String!
   operating_hours: Hours!
@@ -504,6 +526,7 @@ input NewSportsBusinessInput {
   display_picture: String!
   cities: [City!]
   sub_type: SportsBusinessSubType!
+  sub_type_string: String
   institution_number: String!
   street_address: String!
   operating_hours: HoursInput!
@@ -521,6 +544,7 @@ input UpdateSportsBusinessInput {
   display_picture: String
   cities: [City!]
   sub_type: SportsBusinessSubType
+  sub_type_string: String
   institution_number: String
   street_address: String
   operating_hours: HoursInput
@@ -545,6 +569,7 @@ type EntertainmentBusiness implements Business {
   type: BusinessType!
   # specialization
   sub_type: EntertainmentBusinessSubType!
+  sub_type_string: String!
   institution_number: String!
   street_address: String!
   operating_hours: Hours!
@@ -560,6 +585,7 @@ input NewEntertainmentBusinessInput {
   display_picture: String!
   cities: [City!]
   sub_type: EntertainmentBusinessSubType!
+  sub_type_string: String
   institution_number: String!
   street_address: String!
   operating_hours: HoursInput!
@@ -575,6 +601,7 @@ input UpdateEntertainmentBusinessInput {
   display_picture: String
   cities: [City!]
   sub_type: EntertainmentBusinessSubType
+  sub_type_string: String
   institution_number: String
   street_address: String
   operating_hours: HoursInput
@@ -597,6 +624,7 @@ type FoodBusiness implements Business {
   type: BusinessType!
   # specialization
   sub_type: FoodBusinessSubType!
+  sub_type_string: String!
   institution_number: String!
   street_address: String!
   operating_hours: Hours!
@@ -612,6 +640,7 @@ input NewFoodBusinessInput {
   display_picture: String!
   cities: [City!]
   sub_type: FoodBusinessSubType!
+  sub_type_string: String
   institution_number: String!
   street_address: String!
   operating_hours: HoursInput!
@@ -627,6 +656,7 @@ input UpdateFoodBusinessInput {
   display_picture: String
   cities: [City!]
   sub_type: FoodBusinessSubType
+  sub_type_string: String
   institution_number: String
   street_address: String
   operating_hours: HoursInput
@@ -649,6 +679,7 @@ type CleaningAndMaintenanceBusiness implements Business {
   type: BusinessType!
   # specialization
   sub_type: CleaningAndMaintenanceBusinessSubType!
+  sub_type_string: String!
   institution_number: String!
   street_address: String!
   operating_hours: Hours!
@@ -665,6 +696,7 @@ input NewCleaningAndMaintenanceBusinessInput {
   display_picture: String!
   cities: [City!]
   sub_type: CleaningAndMaintenanceBusinessSubType!
+  sub_type_string: String
   institution_number: String!
   street_address: String!
   operating_hours: HoursInput!
@@ -681,6 +713,7 @@ input UpdateCleaningAndMaintenanceBusinessInput {
   display_picture: String
   cities: [City!]
   sub_type: CleaningAndMaintenanceBusinessSubType
+  sub_type_string: String
   institution_number: String
   street_address: String
   operating_hours: HoursInput

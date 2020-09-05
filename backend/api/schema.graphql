@@ -114,7 +114,7 @@ type SelfEmployedBusiness implements Business {
   nationality: Nationality!
   phone_number: String!
   description: String!
-  skills: [String!]
+  skills: [String!]!
   experience: [PersonalExperience!]!
   charge: Price!
   government_id: String!
@@ -131,7 +131,7 @@ input NewSelfEmployedBusinessInput {
   nationality: Nationality!
   phone_number: String!
   description: String!
-  skills: [String!]
+  skills: [String!]!
   experience: [PersonalExperienceInput!]!
   charge: PriceInput!
   government_id: String!
@@ -275,7 +275,7 @@ type BeautyBusiness implements Business {
   phone_number: [String!]!
   description: String!
   home_service_available: Boolean!
-  services: [String!]
+  services: [String!]!
   website: String
   attachments: [String!]
 }
@@ -292,7 +292,7 @@ input NewBeautyBusinessInput {
   phone_number: [String!]!
   description: String!
   home_service_available: Boolean!
-  services: [String!]
+  services: [String!]!
   website: String
   attachments: [String!]
 }
@@ -333,7 +333,7 @@ type TransportationBusiness implements Business {
   operating_hours: Hours!
   phone_number: [String!]!
   description: String!
-  services: [String!]
+  services: [String!]!
   website: String
   attachments: [String!]
 }
@@ -349,7 +349,7 @@ input NewTransportationBusinessInput {
   operating_hours: HoursInput!
   phone_number: [String!]!
   description: String!
-  services: [String!]
+  services: [String!]!
   website: String
   attachments: [String!]
 }
@@ -390,7 +390,7 @@ type HospitalityBusiness implements Business {
   description: String!
   home_service_available: Boolean!
   charge: Price
-  services: [String!]
+  services: [String!]!
   website: String
   attachments: [String!]
 }
@@ -407,7 +407,7 @@ input NewHospitalityBusinessInput {
   description: String!
   home_service_available: Boolean!
   charge: PriceInput
-  services: [String!]
+  services: [String!]!
   website: String
   attachments: [String!]
 }
@@ -607,7 +607,7 @@ type EntertainmentBusiness implements Business {
   operating_hours: Hours!
   phone_number: [String!]!
   description: String!
-  activities: [String!]
+  activities: [String!]!
   website: String
   attachments: [String!]
 }
@@ -623,7 +623,7 @@ input NewEntertainmentBusinessInput {
   operating_hours: HoursInput!
   phone_number: [String!]!
   description: String!
-  activities: [String!]
+  activities: [String!]!
   website: String
   attachments: [String!]
 }
@@ -664,7 +664,7 @@ type FoodBusiness implements Business {
   phone_number: [String!]!
   description: String!
   website: String
-  menu: [String!]
+  menu: [String!]!
   attachments: [String!]
 }
 
@@ -680,7 +680,7 @@ input NewFoodBusinessInput {
   phone_number: [String!]!
   description: String!
   website: String
-  menu: [String!]
+  menu: [String!]!
   attachments: [String!]
 }
 
@@ -770,8 +770,8 @@ type Event {
   street_address: String
   phone_number: [String!]
   description: String!
-  duration: Duration
-  hours: Hours
+  duration: Duration!
+  hours: Hours!
   ticket_website: String
   ticket_price: Price
   organizer: String!
@@ -786,8 +786,8 @@ input NewEventInput {
   street_address: String
   phone_number: [String!]
   description: String!
-  duration: DurationInput
-  hours: HoursInput
+  duration: DurationInput!
+  hours: HoursInput!
   ticket_website: String
   ticket_price: PriceInput
   organizer: String!

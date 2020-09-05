@@ -1,9 +1,13 @@
 type Query {
   user: User
   business(id: ID!): Business
-  businesses(limit: Int = 100, offset: Int = 0, type: BusinessType!, sub_types: [String]): [Business!]!
+  businesses(limit: Int! = 100, offset: Int! = 0, type: BusinessType!, sub_types: [String]): [Business!]!
   event(id: ID!): Event
-  events(limit: Int = 100, offset: Int = 0, type: EventType): [Event!]!
+  events(limit: Int! = 100, offset: Int! = 0, type: EventType): [Event!]!
+
+  # admin queries
+
+  admin: Admin!
 }
 
 type Mutation {
@@ -13,47 +17,56 @@ type Mutation {
   authenticatePublicUser(id: ID!): String
   authenticateBusinessUser(email: String!, password: String!): String
 
-  changeBusinessUserPassword(oldPassword: String!, newPassword: String!): String
+  changeBusinessUserPassword(oldPassword: String!, newPassword: String!): Void
 
-  addSelfEmployedBusiness(data: NewSelfEmployedBusinessInput!): SelfEmployedBusiness!
-  updateSelfEmployedBusiness(id: ID!, data: UpdateSelfEmployedBusinessInput!): SelfEmployedBusiness!
+  addSelfEmployedBusiness(data: NewSelfEmployedBusinessInput!): Void
+  updateSelfEmployedBusiness(id: ID!, data: UpdateSelfEmployedBusinessInput!): Void
 
-  addChildEducationBusiness(data: NewChildEducationBusinessInput!): ChildEducationBusiness!
-  updateChildEducationBusiness(id: ID!, data: UpdateChildEducationBusinessInput!): ChildEducationBusiness!
+  addChildEducationBusiness(data: NewChildEducationBusinessInput!): Void
+  updateChildEducationBusiness(id: ID!, data: UpdateChildEducationBusinessInput!): Void
 
-  addDomesticHelpBusiness(data: NewDomesticHelpBusinessInput!): DomesticHelpBusiness!
-  updateDomesticHelpBusiness(id: ID!, data: UpdateDomesticHelpBusinessInput!): DomesticHelpBusiness!
+  addDomesticHelpBusiness(data: NewDomesticHelpBusinessInput!): Void
+  updateDomesticHelpBusiness(id: ID!, data: UpdateDomesticHelpBusinessInput!): Void
 
-  addBeautyBusiness(data: NewBeautyBusinessInput!): BeautyBusiness!
-  updateBeautyBusiness(id: ID!, data: UpdateBeautyBusinessInput!): BeautyBusiness!
+  addBeautyBusiness(data: NewBeautyBusinessInput!): Void
+  updateBeautyBusiness(id: ID!, data: UpdateBeautyBusinessInput!): Void
 
-  addTransportationBusiness(data: NewTransportationBusinessInput!): TransportationBusiness!
-  updateTransportationBusiness(id: ID!, data: UpdateTransportationBusinessInput!): TransportationBusiness!
+  addTransportationBusiness(data: NewTransportationBusinessInput!): Void
+  updateTransportationBusiness(id: ID!, data: UpdateTransportationBusinessInput!): Void
 
-  addHospitalityBusiness(data: NewHospitalityBusinessInput!): HospitalityBusiness!
-  updateHospitalityBusiness(id: ID!, data: UpdateHospitalityBusinessInput!): HospitalityBusiness!
+  addHospitalityBusiness(data: NewHospitalityBusinessInput!): Void
+  updateHospitalityBusiness(id: ID!, data: UpdateHospitalityBusinessInput!): Void
 
-  addStationeryBusiness(data: NewStationeryBusinessInput!): StationeryBusiness!
-  updateStationeryBusiness(id: ID!, data: UpdateStationeryBusinessInput!): StationeryBusiness!
+  addStationeryBusiness(data: NewStationeryBusinessInput!): Void
+  updateStationeryBusiness(id: ID!, data: UpdateStationeryBusinessInput!): Void
 
-  addMadeInQatarBusiness(data: NewMadeInQatarBusinessInput!): MadeInQatarBusiness!
-  updateMadeInQatarBusiness(id: ID!, data: UpdateMadeInQatarBusinessInput!): MadeInQatarBusiness!
+  addMadeInQatarBusiness(data: NewMadeInQatarBusinessInput!): Void
+  updateMadeInQatarBusiness(id: ID!, data: UpdateMadeInQatarBusinessInput!): Void
 
-  addSportsBusiness(data: NewSportsBusinessInput!): SportsBusiness!
-  updateSportsBusiness(id: ID!, data: UpdateSportsBusinessInput!): SportsBusiness!
+  addSportsBusiness(data: NewSportsBusinessInput!): Void
+  updateSportsBusiness(id: ID!, data: UpdateSportsBusinessInput!): Void
 
-  addEntertainmentBusiness(data: NewEntertainmentBusinessInput!): EntertainmentBusiness!
-  updateEntertainmentBusiness(id: ID!, data: UpdateEntertainmentBusinessInput!): EntertainmentBusiness!
+  addEntertainmentBusiness(data: NewEntertainmentBusinessInput!): Void
+  updateEntertainmentBusiness(id: ID!, data: UpdateEntertainmentBusinessInput!): Void
 
-  addFoodBusiness(data: NewFoodBusinessInput!): FoodBusiness!
-  updateFoodBusiness(id: ID!, data: UpdateFoodBusinessInput!): FoodBusiness!
+  addFoodBusiness(data: NewFoodBusinessInput!): Void
+  updateFoodBusiness(id: ID!, data: UpdateFoodBusinessInput!): Void
 
-  addCleaningAndMaintenanceBusiness(data: NewCleaningAndMaintenanceBusinessInput!): CleaningAndMaintenanceBusiness!
-  updateCleaningAndMaintenanceBusiness(id: ID!, data: UpdateCleaningAndMaintenanceBusinessInput!): CleaningAndMaintenanceBusiness!
+  addCleaningAndMaintenanceBusiness(data: NewCleaningAndMaintenanceBusinessInput!): Void
+  updateCleaningAndMaintenanceBusiness(id: ID!, data: UpdateCleaningAndMaintenanceBusinessInput!): Void
 
-  addEvent(data: NewEventInput!): Event!
-  updateEvent(id: ID!, data: UpdateEventInput!): Event!
+  addEvent(data: NewEventInput!): Void
+  updateEvent(id: ID!, data: UpdateEventInput!): Void
+
+  # admin mutations
+
+  authenticateAdmin(key: String!): String
+
+  reviewBusiness(id: ID!, approve: Boolean!): Void
+  reviewBusinessUpdate(id: ID!, approve: Boolean!): Void
 }
+
+scalar Void
 
 type User {
   id: ID!
@@ -67,9 +80,15 @@ type User {
   owned_events: [Event!]
 }
 
+type Admin {
+  tentativeNewBusinesses: [Business!]!
+  tentativeBusinessUpdates: [Business!]!
+}
+
 interface Business {
   id: ID!
-  approved: Boolean!
+  update: Business
+  approved: ApproveStatus!
   rating: Float!
   display_name: String!
   display_picture: String!
@@ -81,7 +100,8 @@ interface Business {
 
 type SelfEmployedBusiness implements Business {
   id: ID!
-  approved: Boolean!
+  update: Business
+  approved: ApproveStatus!
   rating: Float!
   display_name: String!
   display_picture: String!
@@ -139,7 +159,8 @@ input UpdateSelfEmployedBusinessInput {
 
 type ChildEducationBusiness implements Business {
   id: ID!
-  approved: Boolean!
+  update: Business
+  approved: ApproveStatus!
   rating: Float!
   display_name: String!
   display_picture: String!
@@ -191,7 +212,8 @@ input UpdateChildEducationBusinessInput {
 
 type DomesticHelpBusiness implements Business {
   id: ID!
-  approved: Boolean!
+  update: Business
+  approved: ApproveStatus!
   rating: Float!
   display_name: String!
   display_picture: String!
@@ -237,7 +259,8 @@ input UpdateDomesticHelpBusinessInput {
 
 type BeautyBusiness implements Business {
   id: ID!
-  approved: Boolean!
+  update: Business
+  approved: ApproveStatus!
   rating: Float!
   display_name: String!
   display_picture: String!
@@ -295,7 +318,8 @@ input UpdateBeautyBusinessInput {
 
 type TransportationBusiness implements Business {
   id: ID!
-  approved: Boolean!
+  update: Business
+  approved: ApproveStatus!
   rating: Float!
   display_name: String!
   display_picture: String!
@@ -350,7 +374,8 @@ input UpdateTransportationBusinessInput {
 
 type HospitalityBusiness implements Business {
   id: ID!
-  approved: Boolean!
+  update: Business
+  approved: ApproveStatus!
   rating: Float!
   display_name: String!
   display_picture: String!
@@ -408,7 +433,8 @@ input UpdateHospitalityBusinessInput {
 
 type StationeryBusiness implements Business {
   id: ID!
-  approved: Boolean!
+  update: Business
+  approved: ApproveStatus!
   rating: Float!
   display_name: String!
   display_picture: String!
@@ -451,7 +477,8 @@ input UpdateStationeryBusinessInput {
 
 type MadeInQatarBusiness implements Business {
   id: ID!
-  approved: Boolean!
+  update: Business
+  approved: ApproveStatus!
   rating: Float!
   display_name: String!
   display_picture: String!
@@ -503,7 +530,8 @@ input UpdateMadeInQatarBusinessInput {
 
 type SportsBusiness implements Business {
   id: ID!
-  approved: Boolean!
+  update: Business
+  approved: ApproveStatus!
   rating: Float!
   display_name: String!
   display_picture: String!
@@ -564,7 +592,8 @@ input UpdateSportsBusinessInput {
 
 type EntertainmentBusiness implements Business {
   id: ID!
-  approved: Boolean!
+  update: Business
+  approved: ApproveStatus!
   rating: Float!
   display_name: String!
   display_picture: String!
@@ -619,7 +648,8 @@ input UpdateEntertainmentBusinessInput {
 
 type FoodBusiness implements Business {
   id: ID!
-  approved: Boolean!
+  update: Business
+  approved: ApproveStatus!
   rating: Float!
   display_name: String!
   display_picture: String!
@@ -674,7 +704,8 @@ input UpdateFoodBusinessInput {
 
 type CleaningAndMaintenanceBusiness implements Business {
   id: ID!
-  approved: Boolean!
+  update: Business
+  approved: ApproveStatus!
   rating: Float!
   display_name: String!
   display_picture: String!
@@ -1051,6 +1082,13 @@ enum Education {
 enum Currency {
   QAR
   USD
+}
+
+enum ApproveStatus {
+  TENTATIVE
+  APPROVED_AND_LISTED
+  APPROVED
+  REJECTED
 }
 
 enum City {

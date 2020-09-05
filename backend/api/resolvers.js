@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt')
 const cryptoRandomString = require('crypto-random-string');
 const jsonwebtoken = require('jsonwebtoken');
 const { ApolloError } = require('apollo-server-express');
+const { GraphQLScalarType } = require('graphql');
 
 class Database {
   constructor(config) {
@@ -225,6 +226,21 @@ function _validateAuthenticatedBusinessUser(user) {
   }
 }
 
+function _validateAuthenticatedBusinessUserOrAdmin(user) {
+  if (! user || (user.type != 'business' && user.type != 'admin')) {
+    throw new ApolloError("No or invalid authentication", 'USER_NOT_AUTHENTICATED');
+  }
+}
+
+function _validateAuthenticatedAdmin(user) {
+  if (! user || user.type != 'admin') {
+    throw new ApolloError(
+      "Congratulations! You have reached the super-secret part of the API, but you're not authenticated :(",
+      'USER_NOT_AUTHENTICATED'
+    );
+  }
+}
+
 function _validateAuthenticatedPublicUser(user) {
   if (! user || user.type != 'public') {
     throw new ApolloError("No or invalid authentication", 'USER_NOT_AUTHENTICATED');
@@ -315,7 +331,8 @@ async function _updateBusiness(id, data) {
         VALUES
           (?, ?)
         ON DUPLICATE KEY UPDATE
-          updated_data = JSON_MERGE_PATCH(updated_data, ?)
+          updated_data = JSON_MERGE_PATCH(updated_data, ?),
+          approved = 'TENTATIVE'
       `,
       [
         id,
@@ -574,6 +591,14 @@ const resolvers = {
       }
 
       return res.filter(_ => _ != null);
+    },
+
+    // admin queries
+
+    async admin(_, args, { user }) {
+      _validateAuthenticatedAdmin(user);
+
+      return { _: "mkay" };
     }
   },
 
@@ -958,12 +983,209 @@ const resolvers = {
       id = await _updateEvent(id, data);
       var event = await eventLoader.clear(id).load(id);
       return event;
+    },
+
+    // admin mutations
+
+    async authenticateAdmin(_, { key }) {
+      if (key == "admin") {
+        // return json web token
+        return jsonwebtoken.sign(
+          { type: 'admin' },
+          process.env.JWT_SECRET,
+          { expiresIn: '1d' }
+        );
+      }
+      else {
+        throw new ApolloError(
+          "Invalid admin key.",
+          'ADMIN_LOGIN_REJECTED'
+        );
+      }
+    },
+
+    async reviewBusiness(_, { id, approve }, { user }) {
+      _validateAuthenticatedAdmin(user);
+
+      try {
+        await db.query(
+          `
+          UPDATE
+            business
+          SET
+            approved = ?
+          WHERE
+            id = ?
+          `,
+          [ approve ? 'APPROVED' : 'REJECTED', id ]
+        );
+
+        businessLoader.clear(id);
+      }
+      catch (e) {
+        console.log(e);
+        throw new ApolloError(
+          "Failed to approve business.",
+          "BUSINESS_APPROVE_FAILED"
+        );
+      }
+    },
+
+    async reviewBusinessUpdate(_, { id, approve }, { user }) {
+      _validateAuthenticatedAdmin(user);
+
+      try {
+        await db.query(
+          `
+          UPDATE
+            business_tentative_update
+          SET
+            approved = ?
+          WHERE
+            business_id = ?
+          `,
+          [ approve ? 'APPROVED' : 'REJECTED', id ]
+        );
+      }
+      catch (e) {
+        console.log(e);
+        throw new ApolloError(
+          "Failed to approve business update.",
+          "BUSINESS_UPDATE_APPROVE_FAILED"
+        );
+      }
+    }
+  },
+
+  Void: new GraphQLScalarType({
+      name: 'Void',
+
+      description: 'Represents a void',
+
+      serialize() {
+        return null
+      },
+
+      parseValue() {
+        return null
+      },
+
+      parseLiteral() {
+        return null
+      }
+  }),
+
+  User: {
+    async owned_businesses(_, args, { user }) {
+      _validateAuthenticatedBusinessUser(user);
+
+      const rows = await db.query(
+        `
+        SELECT
+          id
+        FROM
+          business
+        WHERE
+          owner = ?
+        `,
+        [ user.id ]
+      );
+
+      return rows.map(row => businessLoader.load(row.id));
+    },
+
+    async owned_events(_, args, { user }) {
+      _validateAuthenticatedBusinessUser(user);
+
+      const rows = await db.query(
+        `
+        SELECT
+          id
+        FROM
+          event
+        WHERE
+          owner = ?
+        `,
+        [ user.id ]
+      );
+
+      return rows.map(row => eventLoader.load(row.id));
+    }
+  },
+
+  Admin: {
+    async tentativeNewBusinesses() {
+      const rows = await db.query(
+        `
+        SELECT
+          JSON_INSERT(
+            props,
+            '$.id', id,
+            '$.owner', owner,
+            '$.approved', approved,
+            '$.rating', calculated_rating,
+            '$.display_name', display_name,
+            '$.display_picture', display_picture,
+            '$.type', \`type\`,
+            '$.sub_type', sub_type
+          ) AS data
+        FROM
+          business
+        WHERE
+        approved = 'TENTATIVE' OR
+        approved = 'REJECTED'
+        `
+      );
+
+      return rows.map(row => JSON.parse(row.data));
+    },
+
+    async tentativeBusinessUpdates() {
+      const rows = await db.query(
+        `
+        SELECT
+          business_id
+        FROM
+          business_tentative_update
+        WHERE
+          approved = 'TENTATIVE' OR
+          approved = 'REJECTED'
+        `
+      );
+
+      return rows.map(row => businessLoader.load(row.business_id));
     }
   },
 
   Business: {
     __resolveType(obj, ctx, info) {
       return obj.type;
+    },
+
+    async update(parent, args, { user }) {
+      _validateAuthenticatedBusinessUserOrAdmin(user);
+
+      const rows = await db.query(
+        `
+        SELECT
+          JSON_INSERT(
+            updated_data,
+            '$.approved', approved
+          ) AS data
+        FROM
+          business_tentative_update
+        WHERE
+          business_id = ?
+        `,
+        [ parent.id ]
+      );
+
+      if (rows.length == 1) {
+        return { ...parent, ...JSON.parse(rows[0].data) };
+      }
+      else {
+        return null;
+      }
     }
   },
 
@@ -971,7 +1193,7 @@ const resolvers = {
     __resolveType(obj, ctx, info) {
       return obj.profession;
     }
-  },
+  }
 }
 
 module.exports = resolvers;

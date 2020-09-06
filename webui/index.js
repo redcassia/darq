@@ -189,7 +189,7 @@ function addScript(src) {
   }
 }
 
-function loadContent(target, extraScript = "") {
+function loadContent(target, extraScripts = []) {
   var xhr = new XMLHttpRequest();
   xhr.open('GET', target, true);
   xhr.onreadystatechange = function() {
@@ -200,9 +200,7 @@ function loadContent(target, extraScript = "") {
   };
   xhr.send();
 
-  if (extraScript != "") {
-    addScript(extraScript);
-  }
+  extraScripts.forEach(s => addScript(s));
 }
 
 function clearContent(target, extraScript = "") {
@@ -231,7 +229,7 @@ $(document).ready(function() {
 
   setGlobalEventHandlers();
 
-  loadContent('welcome.html', '');
+  loadContent('welcome.html');
 });
 
 function signup() {
@@ -269,10 +267,10 @@ function navigateTo(btn, content) {
   $(".side-bar").children().trigger("classChange");
 
   switch(content) {
-    case 'messages':    loadContent('messages.html', ''); break;
-    case 'business':    loadContent('add_business.html', 'add_business.js'); break;
-    case 'event':       loadContent('create_event.html', 'create_event.js'); break;
-    case 'payment':     loadContent('payment.html', ''); break;
+    case 'messages':    loadContent('messages.html'); break;
+    case 'business':    loadContent('add_business.html', ['add_business.js']); break;
+    case 'event':       loadContent('create_event.html', ['create_event.js']); break;
+    case 'payment':     loadContent('payment.html'); break;
     default: clearContent();
   }
 }

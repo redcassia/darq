@@ -133,17 +133,7 @@ const orderedBusinessLoader = new Map(
         const rows = await db.query(
           `
           SELECT
-            JSON_INSERT(
-              props,
-              '$.id', id,
-              '$.owner', owner,
-              '$.approved', approved,
-              '$.rating', calculated_rating,
-              '$.display_name', display_name,
-              '$.display_picture', display_picture,
-              '$.type', \`type\`,
-              '$.sub_type', sub_type
-            ) AS data
+            id
           FROM
             business
           WHERE
@@ -157,7 +147,7 @@ const orderedBusinessLoader = new Map(
         );
 
         return keys.map(key => {
-          if (rows[key - offset]) return JSON.parse(rows[key - offset].data);
+          if (rows[key - offset]) return rows[key - offset].id;
           else return null;
         });
       }
@@ -199,14 +189,7 @@ const orderedEventLoader = new DataLoader(
     const rows = await db.query(
       `
       SELECT
-        JSON_INSERT(
-          props,
-          '$.id', id,
-          '$.owner', owner,
-          '$.display_name', display_name,
-          '$.display_picture', display_picture,
-          '$.type', \`type\`
-        ) AS data
+        id
       FROM
         event
       WHERE
@@ -219,7 +202,7 @@ const orderedEventLoader = new DataLoader(
     );
 
     return keys.map(key => {
-      if (rows[key - offset]) return JSON.parse(rows[key - offset].data);
+      if (rows[key - offset]) return rows[key - offset].id;
       else return null;
     });
   }
@@ -229,7 +212,7 @@ const orderedEventLoader = new DataLoader(
 async function maintenance() {
 
   // TODO: uncomment when deploying
-  console.log("Starting scheduled maintenance");
+  // console.log("Starting scheduled maintenance");
 
   var db = new Database({
     host: process.env.DB_HOST,
@@ -239,7 +222,6 @@ async function maintenance() {
     connectionLimit: 1,
     multipleStatements: true
   });
-
 
   // list all approved businesses /////////////////////////////////////////////
   await db.query(
@@ -252,52 +234,6 @@ async function maintenance() {
       approved = 'APPROVED_AND_LISTED'
     WHERE
       approved = 'APPROVED'
-    ;
-
-    SET SQL_SAFE_UPDATES = 1;
-    `
-  );
-
-  // apply approved business updates //////////////////////////////////////////
-  await db.query(
-    `
-    SET SQL_SAFE_UPDATES = 0;
-
-    UPDATE
-      business_tentative_update
-    SET
-      approved = 'APPROVED_AND_LISTED'
-    WHERE
-      approved = 'APPROVED'
-    ;
-
-    UPDATE
-      business
-    SET
-      display_name = IFNULL((
-        SELECT JSON_UNQUOTE(JSON_EXTRACT(updated_data, '$.display_name'))
-        FROM business_tentative_update WHERE business_id = id
-      ), display_name),
-      display_picture = IFNULL((
-        SELECT JSON_UNQUOTE(JSON_EXTRACT(updated_data, '$.display_picture'))
-        FROM business_tentative_update WHERE business_id = id
-      ), display_picture),
-      props = JSON_MERGE_PATCH(props, (
-        SELECT JSON_REMOVE(updated_data, '$.display_name', '$.display_picture')
-        FROM business_tentative_update WHERE business_id = id
-      ))
-    WHERE
-      id IN (
-        SELECT business_id
-        FROM business_tentative_update
-        WHERE approved = 'APPROVED_AND_LISTED'
-      )
-    ;
-
-    DELETE FROM
-      business_tentative_update
-    WHERE
-      approved = 'APPROVED_AND_LISTED'
     ;
 
     SET SQL_SAFE_UPDATES = 1;
@@ -483,8 +419,6 @@ async function _addBusiness(data, owner) {
     );
     id = result.insertId;
 
-    // TODO: send confirmation email
-
     return id;
   }
   catch(e) {
@@ -512,8 +446,6 @@ async function _updateBusiness(id, data) {
         stringifiedData
       ]
     );
-
-    // TODO: send confirmation email
   }
   catch(e) {
     console.log(e);
@@ -607,6 +539,8 @@ async function _updateEvent(id, data) {
 
     await db.query("UPDATE event SET " + fields.join(', ') + " WHERE id = ?;", args);
 
+    eventLoader.clear(id);
+
     // TODO: send confirmation email
   }
   catch(e) {
@@ -695,7 +629,9 @@ const resolvers = {
         );
       }
 
-      return res.filter(_ => _ != null);
+      return res
+        .filter(_ => _ != null)
+        .map(id => businessLoader.load(id));
     },
 
     async event(_, { id }, { user }) {
@@ -753,7 +689,9 @@ const resolvers = {
         );
       }
 
-      return res.filter(_ => _ != null);
+      return res
+        .filter(_ => _ != null)
+        .map(id => eventLoader.load(id));
     },
 
     // admin queries
@@ -1198,6 +1136,8 @@ const resolvers = {
         );
 
         businessLoader.clear(id);
+
+        // TODO: send confirmation email
       }
       catch (e) {
         console.log(e);
@@ -1223,6 +1163,45 @@ const resolvers = {
           `,
           [ approve ? 'APPROVED' : 'REJECTED', id ]
         );
+
+        if (approve) {
+          await db.query(
+            `
+            UPDATE
+              business
+            SET
+              display_name = IFNULL((
+                SELECT JSON_UNQUOTE(JSON_EXTRACT(updated_data, '$.display_name'))
+                FROM business_tentative_update WHERE business_id = id
+              ), display_name),
+              display_picture = IFNULL((
+                SELECT JSON_UNQUOTE(JSON_EXTRACT(updated_data, '$.display_picture'))
+                FROM business_tentative_update WHERE business_id = id
+              ), display_picture),
+              props = JSON_MERGE_PATCH(props, (
+                SELECT JSON_REMOVE(updated_data, '$.display_name', '$.display_picture')
+                FROM business_tentative_update WHERE business_id = id
+              ))
+            WHERE
+              id = ?
+            `,
+            [ id ]
+          );
+
+          await db.query(
+            `
+            DELETE FROM
+              business_tentative_update
+            WHERE
+              business_id = ?
+            `,
+            [ id ]
+          );
+
+          businessLoader.clear(id);
+
+          // TODO: send confirmation email
+        }
       }
       catch (e) {
         console.log(e);

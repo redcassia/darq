@@ -31,6 +31,10 @@ class Database {
       });
     });
   }
+
+  connection() {
+    return this.pool.getConnection();
+  }
 }
 
 var db = new Database({
@@ -144,7 +148,8 @@ const orderedBusinessLoader = new Map(
             business
           WHERE
             \`type\` = ?
-          ORDER BY calculated_rating DESC
+            AND listing_index >= 0
+          ORDER BY listing_index
           LIMIT ?
           OFFSET ?
           `,
@@ -172,8 +177,7 @@ const eventLoader = new DataLoader(
             '$.owner', owner,
             '$.display_name', display_name,
             '$.display_picture', display_picture,
-            '$.type', \`type\`,
-            '$.city', city
+            '$.type', \`type\`
           ) AS data
         FROM
           event
@@ -201,12 +205,13 @@ const orderedEventLoader = new DataLoader(
           '$.owner', owner,
           '$.display_name', display_name,
           '$.display_picture', display_picture,
-          '$.type', \`type\`,
-          '$.city', city
+          '$.type', \`type\`
         ) AS data
       FROM
         event
-      ORDER BY calculated_popularity DESC
+      WHERE
+        listing_index >= 0
+      ORDER BY listing_index
       LIMIT ?
       OFFSET ?
       `,
@@ -219,6 +224,173 @@ const orderedEventLoader = new DataLoader(
     });
   }
 );
+
+// regular backend maintenance
+async function maintenance() {
+
+  // TODO: uncomment when deploying
+  console.log("Starting scheduled maintenance");
+
+  var db = new Database({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    connectionLimit: 1,
+    multipleStatements: true
+  });
+
+
+  // list all approved businesses /////////////////////////////////////////////
+  await db.query(
+    `
+    SET SQL_SAFE_UPDATES = 0;
+
+    UPDATE
+      business
+    SET
+      approved = 'APPROVED_AND_LISTED'
+    WHERE
+      approved = 'APPROVED'
+    ;
+
+    SET SQL_SAFE_UPDATES = 1;
+    `
+  );
+
+  // apply approved business updates //////////////////////////////////////////
+  await db.query(
+    `
+    SET SQL_SAFE_UPDATES = 0;
+
+    UPDATE
+      business_tentative_update
+    SET
+      approved = 'APPROVED_AND_LISTED'
+    WHERE
+      approved = 'APPROVED'
+    ;
+
+    UPDATE
+      business
+    SET
+      display_name = IFNULL((
+        SELECT JSON_UNQUOTE(JSON_EXTRACT(updated_data, '$.display_name'))
+        FROM business_tentative_update WHERE business_id = id
+      ), display_name),
+      display_picture = IFNULL((
+        SELECT JSON_UNQUOTE(JSON_EXTRACT(updated_data, '$.display_picture'))
+        FROM business_tentative_update WHERE business_id = id
+      ), display_picture),
+      props = JSON_MERGE_PATCH(props, (
+        SELECT JSON_REMOVE(updated_data, '$.display_name', '$.display_picture')
+        FROM business_tentative_update WHERE business_id = id
+      ))
+    WHERE
+      id IN (
+        SELECT business_id
+        FROM business_tentative_update
+        WHERE approved = 'APPROVED_AND_LISTED'
+      )
+    ;
+
+    DELETE FROM
+      business_tentative_update
+    WHERE
+      approved = 'APPROVED_AND_LISTED'
+    ;
+
+    SET SQL_SAFE_UPDATES = 1;
+    `
+  );
+
+  // calculate business ratings ///////////////////////////////////////////////
+  await db.query(
+    `
+    SET SQL_SAFE_UPDATES = 0;
+
+    UPDATE
+      business
+    SET
+      calculated_rating = (
+        SELECT
+          AVG(stars)
+        FROM
+          rating
+        WHERE
+          rating.business_id = business.id
+      )
+    WHERE
+      approved = 'APPROVED_AND_LISTED'
+    ;
+
+    SET SQL_SAFE_UPDATES = 1;
+    `
+  );
+
+  businessLoader.clearAll();
+
+  // update the listing index of businesses ///////////////////////////////////
+  await db.query(
+    `
+    SET SQL_SAFE_UPDATES = 0;
+
+    SET @curRow := 0;
+
+    UPDATE
+      business
+    SET
+      listing_index = (@curRow := @curRow + 1)
+    WHERE
+      approved = 'APPROVED_AND_LISTED'
+    ORDER BY calculated_rating DESC
+    ;
+
+    SET SQL_SAFE_UPDATES = 1;
+    `
+  );
+  orderedBusinessLoader.forEach(l => l.clearAll());
+
+  // update the listing index of events ///////////////////////////////////////
+  await db.query(
+    `
+    SET SQL_SAFE_UPDATES = 0;
+
+    SET @curRow := 0;
+
+    UPDATE
+      event
+    SET
+      listing_index = (@curRow := @curRow + 1)
+    WHERE
+      end > CURRENT_TIMESTAMP
+    ORDER BY start
+    ;
+
+    UPDATE
+      event
+    SET
+      listing_index = -1
+    WHERE
+      listing_index >= 0
+      AND end <= CURRENT_TIMESTAMP
+    ;
+
+    SET SQL_SAFE_UPDATES = 1;
+    `
+  );
+
+  orderedEventLoader.clearAll();
+
+  // schedule next maintenance ////////////////////////////////////////////////
+  // TODO: change when deploying
+  setTimeout(maintenance, 10000);
+}
+
+// run every 10 seconds, for development
+// deployed server should run maintenance() at a certain time every day
+// TODO: change when deploying
+setTimeout(maintenance, 1000);
 
 function _validateAuthenticatedBusinessUser(user) {
   if (! user || user.type != 'business') {
@@ -356,7 +528,6 @@ async function _addEvent(data, owner) {
     var display_name = data.display_name; delete props.display_name;
     var display_picture = data.display_picture; delete props.display_picture;
     var type = data.type; delete props.type;
-    var city = data.city; delete props.city;
     var start = data.duration.start;
     var end = data.duration.end;
 
@@ -368,20 +539,18 @@ async function _addEvent(data, owner) {
             display_name,
             display_picture,
             type,
-            city,
             start,
             end,
             props
           )
         VALUES
-          (?, ?, ?, ?, ?, ?, ?, ?)
+          (?, ?, ?, ?, ?, ?, ?)
       `,
       [
         owner,
         display_name,
         display_picture,
         type,
-        city,
         start,
         end,
         JSON.stringify(props),
@@ -420,12 +589,6 @@ async function _updateEvent(id, data) {
       fields.push("type = ?");
       args.push(data.type);
       delete data.type;
-    }
-
-    if (data.city) {
-      fields.push("city = ?");
-      args.push(data.city);
-      delete data.city;
     }
 
     if (data.duration) {
@@ -603,6 +766,20 @@ const resolvers = {
   },
 
   Mutation: {
+    async rateBusiness(_, { id, stars }, { user }) {
+      _validateAuthenticatedPublicUser();
+
+      await db.query(
+        `
+        INSERT IGNORE INTO
+          rating (business_id, public_user_id, stars)
+        VALUES
+          (?, ?, ?)
+        `,
+        [id, user.id, stars]
+      );
+    },
+
     async createPublicUser() {
       const id = cryptoRandomString({length: 18, type: 'numeric'})
 
@@ -1076,6 +1253,27 @@ const resolvers = {
   }),
 
   User: {
+    async rating(_, { businessId }, { user }) {
+      _validateAuthenticatedPublicUser(user);
+
+      const rows = await db.query(
+        `
+        SELECT
+          stars
+        FROM
+          rating
+        WHERE
+          business_id = ?
+          AND public_user_id = ?
+        `,
+        [businessId, user.id]
+      );
+
+      if (rows.length == 1) {
+        return rows[0].stars;
+      }
+    },
+
     async owned_businesses(_, args, { user }) {
       _validateAuthenticatedBusinessUser(user);
 
@@ -1182,9 +1380,6 @@ const resolvers = {
 
       if (rows.length == 1) {
         return { ...parent, ...JSON.parse(rows[0].data) };
-      }
-      else {
-        return null;
       }
     }
   },

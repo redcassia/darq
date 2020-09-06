@@ -11,6 +11,8 @@ type Query {
 }
 
 type Mutation {
+  rateBusiness(id: ID!, stars: Int!): Void
+
   createPublicUser: String
   createBusinessUser(email: String!, password: String!): String
 
@@ -76,6 +78,7 @@ type User {
   first_name: String
   last_name: String
   email: String
+  rating(businessId: ID!): Int
   owned_businesses: [Business!]
   owned_events: [Event!]
 }
@@ -89,7 +92,7 @@ interface Business {
   id: ID!
   update: Business
   approved: ApproveStatus!
-  rating: Float!
+  rating: Float
   display_name: String!
   display_picture: String!
   cities: [City!]
@@ -102,7 +105,7 @@ type SelfEmployedBusiness implements Business {
   id: ID!
   update: Business
   approved: ApproveStatus!
-  rating: Float!
+  rating: Float
   display_name: String!
   display_picture: String!
   cities: [City!]
@@ -161,7 +164,7 @@ type ChildEducationBusiness implements Business {
   id: ID!
   update: Business
   approved: ApproveStatus!
-  rating: Float!
+  rating: Float
   display_name: String!
   display_picture: String!
   cities: [City!]
@@ -214,7 +217,7 @@ type DomesticHelpBusiness implements Business {
   id: ID!
   update: Business
   approved: ApproveStatus!
-  rating: Float!
+  rating: Float
   display_name: String!
   display_picture: String!
   cities: [City!]
@@ -261,7 +264,7 @@ type BeautyBusiness implements Business {
   id: ID!
   update: Business
   approved: ApproveStatus!
-  rating: Float!
+  rating: Float
   display_name: String!
   display_picture: String!
   cities: [City!]
@@ -320,7 +323,7 @@ type TransportationBusiness implements Business {
   id: ID!
   update: Business
   approved: ApproveStatus!
-  rating: Float!
+  rating: Float
   display_name: String!
   display_picture: String!
   cities: [City!]
@@ -376,7 +379,7 @@ type HospitalityBusiness implements Business {
   id: ID!
   update: Business
   approved: ApproveStatus!
-  rating: Float!
+  rating: Float
   display_name: String!
   display_picture: String!
   cities: [City!]
@@ -435,7 +438,7 @@ type StationeryBusiness implements Business {
   id: ID!
   update: Business
   approved: ApproveStatus!
-  rating: Float!
+  rating: Float
   display_name: String!
   display_picture: String!
   cities: [City!]
@@ -479,7 +482,7 @@ type MadeInQatarBusiness implements Business {
   id: ID!
   update: Business
   approved: ApproveStatus!
-  rating: Float!
+  rating: Float
   display_name: String!
   display_picture: String!
   cities: [City!]
@@ -532,7 +535,7 @@ type SportsBusiness implements Business {
   id: ID!
   update: Business
   approved: ApproveStatus!
-  rating: Float!
+  rating: Float
   display_name: String!
   display_picture: String!
   cities: [City!]
@@ -594,7 +597,7 @@ type EntertainmentBusiness implements Business {
   id: ID!
   update: Business
   approved: ApproveStatus!
-  rating: Float!
+  rating: Float
   display_name: String!
   display_picture: String!
   cities: [City!]
@@ -650,7 +653,7 @@ type FoodBusiness implements Business {
   id: ID!
   update: Business
   approved: ApproveStatus!
-  rating: Float!
+  rating: Float
   display_name: String!
   display_picture: String!
   cities: [City!]
@@ -706,7 +709,7 @@ type CleaningAndMaintenanceBusiness implements Business {
   id: ID!
   update: Business
   approved: ApproveStatus!
-  rating: Float!
+  rating: Float
   display_name: String!
   display_picture: String!
   cities: [City!]

@@ -1,6 +1,6 @@
 require('dotenv').config()
 var express = require('express');
-const { ApolloServer, gql } = require('apollo-server-express');
+const { ApolloServer, gql, makeExecutableSchema } = require('apollo-server-express');
 const jwt = require('express-jwt')
 var fs = require('fs')
 var path = require('path')
@@ -15,8 +15,11 @@ const auth = jwt({
 });
 
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
+  schema: makeExecutableSchema({
+    typeDefs: typeDefs,
+    resolvers: resolvers,
+    inheritResolversFromInterfaces: true
+  }),
   context: (integrationCtx) => ({
     user: integrationCtx.req.user
   }),

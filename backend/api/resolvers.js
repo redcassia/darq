@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt')
 const cryptoRandomString = require('crypto-random-string');
 const jsonwebtoken = require('jsonwebtoken');
 const { ApolloError } = require('apollo-server-express');
+const { GraphQLScalarType } = require('graphql');
 
 class Database {
   constructor(config) {
@@ -29,6 +30,10 @@ class Database {
         });
       });
     });
+  }
+
+  connection() {
+    return this.pool.getConnection();
   }
 }
 
@@ -128,22 +133,13 @@ const orderedBusinessLoader = new Map(
         const rows = await db.query(
           `
           SELECT
-            JSON_INSERT(
-              props,
-              '$.id', id,
-              '$.owner', owner,
-              '$.approved', approved,
-              '$.rating', calculated_rating,
-              '$.display_name', display_name,
-              '$.display_picture', display_picture,
-              '$.type', \`type\`,
-              '$.sub_type', sub_type
-            ) AS data
+            id
           FROM
             business
           WHERE
             \`type\` = ?
-          ORDER BY calculated_rating DESC
+            AND listing_index >= 0
+          ORDER BY listing_index
           LIMIT ?
           OFFSET ?
           `,
@@ -151,7 +147,7 @@ const orderedBusinessLoader = new Map(
         );
 
         return keys.map(key => {
-          if (rows[key - offset]) return JSON.parse(rows[key - offset].data);
+          if (rows[key - offset]) return rows[key - offset].id;
           else return null;
         });
       }
@@ -171,8 +167,7 @@ const eventLoader = new DataLoader(
             '$.owner', owner,
             '$.display_name', display_name,
             '$.display_picture', display_picture,
-            '$.type', \`type\`,
-            '$.city', city
+            '$.type', \`type\`
           ) AS data
         FROM
           event
@@ -194,18 +189,12 @@ const orderedEventLoader = new DataLoader(
     const rows = await db.query(
       `
       SELECT
-        JSON_INSERT(
-          props,
-          '$.id', id,
-          '$.owner', owner,
-          '$.display_name', display_name,
-          '$.display_picture', display_picture,
-          '$.type', \`type\`,
-          '$.city', city
-        ) AS data
+        id
       FROM
         event
-      ORDER BY calculated_popularity DESC
+      WHERE
+        listing_index >= 0
+      ORDER BY listing_index
       LIMIT ?
       OFFSET ?
       `,
@@ -213,15 +202,150 @@ const orderedEventLoader = new DataLoader(
     );
 
     return keys.map(key => {
-      if (rows[key - offset]) return JSON.parse(rows[key - offset].data);
+      if (rows[key - offset]) return rows[key - offset].id;
       else return null;
     });
   }
 );
 
+// regular backend maintenance
+async function maintenance() {
+
+  // TODO: uncomment when deploying
+  // console.log("Starting scheduled maintenance");
+
+  var db = new Database({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    connectionLimit: 1,
+    multipleStatements: true
+  });
+
+  // list all approved businesses /////////////////////////////////////////////
+  await db.query(
+    `
+    SET SQL_SAFE_UPDATES = 0;
+
+    UPDATE
+      business
+    SET
+      approved = 'APPROVED_AND_LISTED'
+    WHERE
+      approved = 'APPROVED'
+    ;
+
+    SET SQL_SAFE_UPDATES = 1;
+    `
+  );
+
+  // calculate business ratings ///////////////////////////////////////////////
+  await db.query(
+    `
+    SET SQL_SAFE_UPDATES = 0;
+
+    UPDATE
+      business
+    SET
+      calculated_rating = (
+        SELECT
+          AVG(stars)
+        FROM
+          rating
+        WHERE
+          rating.business_id = business.id
+      )
+    WHERE
+      approved = 'APPROVED_AND_LISTED'
+    ;
+
+    SET SQL_SAFE_UPDATES = 1;
+    `
+  );
+
+  businessLoader.clearAll();
+
+  // update the listing index of businesses ///////////////////////////////////
+  await db.query(
+    `
+    SET SQL_SAFE_UPDATES = 0;
+
+    SET @curRow := 0;
+
+    UPDATE
+      business
+    SET
+      listing_index = (@curRow := @curRow + 1)
+    WHERE
+      approved = 'APPROVED_AND_LISTED'
+    ORDER BY calculated_rating DESC
+    ;
+
+    SET SQL_SAFE_UPDATES = 1;
+    `
+  );
+  orderedBusinessLoader.forEach(l => l.clearAll());
+
+  // update the listing index of events ///////////////////////////////////////
+  await db.query(
+    `
+    SET SQL_SAFE_UPDATES = 0;
+
+    SET @curRow := 0;
+
+    UPDATE
+      event
+    SET
+      listing_index = (@curRow := @curRow + 1)
+    WHERE
+      end > CURRENT_TIMESTAMP
+    ORDER BY start
+    ;
+
+    UPDATE
+      event
+    SET
+      listing_index = -1
+    WHERE
+      listing_index >= 0
+      AND end <= CURRENT_TIMESTAMP
+    ;
+
+    SET SQL_SAFE_UPDATES = 1;
+    `
+  );
+
+  orderedEventLoader.clearAll();
+
+  // schedule next maintenance ////////////////////////////////////////////////
+  // TODO: change when deploying
+  setTimeout(maintenance, 10000);
+}
+
+// run every 10 seconds, for development
+// deployed server should run maintenance() at a certain time every day
+// TODO: change when deploying
+setTimeout(maintenance, 1000);
+
 function _validateAuthenticatedBusinessUser(user) {
   if (! user || user.type != 'business') {
     throw new ApolloError("No or invalid authentication", 'USER_NOT_AUTHENTICATED');
+  }
+}
+
+function _validateAuthenticatedBusinessUserOrAdmin(user) {
+  if (! user || (user.type != 'business' && user.type != 'admin')) {
+    throw new ApolloError("No or invalid authentication", 'USER_NOT_AUTHENTICATED');
+  }
+}
+
+function _validateAuthenticatedAdmin(user) {
+  if (! user || user.type != 'admin') {
+    throw new ApolloError(
+      "Congratulations! You have reached the super-secret part of the API, but you're not authenticated :(",
+      'USER_NOT_AUTHENTICATED'
+    );
   }
 }
 
@@ -295,8 +419,6 @@ async function _addBusiness(data, owner) {
     );
     id = result.insertId;
 
-    // TODO: send confirmation email
-
     return id;
   }
   catch(e) {
@@ -315,7 +437,8 @@ async function _updateBusiness(id, data) {
         VALUES
           (?, ?)
         ON DUPLICATE KEY UPDATE
-          updated_data = JSON_MERGE_PATCH(updated_data, ?)
+          updated_data = JSON_MERGE_PATCH(updated_data, ?),
+          approved = 'TENTATIVE'
       `,
       [
         id,
@@ -323,8 +446,6 @@ async function _updateBusiness(id, data) {
         stringifiedData
       ]
     );
-
-    // TODO: send confirmation email
   }
   catch(e) {
     console.log(e);
@@ -339,7 +460,6 @@ async function _addEvent(data, owner) {
     var display_name = data.display_name; delete props.display_name;
     var display_picture = data.display_picture; delete props.display_picture;
     var type = data.type; delete props.type;
-    var city = data.city; delete props.city;
     var start = data.duration.start;
     var end = data.duration.end;
 
@@ -351,20 +471,18 @@ async function _addEvent(data, owner) {
             display_name,
             display_picture,
             type,
-            city,
             start,
             end,
             props
           )
         VALUES
-          (?, ?, ?, ?, ?, ?, ?, ?)
+          (?, ?, ?, ?, ?, ?, ?)
       `,
       [
         owner,
         display_name,
         display_picture,
         type,
-        city,
         start,
         end,
         JSON.stringify(props),
@@ -405,12 +523,6 @@ async function _updateEvent(id, data) {
       delete data.type;
     }
 
-    if (data.city) {
-      fields.push("city = ?");
-      args.push(data.city);
-      delete data.city;
-    }
-
     if (data.duration) {
       fields.push("start = ?");
       args.push(data.duration.start);
@@ -426,6 +538,8 @@ async function _updateEvent(id, data) {
     args.push(id);
 
     await db.query("UPDATE event SET " + fields.join(', ') + " WHERE id = ?;", args);
+
+    eventLoader.clear(id);
 
     // TODO: send confirmation email
   }
@@ -515,7 +629,9 @@ const resolvers = {
         );
       }
 
-      return res.filter(_ => _ != null);
+      return res
+        .filter(_ => _ != null)
+        .map(id => businessLoader.load(id));
     },
 
     async event(_, { id }, { user }) {
@@ -573,11 +689,35 @@ const resolvers = {
         );
       }
 
-      return res.filter(_ => _ != null);
+      return res
+        .filter(_ => _ != null)
+        .map(id => eventLoader.load(id));
+    },
+
+    // admin queries
+
+    async admin(_, args, { user }) {
+      _validateAuthenticatedAdmin(user);
+
+      return { _: "mkay" };
     }
   },
 
   Mutation: {
+    async rateBusiness(_, { id, stars }, { user }) {
+      _validateAuthenticatedPublicUser();
+
+      await db.query(
+        `
+        INSERT IGNORE INTO
+          rating (business_id, public_user_id, stars)
+        VALUES
+          (?, ?, ?)
+        `,
+        [id, user.id, stars]
+      );
+    },
+
     async createPublicUser() {
       const id = cryptoRandomString({length: 18, type: 'numeric'})
 
@@ -958,12 +1098,268 @@ const resolvers = {
       id = await _updateEvent(id, data);
       var event = await eventLoader.clear(id).load(id);
       return event;
+    },
+
+    // admin mutations
+
+    async authenticateAdmin(_, { key }) {
+      if (key == "admin") {
+        // return json web token
+        return jsonwebtoken.sign(
+          { type: 'admin' },
+          process.env.JWT_SECRET,
+          { expiresIn: '1d' }
+        );
+      }
+      else {
+        throw new ApolloError(
+          "Invalid admin key.",
+          'ADMIN_LOGIN_REJECTED'
+        );
+      }
+    },
+
+    async reviewBusiness(_, { id, approve }, { user }) {
+      _validateAuthenticatedAdmin(user);
+
+      try {
+        await db.query(
+          `
+          UPDATE
+            business
+          SET
+            approved = ?
+          WHERE
+            id = ?
+          `,
+          [ approve ? 'APPROVED' : 'REJECTED', id ]
+        );
+
+        businessLoader.clear(id);
+
+        // TODO: send confirmation email
+      }
+      catch (e) {
+        console.log(e);
+        throw new ApolloError(
+          "Failed to approve business.",
+          "BUSINESS_APPROVE_FAILED"
+        );
+      }
+    },
+
+    async reviewBusinessUpdate(_, { id, approve }, { user }) {
+      _validateAuthenticatedAdmin(user);
+
+      try {
+        await db.query(
+          `
+          UPDATE
+            business_tentative_update
+          SET
+            approved = ?
+          WHERE
+            business_id = ?
+          `,
+          [ approve ? 'APPROVED' : 'REJECTED', id ]
+        );
+
+        if (approve) {
+          await db.query(
+            `
+            UPDATE
+              business
+            SET
+              display_name = IFNULL((
+                SELECT JSON_UNQUOTE(JSON_EXTRACT(updated_data, '$.display_name'))
+                FROM business_tentative_update WHERE business_id = id
+              ), display_name),
+              display_picture = IFNULL((
+                SELECT JSON_UNQUOTE(JSON_EXTRACT(updated_data, '$.display_picture'))
+                FROM business_tentative_update WHERE business_id = id
+              ), display_picture),
+              props = JSON_MERGE_PATCH(props, (
+                SELECT JSON_REMOVE(updated_data, '$.display_name', '$.display_picture')
+                FROM business_tentative_update WHERE business_id = id
+              ))
+            WHERE
+              id = ?
+            `,
+            [ id ]
+          );
+
+          await db.query(
+            `
+            DELETE FROM
+              business_tentative_update
+            WHERE
+              business_id = ?
+            `,
+            [ id ]
+          );
+
+          businessLoader.clear(id);
+
+          // TODO: send confirmation email
+        }
+      }
+      catch (e) {
+        console.log(e);
+        throw new ApolloError(
+          "Failed to approve business update.",
+          "BUSINESS_UPDATE_APPROVE_FAILED"
+        );
+      }
+    }
+  },
+
+  Void: new GraphQLScalarType({
+      name: 'Void',
+
+      description: 'Represents a void',
+
+      serialize() {
+        return null
+      },
+
+      parseValue() {
+        return null
+      },
+
+      parseLiteral() {
+        return null
+      }
+  }),
+
+  User: {
+    async rating(_, { businessId }, { user }) {
+      _validateAuthenticatedPublicUser(user);
+
+      const rows = await db.query(
+        `
+        SELECT
+          stars
+        FROM
+          rating
+        WHERE
+          business_id = ?
+          AND public_user_id = ?
+        `,
+        [businessId, user.id]
+      );
+
+      if (rows.length == 1) {
+        return rows[0].stars;
+      }
+    },
+
+    async owned_businesses(_, args, { user }) {
+      _validateAuthenticatedBusinessUser(user);
+
+      const rows = await db.query(
+        `
+        SELECT
+          id
+        FROM
+          business
+        WHERE
+          owner = ?
+        `,
+        [ user.id ]
+      );
+
+      return rows.map(row => businessLoader.load(row.id));
+    },
+
+    async owned_events(_, args, { user }) {
+      _validateAuthenticatedBusinessUser(user);
+
+      const rows = await db.query(
+        `
+        SELECT
+          id
+        FROM
+          event
+        WHERE
+          owner = ?
+        `,
+        [ user.id ]
+      );
+
+      return rows.map(row => eventLoader.load(row.id));
+    }
+  },
+
+  Admin: {
+    async tentativeNewBusinesses() {
+      const rows = await db.query(
+        `
+        SELECT
+          JSON_INSERT(
+            props,
+            '$.id', id,
+            '$.owner', owner,
+            '$.approved', approved,
+            '$.rating', calculated_rating,
+            '$.display_name', display_name,
+            '$.display_picture', display_picture,
+            '$.type', \`type\`,
+            '$.sub_type', sub_type
+          ) AS data
+        FROM
+          business
+        WHERE
+        approved = 'TENTATIVE' OR
+        approved = 'REJECTED'
+        `
+      );
+
+      return rows.map(row => JSON.parse(row.data));
+    },
+
+    async tentativeBusinessUpdates() {
+      const rows = await db.query(
+        `
+        SELECT
+          business_id
+        FROM
+          business_tentative_update
+        WHERE
+          approved = 'TENTATIVE' OR
+          approved = 'REJECTED'
+        `
+      );
+
+      return rows.map(row => businessLoader.load(row.business_id));
     }
   },
 
   Business: {
     __resolveType(obj, ctx, info) {
       return obj.type;
+    },
+
+    async update(parent, args, { user }) {
+      _validateAuthenticatedBusinessUserOrAdmin(user);
+
+      const rows = await db.query(
+        `
+        SELECT
+          JSON_INSERT(
+            updated_data,
+            '$.approved', approved
+          ) AS data
+        FROM
+          business_tentative_update
+        WHERE
+          business_id = ?
+        `,
+        [ parent.id ]
+      );
+
+      if (rows.length == 1) {
+        return { ...parent, ...JSON.parse(rows[0].data) };
+      }
     }
   },
 
@@ -971,7 +1367,7 @@ const resolvers = {
     __resolveType(obj, ctx, info) {
       return obj.profession;
     }
-  },
+  }
 }
 
 module.exports = resolvers;

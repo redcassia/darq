@@ -35,6 +35,10 @@ class Database {
   connection() {
     return this.pool.getConnection();
   }
+
+  close() {
+    this.pool.end();
+  }
 }
 
 var db = new Database({
@@ -317,6 +321,8 @@ async function maintenance() {
   );
 
   orderedEventLoader.clearAll();
+
+  db.close();
 
   // schedule next maintenance ////////////////////////////////////////////////
   // TODO: change when deploying

@@ -211,6 +211,22 @@ Widget generateWidget(String widgetType,
           data["all_day"] ? "24 hrs" : "${data["open"]} - ${data["close"]}",
           style: AppFonts.title11Odd(color: Color.fromRGBO(0, 0, 0, 0.7)));
 
+    case 'duration':
+      if (data == null) return null;
+      return Wrap(children: <Widget>[
+        TextLeadingRow(
+            title: "Start:",
+            titleStyle: kTitle9Rgb_67,
+            txt: data["start"],
+            txtStyle: kText9OddRgb_05),
+        SizedBox(width: 53.h, height: 5.h),
+        TextLeadingRow(
+            title: "End:",
+            titleStyle: kTitle9Rgb_67,
+            txt: data["end"],
+            txtStyle: kText9OddRgb_05)
+      ]);
+
     case 'price':
       if (data == null) return null;
       if (data["value"] != null) {

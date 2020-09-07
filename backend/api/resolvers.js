@@ -208,6 +208,52 @@ const orderedEventLoader = new DataLoader(
   }
 );
 
+const msgThreadLoader = new DataLoader(
+  async (ids) => {
+    return ids.map(async (id) => {
+      const rows = await db.query(
+        `
+        SELECT
+          id,
+          business_id,
+          CAST(public_user_id AS CHAR(18)) AS public_user_id,
+          business_user_id
+        FROM
+          message_thread
+        WHERE
+          id = ?
+        `,
+        [ id ]
+      );
+
+      return rows[0];
+    });
+  }
+);
+
+const msgLoader = new DataLoader(
+  async (ids) => {
+    return ids.map(async (id) => {
+      const rows = await db.query(
+        `
+        SELECT
+          data AS msg,
+          sender,
+          create_time AS time
+        FROM
+          message
+        WHERE
+          message_thread_id = ?
+        ORDER BY create_time
+        `,
+        [ id ]
+      );
+
+      return rows;
+    });
+  }
+);
+
 // regular backend maintenance
 async function maintenance() {
 
@@ -329,19 +375,19 @@ async function maintenance() {
 setTimeout(maintenance, 1000);
 
 function _validateAuthenticatedBusinessUser(user) {
-  if (! user || user.type != 'business') {
+  if (! user || user.type != 'BUSINESS') {
     throw new ApolloError("No or invalid authentication", 'USER_NOT_AUTHENTICATED');
   }
 }
 
 function _validateAuthenticatedBusinessUserOrAdmin(user) {
-  if (! user || (user.type != 'business' && user.type != 'admin')) {
+  if (! user || (user.type != 'BUSINESS' && user.type != 'ADMIN')) {
     throw new ApolloError("No or invalid authentication", 'USER_NOT_AUTHENTICATED');
   }
 }
 
 function _validateAuthenticatedAdmin(user) {
-  if (! user || user.type != 'admin') {
+  if (! user || user.type != 'ADMIN') {
     throw new ApolloError(
       "Congratulations! You have reached the super-secret part of the API, but you're not authenticated :(",
       'USER_NOT_AUTHENTICATED'
@@ -350,7 +396,7 @@ function _validateAuthenticatedAdmin(user) {
 }
 
 function _validateAuthenticatedPublicUser(user) {
-  if (! user || user.type != 'public') {
+  if (! user || user.type != 'PUBLIC') {
     throw new ApolloError("No or invalid authentication", 'USER_NOT_AUTHENTICATED');
   }
 }
@@ -556,12 +602,12 @@ const resolvers = {
         throw new ApolloError("Sorry... You're not authenticated! :c", 'USER_NOT_AUTHENTICATED');
       }
 
-      if (user.type == 'business') {
+      if (user.type == 'BUSINESS') {
         var businessUser = await businessUserLoader.load(user.id);
         businessUser.type = user.type;
         return businessUser;
       }
-      else if (user.type == 'public') {
+      else if (user.type == 'PUBLIC') {
         var publicUser = await publicUserLoader.load(user.id);
         publicUser.type = user.type;
         return publicUser;
@@ -718,6 +764,84 @@ const resolvers = {
       );
     },
 
+    async sendMessage(_, { msg, threadId, targetBusinessId }, { user }) {
+      if (! threadId) {
+        _validateAuthenticatedPublicUser(user);
+
+        if (! targetBusinessId) {
+          throw new ApolloError(
+            "No target specified",
+            "MESSAGE_TARGET_MISSING"
+          );
+        }
+
+        var business = await businessLoader.load(targetBusinessId);
+
+        const result = await db.query(
+          `
+          INSERT INTO
+            message_thread(business_id, public_user_id, business_user_id)
+          VALUES
+            (?, ?, ?)
+          `,
+          [ business.id, user.id, business.owner ]
+        );
+
+        threadId = result.insertId;
+      }
+      else if (! user) {
+        throw new ApolloError("Sorry... You're not authenticated! :c", 'USER_NOT_AUTHENTICATED');
+      }
+
+      var thread = await msgThreadLoader.load(threadId);
+
+      if (user.type == 'BUSINESS') {
+        if (thread.business_user_id != user.id) {
+          throw new ApolloError(
+            "You are not the owner of this thread",
+            'CANNOT_SEND_BUSINESS_USER_NOT_THREAD_OWNER'
+          );
+        }
+
+        await db.query(
+          `
+          INSERT INTO
+            message(message_thread_id, sender, data)
+          VALUES
+            (?, 'BUSINESS', ?)
+          `,
+          [ thread.id, msg ]
+        );
+      }
+      else if (user.type == 'PUBLIC') {
+        if (thread.public_user_id != user.id) {
+          throw new ApolloError(
+            "You are not the owner of this thread",
+            'CANNOT_SEND_PUBLIC_USER_NOT_THREAD_OWNER'
+          );
+        }
+
+        await db.query(
+          `
+          INSERT INTO
+            message(message_thread_id, sender, data)
+          VALUES
+            (?, 'PUBLIC', ?)
+          `,
+          [ thread.id, msg ]
+        );
+      }
+      else {
+        throw new ApolloError(
+          "I'm sorry. I made a boom boom. :(",
+          'INVALID_USER_TYPE'
+        );
+      }
+
+      msgLoader.clear(thread.id);
+      return thread;
+    },
+
     async createPublicUser() {
       const id = cryptoRandomString({length: 18, type: 'numeric'})
 
@@ -734,7 +858,7 @@ const resolvers = {
 
       // return json web token
       return jsonwebtoken.sign(
-        { id: id, type: 'public' },
+        { id: id, type: 'PUBLIC' },
         process.env.JWT_SECRET,
         { expiresIn: '1d' }
       );
@@ -758,7 +882,7 @@ const resolvers = {
 
       // return json web token
       return jsonwebtoken.sign(
-        { id: id, type: 'business' },
+        { id: id, type: 'BUSINESS' },
         process.env.JWT_SECRET,
         { expiresIn: '1d' }
       );
@@ -788,7 +912,7 @@ const resolvers = {
 
         // return json web token
         return jsonwebtoken.sign(
-          { id: id, type: 'public' },
+          { id: id, type: 'PUBLIC' },
           process.env.JWT_SECRET,
           { expiresIn: '1d' }
         );
@@ -835,7 +959,7 @@ const resolvers = {
 
         // return json web token
         return jsonwebtoken.sign(
-          { id: id, type: 'business' },
+          { id: id, type: 'BUSINESS' },
           process.env.JWT_SECRET,
           { expiresIn: '1d' }
         );
@@ -1106,7 +1230,7 @@ const resolvers = {
       if (key == "admin") {
         // return json web token
         return jsonwebtoken.sign(
-          { type: 'admin' },
+          { type: 'ADMIN' },
           process.env.JWT_SECRET,
           { expiresIn: '1d' }
         );
@@ -1268,7 +1392,7 @@ const resolvers = {
         [ user.id ]
       );
 
-      return rows.map(row => businessLoader.load(row.id));
+      return businessLoader.loadMany(rows.map(_ => _.id));
     },
 
     async owned_events(_, args, { user }) {
@@ -1286,8 +1410,87 @@ const resolvers = {
         [ user.id ]
       );
 
-      return rows.map(row => eventLoader.load(row.id));
+      return eventLoader.loadMany(rows.map(_ => _.id));
+    },
+
+    async threads(_, { threadId }, { user }) {
+      if (! user) {
+        throw new ApolloError("Sorry... You're not authenticated! :c", 'USER_NOT_AUTHENTICATED');
+      }
+
+      if (user.type == 'BUSINESS') {
+        if (threadId) {
+          var thread = msgThreadLoader.load(threadId);
+          if (thread.business_user_id == user.id) {
+            return [ thread ];
+          }
+          else {
+            throw new ApolloError(
+              "You are not the owner of this thread",
+              "BUSINESS_USER_NOT_THREAD_OWNER"
+            );
+          }
+        }
+        else {
+          const rows = await db.query(
+            `
+            SELECT
+              id
+            FROM
+              message_thread
+            WHERE
+              business_user_id = ?
+            `,
+            [ user.id ]
+          );
+
+          return msgThreadLoader.loadMany(rows.map(_ => _.id));
+        }
+      }
+      else {
+        if (threadId) {
+          var thread = msgThreadLoader.load(threadId);
+          if (thread.public_user_id == user.id) {
+            return [ thread ];
+          }
+          else {
+            throw new ApolloError(
+              "You are not the owner of this thread",
+              "PUBLIC_USER_NOT_THREAD_OWNER"
+            );
+          }
+        }
+        else {
+          const rows = await db.query(
+            `
+            SELECT
+              id
+            FROM
+              message_thread
+            WHERE
+              public_user_id = ?
+            `,
+            [ user.id ]
+          );
+
+          return msgThreadLoader.loadMany(rows.map(_ => _.id));
+        }
+      }
     }
+  },
+
+  MessageThread: {
+    sender: async(parent, args, ctx) => {
+      user = await publicUserLoader.load(parent.public_user_id)
+      if (user.first_name && user.last_name) {
+        return user.first_name + ' ' + user.last_name
+      }
+      else {
+        return "Anonymous User";
+      }
+    },
+    target: async(parent, args, ctx) => await businessLoader.load(parent.business_id),
+    messages: async(parent, args, ctx) => await msgLoader.load(parent.id)
   },
 
   Admin: {

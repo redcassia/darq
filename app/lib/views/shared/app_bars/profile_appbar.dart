@@ -10,18 +10,19 @@ import 'package:darq/views/shared/capsule/left_rounded_capsule.dart';
 import 'package:darq/views/shared/button.dart';
 
 class ProfileAppBar extends StatelessWidget {
-  const ProfileAppBar({Key key, this.backArrowBgColor, this.filterIndicator, this.buttonName})
+  const ProfileAppBar(
+      {Key key, this.backArrowBgColor, this.filterIndicator, this.buttonName})
       : super(key: key);
 
   final Color backArrowBgColor;
-  final String filterIndicator;
+  final bool filterIndicator;
   final String buttonName;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: EdgeInsets.only(
-            right: filterIndicator == "no_filter" ? 14.w : 0.w, top: 35.h),
+        padding:
+            EdgeInsets.only(right: filterIndicator ? 0.w : 14.w, top: 35.h),
         child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
@@ -45,9 +46,8 @@ class ProfileAppBar extends StatelessWidget {
                     borderRadius: 27,
                     textStyle: AppFonts.title11Odd(color: Colors.white),
                     onButtonPressed: () => {}),
-                filterIndicator == "no_filter"
-                    ? Container(height: 0.h)
-                    : LeftRoundedCapsule(
+                filterIndicator
+                    ? LeftRoundedCapsule(
                         horizontalPadding: 16.w,
                         verticalPadding: 5.h,
                         icon: Image(
@@ -55,6 +55,7 @@ class ProfileAppBar extends StatelessWidget {
                             width: 18.w,
                             image:
                                 AssetImage(PathFiles.ImgPath + "filter.png")))
+                    : Container(height: 0.h)
               ])
             ]));
   }

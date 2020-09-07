@@ -1,9 +1,9 @@
+import 'package:darq/utilities/screen_info.dart';
+import 'package:darq/views/home/screens/community.dart';
+import 'package:darq/views/home/screens/listing_page.dart';
+import 'package:darq/views/shared/drawer/drawer_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:darq/utilities/screen_info.dart';
-import 'package:darq/views/shared/drawer/drawer_item.dart';
-import 'package:darq/views/home/screens/community.dart';
-import 'package:darq/views/home/screens/list_template.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({Key key}) : super(key: key);
@@ -32,28 +32,28 @@ class CustomDrawer extends StatelessWidget {
               icon: "events.png",
               onClick: () =>
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return ListTemplate(jsonFile: "events.json");
+                    return ListingPage(jsonFile: "events.json");
                   }))),
           DrawerItem(
               txt: "Q Cuisine",
               icon: "cuisine.png",
               onClick: () =>
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return ListTemplate(jsonFile: "cuisine.json");
+                    return ListingPage(jsonFile: "cuisine.json");
                   }))),
           DrawerItem(
               txt: "Q Entertainment",
               icon: "entertainment.png",
               onClick: () =>
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return ListTemplate(jsonFile: "entertainment.json");
+                    return ListingPage(jsonFile: "entertainment.json");
                   }))),
           DrawerItem(
               txt: "Q Children Education Centers",
               icon: "education_center.png",
               onClick: () =>
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return ListTemplate(
+                    return ListingPage(
                         jsonFile: "children_education_center.json");
                   }))),
           DrawerItem(
@@ -61,7 +61,7 @@ class CustomDrawer extends StatelessWidget {
               icon: "made_in_qatar.png",
               onClick: () =>
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return ListTemplate(jsonFile: "made_in_qatar.json");
+                    return ListingPage(jsonFile: "made_in_qatar.json");
                   })))
         ]));
   }

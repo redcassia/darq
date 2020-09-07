@@ -1,12 +1,13 @@
+import 'dart:ui';
+
+import 'package:darq/elements/app_fonts.dart';
+import 'package:darq/model/item_model_class.dart';
+import 'package:darq/utilities/constants.dart';
+import 'package:darq/views/shared/button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:darq/utilities/constants.dart';
-import 'dart:ui';
 import 'package:flutter/rendering.dart';
-import 'package:darq/elements/app_fonts.dart';
-import 'package:darq/views/shared/button.dart';
-import 'package:darq/model/item_model_class.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Filter extends StatefulWidget {
   @override

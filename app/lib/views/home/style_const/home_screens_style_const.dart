@@ -1,8 +1,9 @@
 import 'dart:ui';
+
+import 'package:darq/elements/app_fonts.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:darq/elements/app_fonts.dart';
 
 
 final TextStyle kTitle9Rgb_07 =

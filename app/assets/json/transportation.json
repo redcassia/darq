@@ -1,8 +1,8 @@
 {
   "list": {
     "appbar": {
-      "filter": true,
-      "title": "Entertainment"
+      "filter": false,
+      "title": "Transportation"
     },
     "columns": {
       "start": [
@@ -63,7 +63,7 @@
         }
       ]
     },
-    "query": "query {\n  items: businesses(type: EntertainmentBusiness) {\n    id,\n    display_name,\n    display_picture,\n    rating\n    ... on EntertainmentBusiness {\n      sub_type_string\n      description\n      street_address\n    }\n  } \n}"
+    "query": "query {\n  items: businesses(type: TransportationBusiness) {\n    id,\n    display_name,\n    display_picture,\n    rating\n    ... on TransportationBusiness {\n      sub_type_string\n      description\n    }\n  } \n}"
   },
   "detailed": {
     "appbar": {
@@ -149,25 +149,13 @@
           "widget": "divider"
         },
         {
-          "widget": "text_with_title",
-          "titleText": "Website:",
-          "titleSize": "title9",
-          "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
-          "textSize": "text9odd",
-          "textColor": { "r": 66, "g": 102, "b": 118, "o": 1.0 },
-          "data": ["website"]
-        },
-        {
-          "widget": "divider"
-        },
-        {
           "widget": "itemized_text_with_title",
-          "titleText": "Activities:",
+          "titleText": "Services:",
           "titleSize": "title9",
           "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
           "textSize": "text9odd",
           "textColor": { "r": 0, "g": 0, "b": 0, "o": 0.5 },
-          "data": ["activities"]
+          "data": ["services"]
         },
         {
           "widget": "divider"
@@ -181,6 +169,6 @@
         }
       ]
     },
-    "query": "query($id: ID!) {\n  item: business(id: $id) {\n    display_name\n    display_picture\n    rating\n    cities\n    ... on EntertainmentBusiness {\n      sub_type_string\n      street_address\n      operating_hours {\n        open\n        close\n        all_day\n      }\n      phone_number\n      description\n      website\n      attachments\n      activities\n    }\n  }\n}"
+    "query": "query($id: ID!) {\n  item: business(id: $id) {\n    display_name\n    display_picture\n    rating\n    cities\n    ... on TransportationBusiness {\n      sub_type_string\n      street_address\n      operating_hours {\n        open\n        close\n        all_day\n      }\n      phone_number\n      description\n      services\n      attachments\n    }\n  }\n}"
   }
 }

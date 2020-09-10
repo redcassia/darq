@@ -4,8 +4,10 @@ const DataLoader = require('dataloader')
 const bcrypt = require('bcrypt')
 const cryptoRandomString = require('crypto-random-string');
 const jsonwebtoken = require('jsonwebtoken');
-const { ApolloError } = require('apollo-server-express');
+const { ApolloError, GraphQLUpload } = require('apollo-server-express');
 const { GraphQLScalarType } = require('graphql');
+var fs = require('fs');
+var path = require('path')
 
 class Database {
   constructor(config) {
@@ -397,9 +399,49 @@ async function _validateEventOwner(user, eventId) {
   }
 }
 
+function _generateAttachmentName() {
+  return cryptoRandomString({length: 64, type: 'url-safe'});
+}
+
+function _writeAttachmentToFile(file) {
+  return new Promise(async (resolve, reject) => {
+    const { createReadStream, filename, mimetype, encoding } = await file;
+    var uniqueName = _generateAttachmentName() + path.extname(filename);
+    var ws = fs.createWriteStream(path.join(process.env.ATTACHMENTS_DIR, uniqueName));
+    var rs = createReadStream();
+    rs.on('end', () => resolve(uniqueName));
+    rs.on('error', () => reject());
+    rs.pipe(ws);
+  });
+}
+
+async function _storeAttachments(data) {
+  if (data.display_picture) {
+    data.display_picture = await _writeAttachmentToFile(data.display_picture);
+  }
+
+  if (data.government_id) {
+    data.government_id = await _writeAttachmentToFile(data.government_id);
+  }
+
+  if (data.trade_license) {
+    data.trade_license = await _writeAttachmentToFile(data.trade_license);
+  }
+
+  if (data.attachments) {
+    data.attachments = data.attachments.map(async a => await _writeAttachmentToFile(a));
+  }
+
+  if (data.menu) {
+    data.menu = data.menu.map(async a => await _writeAttachmentToFile(a));
+  }
+
+  return data;
+}
+
 async function _addBusiness(data, owner) {
   try {
-    var props = data;
+    var props = await _storeAttachments(data);
 
     var display_name = data.display_name; delete props.display_name;
     var display_picture = data.display_picture; delete props.display_picture;
@@ -435,7 +477,7 @@ async function _addBusiness(data, owner) {
 
 async function _updateBusiness(id, data) {
   try {
-    var stringifiedData = JSON.stringify(data);
+    var stringifiedData = JSON.stringify(await _storeAttachments(data));
     await db.query(
       `
         INSERT INTO business_tentative_update
@@ -461,7 +503,7 @@ async function _updateBusiness(id, data) {
 
 async function _addEvent(data, owner) {
   try {
-    var props = data;
+    var props = await _storeAttachments(data);
 
     var display_name = data.display_name; delete props.display_name;
     var display_picture = data.display_picture; delete props.display_picture;
@@ -508,6 +550,8 @@ async function _addEvent(data, owner) {
 
 async function _updateEvent(id, data) {
   try {
+    data = await _storeAttachments(data);
+
     var fields = [];
     var args = []
 
@@ -1218,6 +1262,8 @@ const resolvers = {
       }
     }
   },
+
+  Upload: GraphQLUpload,
 
   Void: new GraphQLScalarType({
       name: 'Void',

@@ -33,4 +33,6 @@ app.use('/api', auth, function (err, req, res, next) {
 });
 server.applyMiddleware({ app, path: '/api' });
 
+app.use('/attachment', express.static(process.env.ATTACHMENTS_DIR));
+
 module.exports = app

@@ -128,7 +128,7 @@ const orderedBusinessLoader = new Map(
     'EntertainmentBusiness',
     'FoodBusiness',
     'CleaningAndMaintenanceBusiness'
-  ].map(type => 
+  ].map(type =>
   [
     type,
     new DataLoader(
@@ -367,7 +367,7 @@ async function _validateBusinessOwner(user, businessId) {
   var business = await businessLoader.load(businessId);
   if (business.owner != user.id) {
     throw new ApolloError(
-      "You're not the owner of this business! This incident will be reported.", 
+      "You're not the owner of this business! This incident will be reported.",
       'NOT_BUSINESS_OWNER'
     );
   }
@@ -377,13 +377,13 @@ async function _validateBusinessOwnerAndType(user, businessId, type) {
   var business = await businessLoader.load(businessId);
   if (business.owner != user.id) {
     throw new ApolloError(
-      "You're not the owner of this business! This incident will be reported.", 
+      "You're not the owner of this business! This incident will be reported.",
       'NOT_BUSINESS_OWNER'
     );
   }
   if (business.type != type) {
     throw new ApolloError(
-      "Invalid business type.", 
+      "Invalid business type.",
       'INVALID_BUSINESS_TYPE'
     );
   }
@@ -393,7 +393,7 @@ async function _validateEventOwner(user, eventId) {
   var event = await eventLoader.load(eventId);
   if (event.owner != user.id) {
     throw new ApolloError(
-      "You're not the owner of this event! This incident will be reported.", 
+      "You're not the owner of this event! This incident will be reported.",
       'NOT_EVENT_OWNER'
     );
   }
@@ -1172,37 +1172,37 @@ const resolvers = {
     async reviewBusiness(_, { id, approve }, { user }) {
       _validateAuthenticatedAdmin(user);
 
-      try {
-        await db.query(
-          `
-          UPDATE
-            business
-          SET
-            approved = ?
-          WHERE
-            id = ?
-          `,
-          [ approve ? 'APPROVED' : 'REJECTED', id ]
-        );
+      var business = await businessLoader.load(id);
 
-        businessLoader.clear(id);
+      if (business.approved == 'TENTATIVE' || business.approved == 'REJECTED') {
+        try {
+          await db.query(
+            `
+            UPDATE
+              business
+            SET
+              approved = ?
+            WHERE
+              id = ?
+            `,
+            [ approve ? 'APPROVED' : 'REJECTED', id ]
+          );
 
-        // TODO: send confirmation email
+          businessLoader.clear(id);
+
+          // TODO: send confirmation email
+        }
+        catch (e) {
+          console.log(e);
+          throw new ApolloError(
+            "Failed to approve business.",
+            "BUSINESS_APPROVE_FAILED"
+          );
+        }
       }
-      catch (e) {
-        console.log(e);
-        throw new ApolloError(
-          "Failed to approve business.",
-          "BUSINESS_APPROVE_FAILED"
-        );
-      }
-    },
-
-    async reviewBusinessUpdate(_, { id, approve }, { user }) {
-      _validateAuthenticatedAdmin(user);
 
       try {
-        await db.query(
+        const result = await db.query(
           `
           UPDATE
             business_tentative_update
@@ -1214,43 +1214,45 @@ const resolvers = {
           [ approve ? 'APPROVED' : 'REJECTED', id ]
         );
 
-        if (approve) {
-          await db.query(
-            `
-            UPDATE
-              business
-            SET
-              display_name = IFNULL((
-                SELECT JSON_UNQUOTE(JSON_EXTRACT(updated_data, '$.display_name'))
-                FROM business_tentative_update WHERE business_id = id
-              ), display_name),
-              display_picture = IFNULL((
-                SELECT JSON_UNQUOTE(JSON_EXTRACT(updated_data, '$.display_picture'))
-                FROM business_tentative_update WHERE business_id = id
-              ), display_picture),
-              props = JSON_MERGE_PATCH(props, (
-                SELECT JSON_REMOVE(updated_data, '$.display_name', '$.display_picture')
-                FROM business_tentative_update WHERE business_id = id
-              ))
-            WHERE
-              id = ?
-            `,
-            [ id ]
-          );
+        if (result.affectedRows == 1) {
+          if (approve) {
+            await db.query(
+              `
+              UPDATE
+                business
+              SET
+                display_name = IFNULL((
+                  SELECT JSON_UNQUOTE(JSON_EXTRACT(updated_data, '$.display_name'))
+                  FROM business_tentative_update WHERE business_id = id
+                ), display_name),
+                display_picture = IFNULL((
+                  SELECT JSON_UNQUOTE(JSON_EXTRACT(updated_data, '$.display_picture'))
+                  FROM business_tentative_update WHERE business_id = id
+                ), display_picture),
+                props = JSON_MERGE_PATCH(props, (
+                  SELECT JSON_REMOVE(updated_data, '$.display_name', '$.display_picture')
+                  FROM business_tentative_update WHERE business_id = id
+                ))
+              WHERE
+                id = ?
+              `,
+              [ id ]
+            );
 
-          await db.query(
-            `
-            DELETE FROM
-              business_tentative_update
-            WHERE
-              business_id = ?
-            `,
-            [ id ]
-          );
+            await db.query(
+              `
+              DELETE FROM
+                business_tentative_update
+              WHERE
+                business_id = ?
+              `,
+              [ id ]
+            );
 
-          businessLoader.clear(id);
+            businessLoader.clear(id);
 
-          // TODO: send confirmation email
+            // TODO: send confirmation email
+          }
         }
       }
       catch (e) {

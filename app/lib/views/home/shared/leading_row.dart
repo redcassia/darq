@@ -1,4 +1,5 @@
 import 'dart:ui';
+
 import 'package:darq/res/path_files.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +32,7 @@ class TextLeadingRow extends StatelessWidget {
         ]);
   }
 }
+
 class IconLeadingRow extends StatelessWidget {
   const IconLeadingRow(
       {Key key, @required this.iconName, @required this.txt, this.textStyle})
@@ -42,9 +44,11 @@ class IconLeadingRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-      Image(     width: 12.w,
+      Image(
+          width: 12.w,
           height: 12.w,
-          fit: BoxFit.fill,image: AssetImage(PathFiles.ImgPath + iconName)),
+          fit: BoxFit.fill,
+          image: AssetImage(PathFiles.ImgPath + iconName)),
       SizedBox(width: 4.5.w),
       Expanded(child: Text(txt, style: textStyle))
     ]);

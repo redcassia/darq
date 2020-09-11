@@ -1,18 +1,19 @@
-import 'dart:ui';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'dart:convert';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'dart:ui';
+
 import 'package:darq/res/path_files.dart';
 import 'package:darq/utilities/constants.dart';
 import 'package:darq/views/home/parsing/list_template_parsing.dart';
-import 'package:darq/views/shared/app_bars/default_appbar.dart';
-import 'package:darq/views/shared/capsule/right_rounded_capsule.dart';
-import 'package:darq/views/shared/capsule/left_rounded_capsule.dart';
-import 'package:darq/views/shared/custom_card.dart';
 import 'package:darq/views/home/screens/filter.dart';
+import 'package:darq/views/shared/app_bars/default_appbar.dart';
+import 'package:darq/views/shared/capsule/left_rounded_capsule.dart';
+import 'package:darq/views/shared/capsule/right_rounded_capsule.dart';
+import 'package:darq/views/shared/custom_card.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ListTemplate extends StatefulWidget {
   final String jsonFile;

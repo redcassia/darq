@@ -1,8 +1,8 @@
+import 'package:darq/elements/app_fonts.dart';
+import 'package:darq/utilities/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:darq/elements/app_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:darq/utilities/constants.dart';
 
 class RightRoundedCapsule extends StatelessWidget {
   const RightRoundedCapsule(

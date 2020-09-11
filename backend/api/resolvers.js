@@ -400,7 +400,7 @@ async function _validateEventOwner(user, eventId) {
 }
 
 function _generateAttachmentName() {
-  return cryptoRandomString({length: 64, type: 'url-safe'});
+  return cryptoRandomString({length: 55, type: 'url-safe'});
 }
 
 function _writeAttachmentToFile(file) {

@@ -1,19 +1,20 @@
 import 'dart:ui';
+
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/res/path_files.dart';
+import 'package:darq/views/home/screens/domestic_personnel_template.dart';
+import 'package:darq/views/home/shared/custom_divider.dart';
+import 'package:darq/views/home/shared/full_img_wrapper.dart';
+import 'package:darq/views/home/shared/leading_row.dart';
+import 'package:darq/views/home/style_const/home_screens_style_const.dart';
+import 'package:darq/views/shared/custom_card.dart';
+import 'package:darq/views/shared/custom_chip.dart';
+import 'package:darq/views/shared/image_container.dart';
+import 'package:darq/views/shared/star_rating.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:darq/views/home/shared/custom_divider.dart';
-import 'package:darq/views/shared/image_container.dart';
-import 'package:darq/views/shared/star_rating.dart';
-import 'package:darq/views/home/shared/full_img_wrapper.dart';
-import 'package:darq/views/home/shared/leading_row.dart';
-import 'package:darq/views/home/style_const/home_screens_style_const.dart';
-import 'package:darq/views/shared/custom_chip.dart';
-import 'package:darq/views/shared/custom_card.dart';
-import 'package:darq/views/home/screens/domestic_personnel_template.dart';
 
 parseC1({String data, rating}) {
   switch (data) {
@@ -464,4 +465,3 @@ parseC3({String data, BuildContext context}) {
       );
   }
 }
-

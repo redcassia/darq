@@ -56,14 +56,15 @@ class CustomButton extends StatelessWidget {
                       ]))));
   }
 }
+
 class CustomClipRRect extends StatelessWidget {
   const CustomClipRRect(
       {Key key,
-        @required this.borderRadius,
-        @required this.height,
-        @required this.width,
-        @required this.color,
-        @required this.widget})
+      @required this.borderRadius,
+      @required this.height,
+      @required this.width,
+      @required this.color,
+      @required this.widget})
       : super(key: key);
 
   final double borderRadius;
@@ -82,7 +83,9 @@ class CustomClipRRect extends StatelessWidget {
         child: Container(
             height: height,
             width: width,
-            margin: EdgeInsets.only(bottom: ConsDimensions.ButtonBottomShadow.h, right: ConsDimensions.ButtonHorizontalShadow.w),
+            margin: EdgeInsets.only(
+                bottom: ConsDimensions.ButtonBottomShadow.h,
+                right: ConsDimensions.ButtonHorizontalShadow.w),
             decoration: BoxDecoration(
                 boxShadow: [
                   BoxShadow(

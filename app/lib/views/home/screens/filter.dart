@@ -1,12 +1,13 @@
+import 'dart:ui';
+
+import 'package:darq/elements/app_fonts.dart';
+import 'package:darq/model/item_model_class.dart';
+import 'package:darq/utilities/constants.dart';
+import 'package:darq/views/shared/button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:darq/utilities/constants.dart';
-import 'dart:ui';
 import 'package:flutter/rendering.dart';
-import 'package:darq/elements/app_fonts.dart';
-import 'package:darq/views/shared/button.dart';
-import 'package:darq/model/item_model_class.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Filter extends StatefulWidget {
   @override
@@ -37,10 +38,10 @@ class _FilterState extends State<Filter> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   GestureDetector(
-                     onTap: ()=> setState((){
-                       for(int i=0 ; i<items.length ; i++)
-                         items[i].selected = false;
-                     }),
+                    onTap: () => setState(() {
+                      for (int i = 0; i < items.length; i++)
+                        items[i].selected = false;
+                    }),
                     child: Text("Reset",
                         style: AppFonts.title8(
                             color: Color.fromRGBO(0, 0, 0, 0.25))),
@@ -100,4 +101,3 @@ class _FilterState extends State<Filter> {
     );
   }
 }
-

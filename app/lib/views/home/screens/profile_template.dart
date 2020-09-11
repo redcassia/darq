@@ -1,15 +1,16 @@
+import 'dart:convert';
 import 'dart:ui';
+
+import 'package:darq/res/path_files.dart';
+import 'package:darq/utilities/constants.dart';
+import 'package:darq/views/home/parsing/profile_template_parsing.dart';
+import 'package:darq/views/shared/app_bars/profile_appbar.dart';
+import 'package:darq/views/shared/custom_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:darq/views/shared/custom_card.dart';
-import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:darq/views/home/parsing/profile_template_parsing.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:darq/res/path_files.dart';
-import 'package:darq/utilities/constants.dart';
-import 'package:darq/views/shared/app_bars/profile_appbar.dart';
 
 class ProfileTemplate extends StatefulWidget {
   final String jsonFile;
@@ -60,8 +61,9 @@ class _ProfileTemplateState extends State<ProfileTemplate> {
         appBar: PreferredSize(
             preferredSize: Size.fromHeight(ConsDimensions.SmallAppBarHeight.h),
             child: ProfileAppBar(
-                filterIndicator: profileAppBar.length > 0 ? profileAppBar[0] : "",
-                buttonName: profileAppBar.length >1 ? profileAppBar[1] : "")),
+                filterIndicator:
+                    profileAppBar.length > 0 ? profileAppBar[0] : "",
+                buttonName: profileAppBar.length > 1 ? profileAppBar[1] : "")),
         body: DefaultCard(
             margin: EdgeInsets.only(
                 bottom: 33.h, right: 19.w, left: 20.w, top: 6.h),

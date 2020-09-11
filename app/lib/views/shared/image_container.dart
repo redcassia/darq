@@ -1,17 +1,23 @@
 import 'dart:ui';
+
 import 'package:darq/res/path_files.dart';
+import 'package:darq/utilities/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:darq/utilities/constants.dart';
 
 class Picture extends StatelessWidget {
   const Picture(
-      {Key key, @required this.height, @required this.width, this.img})
+      {Key key,
+      @required this.height,
+      @required this.width,
+      this.img,
+      this.internetImg = false})
       : super(key: key);
 
   final double width;
   final double height;
   final String img;
+  final bool internetImg;
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +29,14 @@ class Picture extends StatelessWidget {
       child: Container(
         height: height,
         width: width,
-        margin: EdgeInsets.only(bottom: ConsDimensions.ImageBottomShadow, right: ConsDimensions.ImageRightShadow),
+        margin: EdgeInsets.only(
+            bottom: ConsDimensions.ImageBottomShadow,
+            right: ConsDimensions.ImageRightShadow),
         decoration: BoxDecoration(
             image: DecorationImage(
-                image: AssetImage(PathFiles.ImgPath + img),
+                image: internetImg
+                    ? NetworkImage(img)
+                    : AssetImage(PathFiles.ImgPath + img),
                 fit: BoxFit.cover),
             boxShadow: [
               BoxShadow(

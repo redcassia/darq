@@ -1,5 +1,6 @@
-import 'package:graphql/client.dart';
 import 'dart:async';
+
+import 'package:graphql/client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Backend {

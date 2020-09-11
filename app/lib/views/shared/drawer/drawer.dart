@@ -1,5 +1,6 @@
 import 'package:darq/utilities/screen_info.dart';
 import 'package:darq/views/home/screens/community.dart';
+import 'package:darq/views/home/screens/home.dart';
 import 'package:darq/views/home/screens/listing_page.dart';
 import 'package:darq/views/shared/drawer/drawer_item.dart';
 import 'package:flutter/material.dart';
@@ -62,6 +63,13 @@ class CustomDrawer extends StatelessWidget {
               onClick: () =>
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return ListingPage(jsonFile: "made_in_qatar.json");
+                  }))),
+          DrawerItem(
+              txt: "Home",
+              icon: "made_in_qatar.png",
+              onClick: () =>
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return Home();
                   })))
         ]));
   }

@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:darq/views/intro/welcome.dart';
 import 'package:darq/res/path_files.dart';
+import 'package:darq/views/intro/welcome.dart';
+import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
 

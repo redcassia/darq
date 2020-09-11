@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:darq/res/path_files.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:darq/views/shared/capsule/right_rounded_capsule.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class DefaultAppBar extends StatelessWidget {
   const DefaultAppBar(
@@ -60,7 +60,7 @@ class DefaultAppBar extends StatelessWidget {
                             trailing ?? Container(height: 0),
                           ])),
                   RightRoundedCapsule(
-                    iconBgColor: Color.fromRGBO(134, 194, 194, 0.69),
+                      iconBgColor: Color.fromRGBO(134, 194, 194, 0.69),
                       horizontalPadding: 19.w,
                       verticalPadding: 4.h,
                       title: title)

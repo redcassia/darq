@@ -807,7 +807,7 @@ type Event {
   display_name: String!
   display_picture: String!
   type: EventType!
-  city: City!
+  city: City
   street_address: String
   phone_number: [String!]
   description: String!
@@ -823,7 +823,7 @@ input NewEventInput {
   display_name: String!
   display_picture: Upload!
   type: EventType!
-  city: City!
+  city: City
   street_address: String
   phone_number: [String!]
   description: String!

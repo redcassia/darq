@@ -186,6 +186,8 @@ function setGlobalEventHandlers() {
     $(".remove-btn").click(function() {
       this.parentElement.remove();
     });
+
+    setGlobalEventHandlers();
   });
 
   $("select").change(function() {

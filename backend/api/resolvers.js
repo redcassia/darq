@@ -429,11 +429,15 @@ async function _storeAttachments(data) {
   }
 
   if (data.attachments) {
-    data.attachments = data.attachments.map(async a => await _writeAttachmentToFile(a));
+    for (var i = 0; i < data.attachments.length; ++i) {
+      data.attachments[i] = await _writeAttachmentToFile(data.attachments[i]);
+    }
   }
 
   if (data.menu) {
-    data.menu = data.menu.map(async a => await _writeAttachmentToFile(a));
+    for (var i = 0; i < data.menu.length; ++i) {
+      data.menu[i] = await _writeAttachmentToFile(data.menu[i]);
+    }
   }
 
   return data;

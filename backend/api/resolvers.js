@@ -428,6 +428,14 @@ async function _storeAttachments(data) {
     data.trade_license = await _writeAttachmentToFile(data.trade_license);
   }
 
+  if (data.personnel) {
+    for (var i = 0; i < data.personnel.length; ++i) {
+      if (data.personnel[i].picture) {
+        data.personnel[i].picture = await _writeAttachmentToFile(data.personnel[i].picture);
+      }
+    }
+  }
+
   if (data.attachments) {
     for (var i = 0; i < data.attachments.length; ++i) {
       data.attachments[i] = await _writeAttachmentToFile(data.attachments[i]);

@@ -922,7 +922,7 @@ interface DomesticHelpPersonnel {
 
 input DomesticHelpPersonnelInput {
   name: String!
-  picture: String!
+  picture: Upload!
   profession: Profession!
   gender: Gender!
   nationality: Nationality!

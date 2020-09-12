@@ -1,4 +1,4 @@
-<form id="cleaning-maintenance-form">
+<form id="cleaning-maintenance-form" novalidate>
     <div class="form-line">
         <div class="form-box">
             <label>Profile picture</label>
@@ -81,7 +81,7 @@
         <div class="form-box">
             <div class="form-object" data-name="charge">
                 <label>Fees</label>
-                <input type="number" style="width:105px" name="value" required data-friendly-name="Charge" />
+                <input type="text" data-special-type="float" style="width:105px" name="value" required data-friendly-name="Charge" />
                 <div class="select">
                     <select name="currency" id="cleaning-maintenance-fees-currency" style="width:150px">
                     </select>
@@ -93,11 +93,9 @@
 
     <div class="form-line">
         <div class="form-box">
-            <label>Home Service Availability</label>
-            <input type="radio" name="home_service_available" value="true" id="cleaning-maintenance-home-service-available-true" required data-friendly-name="Home service availability" />
-            <label for="cleaning-maintenance-home-service-available-true">Available</label>
-            <input type="radio" name="home_service_available" value="false" id="cleaning-maintenance-home-service-available-false" required data-friendly-name="Home service availability" />
-            <label for="cleaning-maintenance-home-service-available-false">Not available</label>
+            <label>Home Services</label>
+            <input type="checkbox" name="home_service_available" />
+            <span>Available</span>
         </div>
     </div>
 
@@ -134,5 +132,5 @@
 
     <hr />
 
-    <input type="submit">
+    <input type="submit" onclick="submitForm('cleaning-maintenance-form', 'CleaningAndMaintenanceBusiness')">
 </form>

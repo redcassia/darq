@@ -1,4 +1,4 @@
-<form id="made-in-qatar-form">
+<form id="made-in-qatar-form" novalidate>
     <div class="form-line">
         <div class="form-box">
             <label>Profile picture</label>
@@ -77,10 +77,8 @@
     <div class="form-line">
         <div class="form-box">
             <label>Home Delivery</label>
-            <input type="radio" name="home_delivery_available" value="true" id="made-in-qatar-home-delivery-available-true" required data-friendly-name="Home delivery availability" />
-            <label for="made-in-qatar-home-delivery-available-true">Available</label>
-            <input type="radio" name="home_delivery_available" value="false" id="made-in-qatar-home-delivery-available-false" required data-friendly-name="Home delivery availability" />
-            <label for="made-in-qatar-home-delivery-available-false">Not available</label>
+            <input type="checkbox" name="home_delivery_available" />
+            <span>Available</span>
         </div>
     </div>
 
@@ -95,19 +93,6 @@
 
     <div class="form-line">
         <div class="form-box">
-            <label>Trade License</label>
-            <div class="img-input" required data-friendly-name="Trade license">
-                <input type="file" name="trade_license"/>
-            </div>
-        </div>
-        <div class="form-box">
-            <label>Trade License Number</label>
-            <input type="text" name="trade_license_number" required data-friendly-name="Trade license number" />
-        </div>
-    </div>
-
-    <div class="form-line">
-        <div class="form-box">
             <label>Gallery</label>
             <div class="img-input multiple">
                 <input type="file" name="attachments" />
@@ -117,5 +102,5 @@
 
     <hr />
 
-    <input type="submit" onclick="submitForm('made-in-qatar-form', 'addMadeInQatarBusiness')">
+    <input type="submit" onclick="submitForm('made-in-qatar-form', 'MadeInQatarBusiness')">
 </form>

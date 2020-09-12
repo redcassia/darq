@@ -1,4 +1,4 @@
-<form id="domestic-help-form">
+<form id="domestic-help-form" novalidate>
     <div class="form-line">
         <div class="form-box">
             <label>Profile picture</label>
@@ -74,6 +74,190 @@
 
     <div class="form-line">
         <div class="form-box">
+            <label>Help personnel</label>
+            <div class="multiform" data-name="personnel">
+                <button>+ Add</button>
+                <div class="template">
+                    <hr />
+                    <button class="remove-btn" style="left: calc(100% - 36px);"></button>
+
+                    <div class="form-line">
+                        <div class="form-box">
+                            <label>Name</label>
+                            <input type="text" name="name" />
+                        </div>
+                    </div>
+
+                    <div class="form-line">
+                        <div class="form-box">
+                            <label>Picture</label>
+                            <div class="img-input" required data-friendly-name="Picture">
+                                <input type="file" name="picture"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-line">
+                        <div class="form-box">
+                            <label>Profession</label>
+                            <div class="select">
+                                <select name="profession" id="domestic-help-personnel-profession" required data-friendly-name="Profession">
+                                    <option value="" disabled selected>Choose profession</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-box">
+                            <label>Gender</label>
+                            <div class="select">
+                                <select name="gender" id="domestic-help-personnel-gender" required data-friendly-name="Gender">
+                                    <option value="" disabled selected>Choose</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-line">
+                        <div class="form-box">
+                            <label>Nationality</label>
+                            <div class="select">
+                                <select name="nationality" id="domestic-help-personnel-nationality" required data-friendly-name="Nationality">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-box">
+                            <label>Religion</label>
+                            <input type="text" name="religion" required data-friendly-name="Religion" />
+                        </div>
+                    </div>
+
+                    <div class="form-line">
+                        <div class="form-box">
+                            <label>Height</label>
+                            <input type="text" name="height" />
+                            <span>cm</span>
+                        </div>
+                    </div>
+
+                    <div class="form-line">
+                        <div class="form-box">
+                            <label>Weight</label>
+                            <input type="text" name="weight" />
+                            <span>kg</span>
+                        </div>
+                    </div>
+
+                    <div class="form-line">
+                        <div class="form-box">
+                            <label>Marital status</label>
+                            <div class="select">
+                                <select name="marital_status" id="domestic-help-personnel-marital-status" required data-friendly-name="Marital status">
+                                    <option value="" disabled selected>Choose</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-box">
+                            <label>Number of children</label>
+                            <input type="number" name="number_of_children" />
+                        </div>
+                    </div>
+
+                    <div class="form-line">
+                        <div class="form-box">
+                            <label>Education</label>
+                            <div class="select">
+                                <select name="education" id="domestic-help-personnel-education">
+                                    <option value="" disabled selected>Choose</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-box">
+                            <label>Date of Birth</label>
+                            <input type="date" name="date_of_birth" required data-friendly-name="Date of Birth" />
+                        </div>
+                    </div>
+
+                    <div class="form-line">
+                        <div class="form-box">
+                            <label>Languages</label>
+                            <div class="multistring-input" required data-friendly-name="Languages">
+                                <div class="data"></div>
+                                <input type="text" name="languages" />
+                                <button>Add</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-line">
+                        <div class="form-box">
+                            <label>Skills</label>
+                            <div class="multistring-input">
+                                <div class="data"></div>
+                                <input type="text" name="skills" />
+                                <button>Add</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-line">
+                        <div class="form-box">
+                            <label>Experience</label>
+                            <div class="multiform" data-name="experience">
+                                <button>+ Add</button>
+                                <div class="template">
+                                    <hr />
+                                    <button class="remove-btn" style="left: calc(100% - 36px);"></button>
+                                    <div class="form-line">
+                                        <div class="form-box">
+                                            <label>Country</label>
+                                            <div class="select">
+                                                <select name="country" id="self-employed-experience-country">
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-box">
+                                            <label>Institution</label>
+                                            <input type="text" name="institution" />
+                                        </div>
+                                    </div>
+                                    <div class="form-line">
+                                        <div class="form-box">
+                                            <label>From</label>
+                                            <input type="date" name="from" />
+                                        </div>
+                                        <div class="form-box">
+                                            <label>To</label>
+                                            <input type="date" name="to" />
+                                            <span>In position</span>
+                                            <input type="checkbox" name="in_position" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-line">
+                        <div class="form-box">
+                            <div class="form-object" data-name="salary">
+                                <label>Salary</label>
+                                <input type="number" style="width:105px" name="value" required data-friendly-name="Salary" />
+                                <div class="select">
+                                    <select name="currency" id="domestic-help-personnel-salary-currency" style="width:150px">
+                                    </select>
+                                </div>
+                                <span>/month</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="form-line">
+        <div class="form-box">
             <label>Trade License</label>
             <div class="img-input" required data-friendly-name="Trade license">
                 <input type="file" name="trade_license"/>
@@ -96,5 +280,5 @@
 
     <hr />
 
-    <input type="submit" onclick="submitForm('domestic-help-form', 'addDomesticHelpBusiness')">
+    <input type="submit" onclick="submitForm('domestic-help-form', 'DomesticHelpBusiness')">
 </form>

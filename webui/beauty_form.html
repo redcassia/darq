@@ -1,4 +1,4 @@
-<form id="beauty-form">
+<form id="beauty-form" novalidate>
     <div class="form-line">
         <div class="form-box">
             <label>Profile picture</label>
@@ -90,11 +90,9 @@
 
     <div class="form-line">
         <div class="form-box">
-            <label>Home Service Availability</label>
-            <input type="radio" name="home_service_available" value="true" id="beauty-home-service-available-true" required data-friendly-name="Home service availability" />
-            <label for="beauty-home-service-available-true">Available</label>
-            <input type="radio" name="home_service_available" value="false" id="beauty-home-service-available-false" required data-friendly-name="Home service availability" />
-            <label for="beauty-home-service-available-false">Not available</label>
+            <label>Home Services</label>
+            <input type="checkbox" name="home_service_available" />
+            <span>Available</span>
         </div>
     </div>
 
@@ -131,5 +129,5 @@
 
     <hr />
 
-    <input type="submit" onclick="submitForm('beauty-form', 'addBeautyBusiness')">
+    <input type="submit" onclick="submitForm('beauty-form', 'BeautyBusiness')">
 </form>

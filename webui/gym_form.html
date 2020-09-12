@@ -1,4 +1,4 @@
-<form id="gym-form">
+<form id="gym-form" novalidate>
     <div class="form-line">
         <div class="form-box">
             <label>Profile picture</label>
@@ -79,10 +79,8 @@
     <div class="form-line">
         <div class="form-box">
             <label>Home Training</label>
-            <input type="radio" name="home_training_available" value="true" id="gym-home-training-available-true" required data-friendly-name="Home training availability" />
-            <label for="gym-home-training-available-true">Available</label>
-            <input type="radio" name="home_training_available" value="false" id="gym-home-training-available-false" required data-friendly-name="Home training availability" />
-            <label for="gym-home-training-available-false">Not available</label>
+            <input type="checkbox" name="home_service_available" />
+            <span>Available</span>
         </div>
     </div>
 
@@ -96,13 +94,15 @@
     <div class="form-line">
         <div class="form-box">
             <label>Gender</label>
-            <input type="radio" name="genders" value="Male only" id="genders-male" required data-friendly-name="Genders"/>
-            <label for="genders-male">Male only</label>
-            <input type="radio" name="genders" value="Female only" id="genders-female" required data-friendly-name="Genders"/>
-            <label for="genders-female">Female only</label>
-            <input type="radio" name="genders" value="Mixed" id="genders-mixed" required data-friendly-name="Genders"/>
-            <label for="genders-mixed">Mixed</label>
+            <div class="select">
+                <select name="genders" required data-friendly-name="Gender">
+                    <option value="" disabled selected>Choose</option>
+                    <option value="Male only">Male only</option>
+                    <option value="Female only">Female only</option>
+                    <option value="Mixed">Mixed</option>
+                </select>
             </div>
+        </div>
     </div>
 
     <hr />
@@ -131,5 +131,5 @@
 
     <hr />
 
-    <input type="submit" onclick="submitForm('gym-form', 'addSportsBusiness')">
+    <input type="submit" onclick="submitForm('gym-form', 'SportsBusiness')">
 </form>

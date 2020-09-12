@@ -439,8 +439,16 @@ hr {
     text-align: center;
 }
 
+.underlined {
+    text-decoration: underline;
+}
+
 .hidden {
     display: none;
+}
+
+.invisible {
+    opacity: 0;
 }
 
 /* specialized styles for screen arrangement */
@@ -553,9 +561,9 @@ hr {
     vertical-align: top;
 
     width: calc(100% - 64px);
-    max-height: calc(100% - 32px);
+    max-height: calc(100% - 64px);
 
-    padding: 32px 32px 0 32px;
+    padding: 32px;
     margin: 0;
 
     text-align: left;
@@ -565,7 +573,7 @@ hr {
     width: calc(100% - 64px - 264px);
 }
 .left-aligned-content.full-height {
-    height: calc(100% - 32px);
+    height: calc(100% - 64px);
 }
 
 .content-submenu {
@@ -675,7 +683,7 @@ hr {
 #msg-box {
     height: 100px;
     width: 100%;
-    margin: 20px 0 20px 0;
+    margin: 20px 0 0 0;
 }
 
 /* styles for data preview */
@@ -696,6 +704,7 @@ hr {
 
 .profile-left {
     display: inline-block;
+    vertical-align: top;
     padding-right: 20px;
 
     min-width: 160px;
@@ -705,6 +714,7 @@ hr {
 
 .profile-right {
     display: inline-block;
+    vertical-align: top;
     padding-left: 20px;
 
     max-width: 280px;
@@ -740,6 +750,11 @@ hr {
     font-size: 16px;
     line-height: 19px;
     color: rgba(0, 0, 0, 0.5);
+}
+.profile-big-text +.profile-small-text,
+.profile-medium-text +.profile-small-text,
+.profile-small-text + .profile-small-text {
+    margin-top: 5px;
 }
 
 .profile-small-text-light {

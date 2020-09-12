@@ -27,48 +27,6 @@ function loadBusiness(id) {
   }
 }
 
-var _businessQueryFields = `
-  id
-  approved
-  rating
-  display_name
-  display_picture
-  city
-  type
-  ... on SelfEmployedBusiness {
-    sub_type_string
-    gender
-    nationality
-    phone_number
-    description
-    skills
-    experience {
-      country
-      institution
-      from
-      to
-      in_position
-    }
-    charge {
-      value
-      currency
-    }
-    government_id
-    attachments
-  }
-  ... on ChildEducationBusiness {
-    sub_type_string
-    trade_license
-    trade_license_number
-    street_address
-    phone_numbers: phone_number
-    description
-    year_founded
-    curriculum
-    attachments
-  }
-`;
-
 function queryOwnedBusinesses() {
   GraphQL.query(`
     query {

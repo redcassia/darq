@@ -1,5 +1,3 @@
-const attachmentsEndpoint = "http://localhost:7070/attachment/"
-
 const slideSpeed = 150;
 const welcomeSpeed = 200;
 

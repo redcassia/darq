@@ -75,9 +75,3 @@ class DynamicLoader {
     this.unloadScripts(tagId);
   }
 }
-
-function openInNewTab(url) {
-  console.log(`Opening ${url}`);
-  var win = window.open(url, '_blank');
-  win.focus();
-}

@@ -388,6 +388,7 @@ function navigateTo(content) {
         [
           {
             src: 'form.js',
+            singleLoad: true
           },
           {
             src: 'profile_view.js',
@@ -405,6 +406,7 @@ function navigateTo(content) {
         [
           {
             src: 'form.js',
+            singleLoad: true
           },
           {
             src: 'profile_view.js',

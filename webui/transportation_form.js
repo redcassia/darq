@@ -3,7 +3,7 @@ function submitForm() {
   var data;
 
   try {
-    data = getFormData('transportation-form');
+    data = Form.getFormData('transportation-form');
   }
   catch (e) {
     console.log(e);

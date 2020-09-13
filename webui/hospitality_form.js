@@ -3,7 +3,7 @@ function submitForm() {
   var data;
 
   try {
-    data = getFormData('hospitality-form');
+    data = Form.getFormData('hospitality-form');
   }
   catch (e) {
     console.log(e);

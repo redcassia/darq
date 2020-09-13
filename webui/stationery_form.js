@@ -3,7 +3,7 @@ function submitForm() {
   var data;
 
   try {
-    data = getFormData('stationery-form');
+    data = Form.getFormData('stationery-form');
   }
   catch (e) {
     console.log(e);

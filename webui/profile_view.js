@@ -316,9 +316,18 @@ class ProfileView {
     `;
 
     if (b["update"]) {
+      var update = b["update"];
+
+      if (update["attachments"] && update["old_attachments"]) {
+        update["old_attachments"].forEach(_ => update["attachments"].push(_));
+      }
+      if (update["menu"] && update["old_menu"]) {
+        update["old_menu"].forEach(_ => update["menu"].push(_));
+      }
+
       html += `
         <div class="profile-right-pane">
-          ${this._generateBusinessView(b["update"])}
+          ${this._generateBusinessView(update)}
         </div>
       `;
     }

@@ -3,7 +3,7 @@ function submitForm() {
   var data;
 
   try {
-    data = getFormData('cleaning-maintenance-form');
+    data = Form.getFormData('cleaning-maintenance-form');
   }
   catch (e) {
     console.log(e);

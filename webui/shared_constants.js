@@ -1,3 +1,17 @@
+const _businessApproveStatus = {
+  TENTATIVE: "Your business is waiting to be approved.",
+  APPROVED: "Congratulations! Your business is approved and will be listed on DarQ in the next 24 hours.",
+  APPROVED_AND_LISTED: "Your business is listed on DarQ!",
+  REJECTED: "Your business information has been rejected. Please contact DarQ.",
+};
+
+const _businessUpdateApproveStatus = {
+  TENTATIVE: "The updated data is waiting to be approved.",
+  APPROVED: "The updated data has been approved and will be listed shortly.",
+  APPROVED_AND_LISTED: "The updated data has been approved and listed on DarQ!",
+  REJECTED: "The updated information has been rejected. Please contact the DarQ.",
+};
+
 const __elementaryBusinessQueryFields = `
   id
   approved
@@ -7,6 +21,7 @@ const __elementaryBusinessQueryFields = `
   city
   type
   ... on SelfEmployedBusiness {
+    selfEmployedSubType: sub_type
     sub_type_string
     gender
     nationality
@@ -28,6 +43,7 @@ const __elementaryBusinessQueryFields = `
     attachments
   }
   ... on ChildEducationBusiness {
+    childEducationSubType: sub_type
     sub_type_string
     trade_license
     trade_license_number
@@ -38,7 +54,12 @@ const __elementaryBusinessQueryFields = `
     curriculum
     attachments
   }
+  ... on DomesticHelpBusiness {
+    domesticHelpSubType: sub_type
+    sub_type_string
+  }
   ... on BeautyBusiness {
+    beautySubType: sub_type
     sub_type_string
     trade_license
     trade_license_number
@@ -56,6 +77,7 @@ const __elementaryBusinessQueryFields = `
     attachments
   }
   ... on TransportationBusiness {
+    transportationSubType: sub_type
     sub_type_string
     trade_license
     trade_license_number
@@ -72,6 +94,7 @@ const __elementaryBusinessQueryFields = `
     attachments
   }
   ... on HospitalityBusiness {
+    hospitalitySubType: sub_type
     sub_type_string
     trade_license
     trade_license_number
@@ -97,6 +120,7 @@ const __elementaryBusinessQueryFields = `
     attachments
   }
   ... on MadeInQatarBusiness {
+    madeInQatarSubType: sub_type
     sub_type_string
     street_address
     phone_numbers: phone_number
@@ -107,6 +131,7 @@ const __elementaryBusinessQueryFields = `
     attachments
   }
   ... on SportsBusiness {
+    sportsSubType: sub_type
     sub_type_string
     trade_license
     trade_license_number
@@ -126,6 +151,7 @@ const __elementaryBusinessQueryFields = `
     teams
   }
   ... on EntertainmentBusiness {
+    entertainmentSubType: sub_type
     sub_type_string
     trade_license
     trade_license_number
@@ -142,6 +168,7 @@ const __elementaryBusinessQueryFields = `
     attachments
   }
   ... on FoodBusiness {
+    foodSubType: sub_type
     sub_type_string
     trade_license
     trade_license_number
@@ -158,6 +185,7 @@ const __elementaryBusinessQueryFields = `
     attachments
   }
   ... on CleaningAndMaintenanceBusiness {
+    cleaningAndMaintenanceSubType: sub_type
     sub_type_string
     trade_license
     trade_license_number
@@ -221,4 +249,29 @@ function openInNewTab(url) {
   console.log(`Opening ${url}`);
   var win = window.open(url, '_blank');
   win.focus();
+}
+
+function equals(a, b) {
+  if (a == b) {
+    return true;
+  }
+  else if (a instanceof Array && b instanceof Array) {
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; ++i) {
+      if (! equals(a[i], b[i])) return false;
+    }
+    return true;
+  }
+  else if (a instanceof Object && b instanceof Object) {
+    for (var key in a) {
+      if (! b[key] || ! equals(a[key], b[key])) return false;
+    }
+    for (var key in b) {
+      if (! a[key]) return false;
+    }
+    return true;
+  }
+  else {
+    return false;
+  }
 }

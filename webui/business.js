@@ -17,10 +17,75 @@ function updateBusinessesMenu() {
   }
 }
 
+function editBusiness(id) {
+
+  var formName;
+  switch (businesses[id]["type"]) {
+    case 'SelfEmployedBusiness':            formName = 'self_employed_form'; break;
+    case 'ChildEducationBusiness':          formName = 'child_education_form'; break;
+    case 'DomesticHelpBusiness':            formName = 'domestic_help_form'; break;
+    case 'BeautyBusiness':                  formName = 'beauty_form'; break;
+    case 'TransportationBusiness':          formName = 'transportation_form'; break;
+    case 'HospitalityBusiness':             formName = 'hospitality_form'; break;
+    case 'StationeryBusiness':              formName = 'stationery_form'; break;
+    case 'MadeInQatarBusiness':             formName = 'made_in_qatar_form'; break;
+    case 'SportsBusiness':
+      if (businesses[id]["sportsSubType"] == 'GYM') {
+        formName = 'gym_form';
+      }
+      else {
+        formName = 'club_form';
+      }
+      break;
+    case 'EntertainmentBusiness':           formName = 'entertainment_form'; break;
+    case 'FoodBusiness':                    formName = 'cuisine_form'; break;
+    case 'CleaningAndMaintenanceBusiness':  formName = 'cleaning_maintenance_form'; break;
+  }
+
+  DynamicLoader.unloadFrom('business-content');
+  DynamicLoader.loadTo(
+    'business-content',
+    formName + '.html',
+    formName + "_update.js",
+    [
+      {
+        src: formName + ".js"
+      }
+    ],
+    () => { initializeForm(businesses[id]); }
+  );
+}
+
 function loadBusiness(id) {
 
   if (businesses[id]) {
-    var html = ProfileView.generateBusinessView(businesses[id]);
+    var b = businesses[id];
+    var html = `
+      <div class"h6">
+        <span class="accent">Status: </span>
+        ${_businessApproveStatus[b["approved"]]}
+      </div>
+    `;
+
+    if (b["update"]) {
+      html += `
+        <div class"h6">
+          <span class="accent">Update status: </span>
+          ${_businessUpdateApproveStatus[b["update"]["approved"]]}
+        </div>
+      `;
+    }
+
+    html +=`
+      <br />
+      <div class="h6 clickable underlined" onclick="editBusiness(${id})">
+        <i class="fas fa-pencil-alt"></i> Edit
+      </div>
+      <br />
+      <br />
+      ${ProfileView.generateBusinessView(b)}
+    `;
+
     document.getElementById("business-content").innerHTML = html;
 
     console.log(`Selected business ${id}`);
@@ -59,7 +124,11 @@ function queryOwnedBusinesses() {
 
 function loadForm(formName) {
   DynamicLoader.unloadFrom('business-content');
-  DynamicLoader.loadTo('business-content', formName + '.html', formName + ".js");
+  DynamicLoader.loadTo(
+    'business-content',
+    formName + '.html',
+    formName + ".js"
+  );
 }
 
 $(document).ready(queryOwnedBusinesses);

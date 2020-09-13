@@ -3,7 +3,7 @@ function submitForm() {
   var data;
 
   try {
-    data = getFormData('made-in-qatar-form');
+    data = Form.getFormData('made-in-qatar-form');
   }
   catch (e) {
     console.log(e);

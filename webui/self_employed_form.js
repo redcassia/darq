@@ -3,7 +3,7 @@ function submitForm() {
   var data;
 
   try {
-    data = getFormData('self-employed-form');
+    data = Form.getFormData('self-employed-form');
   }
   catch (e) {
     console.log(e);

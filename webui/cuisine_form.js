@@ -3,7 +3,7 @@ function submitForm() {
   var data;
 
   try {
-    data = getFormData('cuisine-form');
+    data = Form.getFormData('cuisine-form');
   }
   catch (e) {
     console.log(e);
@@ -13,7 +13,7 @@ function submitForm() {
   $("#loading-blanket").show();
 
   GraphQL.mutation(`
-    mutation ($data: New$FoodBusinessInput!) {
+    mutation ($data: NewFoodBusinessInput!) {
       addFoodBusiness(data: $data)
     }
   `, {

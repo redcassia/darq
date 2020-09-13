@@ -107,9 +107,11 @@ function setGlobalEventHandlers() {
     e.preventDefault();
   });
 
+  $(".img-input").off("click");
   $(".img-input").click(function() {
     $(this).children()[0].click();
   });
+  $(".img-input > input").off("change");
   $(".img-input > input").change(function() {
     var inp = this;
     var input = $(this);
@@ -126,7 +128,7 @@ function setGlobalEventHandlers() {
   
           var btn = document.createElement("button");
           btn.onclick = function() {
-            div.remove();
+            this.parentElement.remove();
           }
   
           var cloned = inp.cloneNode();
@@ -147,6 +149,7 @@ function setGlobalEventHandlers() {
     }
   });
 
+  $(".multistring-input > button").off("click");
   $(".multistring-input > button").click(function() {
     var input = $(this).parent().children('input')[0];
     var val = input.value;
@@ -162,7 +165,7 @@ function setGlobalEventHandlers() {
       var btn = document.createElement("button");
       btn.setAttribute('class', 'remove-btn');
       btn.onclick = function() {
-        div.remove();
+        this.parentElement.remove();
       }
   
       div.appendChild(p);
@@ -173,6 +176,7 @@ function setGlobalEventHandlers() {
     }
   });
 
+  $(".multiform > button").off("click");
   $(".multiform > button").click(function() {
     $(this).parent().append(
       $($(this).parent().children('.template')[0])
@@ -181,6 +185,7 @@ function setGlobalEventHandlers() {
         .addClass("sub-form")
     );
 
+    $(".remove-btn").off("click");
     $(".remove-btn").click(function() {
       this.parentElement.remove();
     });
@@ -188,6 +193,7 @@ function setGlobalEventHandlers() {
     setGlobalEventHandlers();
   });
 
+  $("select").off("change");
   $("select").change(function() {
     var next = $(this).next();
     if (next.hasClass('show-when-other')) {

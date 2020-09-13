@@ -3,7 +3,7 @@ function submitForm() {
   var data;
 
   try {
-    data = getFormData('child-education-form');
+    data = Form.getFormData('child-education-form');
   }
   catch (e) {
     console.log(e);

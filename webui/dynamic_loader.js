@@ -11,7 +11,7 @@ class DynamicLoader {
     }
 
     if (this.singleLoadScripts[src]) {
-      onload();
+      if (onload) onload();
       return;
     }
 
@@ -27,7 +27,7 @@ class DynamicLoader {
         this.loadedScripts[group].doms.push(s);
       }
 
-      s.onload = onload;
+      if (onload) s.onload = onload;
       s.setAttribute('src', src);
       document.body.appendChild(s);
     }
@@ -40,7 +40,7 @@ class DynamicLoader {
     }
   }
 
-  static loadTo(tagId, target, script = "", preloadScripts = []) {
+  static loadTo(tagId, target, script = "", preloadScripts = [], onload) {
 
     if (preloadScripts.length > 0) {
       var preload = preloadScripts.pop();
@@ -48,7 +48,7 @@ class DynamicLoader {
         tagId,
         preload.src,
         () => {
-          this.loadTo(tagId, target, script, preloadScripts);
+          this.loadTo(tagId, target, script, preloadScripts, onload);
         },
         preload.singleLoad || false
       );
@@ -63,7 +63,7 @@ class DynamicLoader {
         setGlobalEventHandlers();
 
         if (script && script.length > 0) {
-          DynamicLoader.loadScript(tagId, script)
+          DynamicLoader.loadScript(tagId, script, onload);
         }
       };
       xhr.send();

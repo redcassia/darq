@@ -3,7 +3,7 @@ function submitForm() {
   var data;
 
   try {
-    data = getFormData('beauty-form');
+    data = Form.getFormData('beauty-form');
   }
   catch (e) {
     console.log(e);

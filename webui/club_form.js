@@ -3,7 +3,8 @@ function submitForm() {
   var data;
 
   try {
-    data = getFormData('club-form');
+    data = Form.getFormData('club-form');
+    data["sub_type"] = 'CLUB';
   }
   catch (e) {
     console.log(e);

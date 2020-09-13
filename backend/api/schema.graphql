@@ -155,6 +155,7 @@ input UpdateSelfEmployedBusinessInput {
   experience: [PersonalExperienceInput!]
   charge: PriceInput
   government_id: Upload
+  old_attachments: [String!]
   attachments: [Upload!]
 }
 
@@ -211,6 +212,7 @@ input UpdateChildEducationBusinessInput {
   description: String
   year_founded: String
   curriculum: [String!]
+  old_attachments: [String!]
   attachments: [Upload!]
 }
 
@@ -326,6 +328,7 @@ input UpdateBeautyBusinessInput {
   home_service_available: Boolean
   services: [String!]
   website: String
+  old_attachments: [String!]
   attachments: [Upload!]
 }
 
@@ -385,6 +388,7 @@ input UpdateTransportationBusinessInput {
   description: String
   services: [String!]
   website: String
+  old_attachments: [String!]
   attachments: [Upload!]
 }
 
@@ -447,6 +451,7 @@ input UpdateHospitalityBusinessInput {
   charge: PriceInput
   services: [String!]
   website: String
+  old_attachments: [String!]
   attachments: [Upload!]
 }
 
@@ -494,6 +499,7 @@ input UpdateStationeryBusinessInput {
   street_address: String
   phone_number: [String!]
   website: String
+  old_attachments: [String!]
   attachments: [Upload!]
 }
 
@@ -547,6 +553,7 @@ input UpdateMadeInQatarBusinessInput {
   home_delivery_available: Boolean
   products: [String!]
   website: String
+  old_attachments: [String!]
   attachments: [Upload!]
 }
 
@@ -613,6 +620,7 @@ input UpdateSportsBusinessInput {
   phone_number: [String!]
   description: String
   website: String
+  old_attachments: [String!]
   attachments: [Upload!]
   home_training_available: Boolean
   classes: [String!]
@@ -676,6 +684,7 @@ input UpdateEntertainmentBusinessInput {
   description: String
   activities: [String!]
   website: String
+  old_attachments: [String!]
   attachments: [Upload!]
 }
 
@@ -734,7 +743,9 @@ input UpdateFoodBusinessInput {
   phone_number: [String!]
   description: String
   website: String
+  old_menu: [String!]
   menu: [Upload!]
+  old_attachments: [String!]
   attachments: [Upload!]
 }
 
@@ -797,6 +808,7 @@ input UpdateCleaningAndMaintenanceBusinessInput {
   home_service_available: Boolean
   charge: PriceInput
   website: String
+  old_attachments: [String!]
   attachments: [Upload!]
 }
 
@@ -848,6 +860,7 @@ input UpdateEventInput {
   ticket_website: String
   ticket_price: PriceInput
   organizer: String
+  old_attachments: [String!]
   attachments: [Upload!]
 }
 

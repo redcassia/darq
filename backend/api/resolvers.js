@@ -451,6 +451,20 @@ async function _storeAttachments(data) {
   return data;
 }
 
+function _removeAttachment(attachment) {
+  fs.unlink(path.join(process.env.ATTACHMENTS_DIR, attachment));
+}
+
+function _updateAttachments(original, kept, added) {
+  original.forEach(_ => {
+    if (kept.indexOf(_) == -1) _removeAttachment(_);
+  });
+
+  added.forEach(_ => kept.push(_));
+
+  return kept;
+}
+
 async function _addBusiness(data, owner) {
   try {
     var props = await _storeAttachments(data);
@@ -497,7 +511,7 @@ async function _updateBusiness(id, data) {
         VALUES
           (?, ?)
         ON DUPLICATE KEY UPDATE
-          updated_data = JSON_MERGE_PATCH(updated_data, ?),
+          updated_data = JSON_MERGE_PRESERVE(updated_data, ?),
           approved = 'TENTATIVE'
       `,
       [
@@ -563,6 +577,20 @@ async function _addEvent(data, owner) {
 async function _updateEvent(id, data) {
   try {
     data = await _storeAttachments(data);
+
+    if (data.attachments || data.old_attachments) {
+      var oldEvent = await eventLoader.load(id);
+
+      if (oldEvent.attachments) {
+        data.attachments = _updateAttachments(
+          oldEvent.attachments,
+          data.old_attachments || [],
+          data.attachments || []
+        );
+      }
+
+      if (data.old_attachments) delete data.old_attachments;
+    }
 
     var fields = [];
     var args = []
@@ -1228,6 +1256,47 @@ const resolvers = {
 
         if (result.affectedRows == 1) {
           if (approve) {
+
+            var data = await db.query(
+              `
+              SELECT
+                updated_data
+              FROM
+                business_tentative_update
+              WHERE
+                business_id = ?
+              `,
+              [ id ]
+            );
+            data = JSON.parse(data[0]);
+            if (data) {
+              if (data.attachments || data.old_attachments) {
+                var oldBusiness = await businessLoader.load(id);
+          
+                if (oldBusiness.attachments) {
+                  data.attachments = _updateAttachments(
+                    oldBusiness.attachments,
+                    data.old_attachments || [],
+                    data.attachments || []
+                  );
+                }
+          
+                if (data.old_attachments) delete data.old_attachments;
+              }
+
+              await db.query(
+                `
+                UPDATE
+                  business_tentative_update
+                SET
+                  updated_data = ?
+                WHERE
+                  business_id = ?
+                `,
+                [ data, id ]
+              );
+            }
+
             await db.query(
               `
               UPDATE

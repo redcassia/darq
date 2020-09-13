@@ -11,7 +11,7 @@
 </div><div class="left-aligned-content with-submenu">
     <div class="hidden" id="event-view"></div>
 
-    <form class="hidden" id="create-event-form">
+    <form class="hidden" id="create-event-form" novalidate>
         <div class="form-line">
             <div class="form-box">
                 <label>Event Picture</label>
@@ -49,6 +49,7 @@
                 <label>City</label>
                 <div class="select">
                     <select name="city" id="event-city">
+                        <option value="" disabled selected>Choose</option>
                     </select>
                 </div>
             </div>
@@ -57,7 +58,7 @@
         <div class="form-line">
             <div class="form-box">
                 <label>Phone Number(s)</label>
-                <div class="multistring-input" required data-friendly-name="Phone number">
+                <div class="multistring-input">
                     <div class="data"></div>
                     <input type="tel" name="phone_number" />
                     <button>Add</button>
@@ -113,11 +114,12 @@
                 <div class="form-object" data-name="ticket_price">
                     <label>Ticket price</label>
                     <span>Starting from</span>
-                    <input type="text" data-special-type="float" style="width:105px" name="valueLower" required data-friendly-name="Ticket price" />
+                    <input type="text" data-special-type="float" style="width:105px" name="valueLower" />
                     <span>To</span>
-                    <input type="text" data-special-type="float" style="width:105px" name="valueUpper" required data-friendly-name="Ticket price" />
+                    <input type="text" data-special-type="float" style="width:105px" name="valueUpper" />
                     <div class="select">
                         <select name="currency" id="event-ticket-price-currency" style="width:150px">
+                            <option value="" disabled selected>Choose</option>
                         </select>
                     </div>
                     <span>/hr</span>
@@ -128,7 +130,7 @@
         <div class="form-line">
             <div class="form-box">
                 <label>Organizer</label>
-                <input type="text" name="organizer" />
+                <input type="text" name="organizer" required data-friendly-name="Organizer" />
             </div>
         </div>
 
@@ -145,6 +147,6 @@
 
         <hr />
 
-        <input type="submit" onclick="submitEvent($('#create-event-form'))">
+        <input type="submit" onclick="submitForm('create-event-form')">
     </form>
 </div>

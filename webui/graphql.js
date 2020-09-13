@@ -40,7 +40,7 @@ class GraphQL {
 
     for (var key in variables) {
       var val = variables[key];
-      if (typeof val == 'object') {
+      if (val && typeof val == 'object') {
         if (val.constructor === File) {
           files[`${path}.${key}`] = val;
           variables[key] = null;

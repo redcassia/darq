@@ -395,7 +395,16 @@ function navigateTo(content) {
     case 'event':
       DynamicLoader.loadTo('content',
         'event.html',
-        'event.js'
+        'event.js',
+        [
+          {
+            src: 'form.js',
+          },
+          {
+            src: 'profile_view.js',
+            singleLoad: true
+          }
+        ]
       );
       $('#events-btn').addClass("active");
       break;

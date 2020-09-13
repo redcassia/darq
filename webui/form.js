@@ -79,12 +79,16 @@ function _getInputData(input) {
       data = input.checked;
       break;
 
+    case 'datetime-local':
+      data = input.value.replace('T', ' ');
+      break;
+  
     default:
       if (input.attributes['data-special-type']) {
         type = input.attributes['data-special-type'].value;
         switch (type) {
           case 'float':
-            data = parseFloat(input.value);
+            data = input.value ? parseFloat(input.value) : null;
             break;
 
           case 'bool':
@@ -95,7 +99,7 @@ function _getInputData(input) {
         }
       }
       else {
-        data = input.value;
+        data = (input.value && input.value.length > 0) ? input.value : null;
       }
   }
 
@@ -138,9 +142,18 @@ function _getFormData(form) {
               data = { ...data, ..._getMultiFormData(child) };
               break;
 
-            case 'form-object':
-              data[child.attributes['data-name'].value] = _getFormData(child);
-              break;
+            case 'form-object': {
+              var obj = _getFormData(child);
+              var allNull = true;
+              for (var key in obj) {
+                if (obj[key] != null) {
+                  allNull = false;
+                  break;
+                }
+              }
+              data[child.attributes['data-name'].value] = allNull ? null : obj;
+            }
+            break;
   
             case 'form-array':
               data[child.attributes['data-name'].value] = [_getFormData(child)];

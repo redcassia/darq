@@ -81,7 +81,7 @@ class ProfileView {
         <div class="profile-big-text">
           ${title}:
           <span class="profile-small-text">
-            ${data["value_lower"]} : ${data["value_upper"]} ${data["currency"]} ${trailing}
+            ${data["valueLower"]} - ${data["valueUpper"]} ${data["currency"]} ${trailing}
           </span>
         </div>
       `;
@@ -322,6 +322,103 @@ class ProfileView {
         </div>
       `;
     }
+
+    return html;
+  }
+
+  static _generateEventView(e) {
+
+    var html = `
+      <div class="profile-left">
+        <img
+          class="profile-display_picture clickable"
+          src="${attachmentsEndpoint}${e["display_picture"]}"
+          onclick="openInNewTab('${attachmentsEndpoint}${e["display_picture"]}')"
+        ></img>
+      </div>
+      <div class="profile-right">
+        <div class="profile-big-text">${e["display_name"]}</div>
+    `;
+
+    if (e["type"]) {
+        html += `<div class="profile-small-text">${e["type"]}</div>`;
+    }
+
+    if (e["street_address"] || e["city"]) {
+      html += `
+        <div class="profile-small-text">
+          <i class="fas fa-map-marker-alt"></i>
+      `;
+      if (e["street_address"]) {
+        html += `${e["street_address"]} - `
+      }
+      if (e["city"]) {
+        html += `${e["city"]}, Qatar`
+      }
+
+      html += `</div>`
+    }
+
+    if (e["hours"]) {
+      html += `
+        <div class="profile-small-text">
+          <i class="far fa-clock"></i>
+          ${
+            e["hours"]["all_day"] ?
+            "24 hrs" :
+            `${e["hours"]["open"]} - ${e["hours"]["close"]}`
+          }
+        </div>
+      `;
+    }
+
+    if (e["phone_number"]) {
+      for (var num of e["phone_number"]) {
+        html += `
+          <div class="profile-small-text">
+            <i class="fas fa-phone-alt"></i> ${num}
+          </div>
+        `;
+      }
+    }
+
+    html += `
+      </div>
+      <div class="profile-medium-text">${e["description"]}</div>
+      <hr />
+      <div class="profile-left" style="height: auto; min-height: 0">
+        ${this._text("Start", e["duration"]["start"])}
+      </div>
+      <div class="profile-right">
+        ${this._text("End", e["duration"]["end"])}
+      </div>
+    `;
+
+    if (e["ticket_website"]) {
+      html += '<hr />' + this._link("Ticket Reservation", e["ticket_website"]);
+    }
+
+    if (e["ticket_price"]) {
+      html += '<hr />' + this._price("Ticket Price", e["ticket_price"]);
+    }
+
+    if (e["organizer"]) {
+      html += '<hr />' + this._text("Organizer", e["organizer"]);
+    }
+
+    if (e["attachments"] && e["attachments"].length > 0) {
+      html += '<hr />' + this._attachments("Photos", e["attachments"]);
+    }
+
+    return html;
+  }
+
+  static generateEventView(e) {
+    var html = `
+      <div class="profile-left-pane">
+        ${this._generateEventView(e)}
+      </div>
+    `;
 
     return html;
   }

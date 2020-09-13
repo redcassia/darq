@@ -185,6 +185,35 @@ const _businessQueryFields = `
   }
 `;
 
+const _eventQueryFields = `
+  id
+  display_name
+  display_picture
+  type
+  city
+  street_address
+  phone_number
+  description
+  duration {
+    start
+    end
+  }
+  hours {
+    open
+    close
+    all_day
+  }
+  ticket_website
+  ticket_price {
+    value
+    valueLower
+    valueUpper
+    currency
+  }
+  organizer
+  attachments
+`;
+
 const attachmentsEndpoint = "http://localhost:7070/attachment/";
 
 function openInNewTab(url) {

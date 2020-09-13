@@ -36,7 +36,32 @@ function submitForm() {
   });
 }
 
-function initializeForm(data) {
+async function initializeForm(data) {
+
+  await GraphQL.fillOptionsFromEnum("SelfEmployedSubType", [
+    "self-employed-sub-type"
+  ]);
+
+  await GraphQL.fillOptionsFromEnum("Gender", [
+    "self-employed-gender"
+  ]);
+
+  await GraphQL.fillOptionsFromEnum("Nationality", [
+    "self-employed-nationality"
+  ]);
+
+  await GraphQL.fillOptionsFromEnum("City", [
+    "self-employed-city",
+  ]);
+
+  await GraphQL.fillOptionsFromEnum("Currency", [
+    "self-employed-charge-currency",
+  ]);
+
+  await GraphQL.fillOptionsFromEnum("Country", [
+    "self-employed-experience-country"
+  ]);
+
   if (data["update"]) data = data["update"];
   data["sub_type"] = data["selfEmployedSubType"];
   initialData = data;

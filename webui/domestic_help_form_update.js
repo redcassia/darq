@@ -36,7 +36,36 @@ function submitForm() {
   });
 }
 
-function initializeForm(data) {
+async function initializeForm(data) {
+
+  await GraphQL.fillOptionsFromEnum("DomesticHelpSubType", [
+    "domestic-help-sub-type"
+  ]);
+
+  await GraphQL.fillOptionsFromEnum("City", [
+    "domestic-help-city"
+  ]);
+
+  await GraphQL.fillOptionsFromEnum("Profession", [
+    "domestic-help-personnel-profession"
+  ]);
+
+  await GraphQL.fillOptionsFromEnum("Gender", [
+    "domestic-help-personnel-gender"
+  ]);
+
+  await GraphQL.fillOptionsFromEnum("MaritalStatus", [
+    "domestic-help-personnel-marital-status"
+  ]);
+
+  await GraphQL.fillOptionsFromEnum("Education", [
+    "domestic-help-personnel-education"
+  ]);
+
+  await GraphQL.fillOptionsFromEnum("Currency", [
+    "domestic-help-personnel-salary-currency"
+  ]);
+
   if (data["update"]) data = data["update"];
   data["sub_type"] = data["domesticHelpSubType"];
   initialData = data;

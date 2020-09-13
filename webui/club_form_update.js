@@ -36,7 +36,12 @@ function submitForm() {
   });
 }
 
-function initializeForm(data) {
+async function initializeForm(data) {
+
+  await GraphQL.fillOptionsFromEnum("City", [
+    "club-city"
+  ]);
+
   if (data["update"]) data = data["update"];
   initialData = data;
   Form.putFormData('club-form', data);

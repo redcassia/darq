@@ -36,7 +36,16 @@ function submitForm() {
   });
 }
 
-function initializeForm(data) {
+async function initializeForm(data) {
+
+  await GraphQL.fillOptionsFromEnum("TransportationBusinessSubType", [
+    "transportation-sub-type"
+  ]);
+
+  await GraphQL.fillOptionsFromEnum("City", [
+    "transportation-city"
+  ]);
+
   if (data["update"]) data = data["update"];
   data["sub_type"] = data["transportationSubType"];
   initialData = data;

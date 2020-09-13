@@ -46,13 +46,11 @@ function editBusiness(id) {
   DynamicLoader.loadTo(
     'business-content',
     formName + '.html',
-    formName + "_update.js",
-    [
-      {
-        src: formName + ".js"
-      }
-    ],
-    () => { initializeForm(businesses[id]); }
+    formName + '_update.js',
+    [],
+    () => {
+      initializeForm(businesses[id]);
+    }
   );
 }
 
@@ -127,7 +125,7 @@ function loadForm(formName) {
   DynamicLoader.loadTo(
     'business-content',
     formName + '.html',
-    formName + ".js"
+    formName + '.js'
   );
 }
 

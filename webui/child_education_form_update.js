@@ -36,7 +36,16 @@ function submitForm() {
   });
 }
 
-function initializeForm(data) {
+async function initializeForm(data) {
+
+  await GraphQL.fillOptionsFromEnum("ChildEducationSubType", [
+    "child-education-sub-type"
+  ]);
+
+  await GraphQL.fillOptionsFromEnum("City", [
+    "child-education-city"
+  ]);
+
   if (data["update"]) data = data["update"];
   data["sub_type"] = data["childEducationSubType"];
   initialData = data;

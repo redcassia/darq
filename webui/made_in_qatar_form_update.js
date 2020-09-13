@@ -36,7 +36,16 @@ function submitForm() {
   });
 }
 
-function initializeForm(data) {
+async function initializeForm(data) {
+
+  await GraphQL.fillOptionsFromEnum("MadeInQatarBusinessSubType", [
+    "made-in-qatar-sub-type"
+  ]);
+
+  await GraphQL.fillOptionsFromEnum("City", [
+    "made-in-qatar-city"
+  ]);
+
   if (data["update"]) data = data["update"];
   data["sub_type"] = data["madeInQatarSubType"];
   initialData = data;

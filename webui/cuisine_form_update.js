@@ -37,7 +37,16 @@ function submitForm() {
   });
 }
 
-function initializeForm(data) {
+async function initializeForm(data) {
+
+  await GraphQL.fillOptionsFromEnum("FoodBusinessSubType", [
+    "cuisine-sub-type"
+  ]);
+
+  await GraphQL.fillOptionsFromEnum("City", [
+    "cuisine-city"
+  ]);
+
   if (data["update"]) data = data["update"];
   data["sub_type"] = data["foodSubType"];
   initialData = data;

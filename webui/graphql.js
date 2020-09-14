@@ -9,7 +9,7 @@ class GraphQLResult {
 }
 
 class GraphQL {
-  static url = 'http://localhost:7070/api';
+  static url = graphqlEndpoint;
 
   static _prepareQueryBody(query, variables) {
     var body = {};

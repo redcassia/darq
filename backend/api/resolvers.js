@@ -725,8 +725,7 @@ const resolvers = {
         )).map(_ => _ ? businessLoader.load(_) : null);
       }
 
-      return res
-        .filter(_ => _ != null);
+      return res.filter(_ => _ != null);
     },
 
     async event(_, { id }, { user }) {
@@ -746,28 +745,34 @@ const resolvers = {
 
         // find the real offset according to this filter
         while (count < offset) {
-          (await orderedEventLoader.loadMany(
+          var arr= await orderedEventLoader.loadMany(
             Array.from(Array(offset - count), (_, i) => i + realOffset)
-          )).forEach(_ => {
-            if (_) {
-              if (_.type == type) ++count;
+          );
+          
+          for (var id of arr) {
+            if (id) {
+              var e = await eventLoader.load(id);
+              if (e.type == type) ++count;
               ++realOffset;
             }
             else {
               count = offset;
             }
-          });
+          }
         }
 
         // collect the result
         count = 0;
         while (count < limit) {
-          (await orderedEventLoader.loadMany(
+          var arr = await orderedEventLoader.loadMany(
             Array.from(Array(limit - count), (_, i) => i + realOffset)
-          )).forEach(_ => {
-            if (_) {
-              if (_.type == type) {
-                res.push(_);
+          );
+
+          for (var id of arr) {
+            if (id) {
+              var e = await eventLoader.load(id);
+              if (e.type == type) {
+                res.push(e);
                 ++count;
               }
               ++realOffset;
@@ -775,18 +780,16 @@ const resolvers = {
             else {
               count = limit;
             }
-          });
+          }
         }
       }
       else {
-        res = await orderedEventLoader.loadMany(
+        res = (await orderedEventLoader.loadMany(
           Array.from(Array(limit), (_, i) => i + offset)
-        );
+        )).map(_ => _ ? eventLoader.load(_) : null);
       }
 
-      return res
-        .filter(_ => _ != null)
-        .map(id => eventLoader.load(id));
+      return res.filter(_ => _ != null);
     },
 
     // admin queries

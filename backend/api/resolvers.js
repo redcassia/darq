@@ -681,28 +681,34 @@ const resolvers = {
 
         // find the real offset according to this filter
         while (count < offset) {
-          (await orderedBusinessLoader[type].loadMany(
+          var arr = await orderedBusinessLoader.get(type).loadMany(
             Array.from(Array(offset - count), (_, i) => i + realOffset)
-          )).forEach(_ => {
-            if (_) {
-              if (sub_types.includes(_.sub_type)) ++count;
+          );
+
+          for (var id of arr) {
+            if (id) {
+              var b = await businessLoader.load(id);
+              if (sub_types.includes(b.sub_type)) ++count;
               ++realOffset;
             }
             else {
               count = offset;
             }
-          });
+          }
         }
 
         // collect the result
         count = 0;
         while (count < limit) {
-          (await orderedBusinessLoader[type].loadMany(
+          var arr = await orderedBusinessLoader.get(type).loadMany(
             Array.from(Array(limit - count), (_, i) => i + realOffset)
-          )).forEach(_ => {
-            if (_) {
-              if (sub_types.includes(_.sub_type)) {
-                res.push(_);
+          );
+
+          for (var id of arr) {
+            if (id) {
+              var b = await businessLoader.load(id);
+              if (sub_types.includes(b.sub_type)) {
+                res.push(b);
                 ++count;
               }
               ++realOffset;
@@ -710,18 +716,17 @@ const resolvers = {
             else {
               count = limit;
             }
-          });
+          }
         }
       }
       else {
-        res = await orderedBusinessLoader.get(type).loadMany(
+        res = (await orderedBusinessLoader.get(type).loadMany(
           Array.from(Array(limit), (_, i) => i + offset)
-        );
+        )).map(_ => _ ? businessLoader.load(_) : null);
       }
 
       return res
-        .filter(_ => _ != null)
-        .map(id => businessLoader.load(id));
+        .filter(_ => _ != null);
     },
 
     async event(_, { id }, { user }) {

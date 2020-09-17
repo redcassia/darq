@@ -1,6 +1,6 @@
 class DynamicLoader {
-  static singleLoadScripts = {};
-  static loadedScripts = {};
+  static singleLoadScripts = new Object();;
+  static loadedScripts = new Object();;
 
   static loadScript(group, src, onload, singleLoad = false) {
     if (! this.loadedScripts[group]) {

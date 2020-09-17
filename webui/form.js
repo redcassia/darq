@@ -25,7 +25,7 @@ class Form {
       throw new Error("Form validation failed");
     }
 
-    var res = {}
+    var res = new Object();
     res[name] = input.classList.contains('multiple') ? data : data[0];
 
     return res;
@@ -51,7 +51,7 @@ class Form {
       throw new Error("Form validation failed");
     }
 
-    var res = {}
+    var res = new Object();
     res[name] = data;
 
     return res;
@@ -72,7 +72,7 @@ class Form {
       throw new Error("Form validation failed");
     }
 
-    var res = {};
+    var res = new Object();;
     res[name] = data;
 
     return res;
@@ -120,7 +120,7 @@ class Form {
       throw new Error("Form validation failed");
     }
 
-    var res = {}
+    var res = new Object();
     res[name] = data;
 
     return res;
@@ -128,7 +128,7 @@ class Form {
 
   static _getFormData(form) {
 
-    var data = { };
+    var data = new Object();;
 
     for (var child of form.children) {
       if (child.classList[0] == 'form-line' || child.classList[0] == 'form-box') {

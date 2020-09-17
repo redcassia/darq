@@ -1,5 +1,5 @@
-var newBusinesses = {}
-var updatedBusinesses = {}
+var newBusinesses = new Object();
+var updatedBusinesses = new Object();
 
 function updateBusinessesMenu() {
 
@@ -102,7 +102,7 @@ function queryNewBusinesses() {
     }
   `).then(res => {
     if (! res.hasError) {
-      newBusinesses = {};
+      newBusinesses = new Object();;
 
       for (var b of res.data["admin"]["tentativeNewBusinesses"]) {
         newBusinesses[b["id"]] = b;
@@ -124,7 +124,7 @@ function queryUpdatedBusinesses() {
     }
   `).then(res => {
     if (! res.hasError) {
-      updatedBusinesses = {};
+      updatedBusinesses = new Object();;
 
       for (var b of res.data["admin"]["tentativeBusinessUpdates"]) {
         updatedBusinesses[b["id"]] = b;

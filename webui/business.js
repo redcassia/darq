@@ -1,4 +1,4 @@
-var businesses = {}
+var businesses = new Object();
 
 function updateBusinessesMenu() {
 
@@ -102,7 +102,7 @@ function queryOwnedBusinesses() {
   `).then(res => {
 
     if (! res.hasError) {
-      businesses = {};
+      businesses = new Object();;
 
       for (var b of res.data["user"]["owned_businesses"]) {
         businesses[b["id"]] = b;

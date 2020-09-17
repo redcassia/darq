@@ -1,4 +1,4 @@
-var events = {}
+var events = new Object();
 
 function updateEventsMenu() {
 
@@ -42,7 +42,7 @@ function queryOwnedEvents() {
   `).then(res => {
 
     if (! res.hasError) {
-      events = {};
+      events = new Object();;
 
       for (var e of res.data["user"]["owned_events"]) {
         events[e["id"]] = e;

@@ -12,7 +12,7 @@ class GraphQL {
   static url = graphqlEndpoint;
 
   static _prepareQueryBody(query, variables) {
-    var body = {};
+    var body = new Object();;
 
     query = query.replace(/\s+/g, ' ').trim();
     body.query = query;
@@ -67,8 +67,8 @@ class GraphQL {
     body.append("operations", this._prepareQueryBody(mutation, vars));
 
     var i = 0;
-    var map = { };
-    var f = { };
+    var map = new Object();;
+    var f = new Object();;
     for (var key in files) {
       map[i] = [key];
       f[`${i}`] = files[key];

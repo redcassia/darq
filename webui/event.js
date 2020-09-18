@@ -82,7 +82,7 @@ function queryOwnedEvents() {
         $("#owned-events").show();
       }
       else {
-        $("#owned-events").show();
+        $("#owned-events").hide();
       }
     }
 

@@ -54,12 +54,20 @@ async function initializeForm(data) {
     "domestic-help-personnel-gender"
   ]);
 
+  await GraphQL.fillOptionsFromEnum("Nationality", [
+    "domestic-help-personnel-nationality"
+  ]);
+
   await GraphQL.fillOptionsFromEnum("MaritalStatus", [
     "domestic-help-personnel-marital-status"
   ]);
 
   await GraphQL.fillOptionsFromEnum("Education", [
     "domestic-help-personnel-education"
+  ]);
+
+  await GraphQL.fillOptionsFromEnum("Country", [
+    "domestic-help-personnel-experience-country"
   ]);
 
   await GraphQL.fillOptionsFromEnum("Currency", [

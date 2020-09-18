@@ -74,6 +74,21 @@
 
     <div class="form-line">
         <div class="form-box">
+            <label>Trade License</label>
+            <div class="img-input" required data-friendly-name="Trade license">
+                <input type="file" name="trade_license"/>
+            </div>
+        </div>
+        <div class="form-box">
+            <label>Trade License Number</label>
+            <input type="text" name="trade_license_number" required data-friendly-name="Trade license number" />
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="form-line">
+        <div class="form-box">
             <label>Help personnel</label>
             <div class="multiform" data-name="personnel">
                 <button>+ Add</button>
@@ -157,7 +172,7 @@
                         </div>
                         <div class="form-box">
                             <label>Number of children</label>
-                            <input type="number" name="number_of_children" />
+                            <input type="number" data-special-type="int" name="number_of_children" />
                         </div>
                     </div>
 
@@ -173,6 +188,13 @@
                         <div class="form-box">
                             <label>Date of Birth</label>
                             <input type="date" name="date_of_birth" required data-friendly-name="Date of Birth" />
+                        </div>
+                    </div>
+
+                    <div class="form-line">
+                        <div class="form-box">
+                            <label>Phone Number</label>
+                            <input type="tel" name="phone_number" required data-friendly-name="Phone Number" />
                         </div>
                     </div>
 
@@ -200,6 +222,13 @@
 
                     <div class="form-line">
                         <div class="form-box">
+                            <label>License expiry date</label>
+                            <input type="date" name="license_expiry_date" />
+                        </div>
+                    </div>
+
+                    <div class="form-line">
+                        <div class="form-box">
                             <label>Experience</label>
                             <div class="multiform" data-name="experience">
                                 <button>+ Add</button>
@@ -210,7 +239,7 @@
                                         <div class="form-box">
                                             <label>Country</label>
                                             <div class="select">
-                                                <select name="country" id="self-employed-experience-country">
+                                                <select name="country" id="domestic-help-personnel-experience-country">
                                                 </select>
                                             </div>
                                         </div>
@@ -240,7 +269,7 @@
                         <div class="form-box">
                             <div class="form-object" data-name="salary">
                                 <label>Salary</label>
-                                <input type="number" style="width:105px" name="value" required data-friendly-name="Salary" />
+                                <input type="text" data-special-type="float" style="width:105px" name="value" required data-friendly-name="Salary" />
                                 <div class="select">
                                     <select name="currency" id="domestic-help-personnel-salary-currency" style="width:150px">
                                     </select>
@@ -250,30 +279,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <hr />
-
-    <div class="form-line">
-        <div class="form-box">
-            <label>Trade License</label>
-            <div class="img-input" required data-friendly-name="Trade license">
-                <input type="file" name="trade_license"/>
-            </div>
-        </div>
-        <div class="form-box">
-            <label>Trade License Number</label>
-            <input type="text" name="trade_license_number" required data-friendly-name="Trade license number" />
-        </div>
-    </div>
-
-    <div class="form-line">
-        <div class="form-box">
-            <label>Gallery</label>
-            <div class="img-input multiple">
-                <input type="file" name="attachments" />
             </div>
         </div>
     </div>

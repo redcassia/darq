@@ -99,7 +99,11 @@ class Form {
         if (input.attributes['data-special-type']) {
           type = input.attributes['data-special-type'].value;
           switch (type) {
-            case 'float':
+            case 'int':
+              data = input.value ? parseInt(input.value) : null;
+              break;
+
+              case 'float':
               data = input.value ? parseFloat(input.value) : null;
               break;
 

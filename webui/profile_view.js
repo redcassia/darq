@@ -124,6 +124,29 @@ class ProfileView {
     `;
   }
 
+  static _personnel(data) {
+    var html = "<div>";
+
+    for (var p of data) {
+      html += `
+        <div class="profile-personnel">
+          <br />
+          <img
+            class="profile-personnel-picture"
+            src="${attachmentsEndpoint}${p["picture"]}"
+          ></img>
+          <br />
+          <div class="profile-small-text">${p["name"]}</div>
+          <div class="profile-small-text-light">${p["nationality"]}</div>
+          <div class="profile-small-text-light">${p["profession"]}</div>
+        </div>
+      `;
+    }
+
+    html += "</div>"
+    return html;
+  }
+
   static _generateBusinessView(b) {
 
     var html = `
@@ -302,6 +325,10 @@ class ProfileView {
 
     if (b["attachments"] && b["attachments"].length > 0) {
       html += '<hr />' + this._attachments("Photos", b["attachments"]);
+    }
+
+    if (b["personnel"] && b["personnel"].length > 0) {
+      html += '<hr />' + this._personnel(b["personnel"]);
     }
 
     return html;

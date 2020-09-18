@@ -57,6 +57,59 @@ const __elementaryBusinessQueryFields = `
   ... on DomesticHelpBusiness {
     domesticHelpSubType: sub_type
     sub_type_string
+    trade_license
+    trade_license_number
+    street_address
+    phone_numbers: phone_number
+    description
+    website
+    personnel {
+      name
+      picture
+      profession
+      gender
+      nationality
+      religion
+      salary {
+        value
+        currency
+      }
+      date_of_birth
+      marital_status
+      languages
+      experience {
+        country
+        institution
+        from
+        to
+        in_position
+      }
+      phone_number
+      ... on Driver {
+        license_expiry_date
+      }
+      ... on Nanny {
+        education
+        height
+        weight
+        skills
+        number_of_children
+      }
+      ... on Maid {
+        education
+        height
+        weight
+        skills
+        number_of_children
+      }
+      ... on Cook {
+        education
+        height
+        weight
+        skills
+        number_of_children
+      }
+    }
   }
   ... on BeautyBusiness {
     beautySubType: sub_type

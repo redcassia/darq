@@ -49,12 +49,20 @@ $(document).ready(function () {
     "domestic-help-personnel-gender"
   ]);
 
+  GraphQL.fillOptionsFromEnum("Nationality", [
+    "domestic-help-personnel-nationality"
+  ]);
+
   GraphQL.fillOptionsFromEnum("MaritalStatus", [
     "domestic-help-personnel-marital-status"
   ]);
 
   GraphQL.fillOptionsFromEnum("Education", [
     "domestic-help-personnel-education"
+  ]);
+
+  GraphQL.fillOptionsFromEnum("Country", [
+    "domestic-help-personnel-experience-country"
   ]);
 
   GraphQL.fillOptionsFromEnum("Currency", [

@@ -1347,37 +1347,49 @@ const resolvers = {
     async owned_businesses(_, args, { user }) {
       _validateAuthenticatedBusinessUser(user);
 
-      const rows = await db.query(
-        `
-        SELECT
-          id
-        FROM
-          business
-        WHERE
-          owner = ?
-        `,
-        [ user.id ]
-      );
+      var businessUser = await businessUserLoader.load(user.id);
+      if (! businessUser.owned_businesses) {
+        const rows = await db.query(
+          `
+          SELECT
+            id
+          FROM
+            business
+          WHERE
+            owner = ?
+          `,
+          [ user.id ]
+        );
 
-      return rows.map(row => businessLoader.load(row.id));
+        businessUser.owned_businesses = rows.map (_ => _.id);
+        businessUserLoader.clear(user.id).prime(user.id, businessUser);
+      }
+
+      return businessUser.owned_businesses.map(_ => businessLoader.load(_));
     },
 
     async owned_events(_, args, { user }) {
       _validateAuthenticatedBusinessUser(user);
 
-      const rows = await db.query(
-        `
-        SELECT
-          id
-        FROM
-          event
-        WHERE
-          owner = ?
-        `,
-        [ user.id ]
-      );
+      var businessUser = await businessUserLoader.load(user.id);
+      if (! businessUser.owned_events) {
+        const rows = await db.query(
+          `
+          SELECT
+            id
+          FROM
+            event
+          WHERE
+            owner = ?
+          `,
+          [ user.id ]
+        );
 
-      return rows.map(row => eventLoader.load(row.id));
+        businessUser.owned_events = rows.map (_ => _.id);
+        businessUserLoader.clear(user.id).prime(user.id, businessUser);
+      }
+
+      return businessUser.owned_events.map(_ => eventLoader.load(_));
     }
   },
 

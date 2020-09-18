@@ -1,0 +1,138 @@
+<form id="event-form" novalidate>
+    <div class="form-line">
+        <div class="form-box">
+            <label>Event Picture</label>
+            <div class="img-input" require data-friendly-name="Event picture">
+                <input type="file" name="display_picture"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Event name</label>
+            <input type="text" name="display_name" required data-friendly-name="Event name" />
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Event Type</label>
+            <div class="select">
+                <select name="type" id="event-type" required data-friendly-name="Event type">
+                    <option value="" disabled selected>Choose event type</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Address</label>
+            <input type="text" name="street_address" />
+        </div>
+
+        <div class="form-box">
+            <label>City</label>
+            <div class="select">
+                <select name="city" id="event-city">
+                    <option value="" disabled selected>Choose</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Phone Number(s)</label>
+            <div class="multistring-input">
+                <div class="data"></div>
+                <input type="tel" name="phone_number" />
+                <button>Add</button>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Description</label>
+            <textarea name="description" required data-friendly-name="Description"></textarea>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-object" data-name="duration">
+            <div class="form-box">
+                <label>Start</label>
+                <input type="datetime-local" name="start" required data-friendly-name="Start" />
+            </div>
+            <div class="form-box">
+                <label>End</label>
+                <input type="datetime-local" name="end" required data-friendly-name="End" />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Hours</label>
+            <div class="form-object" data-name="hours">
+                <span>Open</span>
+                <input type="time" name="open" />
+                <span>Close</span>
+                <input type="time" name="close" />
+                <span>All day</span>
+                <input type="checkbox" name="all_day" />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Ticket reservation website</label>
+            <input type="text" name="ticket_website" />
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <div class="form-object" data-name="ticket_price">
+                <label>Ticket price</label>
+                <span>Starting from</span>
+                <input type="text" data-special-type="float" style="width:105px" name="valueLower" />
+                <span>To</span>
+                <input type="text" data-special-type="float" style="width:105px" name="valueUpper" />
+                <div class="select">
+                    <select name="currency" id="event-ticket-price-currency" style="width:150px">
+                        <option value="" disabled selected>Choose</option>
+                    </select>
+                </div>
+                <span>/hr</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Organizer</label>
+            <input type="text" name="organizer" required data-friendly-name="Organizer" />
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Gallery</label>
+            <div class="img-input multiple">
+                <input type="file" name="attachments" />
+            </div>
+        </div>
+    </div>
+
+    <hr />
+
+    <input type="submit" onclick="submitForm()">
+</form>

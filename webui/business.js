@@ -91,6 +91,8 @@ function loadBusiness(id) {
 }
 
 function queryOwnedBusinesses() {
+  var showLoadingScreen = setTimeout(() => $("#loading-blanket").show(), 50);
+
   GraphQL.query(`
     query {
       user {
@@ -117,6 +119,9 @@ function queryOwnedBusinesses() {
         $("#owned-businesses").hide();
       }
     }
+
+    clearTimeout(showLoadingScreen);
+    $("#loading-blanket").hide();
   });
 }
 

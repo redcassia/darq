@@ -17,20 +17,48 @@ function updateEventsMenu() {
   }
 }
 
+function editEvent(id) {
+
+  DynamicLoader.unloadFrom('event-content');
+  DynamicLoader.loadTo(
+    'event-content',
+    'event_form.html',
+    'event_form_update.js',
+    [],
+    () => {
+      initializeForm(events[id]);
+    }
+  );
+}
+
 function loadEvent(id) {
 
   if (events[id]) {
-    var html = ProfileView.generateEventView(events[id]);
-    document.getElementById("event-view").innerHTML = html;
 
-    $("#create-event-form").hide();
-    $("#event-view").show();
+    var e = events[id];
+    var html = `
+      <div class"h6">
+        <span class="accent">Status: </span>
+        Approved
+      </div>
+      <br />
+      <div class="h6 clickable underlined" onclick="editEvent(${id})">
+        <i class="fas fa-pencil-alt"></i> Edit
+      </div>
+      <br />
+      <br />
+      ${ProfileView.generateEventView(e)}
+    `;
+
+    document.getElementById("event-content").innerHTML = html;
 
     console.log(`Selected event ${id}`);
   }
 }
 
 function queryOwnedEvents() {
+  var showLoadingScreen = setTimeout(() => $("#loading-blanket").show(), 50);
+
   GraphQL.query(`
     query {
       user {
@@ -57,59 +85,19 @@ function queryOwnedEvents() {
         $("#owned-events").show();
       }
     }
-  });
 
-}
-
-function showForm() {
-  $("#event-view").hide();
-  $("#create-event-form").show();
-}
-
-function submitForm(form) {
-  var data;
-
-  try {
-    data = getFormData(form);
-  }
-  catch (e) {
-    console.log(e);
-    return;
-  }
-
-  $("#loading-blanket").show();
-
-  GraphQL.mutation(`
-    mutation ($data: NewEventInput!) {
-      addEvent(data: $data)
-    }
-  `, {
-    "data": data
-  }).then(res => {
+    clearTimeout(showLoadingScreen);
     $("#loading-blanket").hide();
-
-    if (! res.hasError) {
-      alert("Your event has been added. The data will be reviewed and we will contact you shortly.");
-      queryOwnedEvents();
-    }
-    else {
-      alert(res.errors[0]["message"]);
-    }
   });
 }
 
-$(document).ready(function() {
-  GraphQL.fillOptionsFromEnum("EventType", [
-    "event-type"
-  ]);
+function showCreateForm() {
+  DynamicLoader.unloadFrom('event-content');
+  DynamicLoader.loadTo(
+    'event-content',
+    'event_form.html',
+    'event_form.js'
+  );
+}
 
-  GraphQL.fillOptionsFromEnum("City", [
-    "event-city"
-  ]);
-
-  GraphQL.fillOptionsFromEnum("Currency", [
-    "event-ticket-price-currency"
-  ]);
-
-  queryOwnedEvents();
-});
+$(document).ready(queryOwnedEvents);

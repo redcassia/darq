@@ -341,13 +341,17 @@ class Form {
                 this._putMultiFormData(child, data);
                 break;
 
-              case 'form-object': 
-                this._putFormData(child, data[child.attributes['data-name'].value]);
-                break;
+              case 'form-object': {
+                var obj = data[child.attributes['data-name'].value];
+                if (obj) this._putFormData(child, obj);
+              }
+              break;
 
-              case 'form-array':
-                this._putFormData(child, data[child.attributes['data-name'].value][0])
-                break;
+              case 'form-array': {
+                var arr = data[child.attributes['data-name'].value][0];
+                if (arr) this._putFormData(child, arr)
+              }
+              break;
 
               default: break;
             }

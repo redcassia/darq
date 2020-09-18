@@ -1,9 +1,10 @@
+import 'package:darq/utilities/screen_info.dart';
+import 'package:darq/views/home/screens/community.dart';
+import 'package:darq/views/home/screens/home.dart';
+import 'package:darq/views/home/screens/list_template.dart';
+import 'package:darq/views/shared/drawer/drawer_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:darq/utilities/screen_info.dart';
-import 'package:darq/views/shared/drawer/drawer_item.dart';
-import 'package:darq/views/home/screens/community.dart';
-import 'package:darq/views/home/screens/list_template.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({Key key}) : super(key: key);
@@ -62,6 +63,13 @@ class CustomDrawer extends StatelessWidget {
               onClick: () =>
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return ListTemplate(jsonFile: "made_in_qatar.json");
+                  }))),
+          DrawerItem(
+              txt: "Home",
+              icon: "made_in_qatar.png",
+              onClick: () =>
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return Home();
                   })))
         ]));
   }

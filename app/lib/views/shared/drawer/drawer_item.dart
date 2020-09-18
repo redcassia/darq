@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/res/path_files.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class DrawerItem extends StatelessWidget {
   const DrawerItem({@required this.txt, this.onClick, this.icon, Key key})

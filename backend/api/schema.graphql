@@ -13,6 +13,8 @@ type Query {
 type Mutation {
   rateBusiness(id: ID!, stars: Int!): Void
 
+  sendMessage(msg: String!, threadId: ID, targetBusinessId: ID): MessageThread!
+
   createPublicUser: String
   createBusinessUser(email: String!, password: String!): String
 
@@ -72,7 +74,7 @@ scalar Void
 
 type User {
   id: ID!
-  type: String!
+  type: UserType!
   create_time: String!
   last_login: String!
   first_name: String
@@ -81,6 +83,20 @@ type User {
   rating(businessId: ID!): Int
   owned_businesses: [Business!]
   owned_events: [Event!]
+  threads(threadId: ID): [MessageThread!]!
+}
+
+type MessageThread {
+  id: ID!
+  sender: String
+  target: Business!
+  messages: [Message!]!
+}
+
+type Message {
+  msg: String!
+  time: String!
+  sender: UserType!
 }
 
 type Admin {
@@ -1036,6 +1052,11 @@ type Cook implements DomesticHelpPersonnel {
 }
 
 # enumerations
+
+enum UserType {
+  BUSINESS
+  PUBLIC
+}
 
 enum BusinessType {
   SelfEmployedBusiness

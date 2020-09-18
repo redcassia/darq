@@ -1,8 +1,8 @@
+import 'package:darq/elements/app_fonts.dart';
+import 'package:darq/utilities/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:darq/elements/app_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:darq/utilities/constants.dart';
 
 class LeftRoundedCapsule extends StatelessWidget {
   const LeftRoundedCapsule(
@@ -23,10 +23,12 @@ class LeftRoundedCapsule extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.only(
           topLeft: Radius.circular(ConsDimensions.CapsuleRadius),
-          bottomLeft: Radius.circular(ConsDimensions.CapsuleRadius)
-      ),
+          bottomLeft: Radius.circular(ConsDimensions.CapsuleRadius)),
       child: Container(
-          margin: EdgeInsets.only(bottom:ConsDimensions.CapsuleBottomShadow.h, top: ConsDimensions.CapsuleUpperShadow.h, left: ConsDimensions.CapsuleHorizontalShadow.w),
+          margin: EdgeInsets.only(
+              bottom: ConsDimensions.CapsuleBottomShadow.h,
+              top: ConsDimensions.CapsuleUpperShadow.h,
+              left: ConsDimensions.CapsuleHorizontalShadow.w),
           decoration: BoxDecoration(
               boxShadow: ConsDimensions.CapsuleBoxShadow,
               color: Color.fromRGBO(134, 194, 194, 0.69),

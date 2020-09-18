@@ -1,15 +1,16 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:darq/views/shared/button.dart';
-import 'package:darq/views/shared/app_bars/default_appbar.dart';
+import 'dart:ui';
+
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/res/path_files.dart';
-import 'package:darq/views/shared/capsule/right_rounded_capsule.dart';
-import 'package:darq/views/home/screens/list_template.dart';
 import 'package:darq/utilities/constants.dart';
-import 'dart:ui';
+import 'package:darq/views/home/screens/list_template.dart';
+import 'package:darq/views/shared/app_bars/default_appbar.dart';
+import 'package:darq/views/shared/button.dart';
+import 'package:darq/views/shared/capsule/right_rounded_capsule.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Community extends StatefulWidget {
   @override

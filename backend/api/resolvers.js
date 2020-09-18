@@ -957,18 +957,14 @@ const resolvers = {
 
       data.type = 'SelfEmployedBusiness';
 
-      var id = await _addBusiness(data, user.id);
-      var business = await businessLoader.load(id);
-      return business;
+      _addBusiness(data, user.id);
     },
 
     async updateSelfEmployedBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
       await _validateBusinessOwnerAndType(user, id, 'SelfEmployedBusiness');
 
-      await _updateBusiness(id, data);
-      var business = await businessLoader.load(id);
-      return business;
+      _updateBusiness(id, data);
     },
 
     async addChildEducationBusiness(_, { data }, { user }) {
@@ -976,18 +972,14 @@ const resolvers = {
 
       data.type = 'ChildEducationBusiness';
 
-      var id = await _addBusiness(data, user.id);
-      var business = await businessLoader.load(id);
-      return business;
+      _addBusiness(data, user.id);
     },
 
     async updateChildEducationBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
       await _validateBusinessOwnerAndType(user, id, 'ChildEducationBusiness');
 
-      await _updateBusiness(id, data);
-      var business = await businessLoader.load(id);
-      return business;
+      _updateBusiness(id, data);
     },
 
     async addDomesticHelpBusiness(_, { data }, { user }) {
@@ -995,18 +987,14 @@ const resolvers = {
 
       data.type = 'DomesticHelpBusiness';
 
-      var id = await _addBusiness(data, user.id);
-      var business = await businessLoader.load(id);
-      return business;
+      _addBusiness(data, user.id);
     },
 
     async updateDomesticHelpBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
       await _validateBusinessOwnerAndType(user, id, 'DomesticHelpBusiness');
 
-      await _updateBusiness(id, data);
-      var business = await businessLoader.load(id);
-      return business;
+      _updateBusiness(id, data);
     },
 
     async addBeautyBusiness(_, { data }, { user }) {
@@ -1014,18 +1002,14 @@ const resolvers = {
 
       data.type = 'BeautyBusiness';
 
-      var id = await _addBusiness(data, user.id);
-      var business = await businessLoader.load(id);
-      return business;
+      _addBusiness(data, user.id);
     },
 
     async updateBeautyBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
       await _validateBusinessOwnerAndType(user, id, 'BeautyBusiness');
 
-      await _updateBusiness(id, data);
-      var business = await businessLoader.load(id);
-      return business;
+      _updateBusiness(id, data);
     },
 
     async addTransportationBusiness(_, { data }, { user }) {
@@ -1033,18 +1017,14 @@ const resolvers = {
 
       data.type = 'TransportationBusiness';
 
-      var id = await _addBusiness(data, user.id);
-      var business = await businessLoader.load(id);
-      return business;
+      _addBusiness(data, user.id);
     },
 
     async updateTransportationBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
       await _validateBusinessOwnerAndType(user, id, 'TransportationBusiness');
 
-      await _updateBusiness(id, data);
-      var business = await businessLoader.load(id);
-      return business;
+      _updateBusiness(id, data);
     },
 
     async addHospitalityBusiness(_, { data }, { user }) {
@@ -1052,18 +1032,14 @@ const resolvers = {
 
       data.type = 'HospitalityBusiness';
 
-      var id = await _addBusiness(data, user.id);
-      var business = await businessLoader.load(id);
-      return business;
+      _addBusiness(data, user.id);
     },
 
     async updateHospitalityBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
       await _validateBusinessOwnerAndType(user, id, 'HospitalityBusiness');
 
-      await _updateBusiness(id, data);
-      var business = await businessLoader.load(id);
-      return business;
+      _updateBusiness(id, data);
     },
 
     async addStationeryBusiness(_, { data }, { user }) {
@@ -1072,18 +1048,14 @@ const resolvers = {
       data.type = 'StationeryBusiness';
       data.sub_type = 'Stationery';
 
-      var id = await _addBusiness(data, user.id);
-      var business = await businessLoader.load(id);
-      return business;
+      _addBusiness(data, user.id);
     },
 
     async updateStationeryBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
       await _validateBusinessOwnerAndType(user, id, 'StationeryBusiness');
 
-      await _updateBusiness(id, data);
-      var business = await businessLoader.load(id);
-      return business;
+      _updateBusiness(id, data);
     },
 
     async addMadeInQatarBusiness(_, { data }, { user }) {
@@ -1091,18 +1063,14 @@ const resolvers = {
 
       data.type = 'MadeInQatarBusiness';
 
-      var id = await _addBusiness(data, user.id);
-      var business = await businessLoader.load(id);
-      return business;
+      _addBusiness(data, user.id);
     },
 
     async updateMadeInQatarBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
       await _validateBusinessOwnerAndType(user, id, 'MadeInQatarBusiness');
 
-      await _updateBusiness(id, data);
-      var business = await businessLoader.load(id);
-      return business;
+      _updateBusiness(id, data);
     },
 
     async addSportsBusiness(_, { data }, { user }) {
@@ -1110,18 +1078,14 @@ const resolvers = {
 
       data.type = 'SportsBusiness';
 
-      var id = await _addBusiness(data, user.id);
-      var business = await businessLoader.load(id);
-      return business;
+      _addBusiness(data, user.id);
     },
 
     async updateSportsBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
       await _validateBusinessOwnerAndType(user, id, 'SportsBusiness');
 
-      await _updateBusiness(id, data);
-      var business = await businessLoader.load(id);
-      return business;
+      _updateBusiness(id, data);
     },
 
     async addEntertainmentBusiness(_, { data }, { user }) {
@@ -1129,18 +1093,14 @@ const resolvers = {
 
       data.type = 'EntertainmentBusiness';
 
-      var id = await _addBusiness(data, user.id);
-      var business = await businessLoader.load(id);
-      return business;
+      _addBusiness(data, user.id);
     },
 
     async updateEntertainmentBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
       await _validateBusinessOwnerAndType(user, id, 'EntertainmentBusiness');
 
-      await _updateBusiness(id, data);
-      var business = await businessLoader.load(id);
-      return business;
+      _updateBusiness(id, data);
     },
 
     async addFoodBusiness(_, { data }, { user }) {
@@ -1148,18 +1108,14 @@ const resolvers = {
 
       data.type = 'FoodBusiness';
 
-      var id = await _addBusiness(data, user.id);
-      var business = await businessLoader.load(id);
-      return business;
+      _addBusiness(data, user.id);
     },
 
     async updateFoodBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
       await _validateBusinessOwnerAndType(user, id, 'FoodBusiness');
 
-      await _updateBusiness(id, data);
-      var business = await businessLoader.load(id);
-      return business;
+      _updateBusiness(id, data);
     },
 
     async addCleaningAndMaintenanceBusiness(_, { data }, { user }) {
@@ -1167,35 +1123,27 @@ const resolvers = {
 
       data.type = 'CleaningAndMaintenanceBusiness';
 
-      var id = await _addBusiness(data, user.id);
-      var business = await businessLoader.load(id);
-      return business;
+      _addBusiness(data, user.id);
     },
 
     async updateCleaningAndMaintenanceBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
       await _validateBusinessOwnerAndType(user, id, 'CleaningAndMaintenanceBusiness');
 
-      await _updateBusiness(id, data);
-      var business = await businessLoader.load(id);
-      return business;
+      _updateBusiness(id, data);
     },
 
     async addEvent(_, { data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
 
-      var id = await _addEvent(data, user.id);
-      var event = await eventLoader.load(id);
-      return event;
+      _addEvent(data, user.id);
     },
 
     async updateEvent(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
       await _validateEventOwner(user, id);
 
-      id = await _updateEvent(id, data);
-      var event = await eventLoader.clear(id).load(id);
-      return event;
+      _updateEvent(id, data);
     },
 
     // admin mutations

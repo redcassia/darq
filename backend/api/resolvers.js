@@ -493,6 +493,8 @@ async function _addBusiness(data, owner) {
     );
     id = result.insertId;
 
+    businessUserLoader.clear(owner);
+
     return id;
   }
   catch(e) {
@@ -564,7 +566,7 @@ async function _addEvent(data, owner) {
     );
     id = result.insertId;
 
-    // TODO: send confirmation email
+    businessUserLoader.clear(owner);
 
     return id;
   }
@@ -630,8 +632,6 @@ async function _updateEvent(id, data) {
     await db.query("UPDATE event SET " + fields.join(', ') + " WHERE id = ?;", args);
 
     eventLoader.clear(id);
-
-    // TODO: send confirmation email
   }
   catch(e) {
     console.log(e);

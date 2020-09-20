@@ -116,7 +116,7 @@
                         <div class="form-box">
                             <label>Profession</label>
                             <div class="select">
-                                <select name="profession" id="domestic-help-personnel-profession" required data-friendly-name="Profession">
+                                <select name="profession" id="domestic-help-personnel-profession" required data-friendly-name="Profession" onchange="updateProfessionRelevantFields(this.value, this.parentNode.parentNode.parentNode.parentNode)">
                                     <option value="" disabled selected>Choose profession</option>
                                 </select>
                             </div>
@@ -147,22 +147,6 @@
 
                     <div class="form-line">
                         <div class="form-box">
-                            <label>Height</label>
-                            <input type="text" name="height" />
-                            <span>cm</span>
-                        </div>
-                    </div>
-
-                    <div class="form-line">
-                        <div class="form-box">
-                            <label>Weight</label>
-                            <input type="text" name="weight" />
-                            <span>kg</span>
-                        </div>
-                    </div>
-
-                    <div class="form-line">
-                        <div class="form-box">
                             <label>Marital status</label>
                             <div class="select">
                                 <select name="marital_status" id="domestic-help-personnel-marital-status" required data-friendly-name="Marital status">
@@ -170,60 +154,13 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-box">
-                            <label>Number of children</label>
-                            <input type="number" data-special-type="int" name="number_of_children" />
-                        </div>
+
                     </div>
 
                     <div class="form-line">
-                        <div class="form-box">
-                            <label>Education</label>
-                            <div class="select">
-                                <select name="education" id="domestic-help-personnel-education">
-                                    <option value="" disabled selected>Choose</option>
-                                </select>
-                            </div>
-                        </div>
                         <div class="form-box">
                             <label>Date of Birth</label>
                             <input type="date" name="date_of_birth" required data-friendly-name="Date of Birth" />
-                        </div>
-                    </div>
-
-                    <div class="form-line">
-                        <div class="form-box">
-                            <label>Phone Number</label>
-                            <input type="tel" name="phone_number" required data-friendly-name="Phone Number" />
-                        </div>
-                    </div>
-
-                    <div class="form-line">
-                        <div class="form-box">
-                            <label>Languages</label>
-                            <div class="multistring-input" required data-friendly-name="Languages">
-                                <div class="data"></div>
-                                <input type="text" name="languages" />
-                                <button>Add</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-line">
-                        <div class="form-box">
-                            <label>Skills</label>
-                            <div class="multistring-input">
-                                <div class="data"></div>
-                                <input type="text" name="skills" />
-                                <button>Add</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-line">
-                        <div class="form-box">
-                            <label>License expiry date</label>
-                            <input type="date" name="license_expiry_date" />
                         </div>
                     </div>
 
@@ -262,6 +199,76 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="form-line">
+                        <div class="form-box">
+                            <label>Languages</label>
+                            <div class="multistring-input" required data-friendly-name="Languages">
+                                <div class="data"></div>
+                                <input type="text" name="languages" />
+                                <button>Add</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-line">
+                        <div class="form-box">
+                            <label>Phone Number</label>
+                            <input type="tel" name="phone_number" required data-friendly-name="Phone Number" />
+                        </div>
+                    </div>
+
+                    <div class="form-line hidden" data-show-with="Nanny Maid Cook">
+                        <div class="form-box">
+                            <label>Education</label>
+                            <div class="select">
+                                <select name="education" id="domestic-help-personnel-education" data-friendly-name="Education">
+                                    <option value="" disabled selected>Choose</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-line hidden" data-show-with="Nanny Maid Cook">
+                        <div class="form-box">
+                            <label>Height</label>
+                            <input type="text" name="height" data-friendly-name="Height" />
+                            <span>cm</span>
+                        </div>
+                    </div>
+
+                    <div class="form-line hidden" data-show-with="Nanny Maid Cook">
+                        <div class="form-box">
+                            <label>Weight</label>
+                            <input type="text" name="weight" data-friendly-name="Weight" />
+                            <span>kg</span>
+                        </div>
+                    </div>
+
+                    <div class="form-line hidden" data-show-with="Nanny Maid Cook">
+                        <div class="form-box">
+                            <label>Number of children</label>
+                            <input type="number" data-special-type="int" name="number_of_children" data-friendly-name="Number of Children" />
+                        </div>
+                    </div>
+
+                    <div class="form-line hidden" data-show-with="Nanny Maid Cook">
+                        <div class="form-box">
+                            <label>Skills</label>
+                            <div class="multistring-input" data-friendly-name="Skills">
+                                <div class="data"></div>
+                                <input type="text" name="skills" />
+                                <button>Add</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-line hidden" data-show-with="Driver">
+                        <div class="form-box">
+                            <label>License expiry date</label>
+                            <input type="date" name="license_expiry_date" data-friendly-name="License expiry date" />
                         </div>
                     </div>
 

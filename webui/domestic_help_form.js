@@ -31,6 +31,23 @@ function submitForm() {
   });
 }
 
+function updateProfessionRelevantFields(val, node) {
+
+  for (var line of node.children) {
+    if (line.classList.contains('form-line') && line.attributes['data-show-with']) {
+      var show = line.attributes['data-show-with'].value;
+      if (show.indexOf(val) != -1) {
+        $(line).show();
+        Form.setRequired(line, true);
+      }
+      else {
+        $(line).hide();
+        Form.setRequired(line, false);
+      }
+    }
+  }
+}
+
 $(document).ready(function () {
 
   GraphQL.fillOptionsFromEnum("DomesticHelpSubType", [

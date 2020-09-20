@@ -379,6 +379,46 @@ class Form {
     this._putFormData(document.getElementById(formId), data);
   }
 
+  static setRequired(form, required) {
+    for (var i = 0; i < form.children.length; ++i) {
+      var child = form.children[i];
+
+      if (child.classList[0] == 'form-line' || child.classList[0] == 'form-box') {
+        this.setRequired(child, required);
+      }
+      else {
+        switch (child.tagName) {
+          case 'DIV':
+            switch (child.classList[0]) {
+              case 'multistring-input':
+              case 'img-input':
+              case 'form-object':
+              case 'form-array':
+                if (required) child.setAttribute('required', '');
+                else child.removeAttribute('required')
+                break;
+
+              case 'select':
+                this.setRequired(child, required);
+                break;
+
+              default: break;
+            }
+            break;
+
+          case 'SELECT':
+          case 'INPUT':
+          case 'TEXTAREA':
+            if (required) child.setAttribute('required', '');
+            else child.removeAttribute('required')
+            break;
+
+          default: break;   // ignore others
+        }
+      }
+    }
+  }
+
   static removeRedundancy(a, b) {
     var redundantKeys = []
 

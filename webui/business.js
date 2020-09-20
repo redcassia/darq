@@ -125,13 +125,18 @@ function queryOwnedBusinesses() {
   });
 }
 
+var currentForm;
 function loadForm(formName) {
-  DynamicLoader.unloadFrom('business-content');
-  DynamicLoader.loadTo(
-    'business-content',
-    formName + '.html',
-    formName + '.js'
-  );
+  if (currentForm != formName) {
+    currentForm = formName;
+
+    DynamicLoader.unloadFrom('business-content');
+    DynamicLoader.loadTo(
+      'business-content',
+      formName + '.html',
+      formName + '.js'
+    );
+  }
 }
 
 $(document).ready(queryOwnedBusinesses);

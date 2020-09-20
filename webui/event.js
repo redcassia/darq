@@ -59,6 +59,8 @@ function loadEvent(id) {
 function queryOwnedEvents() {
   var showLoadingScreen = setTimeout(() => $("#loading-blanket").show(), 50);
 
+  DynamicLoader.unloadFrom('business-content');
+
   GraphQL.query(`
     query {
       user {

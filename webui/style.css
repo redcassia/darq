@@ -620,6 +620,7 @@ hr {
 
 .thread-title {
     display: block;
+    cursor: pointer;
     background-color: var(--light);
     margin: 0;
     padding: 12px;
@@ -644,7 +645,7 @@ hr {
 #messages {
     position: relative;
     width: 100%;
-    height: calc(100% - 144px);
+    height: calc(100% - 120px);
     overflow-y: auto;
 }
 .msg-me,
@@ -671,13 +672,12 @@ hr {
     color: var(--white);
     text-align: left;
     max-width: 70%;
+    border-radius: 25.5px;
 }
 .msg-me > * {
-    border-radius: 15px 0 15px 15px;
     background-color: var(--main-color);
 }
 .msg-other > * {
-    border-radius: 0 15px 15px 15px;
     background-color: var(--accent);
 }
 

@@ -5,21 +5,11 @@
 
     <hr style="margin-bottom: 0;"/>
 
-    <div id="threads">
-        <div class="thread-title">
-            <p>Anonymous user</p>
-            <p>Message preview....</p>
-        </div>
+    <div id="threads"></div>
 
-    </div>
 </div><div class="left-aligned-content with-submenu full-height">
-
-    <div id="messages">
-        <div class="msg-other"><p>Hello</p></div>
-        <div class="msg-me"><p>Hi</p></div>
-        <div class="msg-me"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla at varius augue. Vivamus faucibus nisi augue, id pulvinar risus pellentesque eget. In faucibus placerat lectus eu euismod. Praesent placerat efficitur commodo. Duis tempor orci et quam tempus, nec rutrum diam tincidunt. Cras maximus pulvinar diam elementum porta. Morbi iaculis condimentum diam, ac aliquet velit accumsan sit amet. Mauris tincidunt arcu quis elit porta, pretium auctor leo elementum. Etiam porta est aliquam libero congue aliquam. Aliquam eu nisi in enim pellentesque hendrerit. Integer fermentum at lectus ac dictum. Vestibulum lobortis magna pharetra, hendrerit enim eu, venenatis ligula. Etiam gravida diam id luctus finibus.</p></div>
-        <div class="msg-other"><p>Okay</p></div>
+    <div class="hidden" id="thread-view" style="height: 100%;">
+        <div id="messages"></div>
+        <textarea id="msg-box" onkeydown="if (event.keyCode === 13) { event.preventDefault(); sendMessage(this.value); this.value = ''; } "></textarea>
     </div>
-
-    <textarea id="msg-box"></textarea>
 </div>

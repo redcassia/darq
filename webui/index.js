@@ -376,7 +376,8 @@ function navigateTo(content) {
 
     case 'messages':
       DynamicLoader.loadTo('content',
-        'messages.html'
+        'messages.html',
+        'messages.js'
       );
       $('#messages-btn').addClass("active");
       break;

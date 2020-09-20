@@ -245,7 +245,7 @@ const msgLoader = new DataLoader(
         SELECT
           data AS msg,
           sender,
-          create_time AS time
+          create_time
         FROM
           message
         WHERE
@@ -255,7 +255,16 @@ const msgLoader = new DataLoader(
         [ id ]
       );
 
-      return rows;
+      var messages = new Array(rows.length);
+      for (var i = 0; i < rows.length; ++i) {
+        messages[i] = {
+          index: i,
+          msg: rows[i].msg,
+          time: rows[i].create_time,
+          sender: rows[i].sender
+        }
+      }
+      return messages;
     });
   }
 );
@@ -1514,6 +1523,71 @@ const resolvers = {
       }
 
       return businessUser.owned_events.map(_ => eventLoader.load(_));
+    },
+
+    async threads(_, { threadId }, { user }) {
+      if (! user) {
+        throw new ApolloError("Sorry... You're not authenticated! :c", 'USER_NOT_AUTHENTICATED');
+      }
+
+      if (user.type == 'BUSINESS') {
+        if (threadId) {
+          var thread = await msgThreadLoader.load(threadId);
+          if (thread.business_user_id == user.id) {
+            return [ thread ];
+          }
+          else {
+            throw new ApolloError(
+              "You are not the owner of this thread",
+              "BUSINESS_USER_NOT_THREAD_OWNER"
+            );
+          }
+        }
+        else {
+          const rows = await db.query(
+            `
+            SELECT
+              id
+            FROM
+              message_thread
+            WHERE
+              business_user_id = ?
+            `,
+            [ user.id ]
+          );
+
+          return msgThreadLoader.loadMany(rows.map(_ => _.id));
+        }
+      }
+      else {
+        if (threadId) {
+          var thread = await msgThreadLoader.load(threadId);
+          if (thread.public_user_id == user.id) {
+            return [ thread ];
+          }
+          else {
+            throw new ApolloError(
+              "You are not the owner of this thread",
+              "PUBLIC_USER_NOT_THREAD_OWNER"
+            );
+          }
+        }
+        else {
+          const rows = await db.query(
+            `
+            SELECT
+              id
+            FROM
+              message_thread
+            WHERE
+              public_user_id = ?
+            `,
+            [ user.id ]
+          );
+
+          return msgThreadLoader.loadMany(rows.map(_ => _.id));
+        }
+      }
     }
   },
 
@@ -1528,7 +1602,18 @@ const resolvers = {
       }
     },
     target: async(parent, args, ctx) => await businessLoader.load(parent.business_id),
-    messages: async(parent, args, ctx) => await msgLoader.load(parent.id)
+    messages: async(parent, { minIndex, maxIndex, limit }, ctx) => {
+      var messages = await msgLoader.load(parent.id);
+
+      var low;
+      if (minIndex != null) low = minIndex + 1;
+      else if (maxIndex != null) low = Math.min(maxIndex, messages.length) - limit;
+      else low = messages.length - limit;
+
+      if (low < 0) low = 0;
+
+      return messages.slice(low, maxIndex);
+    }
   },
 
   Admin: {

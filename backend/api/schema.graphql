@@ -90,10 +90,11 @@ type MessageThread {
   id: ID!
   sender: String
   target: Business!
-  messages: [Message!]!
+  messages(minIndex: Int, maxIndex: Int, limit: Int! = 20): [Message!]!
 }
 
 type Message {
+  index: Int!
   msg: String!
   time: String!
   sender: UserType!

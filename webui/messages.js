@@ -3,6 +3,7 @@ var msgThreads;
 var activeMsgThreadDom;
 var activeMsgThread;
 var threadUpdater;
+var threadsUpdater;
 
 function createThreadPreview(thread) {
   var lastMessage = thread.messages[thread.messages.length - 1];
@@ -148,9 +149,15 @@ function updateThreads() {
       `;
     }
     document.getElementById("threads").innerHTML = html;
-
-    setTimeout(updateThreads, 60000);
   });
 }
 
-$(document).ready(updateThreads);
+$(document).ready(function() {
+  updateThreads();
+  threadsUpdater = setInterval(updateThreads, 60000);
+
+  DynamicLoader.beforeUnload('content', () => {
+    if (threadsUpdater) clearInterval(threadsUpdater);
+    if (threadUpdater) clearInterval(threadUpdater);
+  });
+});

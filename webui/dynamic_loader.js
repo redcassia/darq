@@ -1,6 +1,7 @@
 class DynamicLoader {
-  static singleLoadScripts = new Object();;
-  static loadedScripts = new Object();;
+  static singleLoadScripts = new Object();
+  static loadedScripts = new Object();
+  static unloadCallbacks = new Map();
 
   static loadScript(group, src, onload, singleLoad = false) {
     if (! this.loadedScripts[group]) {
@@ -35,6 +36,9 @@ class DynamicLoader {
 
   static unloadScripts(group) {
     if (this.loadedScripts[group]) {
+      if (this.loadedScripts[group].unloadCallbacks) {
+        this.loadedScripts[group].unloadCallbacks.forEach(c => c());
+      }
       this.loadedScripts[group].doms.forEach(s => s.remove());
       delete this.loadedScripts[group];
     }
@@ -70,8 +74,18 @@ class DynamicLoader {
     }
   }
 
+  static beforeUnload(tagId, callback) {
+
+    if (this.loadedScripts[tagId]) {
+      if (! this.loadedScripts[tagId].unloadCallbacks) {
+        this.loadedScripts[tagId].unloadCallbacks = []
+      }
+      this.loadedScripts[tagId].unloadCallbacks.push(callback);
+    }
+  }
+
   static unloadFrom(tagId) {
-    document.getElementById(tagId).innerHTML = '';
     this.unloadScripts(tagId);
+    document.getElementById(tagId).innerHTML = '';
   }
 }

@@ -11,7 +11,7 @@
 
         <label>Business type</label>
         <div class="select">
-            <select id="business-type-select" onclick="loadForm(this.value)">
+            <select id="business-type-select" onclick="loadForm(this.value)" onchange="loadForm(this.value)">
                 <option value="" disabled selected>Choose business type</option>
                 <option value="self_employed_form">Self-employed</option>
                 <option value="child_education_form">Child Education</option>

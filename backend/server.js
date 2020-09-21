@@ -9,7 +9,7 @@ api_app.listen(
     () => console.log('GraphQL API server started on localhost:' + process.env.API_PORT + '/api')
 );
 
-if (process.env.CERT_FILE > 0) {
+if (process.env.CERT_FILE) {
     https.createServer({
         key: fs.readFileSync(process.env.KEY_FILE),
         cert: fs.readFileSync(process.env.CERT_FILE)

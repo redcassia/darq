@@ -295,8 +295,8 @@ const _eventQueryFields = `
   attachments
 `;
 
-const graphqlEndpoint = 'http://localhost:7070/api'
-const attachmentsEndpoint = "http://localhost:7070/attachment/";
+const graphqlEndpoint = 'http://redcassia.com:3001/api'
+const attachmentsEndpoint = "http://redcassia.com:3001/attachment/";
 
 function openInNewTab(url) {
   if (! url.startsWith("http")) url = 'https://' + url;

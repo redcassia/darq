@@ -1,0 +1,167 @@
+<form id="self-employed-form" novalidate>
+    <div class="form-line">
+        <div class="form-box">
+            <label>Profile picture</label>
+            <div class="img-input" required data-friendly-name="Profile picture">
+                <input type="file" name="display_picture"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Business sub-type</label>
+            <div class="select">
+                <select name="sub_type" id="self-employed-sub-type" required data-friendly-name="Business sub type">
+                    <option value="" disabled selected>Choose business sub-type</option>
+                </select>
+                <input class="show-when-other" type="text" name="sub_type_string" placeholder="Sub-type"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Display name</label>
+            <input type="text" name="display_name" required data-friendly-name="Display Name" />
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Gender</label>
+            <div class="select">
+                <select name="gender" id="self-employed-gender" required data-friendly-name="Gender">
+                    <option value="" disabled selected>Choose</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Nationality</label>
+            <div class="select">
+                <select name="nationality" id="self-employed-nationality" required data-friendly-name="Nationality">
+                </select>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>City</label>
+            <div class="select">
+                <select name="city" id="self-employed-city" required data-friendly-name="City">
+                    <option value="" disabled selected>Choose city </option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Phone Number</label>
+            <input type="tel" name="phone_number" required data-friendly-name="Phone number"/>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Description</label>
+            <textarea name="description" required data-friendly-name="Description"></textarea>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Skills</label>
+            <div class="multistring-input">
+                <div class="data"></div>
+                <input type="text" name="skills" />
+                <button>Add</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <div class="form-object" data-name="charge">
+                <label>Charge</label>
+                <input type="text" data-special-type="float" style="width:105px" name="value" required data-friendly-name="Charge" />
+                <div class="select">
+                    <select name="currency" id="self-employed-charge-currency" style="width:150px">
+                    </select>
+                </div>
+                <span>/hr</span>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Experience</label>
+            <div class="multiform" data-name="experience">
+                <button>+ Add</button>
+                <div class="template">
+                    <hr />
+                    <button class="remove-btn" style="left: calc(100% - 36px);"></button>
+                    <div class="form-line">
+                        <div class="form-box">
+                            <label>Country</label>
+                            <div class="select">
+                                <select name="country" id="self-employed-experience-country">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-box">
+                            <label>Institution</label>
+                            <input type="text" name="institution" />
+                        </div>
+                    </div>
+                    <div class="form-line">
+                        <div class="form-box">
+                            <label>From</label>
+                            <input type="date" name="from" />
+                        </div>
+                        <div class="form-box">
+                            <label>To</label>
+                            <input type="date" name="to" />
+                            <span>In position</span>
+                            <input type="checkbox" name="in_position" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Government-issued ID</label>
+            <div class="img-input" required data-friendly-name="Government-issued ID" >
+                <input type="file" name="government_id"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Gallery</label>
+            <div class="img-input multiple">
+                <input type="file" name="attachments" />
+            </div>
+        </div>
+    </div>
+
+    <hr />
+
+    <input type="submit" onclick="submitForm()">
+</form>

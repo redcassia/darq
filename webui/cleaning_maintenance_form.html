@@ -1,0 +1,136 @@
+<form id="cleaning-maintenance-form" novalidate>
+    <div class="form-line">
+        <div class="form-box">
+            <label>Profile picture</label>
+            <div class="img-input" required data-friendly-name="Profile picture">
+                <input type="file" name="display_picture"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label for="sub-type">Business sub-type</label>
+            <div class="select">
+                <select name="sub-type" id="cleaning-maintenance-sub-type">
+                    <option value="" disabled selected>Choose business sub-type</option>
+                </select>
+                <input class="show-when-other" type="text" name="sub_type_string" placeholder="Sub-type"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Display Name</label>
+            <input type="text" name="display_name" required data-friendly-name="Display name" />
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Address</label>
+            <input type="text" name="street_address" required data-friendly-name="Address" />
+        </div>
+
+        <div class="form-box">
+            <label>City</label>
+            <div class="select">
+                <select name="city" id="cleaning-maintenance-city" required data-friendly-name="City">
+                    <option value="" disabled selected>Choose city </option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Phone Number(s)</label>
+            <div class="multistring-input" required data-friendly-name="Phone number">
+                <div class="data"></div>
+                <input type="tel" name="phone_number" />
+                <button>Add</button>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Description</label>
+            <textarea name="description" required data-friendly-name="Description"></textarea>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Operating Hours</label>
+            <div class="form-object" data-name="operating_hours">
+                <span>Open</span>
+                <input type="time" name="open" />
+                <span>Close</span>
+                <input type="time" name="close" />
+                <span>All day</span>
+                <input type="checkbox" name="all_day" />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <div class="form-object" data-name="charge">
+                <label>Fees</label>
+                <input type="text" data-special-type="float" style="width:105px" name="value" required data-friendly-name="Charge" />
+                <div class="select">
+                    <select name="currency" id="cleaning-maintenance-fees-currency" style="width:150px">
+                    </select>
+                </div>
+                <span>/hr</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Home Services</label>
+            <input type="checkbox" name="home_service_available" />
+            <span>Available</span>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Website</label>
+            <input type="text" name="website" />
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Trade License</label>
+            <div class="img-input" required data-friendly-name="Trade license">
+                <input type="file" name="trade_license"/>
+            </div>
+        </div>
+        <div class="form-box">
+            <label>Trade License Number</label>
+            <input type="text" name="trade_license_number" required data-friendly-name="Trade license number" />
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Gallery</label>
+            <div class="img-input multiple">
+                <input type="file" name="attachments" />
+            </div>
+        </div>
+    </div>
+
+    <hr />
+
+    <input type="submit" onclick="submitForm()">
+</form>

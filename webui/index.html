@@ -2,11 +2,18 @@
 
 <html>
     <head>
+        <title>DarQ</title>
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="style.css">
         <link rel="stylesheet" href="index.css">
     </head>
     <body>
+        <script src="https://kit.fontawesome.com/d3fa62ec11.js" crossorigin="anonymous"></script>
+
+        <div class="hidden" id="loading-blanket">
+            <i class="fas fa-sync fa-spin"></i>
+        </div>
+
         <div id="signup-screen" class="screen" style="z-index: 0;">
             <div class="home-pane inactive-home-pane">
                 <div class="home-pane-content white">
@@ -22,9 +29,9 @@
                         <br/>
                         <span class="accent h3">DarQ</span>
                     </h4>
-                    <input type="email" placeholder="Email"/> <br/>
-                    <input type="password" placeholder="Password"/> <br/>
-                    <input type="password" placeholder="Confirm Password"/> <br/>
+                    <input type="email" id="signup-email" placeholder="Email" onkeydown="if (event.keyCode === 13 ) signup();" /> <br/>
+                    <input type="password" id="signup-password" placeholder="Password" onkeydown="if (event.keyCode === 13 ) signup();" /> <br/>
+                    <input type="password" id="signup-password-confirm" placeholder="Confirm Password" onkeydown="if (event.keyCode === 13 ) signup();" /> <br/>
                     <button onclick="signup()">Create Account</button>
                 </div>
             </div>
@@ -38,8 +45,8 @@
                         <br/>
                         <span class="accent h3">DarQ</span>
                     </h4>
-                    <input type="email" placeholder="Email"/> <br/>
-                    <input type="password" placeholder="Password"/> <br/>
+                    <input type="email" id="signin-email" placeholder="Email" onkeydown="if (event.keyCode === 13 ) signin();"/> <br/>
+                    <input type="password" id="signin-password" placeholder="Password" onkeydown="if (event.keyCode === 13 ) signin();"/> <br/>
                     <div style="text-align: right;">
                         <span class="clickable" onclick="switchToForgotPassword()">Forgot password?</span>
                     </div>
@@ -78,29 +85,24 @@
                         <img id="hamburger-btn" class="clickable" onClick="toggleHamburger()" src="assets/hamburger-icon.png" data-icon-name="hamburger" class="clickable" />
                     </div>
 
-                    <div id="profile-btn" class="side-bar-btn clickable" onclick="navigateTo($(this))">
-                        <img src="assets/user-icon.png" data-icon-name="user"/>
-                        <span>Your Profile</span>
-                    </div>
-
-                    <div id="messages-btn" class="side-bar-btn clickable" onclick="navigateTo($(this), 'messages')">
+                    <div id="messages-btn" class="side-bar-btn clickable" onclick="navigateTo('messages')">
                         <img src="assets/msg-icon.png" data-icon-name="msg" class="clickable" />
                         <span>Inbox</span>
                     </div>
 
-                    <div id="business-btn" class="side-bar-btn clickable" onclick="navigateTo($(this), 'business')">
+                    <div id="business-btn" class="side-bar-btn clickable" onclick="navigateTo('business')">
                         <img src="assets/briefcase-icon.png" data-icon-name="briefcase" class="clickable" />
-                        <span>Add Your Business</span>
+                        <span>Businesses</span>
                     </div>
 
-                    <div id="events-btn" class="side-bar-btn clickable" onclick="navigateTo($(this), 'event')">
+                    <div id="events-btn" class="side-bar-btn clickable" onclick="navigateTo('event')">
                         <img src="assets/calendar-icon.png" data-icon-name="calendar" class="clickable" />
-                        <span>Create an Event</span>
+                        <span>Events</span>
                     </div>
 
-                    <div id="payment-btn" class="side-bar-btn clickable" onclick="navigateTo($(this), 'payment')">
-                        <img src="assets/card-icon.png" data-icon-name="card" class="clickable" />
-                        <span>Payment</span>
+                    <div id="settings-btn" class="side-bar-btn clickable" onclick="navigateTo('settings')">
+                        <img src="assets/gear-icon.png" data-icon-name="gear" class="clickable" />
+                        <span>Settings</span>
                     </div>
                 </div>
 
@@ -113,6 +115,10 @@
             integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
             crossorigin="anonymous">
         </script>
+        <script src="shared_constants.js"></script>
+        <script src="dynamic_loader.js"></script>
+        <script src="cookie_manager.js"></script>
+        <script src="graphql.js"></script>
         <script src="index.js"></script>
     </body>
 </html>

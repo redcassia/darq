@@ -1,0 +1,32 @@
+<div class="content-submenu medium-light-bg">
+
+    <div class="content-submenu-box hidden" id="owned-businesses">
+        <h5>Your Businesses</h5>
+
+        <div id="businesses-menu"></div>
+    </div>
+
+    <div class="content-submenu-box content-submenu-box-bot">
+        <h5>Add a business</h5>
+
+        <label>Business type</label>
+        <div class="select">
+            <select id="business-type-select" onclick="loadForm(this.value)" onchange="loadForm(this.value)">
+                <option value="" disabled selected>Choose business type</option>
+                <option value="self_employed_form">Self-employed</option>
+                <option value="child_education_form">Child Education</option>
+                <option value="domestic_help_form">Domestic Help</option>
+                <option value="beauty_form">Beauty & Spa</option>
+                <option value="transportation_form">Transportation</option>
+                <option value="hospitality_form">Hospitality</option>
+                <option value="stationery_form">Stationery</option>
+                <option value="made_in_qatar_form">Made In Qatar</option>
+                <option value="gym_form">Gym</option>
+                <option value="club_form">Club</option>
+                <option value="entertainment_form">Entertainment</option>
+                <option value="cuisine_form">Cuisine</option>
+                <option value="cleaning_maintenance_form">Cleaning & Maintenance</option>
+            </select>
+        </div>
+    </div>
+</div><div class="left-aligned-content with-submenu" id="business-content"></div>

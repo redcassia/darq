@@ -1,14 +1,16 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/res/path_files.dart';
+import 'package:darq/views/home/chat_screen.dart';
 import 'package:darq/views/home/screens/details_page.dart';
 import 'package:darq/views/home/screens/personnel_page.dart';
 import 'package:darq/views/home/shared/custom_divider.dart';
 import 'package:darq/views/home/shared/full_img_wrapper.dart';
 import 'package:darq/views/home/shared/leading_row.dart';
-import 'package:darq/views/home/style_const/home_screens_style_const.dart';
+import 'package:darq/views/home/home_screens_style_const.dart';
 import 'package:darq/views/shared/button.dart';
 import 'package:darq/views/shared/custom_card.dart';
 import 'package:darq/views/shared/custom_chip.dart';
@@ -157,7 +159,7 @@ Widget generateWidget(String widgetType,
                   textStyle: AppFonts.makeStyle(textSize, textColor))));
 
     case 'picture':
-      return Picture(height: height.h, width: width.w, img: "avatar.png");
+      return Picture(height: height.h, width: width.w, img: data);
 
     case 'picture_gallery':
       if (data == null) return null;
@@ -174,26 +176,28 @@ Widget generateWidget(String widgetType,
                         scrollDirection: Axis.horizontal,
                         shrinkWrap: true,
                         padding: EdgeInsets.zero,
-                        itemCount: 3,
+                        itemCount: data?.length ?? 0,
                         itemBuilder: (BuildContext context, int index) {
                           return Padding(
                               padding: EdgeInsets.only(right: 6.w),
                               child: InkWell(
-                                  child: Image(
-                                    width: 141.w,
-                                    height: 101.h,
-                                    fit: BoxFit.cover,
-                                    image: AssetImage(
-                                        PathFiles.ImgPath + "gallery.png"),
-                                  ),
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => FullImageWrapper(
-                                                imageProvider: AssetImage(
-                                                    "assets/images/gallery.png"))));
-                                  }));
+                                  child: CachedNetworkImage(
+                                      imageUrl:
+                                          "http://redcassia.com:3001/attachment/${data[index]}",
+                                      placeholder: (context, url) =>
+                                          CircularProgressIndicator(),
+                                      errorWidget: (context, url, error) =>
+                                          Icon(Icons.error),
+                                      filterQuality: FilterQuality.high,
+                                      width: 141.w,
+                                      height: 101.h,
+                                      fit: BoxFit.contain),
+                                  onTap: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => FullImageWrapper(
+                                              imageProvider:
+                                                  "http://redcassia.com:3001/attachment/${data[index]}")))));
                         }))
               ]));
 
@@ -330,7 +334,10 @@ Widget generateWidget(String widgetType,
             color: Color(0xFF426676),
             borderRadius: 27,
             textStyle: AppFonts.title11Odd(color: Colors.white),
-            onButtonPressed: () => {})
+            onButtonPressed: () => {
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (context) => Chat()))
+                })
       ]);
 
     case 'personnel':
@@ -348,7 +355,8 @@ Widget generateWidget(String widgetType,
                     onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => PersonnelPage(data: data[i]))),
+                            builder: (context) =>
+                                PersonnelPage(data: data[i]))),
                     child: DefaultCard(
                         margin: EdgeInsets.zero,
                         padding:
@@ -359,22 +367,20 @@ Widget generateWidget(String widgetType,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
                               Picture(
-                                  height: 43.h, width: 44.w, img: "avatar.png"),
-                              SizedBox(
-                                height: 2.h,
-                              ),
-                              Text(
-                                "${data[i]["name"]}",
-                                style: AppFonts.title11Odd(
-                                    color: Color(0xFF545454)),
-                                textAlign: TextAlign.center,
-                              ),
+                                  height: 43.h,
+                                  width: 44.w,
+                                  img: data[i]["picture"]),
+                              SizedBox(height: 2.h),
+                              Text("${data[i]["name"]}",
+                                  style: AppFonts.title11Odd(
+                                      color: Color(0xFF545454)),
+                                  textAlign: TextAlign.center),
                               Text("${data[i]["nationality"]}",
                                   style: AppFonts.text9odd(
                                       color: Color.fromRGBO(0, 0, 0, 0.5))),
                               Text("${data[i]["profession"]}",
                                   style: AppFonts.text10w500(
-                                      color: Color.fromRGBO(0, 0, 0, 0.37))),
+                                      color: Color.fromRGBO(0, 0, 0, 0.37)))
                             ])));
               })));
 

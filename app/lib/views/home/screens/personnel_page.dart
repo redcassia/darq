@@ -1,12 +1,12 @@
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:darq/elements/app_fonts.dart';
-import 'package:darq/res/path_files.dart';
 import 'package:darq/utilities/constants.dart';
 import 'package:darq/views/home/shared/custom_divider.dart';
 import 'package:darq/views/home/shared/full_img_wrapper.dart';
 import 'package:darq/views/home/shared/leading_row.dart';
-import 'package:darq/views/home/style_const/home_screens_style_const.dart';
+import 'package:darq/views/home/home_screens_style_const.dart';
 import 'package:darq/views/shared/app_bars/profile_appbar.dart';
 import 'package:darq/views/shared/custom_card.dart';
 import 'package:darq/views/shared/custom_chip.dart';
@@ -16,15 +16,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+final GlobalKey<_PersonnelPageState> personnelKey = new GlobalKey();
+
 class PersonnelPage extends StatefulWidget {
   final dynamic data;
-  final bool isDriver;
-  PersonnelPage({this.data}) : isDriver = data["profession"] == "Driver";
+  bool isDriver;
+
+  PersonnelPage({this.data}) : super(key: personnelKey) {
+    isDriver = data["profession"] == "Driver";
+  }
+
   @override
   _PersonnelPageState createState() => _PersonnelPageState();
 }
 
 class _PersonnelPageState extends State<PersonnelPage> {
+  void updatePersonnel({List<dynamic> selectedValues}) {
+    print("selectedValue: $selectedValues");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,24 +63,26 @@ class _PersonnelPageState extends State<PersonnelPage> {
                             width: 80.w,
                             height: 79.h,
                             child: Picture(
-                                height: 79.h, width: 80.w, img: "avatar.png")),
+                                height: 79.h,
+                                width: 80.w,
+                                img: widget.data["picture"])),
                         SizedBox(width: 17.w),
                         Flexible(
                             flex: 2,
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(widget.data["name"],
-                                    style: AppFonts.title9(
-                                        color: Color.fromRGBO(0, 0, 0, 0.67))),
-                                SizedBox(height: 10.h),
-                                DataWidget(data: widget.data["profession"]),
-                                SizedBox(height: 5.h),
-                                DataWidget(data: widget.data["gender"]),
-                                SizedBox(height: 5.h),
-                                DataWidget(data: widget.data["nationality"]),
-                              ],
-                            ))
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(widget.data["name"],
+                                      style: AppFonts.title9(
+                                          color:
+                                              Color.fromRGBO(0, 0, 0, 0.67))),
+                                  SizedBox(height: 10.h),
+                                  DataWidget(data: widget.data["profession"]),
+                                  SizedBox(height: 5.h),
+                                  DataWidget(data: widget.data["gender"]),
+                                  SizedBox(height: 5.h),
+                                  DataWidget(data: widget.data["nationality"])
+                                ]))
                       ]),
                   Flexible(
                       flex: 4,
@@ -87,19 +99,16 @@ class _PersonnelPageState extends State<PersonnelPage> {
                                     "${widget.data["salary"]["value"]} ${widget.data["salary"]["currency"]}"),
                             CustomDivider(),
                             widget.data["profession"] == "Driver"
-                                ? Column(
-                                    children: [
-                                      SizedBox(height: 17.h),
-                                      TextLeadingRow(
-                                          title: "License Expiration Date:",
-                                          titleStyle: kTitle9Rgb_67,
-                                          txt: widget
-                                              .data["license_expiry_date"],
-                                          txtStyle: kText9OddRgb_05),
-                                      SizedBox(height: 17.h),
-                                      CustomDivider(),
-                                    ],
-                                  )
+                                ? Column(children: [
+                                    SizedBox(height: 17.h),
+                                    TextLeadingRow(
+                                        title: "License Expiration Date:",
+                                        titleStyle: kTitle9Rgb_67,
+                                        txt: widget.data["license_expiry_date"],
+                                        txtStyle: kText9OddRgb_05),
+                                    SizedBox(height: 17.h),
+                                    CustomDivider()
+                                  ])
                                 : Container(),
                             SizedBox(height: 17.h),
                             TextLeadingRow(
@@ -127,18 +136,16 @@ class _PersonnelPageState extends State<PersonnelPage> {
                                     ""),
                             CustomDivider(),
                             widget.data["profession"] != "Driver"
-                                ? Column(
-                                    children: [
-                                      SizedBox(height: 17.h),
-                                      TextLeadingRow(
-                                          title: "Education:",
-                                          titleStyle: kTitle9Rgb_67,
-                                          txt: widget.data["education"],
-                                          txtStyle: kText9OddRgb_05),
-                                      SizedBox(height: 17.h),
-                                      CustomDivider(),
-                                    ],
-                                  )
+                                ? Column(children: [
+                                    SizedBox(height: 17.h),
+                                    TextLeadingRow(
+                                        title: "Education:",
+                                        titleStyle: kTitle9Rgb_67,
+                                        txt: widget.data["education"],
+                                        txtStyle: kText9OddRgb_05),
+                                    SizedBox(height: 17.h),
+                                    CustomDivider()
+                                  ])
                                 : Container(),
                             SizedBox(height: 17.h),
                             Wrap(
@@ -248,10 +255,7 @@ class _PersonnelPageState extends State<PersonnelPage> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: <Widget>[
-                                      Text(
-                                        "Attachments",
-                                        style: kTitle9Rgb_67,
-                                      ),
+                                      Text("Attachments", style: kTitle9Rgb_67),
                                       SizedBox(height: 17.h),
                                       Flexible(
                                           child: ListView.builder(
@@ -266,15 +270,24 @@ class _PersonnelPageState extends State<PersonnelPage> {
                                                     padding: EdgeInsets.only(
                                                         right: 6.w),
                                                     child: InkWell(
-                                                        child: Image(
-                                                          width: 141.w,
-                                                          height: 101.h,
-                                                          fit: BoxFit.cover,
-                                                          image: AssetImage(
-                                                              PathFiles
-                                                                      .ImgPath +
-                                                                  "gallery.png"),
-                                                        ),
+                                                        child: CachedNetworkImage(
+                                                            imageUrl:
+                                                                "http://redcassia.com:3001/attachment/",
+                                                            placeholder: (context,
+                                                                    url) =>
+                                                                CircularProgressIndicator(),
+                                                            errorWidget:
+                                                                (context, url,
+                                                                        error) =>
+                                                                    Icon(Icons
+                                                                        .error),
+                                                            filterQuality:
+                                                                FilterQuality
+                                                                    .high,
+                                                            width: 141.w,
+                                                            height: 101.h,
+                                                            fit:
+                                                                BoxFit.contain),
                                                         onTap: () {
                                                           Navigator.push(
                                                               context,
@@ -282,7 +295,7 @@ class _PersonnelPageState extends State<PersonnelPage> {
                                                                   builder: (context) =>
                                                                       FullImageWrapper(
                                                                           imageProvider:
-                                                                              AssetImage("assets/images/gallery.png"))));
+                                                                              "http://redcassia.com:3001/attachment/")));
                                                         }));
                                               }))
                                     ]))
@@ -343,7 +356,7 @@ class BipartiteRow extends StatelessWidget {
           titleStyle: kTitle9Rgb_67,
           txt: rightTxt,
           widget: rightWidget,
-          txtStyle: kText9OddRgb_05),
+          txtStyle: kText9OddRgb_05)
     ]);
   }
 }

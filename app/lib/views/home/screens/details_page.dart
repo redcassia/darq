@@ -3,6 +3,8 @@ import 'dart:ui';
 
 import 'package:darq/res/path_files.dart';
 import 'package:darq/utilities/constants.dart';
+import 'package:darq/views/home/screens/business_filter.dart';
+import 'package:darq/views/home/screens/personnel_filter.dart';
 import 'package:darq/views/home/widget_generator.dart';
 import 'package:darq/views/shared/app_bars/profile_appbar.dart';
 import 'package:darq/views/shared/custom_card.dart';
@@ -12,14 +14,15 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:graphql/client.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../backend.dart';
 
 class DetailsPage extends StatefulWidget {
-  final String jsonFile;
   final String id;
 
-  DetailsPage({this.jsonFile, this.id});
+  final String jsonFile;
+  DetailsPage({this.id, this.jsonFile});
   @override
   _DetailsPageState createState() => _DetailsPageState();
 }
@@ -28,19 +31,20 @@ class _DetailsPageState extends State<DetailsPage> {
   double rating = 0.0;
   Map<String, dynamic> _layout;
   dynamic _data;
+  dynamic _filteredData;
+
 
   loadLayoutAndData() {
     rootBundle.loadString(PathFiles.ProfilePath + widget.jsonFile).then((js) {
       setState(() => _layout = json.decode(js));
-
       Backend.getClient().then((client) => client
-              .query(QueryOptions(
-                  documentNode: gql(_layout["detailed"]["query"]),
-                  variables: {'id': widget.id}))
-              .then((result) {
-            if (!result.hasException)
-              setState(() => _data = result.data["item"]);
-          }));
+          .query(QueryOptions(
+          documentNode: gql(_layout["detailed"]["query"]),
+          variables: {'id': widget.id}))
+          .then((result) {
+        if (!result.hasException)
+          setState(() => _data = result.data["item"]);
+      }));
     });
   }
 
@@ -57,6 +61,8 @@ class _DetailsPageState extends State<DetailsPage> {
         appBar: PreferredSize(
             preferredSize: Size.fromHeight(ConsDimensions.SmallAppBarHeight.h),
             child: ProfileAppBar(
+                filterFunction: () => Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => PersonnelFilter())),
                 filterIndicator: _layout == null
                     ? false
                     : _layout["detailed"]["appbar"]["filter"],
@@ -80,32 +86,44 @@ class _DetailsPageState extends State<DetailsPage> {
                         SizedBox(
                             width: 80.w,
                             height: 110.h,
-                            child: buildCardColumn(context, _layout == null
-                                ? null
-                                : _layout["detailed"]["columns"]["header"]
-                                    ["start"], false)),
+                            child: buildCardColumn(
+                                context,
+                                _layout == null
+                                    ? null
+                                    : _layout["detailed"]["columns"]["header"]
+                                        ["start"],
+                                false)),
                         SizedBox(width: 17.w),
                         Flexible(
                             flex: 2,
-                            child: buildCardColumn(context, _layout == null
-                                ? null
-                                : _layout["detailed"]["columns"]["header"]
-                                    ["end"], false))
+                            child: buildCardColumn(
+                                context,
+                                _layout == null
+                                    ? null
+                                    : _layout["detailed"]["columns"]["header"]
+                                        ["end"],
+                                false))
                       ])),
                   Flexible(
                       flex: 4,
-                      child: buildCardColumn(context, _layout == null
-                          ? null
-                          : _layout["detailed"]["columns"]["body"], true))
+                      child: buildCardColumn(
+                          context,
+                          _layout == null
+                              ? null
+                              : _layout["detailed"]["columns"]["body"],
+                          true))
                 ])));
   }
 
-  ListView buildCardColumn(BuildContext context, List<dynamic> columnLayout, bool scroll) {
+  ListView buildCardColumn(
+      BuildContext context, List<dynamic> columnLayout, bool scroll) {
     bool divisionEmpty = false;
     List<Widget> children = new List();
 
     if (_data != null) {
-      for (var widgetIndex = 0; widgetIndex < columnLayout.length; ++widgetIndex) {
+      for (var widgetIndex = 0;
+          widgetIndex < columnLayout.length;
+          ++widgetIndex) {
         String widgetType = columnLayout[widgetIndex]["widget"];
 
         var dataPath = columnLayout[widgetIndex]["data"];
@@ -138,20 +156,22 @@ class _DetailsPageState extends State<DetailsPage> {
         if (widgetType == "divider") {
           if (divisionEmpty) child = null;
           divisionEmpty = true;
-        }
-        else {
+        } else {
           if (child != null) divisionEmpty = false;
         }
 
-        if (child == null) children.add(Container());
-        else children.add(child);
+        if (child == null)
+          children.add(Container());
+        else
+          children.add(child);
       }
     }
 
     return ListView(
-        physics: scroll ? AlwaysScrollableScrollPhysics() : NeverScrollableScrollPhysics(),
+        physics: scroll
+            ? AlwaysScrollableScrollPhysics()
+            : NeverScrollableScrollPhysics(),
         padding: EdgeInsets.zero,
-        children: children
-    );
+        children: children);
   }
 }

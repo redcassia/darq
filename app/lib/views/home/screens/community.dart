@@ -21,7 +21,7 @@ class _CommunityState extends State<Community> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Color(0xFFE5E5E5),
         extendBodyBehindAppBar: true,
         appBar: PreferredSize(
             preferredSize: Size.fromHeight(ConsDimensions.LargeAppBarHeight.h),

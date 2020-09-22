@@ -12,12 +12,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProfileAppBar extends StatelessWidget {
   const ProfileAppBar(
-      {Key key, this.backArrowBgColor, this.filterIndicator, this.buttonName})
+      {Key key,
+      this.backArrowBgColor,
+      this.filterIndicator,
+      this.buttonName,
+      this.filterFunction})
       : super(key: key);
 
   final Color backArrowBgColor;
   final bool filterIndicator;
   final String buttonName;
+  final Function() filterFunction;
 
   @override
   Widget build(BuildContext context) {
@@ -48,14 +53,17 @@ class ProfileAppBar extends StatelessWidget {
                     textStyle: AppFonts.title11Odd(color: Colors.white),
                     onButtonPressed: () => {}),
                 filterIndicator
-                    ? LeftRoundedCapsule(
-                        horizontalPadding: 16.w,
-                        verticalPadding: 5.h,
-                        icon: Image(
-                            fit: BoxFit.fitHeight,
-                            width: 18.w,
-                            image:
-                                AssetImage(PathFiles.ImgPath + "filter.png")))
+                    ? InkWell(
+                        onTap: () => filterFunction(),
+                        child: LeftRoundedCapsule(
+                            horizontalPadding: 16.w,
+                            verticalPadding: 5.h,
+                            icon: Image(
+                                fit: BoxFit.fitHeight,
+                                width: 18.w,
+                                image: AssetImage(
+                                    PathFiles.ImgPath + "filter.png"))),
+                      )
                     : Container(height: 0.h)
               ])
             ]));

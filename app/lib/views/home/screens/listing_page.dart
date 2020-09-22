@@ -4,7 +4,7 @@ import 'dart:ui';
 import 'package:darq/backend.dart';
 import 'package:darq/res/path_files.dart';
 import 'package:darq/utilities/constants.dart';
-import 'package:darq/views/home/screens/filter.dart';
+import 'package:darq/views/home/screens/business_filter.dart';
 import 'package:darq/views/home/widget_generator.dart';
 import 'package:darq/views/shared/app_bars/default_appbar.dart';
 import 'package:darq/views/shared/capsule/left_rounded_capsule.dart';
@@ -19,8 +19,8 @@ import 'package:graphql/client.dart';
 
 class ListingPage extends StatefulWidget {
   final String jsonFile;
-
-  ListingPage({this.jsonFile});
+  final List<dynamic> filteredData;
+  ListingPage({this.jsonFile, this.filteredData});
   @override
   _ListingPageState createState() => _ListingPageState();
 }
@@ -33,11 +33,15 @@ class _ListingPageState extends State<ListingPage> {
   loadLayoutAndData() {
     rootBundle.loadString(PathFiles.ProfilePath + widget.jsonFile).then((js) {
       setState(() => _layout = json.decode(js));
-
       Backend.getClient().then((client) => client
-              .query(QueryOptions(documentNode: gql(_layout["list"]["query"])))
+              .query(QueryOptions(
+                  documentNode: gql(widget.filteredData == null
+                      ? _layout["list"]["query"]
+                      : _layout["list"]["filtered_query"]),
+                  variables: {'sub_types': widget.filteredData}))
               .then((result) {
-            if (!result.hasException) setState(() => _data = result.data["items"]);
+            if (!result.hasException)
+              setState(() => _data = result.data["items"]);
           }));
     });
   }
@@ -45,7 +49,7 @@ class _ListingPageState extends State<ListingPage> {
   @override
   void initState() {
     super.initState();
-    this.loadLayoutAndData();
+    loadLayoutAndData();
   }
 
   @override
@@ -73,10 +77,11 @@ class _ListingPageState extends State<ListingPage> {
                         : _layout["list"]["appbar"]["filter"])
                     ? GestureDetector(
                         onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return Filter();
-                          }));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => BusinessFilter(
+                                      jsonFile: widget.jsonFile)));
                         },
                         child: LeftRoundedCapsule(
                             horizontalPadding: 16.w,
@@ -107,9 +112,15 @@ class _ListingPageState extends State<ListingPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 SizedBox(
-                                    width: 70.w, child: buildCardColumn(_layout["list"]["columns"]["start"], index)),
+                                    width: 70.w,
+                                    child: buildCardColumn(
+                                        _layout["list"]["columns"]["start"],
+                                        index)),
                                 SizedBox(width: 17.w),
-                                Expanded(child: buildCardColumn(_layout["list"]["columns"]["end"], index))
+                                Expanded(
+                                    child: buildCardColumn(
+                                        _layout["list"]["columns"]["end"],
+                                        index))
                               ]))));
             }));
   }

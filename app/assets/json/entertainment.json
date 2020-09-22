@@ -63,7 +63,9 @@
         }
       ]
     },
-    "query": "query {\n  items: businesses(type: EntertainmentBusiness) {\n    id,\n    display_name,\n    display_picture,\n    rating\n    ... on EntertainmentBusiness {\n      sub_type_string\n      description\n      street_address\n    }\n  } \n}"
+    "query": "query {\n  items: businesses(type: EntertainmentBusiness) {\n    id,\n    display_name,\n    display_picture,\n    rating\n    ... on EntertainmentBusiness {\n      sub_type_string\n      description\n      street_address\n    }\n  } \n}",
+    "filter_values_query": "query {\n    __type(name: \"EntertainmentBusinessSubType\") {\n      enumValues {\n        name\n      }\n    }\n}",
+    "filtered_query": "query ($sub_types: [String]!) {\n  items: businesses(type: EntertainmentBusiness, sub_types: $sub_types) {\n    id,\n    display_name,\n    display_picture,\n    rating\n    ... on EntertainmentBusiness {\n      sub_type_string\n      description\n    }\n  } \n}"
   },
   "detailed": {
     "appbar": {

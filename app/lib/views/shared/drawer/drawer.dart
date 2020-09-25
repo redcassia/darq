@@ -1,4 +1,5 @@
 import 'package:darq/utilities/screen_info.dart';
+import 'package:darq/views/home/chat_list.dart';
 import 'package:darq/views/home/screens/community.dart';
 import 'package:darq/views/home/screens/home.dart';
 import 'package:darq/views/home/screens/listing_page.dart';
@@ -71,7 +72,12 @@ class CustomDrawer extends StatelessWidget {
                   txt: "Home",
                   icon: "home.png",
                   onClick: () => Navigator.push(
-                      context, MaterialPageRoute(builder: (context) => Home())))
+                      context, MaterialPageRoute(builder: (context) => Home()))),
+              DrawerItem(
+                  txt: "Chat",
+                  icon: "home.png",
+                  onClick: () => Navigator.push(
+                      context, MaterialPageRoute(builder: (context) => ChatList())))
             ]));
   }
 }

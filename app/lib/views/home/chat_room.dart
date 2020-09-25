@@ -1,5 +1,8 @@
 import 'dart:async';
+import 'package:intl/intl.dart';
 
+import 'package:darq/backend.dart';
+import 'package:darq/chat.dart';
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/res/path_files.dart';
 import 'package:darq/utilities/constants.dart';
@@ -8,107 +11,115 @@ import 'package:darq/views/shared/app_bars/default_appbar.dart';
 import 'package:darq/views/shared/capsule/right_rounded_capsule.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:graphql/client.dart';
 
-class Message {
-  String sender;
-  String time;
-  String text;
+class ChatRoom extends StatefulWidget {
+  final String threadId;
+  final String businessId;
 
-  /// just to check isMe .. will be removed when use API
-  bool isMe;
+  ChatRoom({this.threadId, this.businessId});
 
-  Message({this.sender, this.time, this.text, this.isMe});
-}
-
-List<Message> messages = [
-  Message(
-      isMe: true,
-      sender: "anonymous",
-      time: "5:00 PM",
-      text:
-          "hey, dude!!! I want to reserve a table for 5 people... what should I do?? thanks..."),
-  Message(
-      isMe: false,
-      sender: "Business Name",
-      time: "5:20 PM",
-      text:
-          "hey...!! for reservation please have a direct phone call with the restaurant... thanks, we hope to hear from you soon..."),
-  Message(
-      isMe: true,
-      sender: "anonymous",
-      time: "5:30 PM",
-      text:
-          " what am I doing now!!! this is hilarious and weird!! If I should call the restaurant what is the purpose of this chatting feature!!! i am not going to call anyone and this is the last time to deal with this restaurant and this app at all!!"),
-  Message(
-      isMe: true,
-      sender: "anonymous",
-      time: "5:30 PM",
-      text: "S H A M E   O N   Y O U   G U Y S   !!!!"),
-  Message(
-      isMe: false,
-      sender: "Business Name",
-      time: "5:40 PM",
-      text: "thanks!!!! you are banned..."),
-  Message(
-      isMe: false,
-      sender: "Business Name",
-      time: "5:40 PM",
-      text: "you ain't welcome here at all!!"),
-  Message(
-      isMe: true,
-      sender: "anonymous",
-      time: "5:30 PM",
-      text: "I don't care   !!!!"),
-];
-
-class Chat extends StatefulWidget {
   @override
-  _ChatState createState() => _ChatState();
+  _ChatRoomState createState() => _ChatRoomState();
 }
 
-class _ChatState extends State<Chat> {
+class _ChatRoomState extends State<ChatRoom> {
   final textFieldController = TextEditingController();
   ScrollController _scrollController = ScrollController();
+
+  MessageThread _thread;
+  Chat _chatInstance;
+  bool _scrollToEnd = true;
+  int _oldMessageCount;
 
   @override
   void initState() {
     super.initState();
+
+    _chatInstance = new Chat();
+    _chatInstance
+        .getThread(threadId: widget.threadId, businessId: widget.businessId)
+        .then((thread) => setState(() {
+              _thread = thread;
+            }));
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.minScrollExtent) {
+        _oldMessageCount = _thread.messages.length;
+        _chatInstance.loadMore(_thread.id).then((_) => setState(() {
+              _thread = _;
+            }));
+      } else if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        _scrollToEnd = false;
+      }
+    });
+  }
+
+  String formatDate(DateTime val) {
+    return DateFormat("dd / MM / y  \u2014  hh:mm a", "en_US")
+        .format(val.toLocal())
+        .toString();
+  }
+
+  _sendMsg(String msg) {
+    if (msg == null || msg.trim().length == 0) return;
+    _chatInstance
+        .sendMessage(msg,
+            threadId: widget.threadId, businessId: widget.businessId)
+        .then((_) => setState(() {
+              _thread = _;
+              _scrollToEnd = true;
+            }));
   }
 
   Widget _chatBubble(Message msg) {
-    return Column(children: [
-      Container(
-          alignment: msg.isMe ? Alignment.topRight : Alignment.topLeft,
-          child: Container(
-              constraints: BoxConstraints(maxWidth: SI.screenWidth * 0.80),
-              padding: EdgeInsets.all(10.w),
-              margin: EdgeInsets.symmetric(vertical: 8.h),
-              decoration: BoxDecoration(
-                  color: msg.isMe ? Color(0xFF86C2C2) : Colors.white,
-                  borderRadius: BorderRadius.circular(15)),
-              child: Text(msg.text,
-                  style: AppFonts.text7(
-                      color: msg.isMe ? Colors.white : Colors.black87)))),
-      msg.isMe
-          ? Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-              Text(msg.time, style: AppFonts.text8(color: Colors.black45)),
-              SizedBox(width: 5.w),
-              Text(
-                msg.sender,
-                style: AppFonts.text8(color: Colors.black45),
+    return Container(
+      height: 68.h,
+      child: Column(children: [
+        Container(
+            alignment:
+                msg.sender == "PUBLIC" ? Alignment.topRight : Alignment.topLeft,
+            child: Container(
+                constraints: BoxConstraints(maxWidth: SI.screenWidth * 0.80),
+                padding: EdgeInsets.all(10.w),
+                margin: EdgeInsets.symmetric(vertical: 8.h),
+                decoration: BoxDecoration(
+                    color: msg.sender == "PUBLIC"
+                        ? Color(0xFF86C2C2)
+                        : Colors.white,
+                    borderRadius: BorderRadius.circular(15)),
+                child: Text(msg.msg,
+                    style: AppFonts.text7(
+                        color: msg.sender == "PUBLIC"
+                            ? Colors.white
+                            : Colors.black87)))),
+        msg.sender == "PUBLIC"
+            ? Align(
+                alignment: Alignment.centerRight,
+                child: Text(formatDate(msg.time),
+                    style: AppFonts.text8(color: Colors.black45)))
+            : Align(
+                alignment: Alignment.centerLeft,
+                child: Text(formatDate(msg.time),
+                    style: AppFonts.text8(color: Colors.black45)),
               )
-            ])
-          : Row(children: [
-              Text(msg.sender, style: AppFonts.text8(color: Colors.black45)),
-              SizedBox(width: 5.w),
-              Text(msg.time, style: AppFonts.text8(color: Colors.black45))
-            ])
-    ]);
+      ]),
+    );
   }
 
-  scrollDownListView() {
-    _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+  void _setScrollPosition() {
+    if (_scrollToEnd) {
+      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+    } else if (_oldMessageCount != null) {
+      _scrollController
+          .jumpTo(68.h * (_thread.messages.length - _oldMessageCount));
+    }
+    _oldMessageCount = null;
   }
 
   bool _keyboardIsVisible() {
@@ -125,40 +136,42 @@ class _ChatState extends State<Chat> {
                   keyboardType: TextInputType.multiline,
                   maxLines: 20,
                   minLines: 1,
-                  onTap: () => setState(() => scrollDownListView()),
+                  onTap: () {
+                    _scrollToEnd = true;
+                    _setScrollPosition();
+                  },
                   controller: textFieldController,
                   cursorColor: Color(0xFF86C2C2),
-                  decoration:
-                      InputDecoration(hintText: "Send a message",contentPadding:  EdgeInsets.symmetric(vertical: 5.h),isCollapsed: true, border: InputBorder.none,))),
+                  decoration: InputDecoration(
+                    hintText: "Send a message",
+                    contentPadding: EdgeInsets.symmetric(vertical: 5.h),
+                    isCollapsed: true,
+                    border: InputBorder.none,
+                  ))),
           IconButton(
               icon: Icon(Icons.send),
               color: Color(0xFF86C2C2),
               onPressed: () {
-                setState(() {
-                  textFieldController.text.isNotEmpty ?
-                  messages.add(Message(
-                      text: textFieldController.text,
-                      time: "5:20 PM",
-                      sender: "anonymous",
-                      isMe: true)) : {};
-                  textFieldController.clear();
-                  scrollDownListView();
-                });
+                _sendMsg(textFieldController.text);
+                textFieldController.clear();
               })
         ]));
   }
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(Duration.zero, scrollDownListView);
-    _keyboardIsVisible() ? scrollDownListView() : {};
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _setScrollPosition();
+    });
+    if (_keyboardIsVisible()) _scrollToEnd = true;
+
     return Scaffold(
         backgroundColor: Color(0xFFE5E5E5),
         appBar: PreferredSize(
             preferredSize: Size.fromHeight(ConsDimensions.LargeAppBarHeight.h),
             child: DefaultAppBar(
                 allowHorizontalPadding: false,
-                title: "Business Name",
+                title: _thread?.targetName ?? "",
                 bgImage: "app_bar_rectangle.png",
                 leading: RightRoundedCapsule(
                     iconBgColor: Color.fromRGBO(134, 194, 194, 0.69),
@@ -175,12 +188,10 @@ class _ChatState extends State<Chat> {
                   controller: _scrollController,
                   padding:
                       EdgeInsets.only(left: 20.w, right: 20.w, bottom: 11.h),
-                  itemCount: messages.length,
+                  itemCount: _thread?.messages?.length ?? 0,
                   itemBuilder: (BuildContext context, int i) {
-                    final Message msg = messages[i];
-
                     /// check if sender is current user id
-                    return _chatBubble(msg);
+                    return _chatBubble(_thread.messages[i]);
                   })),
           _sendMessageArea()
         ]));

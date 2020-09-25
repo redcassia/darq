@@ -3,8 +3,7 @@ import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:darq/elements/app_fonts.dart';
-import 'package:darq/res/path_files.dart';
-import 'package:darq/views/home/chat_screen.dart';
+import 'package:darq/views/home/chat_room.dart';
 import 'package:darq/views/home/screens/details_page.dart';
 import 'package:darq/views/home/screens/personnel_page.dart';
 import 'package:darq/views/home/shared/custom_divider.dart';
@@ -52,6 +51,11 @@ Widget generateWidget(String widgetType,
           SizedBox(height: 17.h),
         ],
       );
+
+    case 'text_overflowed':
+      if (text != null) data = text;
+      if (data == null) return null;
+      return Text(data, style: AppFonts.makeStyle(textSize, textColor),overflow: TextOverflow.ellipsis);
 
     case 'text':
       if (text != null) data = text;
@@ -336,7 +340,7 @@ Widget generateWidget(String widgetType,
             textStyle: AppFonts.title11Odd(color: Colors.white),
             onButtonPressed: () => {
                   Navigator.push(
-                      context, MaterialPageRoute(builder: (context) => Chat()))
+                      context, MaterialPageRoute(builder: (context) => ChatRoom(businessId: data)))
                 })
       ]);
 

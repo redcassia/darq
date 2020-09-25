@@ -39,7 +39,7 @@
           "height": 3.0
         },
         {
-          "widget": "text",
+          "widget": "text_overflowed",
           "textSize": "text10w500",
           "textColor": { "r": 0, "g": 0, "b": 0, "o": 0.37 },
           "data": ["description"]

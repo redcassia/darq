@@ -79,37 +79,36 @@ class _ChatRoomState extends State<ChatRoom> {
 
   Widget _chatBubble(Message msg) {
     return Container(
-      height: 68.h,
-      child: Column(children: [
-        Container(
-            alignment:
-                msg.sender == "PUBLIC" ? Alignment.topRight : Alignment.topLeft,
-            child: Container(
-                constraints: BoxConstraints(maxWidth: SI.screenWidth * 0.80),
-                padding: EdgeInsets.all(10.w),
-                margin: EdgeInsets.symmetric(vertical: 8.h),
-                decoration: BoxDecoration(
-                    color: msg.sender == "PUBLIC"
-                        ? Color(0xFF86C2C2)
-                        : Colors.white,
-                    borderRadius: BorderRadius.circular(15)),
-                child: Text(msg.msg,
-                    style: AppFonts.text7(
-                        color: msg.sender == "PUBLIC"
-                            ? Colors.white
-                            : Colors.black87)))),
-        msg.sender == "PUBLIC"
-            ? Align(
-                alignment: Alignment.centerRight,
-                child: Text(formatDate(msg.time),
-                    style: AppFonts.text8(color: Colors.black45)))
-            : Align(
-                alignment: Alignment.centerLeft,
-                child: Text(formatDate(msg.time),
-                    style: AppFonts.text8(color: Colors.black45)),
-              )
-      ]),
-    );
+        height: 68.h,
+        child: Column(children: [
+          Container(
+              alignment: msg.sender == "PUBLIC"
+                  ? Alignment.topRight
+                  : Alignment.topLeft,
+              child: Container(
+                  constraints: BoxConstraints(maxWidth: SI.screenWidth * 0.80),
+                  padding: EdgeInsets.all(10.w),
+                  margin: EdgeInsets.symmetric(vertical: 8.h),
+                  decoration: BoxDecoration(
+                      color: msg.sender == "PUBLIC"
+                          ? Color(0xFF86C2C2)
+                          : Colors.white,
+                      borderRadius: BorderRadius.circular(15)),
+                  child: Text(msg.msg,
+                      style: AppFonts.text7(
+                          color: msg.sender == "PUBLIC"
+                              ? Colors.white
+                              : Colors.black87)))),
+          msg.sender == "PUBLIC"
+              ? Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(formatDate(msg.time),
+                      style: AppFonts.text8(color: Colors.black45)))
+              : Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(formatDate(msg.time),
+                      style: AppFonts.text8(color: Colors.black45)))
+        ]));
   }
 
   void _setScrollPosition() {

@@ -33,7 +33,7 @@ class _ChatListState extends State<ChatList> {
     super.initState();
     chats = new Chat();
     chats.getThreads().then((threads) {
-      for (var t in threads) setState(() => _chats.add(t));
+       setState(() => _chats.addAll(threads));
     });
   }
 

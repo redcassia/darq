@@ -136,6 +136,35 @@ class Chat {
     return thread;
   }
 
+  Future<MessageThread> refreshThread(String threadId) async {
+    var thread = await getThread(threadId: threadId);
+    var client = await Backend.getClient();
+    var result = await client.query(QueryOptions(documentNode: gql(r'''
+      query ($threadId: ID!, $minIndex: Int!){
+        user{
+          threads(threadId: $threadId) {
+            messages(minIndex: $minIndex) {
+              sender
+              time
+              index
+              msg
+            }
+          }
+        }
+      }
+      '''), variables: {
+      "threadId": thread.id,
+      "minIndex": thread.messages.last.index
+    }, fetchPolicy: FetchPolicy.networkOnly));
+    if (result.hasException) {
+      throw Exception("Failed to load more messages for thread ${thread.id}");
+    }
+    thread.addMessagesBottom(result.data["user"]["threads"][0]["messages"]);
+    _threads.update(thread.id, (_) => thread);
+    _threadsByBusiness.update(thread.targetId, (_) => thread);
+    return thread;
+  }
+
   Future<MessageThread> sendMessage(String message,
       {String threadId, String businessId}) async {
     var client = await Backend.getClient();

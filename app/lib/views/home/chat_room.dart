@@ -34,6 +34,8 @@ class _ChatRoomState extends State<ChatRoom> {
   Chat _chatInstance;
   bool _scrollToEnd = true;
   int _oldMessageCount;
+  bool _refresh = true;
+  String _businessName = "";
 
   @override
   void initState() {
@@ -42,9 +44,23 @@ class _ChatRoomState extends State<ChatRoom> {
     _chatInstance = new Chat();
     _chatInstance
         .getThread(threadId: widget.threadId, businessId: widget.businessId)
-        .then((thread) => setState(() {
-              _thread = thread;
-            }));
+        .then((thread) {
+      setState(() {
+        _thread = thread;
+        _businessName = thread.targetName;
+      });
+      _doRefresh();
+    }).catchError((e) async {
+      var client = await Backend.getClient();
+      var result = await client.query(QueryOptions(
+          documentNode: gql(
+              r'''query($id: ID!) { business(id: $id) { display_name } }'''),
+          variables: {"id": widget.businessId}));
+      if (!result.hasException)
+        setState(() {
+          _businessName = result.data["business"]["display_name"];
+        });
+    });
 
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
@@ -60,6 +76,28 @@ class _ChatRoomState extends State<ChatRoom> {
     });
   }
 
+  @override
+  void dispose() {
+    _refresh = false;
+    super.dispose();
+  }
+
+  void _doRefresh() {
+    if (_thread != null) { var lastIndex = _thread.messages.last.index;
+      _chatInstance.refreshThread(_thread.id).then((_) {
+        if (_refresh) {
+          setState(() {
+            _thread = _;
+            if (_.messages.last.index > lastIndex) _scrollToEnd = true;
+          });
+          Future.delayed(Duration(seconds: 10), _doRefresh);
+        }
+      });
+    } else {
+      if (_refresh) Future.delayed(Duration(seconds: 10), _doRefresh);
+    }
+  }
+
   String formatDate(DateTime val) {
     return DateFormat("dd / MM / y  \u2014  hh:mm a", "en_US")
         .format(val.toLocal())
@@ -70,7 +108,7 @@ class _ChatRoomState extends State<ChatRoom> {
     if (msg == null || msg.trim().length == 0) return;
     _chatInstance
         .sendMessage(msg,
-            threadId: widget.threadId, businessId: widget.businessId)
+            threadId: _thread?.id ?? null, businessId: widget.businessId)
         .then((_) => setState(() {
               _thread = _;
               _scrollToEnd = true;
@@ -159,6 +197,10 @@ class _ChatRoomState extends State<ChatRoom> {
 
   @override
   Widget build(BuildContext context) {
+    if (!_refresh) {
+      _refresh = true;
+      _doRefresh();
+    }
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _setScrollPosition();
     });
@@ -170,7 +212,7 @@ class _ChatRoomState extends State<ChatRoom> {
             preferredSize: Size.fromHeight(ConsDimensions.LargeAppBarHeight.h),
             child: DefaultAppBar(
                 allowHorizontalPadding: false,
-                title: _thread?.targetName ?? "",
+                title: _businessName,
                 bgImage: "app_bar_rectangle.png",
                 leading: RightRoundedCapsule(
                     iconBgColor: Color.fromRGBO(134, 194, 194, 0.69),

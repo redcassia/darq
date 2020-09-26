@@ -858,7 +858,7 @@ const resolvers = {
 
   Mutation: {
     async rateBusiness(_, { id, stars }, { user }) {
-      _validateAuthenticatedPublicUser();
+      _validateAuthenticatedPublicUser(user);
 
       await db.query(
         `

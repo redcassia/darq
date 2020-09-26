@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/res/path_files.dart';
+import 'package:darq/views/home/chat_room.dart';
 import 'package:darq/views/shared/button.dart';
 import 'package:darq/views/shared/capsule/left_rounded_capsule.dart';
 import 'package:darq/views/shared/capsule/right_rounded_capsule.dart';
@@ -16,9 +17,11 @@ class ProfileAppBar extends StatelessWidget {
       this.backArrowBgColor,
       this.filterIndicator,
       this.buttonName,
-      this.filterFunction})
+      this.filterFunction,
+      this.id})
       : super(key: key);
 
+  final dynamic id;
   final Color backArrowBgColor;
   final bool filterIndicator;
   final String buttonName;
@@ -51,7 +54,10 @@ class ProfileAppBar extends StatelessWidget {
                     color: Color(0xFFE1A854),
                     borderRadius: 27,
                     textStyle: AppFonts.title11Odd(color: Colors.white),
-                    onButtonPressed: () => {}),
+                    onButtonPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ChatRoom(businessId: id)))),
                 filterIndicator
                     ? InkWell(
                         onTap: () => filterFunction(),

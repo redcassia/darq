@@ -33,18 +33,17 @@ class _DetailsPageState extends State<DetailsPage> {
   dynamic _data;
   dynamic _filteredData;
 
-
   loadLayoutAndData() {
     rootBundle.loadString(PathFiles.ProfilePath + widget.jsonFile).then((js) {
       setState(() => _layout = json.decode(js));
       Backend.getClient().then((client) => client
-          .query(QueryOptions(
-          documentNode: gql(_layout["detailed"]["query"]),
-          variables: {'id': widget.id}))
-          .then((result) {
-        if (!result.hasException)
-          setState(() => _data = result.data["item"]);
-      }));
+              .query(QueryOptions(
+                  documentNode: gql(_layout["detailed"]["query"]),
+                  variables: {'id': widget.id}))
+              .then((result) {
+            if (!result.hasException)
+              setState(() => _data = result.data["item"]);
+          }));
     });
   }
 
@@ -61,8 +60,9 @@ class _DetailsPageState extends State<DetailsPage> {
         appBar: PreferredSize(
             preferredSize: Size.fromHeight(ConsDimensions.SmallAppBarHeight.h),
             child: ProfileAppBar(
-                filterFunction: () => Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => PersonnelFilter())),
+                id: widget.id,
+                filterFunction: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => PersonnelFilter())),
                 filterIndicator: _layout == null
                     ? false
                     : _layout["detailed"]["appbar"]["filter"],
@@ -132,7 +132,8 @@ class _DetailsPageState extends State<DetailsPage> {
           for (var x in dataPath) widgetData = widgetData[x];
         }
 
-        Widget child = generateWidget(widgetType,
+        Widget child = generateWidget(
+          widgetType,
           context: context,
           jsonFile: widget.jsonFile,
           data: widgetData,

@@ -75,7 +75,7 @@ class CustomDrawer extends StatelessWidget {
                       context, MaterialPageRoute(builder: (context) => Home()))),
               DrawerItem(
                   txt: "Chat",
-                  icon: "home.png",
+                  icon: "chat.png",
                   onClick: () => Navigator.push(
                       context, MaterialPageRoute(builder: (context) => ChatList())))
             ]));

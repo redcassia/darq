@@ -63,9 +63,8 @@
         }
       ]
     },
-    "query": "query {\n  items: businesses(type: SportsBusiness) {\n    id,\n    display_name,\n    display_picture,\n    rating\n    ... on SportsBusiness {\n      sub_type_string\n      description\n    }\n  } \n}",
     "filter_values_query": "query {\n    __type(name: \"SportsBusinessSubType\") {\n      enumValues {\n        name\n      }\n    }\n}",
-    "filtered_query": "query ($sub_types: [String]!) {\n  items: businesses(type: SportsBusiness, sub_types: $sub_types) {\n    id,\n    display_name,\n    display_picture,\n    rating\n    ... on SportsBusiness {\n      sub_type_string\n      description\n    }\n  } \n}"
+    "query": "query ($sub_types: [String]!) {\n  items: businesses(type: SportsBusiness, sub_types: $sub_types) {\n    id,\n    display_name,\n    display_picture,\n    rating\n    ... on SportsBusiness {\n      sub_type_string\n      description\n    }\n  } \n}"
   },
   "detailed": {
     "appbar": {

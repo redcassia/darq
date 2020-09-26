@@ -35,9 +35,7 @@ class _ListingPageState extends State<ListingPage> {
       setState(() => _layout = json.decode(js));
       Backend.getClient().then((client) => client
               .query(QueryOptions(
-                  documentNode: gql(widget.filteredData == null
-                      ? _layout["list"]["query"]
-                      : _layout["list"]["filtered_query"]),
+                  documentNode: gql(_layout["list"]["query"]),
                   variables: {'sub_types': widget.filteredData}))
               .then((result) {
             if (!result.hasException)

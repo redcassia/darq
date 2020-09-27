@@ -529,6 +529,10 @@ hr {
     line-height: 21px;
 }
 
+.side-bar > div > span.accent {
+    color: var(--accent);
+}
+
 .side-bar.open > div > span {
     display: inline-block;
 }

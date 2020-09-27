@@ -114,6 +114,12 @@ h6, .h6 {
     margin-top: 0;
 }
 
+.small {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+}
+
 label {
     position: relative;
     display: block;
@@ -170,9 +176,7 @@ input[type='submit']:active {
 }
 
 .form-line {
-    /* width: auto; */
     position: relative;
-    /* display: block; */
     padding: 0;
     margin: 0 0 16px 0;
 }
@@ -418,9 +422,6 @@ hr {
     padding: 0;
 }
 
-.clickable {
-    color: var(--accent);
-}
 .clickable:hover {
     cursor: pointer;
 }

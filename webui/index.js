@@ -422,7 +422,14 @@ function navigateTo(content) {
 
     case 'settings':
       DynamicLoader.loadTo('content',
-        'settings.html'
+        'settings.html',
+        'settings.js',
+        [
+          {
+            src: 'form.js',
+            singleLoad: true
+          }
+        ]
       );
       $('#settings-btn').addClass("active");
       break;

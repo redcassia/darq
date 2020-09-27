@@ -63,13 +63,16 @@
         }
       ]
     },
-    "filter_values_query": "query {\n    __type(name: \"DomesticHelpSubType\") {\n      enumValues {\n        name\n      }\n    }\n}  ",
-    "query": "query ($sub_types: [String]!) {\n  items: businesses(type: DomesticHelpBusiness, sub_types: $sub_types) {\n    id,\n    display_name,\n    display_picture,\n    rating\n    ... on DomesticHelpBusiness {\n      sub_type_string\n      description\n    }\n  } \n}" },
+    "query": "query ($sub_types: [String]) {\n  items: businesses(type: DomesticHelpBusiness, sub_types: $sub_types) {\n    id,\n    display_name,\n    display_picture,\n    rating\n    ... on DomesticHelpBusiness {\n      sub_type_string\n      description\n    }\n  } \n}"
+  },
 
   "detailed": {
     "appbar": {
       "filter": true,
-      "text": "Contact Us"
+      "text": "Contact Us",
+      "values_query": "query {\n    __type(name: \"Profession\") {\n      enumValues {\n        name\n      }\n    }\n}  ",
+      "filter_data_path": "personnel",
+      "filter_attribute": "profession"
     },
     "columns": {
       "header": {

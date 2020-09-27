@@ -4,7 +4,7 @@ import 'dart:ui';
 import 'package:darq/backend.dart';
 import 'package:darq/res/path_files.dart';
 import 'package:darq/utilities/constants.dart';
-import 'package:darq/views/home/screens/business_filter.dart';
+import 'package:darq/views/home/screens/filter_page.dart';
 import 'package:darq/views/home/widget_generator.dart';
 import 'package:darq/views/shared/app_bars/default_appbar.dart';
 import 'package:darq/views/shared/capsule/left_rounded_capsule.dart';
@@ -19,8 +19,11 @@ import 'package:graphql/client.dart';
 
 class ListingPage extends StatefulWidget {
   final String jsonFile;
-  final List<dynamic> filteredData;
-  ListingPage({this.jsonFile, this.filteredData});
+  final List<String> filterPredicate;
+  Map<String, dynamic> layout;
+  ListingPage({this.jsonFile, this.layout, List<String> filterPredicate})
+      : filterPredicate =
+            (filterPredicate?.isNotEmpty ?? false) ? filterPredicate : null;
   @override
   _ListingPageState createState() => _ListingPageState();
 }
@@ -30,24 +33,33 @@ class _ListingPageState extends State<ListingPage> {
   Map<String, dynamic> _layout;
   dynamic _data;
 
-  loadLayoutAndData() {
-    rootBundle.loadString(PathFiles.ProfilePath + widget.jsonFile).then((js) {
-      setState(() => _layout = json.decode(js));
-      Backend.getClient().then((client) => client
-              .query(QueryOptions(
-                  documentNode: gql(_layout["list"]["query"]),
-                  variables: {'sub_types': widget.filteredData}))
-              .then((result) {
-            if (!result.hasException)
-              setState(() => _data = result.data["items"]);
-          }));
-    });
+  _loadData() {
+    Backend.getClient().then((client) => client
+            .query(QueryOptions(
+                documentNode: gql(_layout["query"]),
+                variables: {'sub_types': widget.filterPredicate}))
+            .then((result) {
+          if (!result.hasException)
+            setState(() => _data = result.data["items"]);
+        }));
+  }
+
+  _loadLayoutAndData() {
+    if (_layout == null) {
+      rootBundle.loadString(PathFiles.ProfilePath + widget.jsonFile).then((js) {
+        setState(() => _layout = json.decode(js)["list"]);
+        _loadData();
+      });
+    } else {
+      _loadData();
+    }
   }
 
   @override
   void initState() {
     super.initState();
-    loadLayoutAndData();
+    _layout = widget.layout;
+    _loadLayoutAndData();
   }
 
   @override
@@ -59,7 +71,7 @@ class _ListingPageState extends State<ListingPage> {
             child: DefaultAppBar(
                 allowHorizontalPadding: false,
                 title:
-                    _layout == null ? "" : _layout["list"]["appbar"]["title"],
+                    _layout == null ? "" : _layout["appbar"]["title"],
                 bgImage: "app_bar_rectangle.png",
                 leading: RightRoundedCapsule(
                     iconBgColor: Color.fromRGBO(134, 194, 194, 0.69),
@@ -72,14 +84,28 @@ class _ListingPageState extends State<ListingPage> {
                 onLeadingClicked: () => Navigator.pop(context),
                 trailing: (_layout == null
                         ? false
-                        : _layout["list"]["appbar"]["filter"])
+                        : _layout["appbar"]["filter"])
                     ? GestureDetector(
                         onTap: () {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => BusinessFilter(
-                                      jsonFile: widget.jsonFile)));
+                                  builder: (context) => FilterPage(
+                                        _layout["appbar"]
+                                            ["values_query"],
+                                        (context, predicate) =>
+                                            Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        ListingPage(
+                                                            jsonFile:
+                                                                widget.jsonFile,
+                                                            layout: _layout,
+                                                            filterPredicate:
+                                                                predicate))),
+                                        selectedValues: widget.filterPredicate,
+                                      )));
                         },
                         child: LeftRoundedCapsule(
                             horizontalPadding: 16.w,
@@ -112,12 +138,12 @@ class _ListingPageState extends State<ListingPage> {
                                 SizedBox(
                                     width: 70.w,
                                     child: buildCardColumn(
-                                        _layout["list"]["columns"]["start"],
+                                        _layout["columns"]["start"],
                                         index)),
                                 SizedBox(width: 17.w),
                                 Expanded(
                                     child: buildCardColumn(
-                                        _layout["list"]["columns"]["end"],
+                                        _layout["columns"]["end"],
                                         index))
                               ]))));
             }));

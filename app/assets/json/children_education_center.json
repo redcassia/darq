@@ -2,7 +2,8 @@
   "list": {
     "appbar": {
       "filter": true,
-      "title": "Children Education Centers"
+      "title": "Children Education Centers",
+      "values_query" : " query {\n    __type(name: \"ChildEducationSubType\") {\n      enumValues {\n        name\n      }\n    }\n}   "
     },
     "columns": {
       "start": [
@@ -86,8 +87,7 @@
         }
       ]
     },
-    "filter_values_query" : " query {\n    __type(name: \"ChildEducationSubType\") {\n      enumValues {\n        name\n      }\n    }\n}   ",
-    "query": "query ($sub_types: [String]!) {\n  items: businesses(type: ChildEducationBusiness, sub_types: $sub_types) {\n    id,\n    display_name,\n    display_picture,\n    rating\n    ... on ChildEducationBusiness {\n      sub_type_string\n      description\n    }\n  } \n}"
+    "query": "query ($sub_types: [String]) {\n  items: businesses(type: ChildEducationBusiness, sub_types: $sub_types) {\n    id,\n    display_name,\n    display_picture,\n    rating\n    ... on ChildEducationBusiness {\n      sub_type_string\n      description\n    }\n  } \n}"
   },
   "detailed": {
     "appbar": {

@@ -55,7 +55,9 @@ Widget generateWidget(String widgetType,
     case 'text_overflowed':
       if (text != null) data = text;
       if (data == null) return null;
-      return Text(data, style: AppFonts.makeStyle(textSize, textColor),overflow: TextOverflow.ellipsis);
+      return Text(data,
+          style: AppFonts.makeStyle(textSize, textColor),
+          overflow: TextOverflow.ellipsis);
 
     case 'text':
       if (text != null) data = text;
@@ -273,18 +275,25 @@ Widget generateWidget(String widgetType,
       break;
 
     case 'rating':
-      if (data == null) return null;
-      return SmoothStarRating(
-          allowHalfRating: true,
-          size: 14.w,
-          filledIconData: Icons.star,
-          halfFilledIconData: Icons.star_half,
-          defaultIconData: Icons.star_border,
-          starCount: 5,
-          rating: data.toDouble(),
-          borderColor: Color(0xFFE1A854),
-          color: Color(0xFFE1A854),
-          spacing: 0.0);
+      if (data == null)
+        return InkWell(
+            onTap: () {},
+            child: Text("NOT RATED",
+                textAlign: TextAlign.center,
+                style: AppFonts.text8(color: Color.fromRGBO(0, 0, 0, 0.7))));
+      return InkWell(
+        child: SmoothStarRating(
+            allowHalfRating: true,
+            size: 14.w,
+            filledIconData: Icons.star,
+            halfFilledIconData: Icons.star_half,
+            defaultIconData: Icons.star_border,
+            starCount: 5,
+            rating: data.toDouble(),
+            borderColor: Color(0xFFE1A854),
+            color: Color(0xFFE1A854),
+            spacing: 0.0),
+      );
 
     case 'experience':
       if (data == null) return null;
@@ -340,7 +349,9 @@ Widget generateWidget(String widgetType,
             textStyle: AppFonts.title11Odd(color: Colors.white),
             onButtonPressed: () => {
                   Navigator.push(
-                      context, MaterialPageRoute(builder: (context) => ChatRoom(businessId: data)))
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ChatRoom(businessId: data)))
                 })
       ]);
 

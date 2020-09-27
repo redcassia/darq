@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:ui';
 
 import 'package:darq/backend.dart';
@@ -10,56 +9,48 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:graphql/client.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:darq/views/home/screens/personnel_page.dart';
-import 'listing_page.dart';
 
-class ListItem<T> {
+class ListItem {
   bool isSelected = false;
-  T data;
-  ListItem(this.data);
+  String data;
+  ListItem(this.data, {this.isSelected});
 }
 
-class PersonnelFilter extends StatefulWidget {
+typedef void OnSubmitFilterCallback(
+    BuildContext context, List<String> selectedValues);
+
+class FilterPage extends StatefulWidget {
+  final OnSubmitFilterCallback callback;
+  final String valuesQuery;
+  final List<String> selectedValues;
+  FilterPage(this.valuesQuery, this.callback, {this.selectedValues});
   @override
-  _PersonnelFilterState createState() => _PersonnelFilterState();
+  _FilterPageState createState() => _FilterPageState();
 }
 
-class _PersonnelFilterState extends State<PersonnelFilter> {
-  List<dynamic> selectedItems = [];
-  dynamic _data;
-  Map<String, dynamic> _layout;
-  List<ListItem> list = [];
-  SharedPreferences prefs;
+class _FilterPageState extends State<FilterPage> {
+  List<ListItem> _values = [];
 
-  getLayout() async {
-    prefs = await SharedPreferences.getInstance();
-    return await jsonDecode(prefs.getString('layout'));
-  }
-
-  loadLayoutAndData() {
-    getLayout().then((layout) {
-      setState(() => _layout = layout);
-      Backend.getClient().then((client) => client
-          .query(QueryOptions(
-          documentNode: gql(_layout["list"]["filter_values_query"])))
-          .then((result) {
-        if (!result.hasException)
-          setState(() {
-            _data = result.data["__type"]["enumValues"];
-            for (int i = 0; i < _data?.length ?? 0; i++)
-              list.add(ListItem(_data[i]));
-          });
-      }));
-    });
+  _queryValues() {
+    Backend.getClient().then((client) => client
+            .query(QueryOptions(documentNode: gql(widget.valuesQuery)))
+            .then((result) {
+          if (!result.hasException)
+            setState(() {
+              _values = result.data["__type"]["enumValues"]
+                  .map<ListItem>((_) => ListItem(_["name"],
+                      isSelected:
+                          widget.selectedValues?.contains(_["name"]) ?? false))
+                  .toList();
+            });
+        }));
   }
 
   @override
   void initState() {
     super.initState();
-    loadLayoutAndData();
+    _queryValues();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -74,8 +65,8 @@ class _PersonnelFilterState extends State<PersonnelFilter> {
                     children: [
                       GestureDetector(
                           onTap: () => setState(() {
-                                for (int i = 0; i < _data?.length ?? 0; i++)
-                                  list[i].isSelected = false;
+                                for (int i = 0; i < _values.length; i++)
+                                  _values[i].isSelected = false;
                               }),
                           child: Text("Reset",
                               style: AppFonts.title8(
@@ -96,19 +87,19 @@ class _PersonnelFilterState extends State<PersonnelFilter> {
           Expanded(
               child: ListView.separated(
                   padding: EdgeInsets.symmetric(horizontal: 19.w),
-                  itemCount: _data?.length ?? 0,
+                  itemCount: _values.length,
                   separatorBuilder: (context, index) =>
                       Divider(color: Color.fromRGBO(0, 0, 0, 0.2)),
                   itemBuilder: (context, i) {
                     return ListTile(
                         contentPadding: EdgeInsets.zero,
                         enabled: true,
-                        onTap: () => setState(
-                            () => list[i].isSelected = !list[i].isSelected),
-                        selected: list[i].isSelected,
-                        title: Text(_data[i]["name"],
+                        onTap: () => setState(() =>
+                            _values[i].isSelected = !_values[i].isSelected),
+                        selected: _values[i].isSelected,
+                        title: Text(_values[i].data,
                             style: AppFonts.title8(color: Color(0xFF4D4D4D))),
-                        trailing: list[i].isSelected
+                        trailing: _values[i].isSelected
                             ? Icon(Icons.radio_button_checked,
                                 color: Color(0xFFE1A854))
                             : Icon(Icons.radio_button_unchecked,
@@ -122,12 +113,13 @@ class _PersonnelFilterState extends State<PersonnelFilter> {
               textStyle: AppFonts.title7Odd(color: Colors.white),
               borderRadius: 34,
               onButtonPressed: () {
-                for (int i = 0; i < list.length; i++)
-                  if (list[i].isSelected)
-                    selectedItems.add(list[i].data["name"]);
-                personnelKey.currentState
-                    .updatePersonnel(selectedValues: selectedItems);
                 Navigator.pop(context);
+                widget.callback(
+                    context,
+                    _values
+                        .where((_) => _.isSelected)
+                        .map((_) => _.data)
+                        .toList());
               }),
           SizedBox(height: 10.h)
         ]));

@@ -16,24 +16,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-final GlobalKey<_PersonnelPageState> personnelKey = new GlobalKey();
-
 class PersonnelPage extends StatefulWidget {
   final dynamic data;
   bool isDriver;
 
-  PersonnelPage({this.data}) : super(key: personnelKey) {
-    isDriver = data["profession"] == "Driver";
-  }
+  PersonnelPage({this.data}) : isDriver = data["profession"] == "Driver";
 
   @override
   _PersonnelPageState createState() => _PersonnelPageState();
 }
 
 class _PersonnelPageState extends State<PersonnelPage> {
-  void updatePersonnel({List<dynamic> selectedValues}) {
-    print("selectedValue: $selectedValues");
-  }
 
   @override
   Widget build(BuildContext context) {

@@ -3,8 +3,7 @@ import 'dart:ui';
 
 import 'package:darq/res/path_files.dart';
 import 'package:darq/utilities/constants.dart';
-import 'package:darq/views/home/screens/business_filter.dart';
-import 'package:darq/views/home/screens/personnel_filter.dart';
+import 'package:darq/views/home/screens/filter_page.dart';
 import 'package:darq/views/home/widget_generator.dart';
 import 'package:darq/views/shared/app_bars/profile_appbar.dart';
 import 'package:darq/views/shared/custom_card.dart';
@@ -14,8 +13,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:graphql/client.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../../backend.dart';
 
 class DetailsPage extends StatefulWidget {
@@ -30,27 +27,50 @@ class DetailsPage extends StatefulWidget {
 class _DetailsPageState extends State<DetailsPage> {
   double rating = 0.0;
   Map<String, dynamic> _layout;
+  dynamic _originalData;
   dynamic _data;
-  dynamic _filteredData;
+  List<String> _filterPredicate;
+  bool profFound = false;
 
-  loadLayoutAndData() {
+  void _calculateFilteredData() {
+    setState(() {
+      _data = new Map<String, dynamic>();
+      _data.addAll(_originalData);
+      if (_filterPredicate != null) {
+        var path = _layout["appbar"]["filter_data_path"];
+        var attr = _layout["appbar"]["filter_attribute"];
+        _data[path] =
+            _data[path].where((_) => _filterPredicate.contains(_[attr])).toList();
+      }
+    });
+  }
+
+  loadData() {
+    Backend.getClient().then((client) => client
+            .query(QueryOptions(
+                documentNode: gql(_layout["query"]),
+                variables: {'id': widget.id}))
+            .then((result) {
+          if (!result.hasException)
+            setState(() {
+              _originalData = result.data["item"];
+              _data = new Map<String, dynamic>();
+              _data.addAll(_originalData);
+            });
+        }));
+  }
+
+  _loadLayoutAndData() {
     rootBundle.loadString(PathFiles.ProfilePath + widget.jsonFile).then((js) {
-      setState(() => _layout = json.decode(js));
-      Backend.getClient().then((client) => client
-              .query(QueryOptions(
-                  documentNode: gql(_layout["detailed"]["query"]),
-                  variables: {'id': widget.id}))
-              .then((result) {
-            if (!result.hasException)
-              setState(() => _data = result.data["item"]);
-          }));
+      setState(() => _layout = json.decode(js)["detailed"]);
+      loadData();
     });
   }
 
   @override
   void initState() {
     super.initState();
-    this.loadLayoutAndData();
+    this._loadLayoutAndData();
   }
 
   @override
@@ -61,14 +81,25 @@ class _DetailsPageState extends State<DetailsPage> {
             preferredSize: Size.fromHeight(ConsDimensions.SmallAppBarHeight.h),
             child: ProfileAppBar(
                 id: widget.id,
-                filterFunction: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => PersonnelFilter())),
+                filterFunction: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => FilterPage(
+                              _layout["appbar"]["values_query"],
+                              (context, predicate) {
+                                _filterPredicate = predicate;
+                                if (_filterPredicate.isEmpty)
+                                  _filterPredicate = null;
+                                _calculateFilteredData();
+                              },
+                              selectedValues: _filterPredicate,
+                            ))),
                 filterIndicator: _layout == null
                     ? false
-                    : _layout["detailed"]["appbar"]["filter"],
+                    : _layout["appbar"]["filter"],
                 buttonName: _layout == null
                     ? ""
-                    : _layout["detailed"]["appbar"]["text"])),
+                    : _layout["appbar"]["text"])),
         body: DefaultCard(
             margin: EdgeInsets.only(
                 bottom: 33.h, right: 19.w, left: 20.w, top: 6.h),
@@ -90,7 +121,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                 context,
                                 _layout == null
                                     ? null
-                                    : _layout["detailed"]["columns"]["header"]
+                                    : _layout["columns"]["header"]
                                         ["start"],
                                 false)),
                         SizedBox(width: 17.w),
@@ -100,7 +131,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                 context,
                                 _layout == null
                                     ? null
-                                    : _layout["detailed"]["columns"]["header"]
+                                    : _layout["columns"]["header"]
                                         ["end"],
                                 false))
                       ])),
@@ -110,7 +141,7 @@ class _DetailsPageState extends State<DetailsPage> {
                           context,
                           _layout == null
                               ? null
-                              : _layout["detailed"]["columns"]["body"],
+                              : _layout["columns"]["body"],
                           true))
                 ])));
   }

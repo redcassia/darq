@@ -192,8 +192,10 @@ function signin() {
   });
 }
 function signout() {
-  CookieManager.clear('token');
-  location.reload();
+  if (confirm("Are you sure you want to Logout?")) {
+    CookieManager.clear('token');
+    location.reload();
+  }
 }
 
 function toggleHamburger() {

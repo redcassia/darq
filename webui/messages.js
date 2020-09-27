@@ -17,7 +17,7 @@ function createThreadPreview(thread) {
   `;
 }
 
-function updateThreadView() {
+function updateThreadView(scrollToBottom) {
   var html = "";
 
   for (var m of activeMsgThread.messages) {
@@ -28,16 +28,57 @@ function updateThreadView() {
     `;
   }
 
-  document.getElementById("messages").innerHTML = html;
+  var el = document.getElementById("messages");
+  el.innerHTML = html;
+  if (scrollToBottom) {
+    el.scrollTo(0, el.scrollHeight);
+  }
   activeMsgThreadDom.innerHTML = createThreadPreview(activeMsgThread);
+}
+
+function loadMoreMessages(data) {
+  if (data) {
+    if (data.length > 0 && data[data.length - 1].index < activeMsgThread.messages[0].index) {
+      activeMsgThread.messages = data.concat(activeMsgThread.messages);
+      updateThreadView();
+    }
+  }
+  else {
+    var firstIndex = activeMsgThread.messages[0].index;
+    if (firstIndex > 0) {
+      var id = activeMsgThread.id;
+
+      GraphQL.query(`
+        query ($threadId: ID, $maxIndex: Int) {
+          user {
+            threads(threadId: $threadId) {
+              messages(maxIndex: $maxIndex) {
+                index
+                msg
+                time
+                sender
+              }
+            }
+          }
+        }
+      `, {
+        threadId: id,
+        maxIndex: firstIndex
+      }).then(res => {
+        if (! res.hasError && activeMsgThread.id == id) {
+          loadMoreMessages(res.data["user"]["threads"][0]["messages"]);
+        }
+      });  
+    }
+  }
 }
 
 function updateThread(data) {
   if (data) {
-    for (var m of data) {
-      activeMsgThread.messages.push(m);
+    if (data.length > 0 && data[0].index > activeMsgThread.messages[activeMsgThread.messages.length - 1].index) {
+      activeMsgThread.messages = activeMsgThread.messages.concat(data);
+      updateThreadView(true);
     }
-    updateThreadView();
   }
   else {
     var id = activeMsgThread.id;
@@ -101,8 +142,8 @@ function selectThread(el, id) {
   activeMsgThread = msgThreads.get(id);
   activeMsgThreadDom = el;
 
-  updateThreadView();
   $("#thread-view").show();
+  updateThreadView(true);
 
   updateThread();
   threadUpdater = setInterval(updateThread, 10000);
@@ -135,9 +176,9 @@ function updateThreads() {
 
     var orderedThreads =
       Array.from(msgThreads.values())
-        .sort((a, b) => 
-          a.messages[a.messages.length - 1].time
-          > b.messages[b.messages.length - 1].time
+        .sort((a, b) =>
+          parseInt(b.messages[b.messages.length - 1].time) 
+          - parseInt(a.messages[a.messages.length - 1].time)
         );
     var html = "";
     for (var thread of orderedThreads) {
@@ -155,6 +196,12 @@ function updateThreads() {
 $(document).ready(function() {
   updateThreads();
   threadsUpdater = setInterval(updateThreads, 60000);
+
+  document.getElementById("messages").onscroll = function (e) {
+    if (e.target.scrollTop == 0) {
+      loadMoreMessages();
+    }
+  }
 
   DynamicLoader.beforeUnload('content', () => {
     if (threadsUpdater) clearInterval(threadsUpdater);

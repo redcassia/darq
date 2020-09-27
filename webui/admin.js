@@ -182,7 +182,7 @@ function signin() {
     key: key
   }).then(res => {
     if (! res.hasError) {
-      CookieManager.set('token', res.data["authenticateAdmin"], 1);
+      CookieManager.set('token', res.data["authenticateAdmin"], 0, true);
       navigateTo('business');
       switchToWelcome();
     }

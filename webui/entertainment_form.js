@@ -33,11 +33,13 @@ function submitForm() {
 
 $(document).ready(function () {
 
-  GraphQL.fillOptionsFromEnum("EntertainmentBusinessSubType", [
-    "entertainment-sub-type"
-  ]);
+  loadingScreen(async () => {
+    await GraphQL.fillOptionsFromEnum("EntertainmentBusinessSubType", [
+      "entertainment-sub-type"
+    ]);
 
-  GraphQL.fillOptionsFromEnum("City", [
-    "entertainment-city"
-  ]);
+    await GraphQL.fillOptionsFromEnum("City", [
+      "entertainment-city"
+    ]);
+  });
 });

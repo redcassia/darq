@@ -36,22 +36,24 @@ function submitForm() {
   });
 }
 
-async function initializeForm(data) {
+function initializeForm(data) {
 
-  await GraphQL.fillOptionsFromEnum("CleaningAndMaintenanceBusinessSubType", [
-    "cleaning-maintenance-sub-type"
-  ]);
+  loadingScreen(async () => {
+    await GraphQL.fillOptionsFromEnum("CleaningAndMaintenanceBusinessSubType", [
+      "cleaning-maintenance-sub-type"
+    ]);
 
-  await GraphQL.fillOptionsFromEnum("City", [
-    "cleaning-maintenance-city"
-  ]);
+    await GraphQL.fillOptionsFromEnum("City", [
+      "cleaning-maintenance-city"
+    ]);
 
-  await GraphQL.fillOptionsFromEnum("Currency", [
-    "cleaning-maintenance-fees-currency"
-  ]);
+    await GraphQL.fillOptionsFromEnum("Currency", [
+      "cleaning-maintenance-fees-currency"
+    ]);
 
-  if (data["update"]) data = data["update"];
-  data["sub_type"] = data["cleaningAndMaintenanceSubType"];
-  initialData = data;
-  Form.putFormData('cleaning-maintenance-form', data);
+    if (data["update"]) data = data["update"];
+    data["sub_type"] = data["cleaningAndMaintenanceSubType"];
+    initialData = data;
+    Form.putFormData('cleaning-maintenance-form', data);
+  });
 }

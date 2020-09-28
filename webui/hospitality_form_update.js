@@ -36,22 +36,24 @@ function submitForm() {
   });
 }
 
-async function initializeForm(data) {
+function initializeForm(data) {
 
-  await GraphQL.fillOptionsFromEnum("HospitalityBusinessSubType", [
-    "hospitality-sub-type"
-  ]);
+  loadingScreen(async () => {
+    await GraphQL.fillOptionsFromEnum("HospitalityBusinessSubType", [
+      "hospitality-sub-type"
+    ]);
 
-  await GraphQL.fillOptionsFromEnum("City", [
-    "hospitality-city"
-  ]);
+    await GraphQL.fillOptionsFromEnum("City", [
+      "hospitality-city"
+    ]);
 
-  await GraphQL.fillOptionsFromEnum("Currency", [
-    "hospitality-fees-currency"
-  ]);
+    await GraphQL.fillOptionsFromEnum("Currency", [
+      "hospitality-fees-currency"
+    ]);
 
-  if (data["update"]) data = data["update"];
-  data["sub_type"] = data["hospitalitySubType"];
-  initialData = data;
-  Form.putFormData('hospitality-form', data);
+    if (data["update"]) data = data["update"];
+    data["sub_type"] = data["hospitalitySubType"];
+    initialData = data;
+    Form.putFormData('hospitality-form', data);
+  });
 }

@@ -32,15 +32,18 @@ function submitForm() {
 }
 
 $(document).ready(function() {
-  GraphQL.fillOptionsFromEnum("EventType", [
-    "event-type"
-  ]);
 
-  GraphQL.fillOptionsFromEnum("City", [
-    "event-city"
-  ]);
+  loadingScreen(async () => {
+    await GraphQL.fillOptionsFromEnum("EventType", [
+      "event-type"
+    ]);
 
-  GraphQL.fillOptionsFromEnum("Currency", [
-    "event-ticket-price-currency"
-  ]);
+    await GraphQL.fillOptionsFromEnum("City", [
+      "event-city"
+    ]);
+
+    await GraphQL.fillOptionsFromEnum("Currency", [
+      "event-ticket-price-currency"
+    ]);
+  });
 });

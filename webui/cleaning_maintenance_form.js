@@ -33,15 +33,17 @@ function submitForm() {
 
 $(document).ready(function () {
 
-  GraphQL.fillOptionsFromEnum("CleaningAndMaintenanceBusinessSubType", [
-    "cleaning-maintenance-sub-type"
-  ]);
+  loadingScreen(async () => {
+    await GraphQL.fillOptionsFromEnum("CleaningAndMaintenanceBusinessSubType", [
+      "cleaning-maintenance-sub-type"
+    ]);
 
-  GraphQL.fillOptionsFromEnum("City", [
-    "cleaning-maintenance-city"
-  ]);
+    await GraphQL.fillOptionsFromEnum("City", [
+      "cleaning-maintenance-city"
+    ]);
 
-  GraphQL.fillOptionsFromEnum("Currency", [
-    "cleaning-maintenance-fees-currency"
-  ]);
+    await GraphQL.fillOptionsFromEnum("Currency", [
+      "cleaning-maintenance-fees-currency"
+    ]);
+  });
 });

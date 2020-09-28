@@ -34,7 +34,9 @@ function submitForm() {
 
 $(document).ready(function () {
 
-  GraphQL.fillOptionsFromEnum("City", [
-    "gym-city"
-  ]);
+  loadingScreen(async () => {
+    await GraphQL.fillOptionsFromEnum("City", [
+      "gym-city"
+    ]);
+  });
 });

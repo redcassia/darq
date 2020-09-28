@@ -36,18 +36,20 @@ function submitForm() {
   });
 }
 
-async function initializeForm(data) {
+function initializeForm(data) {
 
-  await GraphQL.fillOptionsFromEnum("MadeInQatarBusinessSubType", [
-    "made-in-qatar-sub-type"
-  ]);
+  loadingScreen(async () => {
+    await GraphQL.fillOptionsFromEnum("MadeInQatarBusinessSubType", [
+      "made-in-qatar-sub-type"
+    ]);
 
-  await GraphQL.fillOptionsFromEnum("City", [
-    "made-in-qatar-city"
-  ]);
+    await GraphQL.fillOptionsFromEnum("City", [
+      "made-in-qatar-city"
+    ]);
 
-  if (data["update"]) data = data["update"];
-  data["sub_type"] = data["madeInQatarSubType"];
-  initialData = data;
-  Form.putFormData('made-in-qatar-form', data);
+    if (data["update"]) data = data["update"];
+    data["sub_type"] = data["madeInQatarSubType"];
+    initialData = data;
+    Form.putFormData('made-in-qatar-form', data);
+  });
 }

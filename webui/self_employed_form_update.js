@@ -36,34 +36,36 @@ function submitForm() {
   });
 }
 
-async function initializeForm(data) {
+function initializeForm(data) {
 
-  await GraphQL.fillOptionsFromEnum("SelfEmployedSubType", [
-    "self-employed-sub-type"
-  ]);
+  loadingScreen(async () => {
+    await GraphQL.fillOptionsFromEnum("SelfEmployedSubType", [
+      "self-employed-sub-type"
+    ]);
 
-  await GraphQL.fillOptionsFromEnum("Gender", [
-    "self-employed-gender"
-  ]);
+    await GraphQL.fillOptionsFromEnum("Gender", [
+      "self-employed-gender"
+    ]);
 
-  await GraphQL.fillOptionsFromEnum("Nationality", [
-    "self-employed-nationality"
-  ]);
+    await GraphQL.fillOptionsFromEnum("Nationality", [
+      "self-employed-nationality"
+    ]);
 
-  await GraphQL.fillOptionsFromEnum("City", [
-    "self-employed-city",
-  ]);
+    await GraphQL.fillOptionsFromEnum("City", [
+      "self-employed-city",
+    ]);
 
-  await GraphQL.fillOptionsFromEnum("Currency", [
-    "self-employed-charge-currency",
-  ]);
+    await GraphQL.fillOptionsFromEnum("Currency", [
+      "self-employed-charge-currency",
+    ]);
 
-  await GraphQL.fillOptionsFromEnum("Country", [
-    "self-employed-experience-country"
-  ]);
+    await GraphQL.fillOptionsFromEnum("Country", [
+      "self-employed-experience-country"
+    ]);
 
-  if (data["update"]) data = data["update"];
-  data["sub_type"] = data["selfEmployedSubType"];
-  initialData = data;
-  Form.putFormData('self-employed-form', data);
+    if (data["update"]) data = data["update"];
+    data["sub_type"] = data["selfEmployedSubType"];
+    initialData = data;
+    Form.putFormData('self-employed-form', data);
+  });
 }

@@ -91,19 +91,17 @@ function loadBusiness(id) {
 }
 
 function queryOwnedBusinesses() {
-  var showLoadingScreen = setTimeout(() => $("#loading-blanket").show(), 50);
 
-  DynamicLoader.unloadFrom('business-content');
-
-  GraphQL.query(`
-    query {
-      user {
-        owned_businesses {
-          ${_businessQueryFields}
+  loadingScreen(async () => {
+    var res = await GraphQL.query(`
+      query {
+        user {
+          owned_businesses {
+            ${_businessQueryFields}
+          }
         }
       }
-    }
-  `).then(res => {
+    `);
 
     if (! res.hasError) {
       businesses = new Object();;
@@ -121,9 +119,6 @@ function queryOwnedBusinesses() {
         $("#owned-businesses").hide();
       }
     }
-
-    clearTimeout(showLoadingScreen);
-    $("#loading-blanket").hide();
   });
 }
 

@@ -37,20 +37,22 @@ function submitForm() {
 }
 
 
-async function initializeForm(data) {
+function initializeForm(data) {
 
-  await GraphQL.fillOptionsFromEnum("EventType", [
-    "event-type"
-  ]);
+  loadingScreen(async () => {
+    await GraphQL.fillOptionsFromEnum("EventType", [
+      "event-type"
+    ]);
 
-  await GraphQL.fillOptionsFromEnum("City", [
-    "event-city"
-  ]);
+    await GraphQL.fillOptionsFromEnum("City", [
+      "event-city"
+    ]);
 
-  await GraphQL.fillOptionsFromEnum("Currency", [
-    "event-ticket-price-currency"
-  ]);
+    await GraphQL.fillOptionsFromEnum("Currency", [
+      "event-ticket-price-currency"
+    ]);
 
-  initialData = data;
-  Form.putFormData('event-form', data);
+    initialData = data;
+    Form.putFormData('event-form', data);
+  });
 }

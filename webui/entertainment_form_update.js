@@ -36,18 +36,20 @@ function submitForm() {
   });
 }
 
-async function initializeForm(data) {
+function initializeForm(data) {
 
-  await GraphQL.fillOptionsFromEnum("EntertainmentBusinessSubType", [
-    "entertainment-sub-type"
-  ]);
+  loadingScreen(async () => {
+    await GraphQL.fillOptionsFromEnum("EntertainmentBusinessSubType", [
+      "entertainment-sub-type"
+    ]);
 
-  await GraphQL.fillOptionsFromEnum("City", [
-    "entertainment-city"
-  ]);
+    await GraphQL.fillOptionsFromEnum("City", [
+      "entertainment-city"
+    ]);
 
-  if (data["update"]) data = data["update"];
-  data["sub_type"] = data["entertainmentSubType"];
-  initialData = data;
-  Form.putFormData('entertainment-form', data);
+    if (data["update"]) data = data["update"];
+    data["sub_type"] = data["entertainmentSubType"];
+    initialData = data;
+    Form.putFormData('entertainment-form', data);
+  });
 }

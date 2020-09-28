@@ -33,11 +33,13 @@ function submitForm() {
 
 $(document).ready(function () {
 
-  GraphQL.fillOptionsFromEnum("ChildEducationSubType", [
-    "child-education-sub-type"
-  ]);
+  loadingScreen(async () => {
+    await GraphQL.fillOptionsFromEnum("ChildEducationSubType", [
+      "child-education-sub-type"
+    ]);
 
-  GraphQL.fillOptionsFromEnum("City", [
-    "child-education-city"
-  ]);
+    await GraphQL.fillOptionsFromEnum("City", [
+      "child-education-city"
+    ]);
+  });
 });

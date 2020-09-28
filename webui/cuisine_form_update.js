@@ -37,18 +37,20 @@ function submitForm() {
   });
 }
 
-async function initializeForm(data) {
+function initializeForm(data) {
 
-  await GraphQL.fillOptionsFromEnum("FoodBusinessSubType", [
-    "cuisine-sub-type"
-  ]);
+  loadingScreen(async () => {
+    await GraphQL.fillOptionsFromEnum("FoodBusinessSubType", [
+      "cuisine-sub-type"
+    ]);
 
-  await GraphQL.fillOptionsFromEnum("City", [
-    "cuisine-city"
-  ]);
+    await GraphQL.fillOptionsFromEnum("City", [
+      "cuisine-city"
+    ]);
 
-  if (data["update"]) data = data["update"];
-  data["sub_type"] = data["foodSubType"];
-  initialData = data;
-  Form.putFormData('cuisine-form', data);
+    if (data["update"]) data = data["update"];
+    data["sub_type"] = data["foodSubType"];
+    initialData = data;
+    Form.putFormData('cuisine-form', data);
+  });
 }

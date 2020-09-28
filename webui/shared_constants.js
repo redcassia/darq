@@ -330,7 +330,15 @@ function equals(a, b) {
   }
 }
 
-function isValidEmail(email) 
-{
+function isValidEmail(email) {
   return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email);
+}
+
+async function loadingScreen(func) {
+  var showLoadingScreen = setTimeout(() => $("#loading-blanket").show(), 50);
+
+  await func();
+
+  clearTimeout(showLoadingScreen);
+  $("#loading-blanket").hide();
 }

@@ -50,39 +50,41 @@ function updateProfessionRelevantFields(val, node) {
 
 $(document).ready(function () {
 
-  GraphQL.fillOptionsFromEnum("DomesticHelpSubType", [
-    "domestic-help-sub-type"
-  ]);
+  loadingScreen(async () => {
+    await GraphQL.fillOptionsFromEnum("DomesticHelpSubType", [
+      "domestic-help-sub-type"
+    ]);
 
-  GraphQL.fillOptionsFromEnum("City", [
-    "domestic-help-city"
-  ]);
+    await GraphQL.fillOptionsFromEnum("City", [
+      "domestic-help-city"
+    ]);
 
-  GraphQL.fillOptionsFromEnum("Profession", [
-    "domestic-help-personnel-profession"
-  ]);
+    await GraphQL.fillOptionsFromEnum("Profession", [
+      "domestic-help-personnel-profession"
+    ]);
 
-  GraphQL.fillOptionsFromEnum("Gender", [
-    "domestic-help-personnel-gender"
-  ]);
+    await GraphQL.fillOptionsFromEnum("Gender", [
+      "domestic-help-personnel-gender"
+    ]);
 
-  GraphQL.fillOptionsFromEnum("Nationality", [
-    "domestic-help-personnel-nationality"
-  ]);
+    await GraphQL.fillOptionsFromEnum("Nationality", [
+      "domestic-help-personnel-nationality"
+    ]);
 
-  GraphQL.fillOptionsFromEnum("MaritalStatus", [
-    "domestic-help-personnel-marital-status"
-  ]);
+    await GraphQL.fillOptionsFromEnum("MaritalStatus", [
+      "domestic-help-personnel-marital-status"
+    ]);
 
-  GraphQL.fillOptionsFromEnum("Education", [
-    "domestic-help-personnel-education"
-  ]);
+    await GraphQL.fillOptionsFromEnum("Education", [
+      "domestic-help-personnel-education"
+    ]);
 
-  GraphQL.fillOptionsFromEnum("Country", [
-    "domestic-help-personnel-experience-country"
-  ]);
+    await GraphQL.fillOptionsFromEnum("Country", [
+      "domestic-help-personnel-experience-country"
+    ]);
 
-  GraphQL.fillOptionsFromEnum("Currency", [
-    "domestic-help-personnel-salary-currency"
-  ]);
+    await GraphQL.fillOptionsFromEnum("Currency", [
+      "domestic-help-personnel-salary-currency"
+    ]);
+  })
 });

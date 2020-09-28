@@ -36,18 +36,20 @@ function submitForm() {
   });
 }
 
-async function initializeForm(data) {
+function initializeForm(data) {
 
-  await GraphQL.fillOptionsFromEnum("ChildEducationSubType", [
-    "child-education-sub-type"
-  ]);
+  loadingScreen(async () => {
+    await GraphQL.fillOptionsFromEnum("ChildEducationSubType", [
+      "child-education-sub-type"
+    ]);
 
-  await GraphQL.fillOptionsFromEnum("City", [
-    "child-education-city"
-  ]);
+    await GraphQL.fillOptionsFromEnum("City", [
+      "child-education-city"
+    ]);
 
-  if (data["update"]) data = data["update"];
-  data["sub_type"] = data["childEducationSubType"];
-  initialData = data;
-  Form.putFormData('child-education-form', data);
+    if (data["update"]) data = data["update"];
+    data["sub_type"] = data["childEducationSubType"];
+    initialData = data;
+    Form.putFormData('child-education-form', data);
+  });
 }

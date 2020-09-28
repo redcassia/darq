@@ -33,11 +33,13 @@ function submitForm() {
 
 $(document).ready(function () {
 
-  GraphQL.fillOptionsFromEnum("MadeInQatarBusinessSubType", [
-    "made-in-qatar-sub-type"
-  ]);
+  loadingScreen(async () => {
+    await GraphQL.fillOptionsFromEnum("MadeInQatarBusinessSubType", [
+      "made-in-qatar-sub-type"
+    ]);
 
-  GraphQL.fillOptionsFromEnum("City", [
-    "made-in-qatar-city"
-  ]);
+    await GraphQL.fillOptionsFromEnum("City", [
+      "made-in-qatar-city"
+    ]);
+  });
 });

@@ -9,8 +9,6 @@ class GraphQLResult {
 }
 
 class GraphQL {
-  static url = graphqlEndpoint;
-
   static _prepareQueryBody(query, variables) {
     var body = new Object();;
 
@@ -98,7 +96,7 @@ class GraphQL {
     };
 
     return new Promise((resolve, reject) => {
-      fetch(this.url, options)
+      fetch(graphqlEndpoint, options)
         .then(async res => resolve(new GraphQLResult(await res.json())))
         .catch(e => reject(e));
     });
@@ -115,7 +113,7 @@ class GraphQL {
     };
 
     return new Promise((resolve, reject) => {
-      fetch(this.url, options)
+      fetch(graphqlEndpoint, options)
       .then(async res => resolve(new GraphQLResult(await res.json())))
       .catch(e => reject(e));
     });

@@ -182,7 +182,7 @@ function signin() {
     key: key
   }).then(res => {
     if (! res.hasError) {
-      CookieManager.set('token', res.data["authenticateAdmin"], 1);
+      CookieManager.set('token', res.data["authenticateAdmin"], 0, true);
       navigateTo('business');
       switchToWelcome();
     }
@@ -192,8 +192,10 @@ function signin() {
   });
 }
 function signout() {
-  CookieManager.clear('token');
-  location.reload();
+  if (confirm("Are you sure you want to Logout?")) {
+    CookieManager.clear('token');
+    location.reload();
+  }
 }
 
 function toggleHamburger() {

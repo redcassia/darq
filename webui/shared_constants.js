@@ -295,8 +295,8 @@ const _eventQueryFields = `
   attachments
 `;
 
-const graphqlEndpoint = 'http://redcassia.com:3001/api'
-const attachmentsEndpoint = "http://redcassia.com:3001/attachment/";
+const graphqlEndpoint = 'https://redcassia.com:3001/api'
+const attachmentsEndpoint = "https://redcassia.com:3001/attachment/";
 
 function openInNewTab(url) {
   if (! url.startsWith("http")) url = 'https://' + url;
@@ -328,4 +328,9 @@ function equals(a, b) {
   else {
     return false;
   }
+}
+
+function isValidEmail(email) 
+{
+  return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email);
 }

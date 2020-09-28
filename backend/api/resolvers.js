@@ -858,7 +858,7 @@ const resolvers = {
 
   Mutation: {
     async rateBusiness(_, { id, stars }, { user }) {
-      _validateAuthenticatedPublicUser();
+      _validateAuthenticatedPublicUser(user);
 
       await db.query(
         `
@@ -1082,7 +1082,40 @@ const resolvers = {
     async changeBusinessUserPassword(_, { oldPassword, newPassword }, { user }) {
       _validateAuthenticatedBusinessUser(user);
 
-      // TODO: implement
+      var result;
+      try {
+        result = await db.query(
+          "SELECT password FROM business_user WHERE id=?",
+          [ user.id ]
+        );
+      }
+      catch(e) {
+        console.log(e);
+        throw new ApolloError(
+          "Failed to verify password.",
+          'BUSINESS_USER_PASSWORD_RETRIEVE_FAILURE'
+        );
+      }
+
+      if (result.length == 1 && await bcrypt.compare(oldPassword, result[0].password)) {
+        const id = result[0].id;
+
+        try {
+          await db.query(
+            "UPDATE business_user SET password=? WHERE id=?",
+            [ await bcrypt.hash(newPassword, 10), user.id ]
+          );
+        }
+        catch(e) {
+          console.log(e);
+        }
+      }
+      else {
+        throw new ApolloError(
+          "Invalid password.",
+          'BUSINESS_USER_PASSWORD_CHANGE_REJECTED'
+        );
+      }
     },
 
     async addSelfEmployedBusiness(_, { data }, { user }) {

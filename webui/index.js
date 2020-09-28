@@ -271,8 +271,18 @@ function signup() {
     return;
   }
 
+  if (! isValidEmail(email)) {
+    alert("Please enter a valid email address");
+    return;
+  }
+
   if (! pass) {
     alert("Please enter your password");
+    return;
+  }
+
+  if (pass.length < 8) {
+    alert("Your password must be 8 characters or more");
     return;
   }
 
@@ -299,6 +309,7 @@ function signup() {
       navigateTo($('#profile-btn'), 'profile');
       alert("Account created successfully.");
       loadFirstPage();
+      switchToWelcome();
     }
     else {
       alert(res.errors[0]["message"]);
@@ -339,8 +350,10 @@ function signin() {
   });
 }
 function signout() {
-  CookieManager.clear('token');
-  location.reload();
+  if (confirm("Are you sure you want to Logout?")) {
+    CookieManager.clear('token');
+    location.reload();
+  }
 }
 
 function requestPasswordReset() {
@@ -420,7 +433,14 @@ function navigateTo(content) {
 
     case 'settings':
       DynamicLoader.loadTo('content',
-        'settings.html'
+        'settings.html',
+        'settings.js',
+        [
+          {
+            src: 'form.js',
+            singleLoad: true
+          }
+        ]
       );
       $('#settings-btn').addClass("active");
       break;

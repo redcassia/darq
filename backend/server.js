@@ -14,8 +14,8 @@ if (process.env.CERT_FILE) {
     }, api_app);
 
     api_server.listen(
-        process.env.API_PORT, 
-        () => console.log('GraphQL API server started on localhost:' + process.env.API_PORT + '/api')
+        process.env.API_PORT_HTTPS, 
+        () => console.log('HTTPS: GraphQL API server started on localhost:' + process.env.API_PORT_HTTPS + '/api')
     );
 
     var webui_server = https.createServer({
@@ -24,19 +24,20 @@ if (process.env.CERT_FILE) {
     }, webui_app);
 
     webui_server.listen(
-        process.env.WEBUI_PORT, 
-        () => console.log('WebUI server started on localhost:' + process.env.WEBUI_PORT)
+        process.env.WEBUI_PORT_HTTPS, 
+        () => console.log('HTTPS: WebUI server started on localhost:' + process.env.WEBUI_PORT_HTTPS)
     );
 }
 else {
-    console.log('WARNING: no SSL certificate found!')
-    api_app.listen(
-        process.env.API_PORT, 
-        () => console.log('GraphQL API server started on localhost:' + process.env.API_PORT + '/api')
-    );
-
-    webui_app.listen(
-        process.env.WEBUI_PORT,
-        () => console.log('WebUI server started on localhost:' + process.env.WEBUI_PORT)
-    );
+    console.log('WARNING: no SSL certificate found! Cannot start HTTPS servers.')
 }
+
+api_app.listen(
+    process.env.API_PORT_HTTP, 
+    () => console.log('HTTP: GraphQL API server started on localhost:' + process.env.API_PORT_HTTP + '/api')
+);
+
+webui_app.listen(
+    process.env.WEBUI_PORT_HTTP,
+    () => console.log('HTTP: WebUI server started on localhost:' + process.env.WEBUI_PORT_HTTP)
+);

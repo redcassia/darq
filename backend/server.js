@@ -21,6 +21,7 @@ if (process.env.CERT_FILE) {
         process.env.HTTPS_PORT, 
         () => {
             console.log('HTTPS: WebUI server started on localhost:' + process.env.HTTPS_PORT);
+            console.log('HTTPS: Attachments server started on localhost:' + process.env.HTTPS_PORT + '/attachment');
             console.log('HTTPS: GraphQL API server started on localhost:' + process.env.HTTPS_PORT + '/api');
         }
     );
@@ -33,6 +34,7 @@ app.listen(
     process.env.HTTP_PORT, 
     () => {
         console.log('HTTP: WebUI server started on localhost:' + process.env.HTTP_PORT);
+        console.log('HTTP: Attachments server started on localhost:' + process.env.HTTP_PORT + '/attachment');
         console.log('HTTP: GraphQL API server started on localhost:' + process.env.HTTP_PORT + '/api');
     }
 );

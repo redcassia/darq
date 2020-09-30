@@ -168,6 +168,8 @@ class _DetailsPageState extends State<DetailsPage> {
           context: context,
           jsonFile: widget.jsonFile,
           data: widgetData,
+          id: widget.id,
+          detailedPage: true,
           height: columnLayout[widgetIndex]["height"],
           width: columnLayout[widgetIndex]["width"],
           titleText: columnLayout[widgetIndex]["titleText"],

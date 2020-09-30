@@ -10,6 +10,7 @@ import 'package:darq/views/home/shared/custom_divider.dart';
 import 'package:darq/views/home/shared/full_img_wrapper.dart';
 import 'package:darq/views/home/shared/leading_row.dart';
 import 'package:darq/views/home/home_screens_style_const.dart';
+import 'package:darq/views/rating_screen.dart';
 import 'package:darq/views/shared/button.dart';
 import 'package:darq/views/shared/custom_card.dart';
 import 'package:darq/views/shared/custom_chip.dart';
@@ -23,6 +24,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 Widget generateWidget(String widgetType,
     {BuildContext context,
     dynamic data,
+    bool detailedPage = false,
+    String id,
     String jsonFile,
     double height,
     double width,
@@ -168,7 +171,7 @@ Widget generateWidget(String widgetType,
       return Picture(height: height.h, width: width.w, img: data);
 
     case 'picture_gallery':
-      if (data == null) return null;
+      if (data.length == 0) return null;
       return SizedBox(
           height: 125.h,
           child: Column(
@@ -277,23 +280,36 @@ Widget generateWidget(String widgetType,
     case 'rating':
       if (data == null)
         return InkWell(
-            onTap: () {},
+            onTap: () {
+              if (detailedPage)
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            RatingScreen(businessId: id, rating: data)));
+            },
             child: Text("NOT RATED",
                 textAlign: TextAlign.center,
                 style: AppFonts.text8(color: Color.fromRGBO(0, 0, 0, 0.7))));
-      return InkWell(
-        child: SmoothStarRating(
-            allowHalfRating: true,
-            size: 14.w,
-            filledIconData: Icons.star,
-            halfFilledIconData: Icons.star_half,
-            defaultIconData: Icons.star_border,
-            starCount: 5,
-            rating: data.toDouble(),
-            borderColor: Color(0xFFE1A854),
-            color: Color(0xFFE1A854),
-            spacing: 0.0),
-      );
+      return SmoothStarRating(
+          onBoxClicked:()=> detailedPage
+              ?      Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      RatingScreen(businessId: id, rating: data)))
+              : {},
+          mainAxisAlignment: MainAxisAlignment.start,
+          allowHalfRating: true,
+          size: 14.w,
+          filledIconData: Icons.star,
+          halfFilledIconData: Icons.star_half,
+          defaultIconData: Icons.star_border,
+          starCount: 5,
+          rating: data.toDouble(),
+          borderColor: Color(0xFFE1A854),
+          color: Color(0xFFE1A854),
+          spacing: 0.0);
 
     case 'experience':
       if (data == null) return null;

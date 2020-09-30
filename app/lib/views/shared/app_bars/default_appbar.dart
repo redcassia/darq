@@ -59,11 +59,13 @@ class DefaultAppBar extends StatelessWidget {
                                 onTap: () => onLeadingClicked()),
                             trailing ?? Container(height: 0),
                           ])),
-                  RightRoundedCapsule(
-                      iconBgColor: Color.fromRGBO(134, 194, 194, 0.69),
-                      horizontalPadding: 19.w,
-                      verticalPadding: 4.h,
-                      title: title)
+                  title != null
+                      ? RightRoundedCapsule(
+                          iconBgColor: Color.fromRGBO(134, 194, 194, 0.69),
+                          horizontalPadding: 19.w,
+                          verticalPadding: 4.h,
+                          title: title)
+                      : Container()
                 ])));
   }
 }

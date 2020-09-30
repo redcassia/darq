@@ -169,6 +169,6 @@
         }
       ]
     },
-    "query": "query($id: ID!) {\n  item: business(id: $id) {\n    display_name\n    display_picture\n    rating\n    cities\n    ... on TransportationBusiness {\n      sub_type_string\n      street_address\n      operating_hours {\n        open\n        close\n        all_day\n      }\n      phone_number\n      description\n      services\n      attachments\n    }\n  }\n}"
+    "query": "query($id: ID!) {\n  item: business(id: $id) {\n    display_name\n    display_picture\n    rating\n    city\n    ... on TransportationBusiness {\n      sub_type_string\n      street_address\n      operating_hours {\n        open\n        close\n        all_day\n      }\n      phone_number\n      description\n      services\n      attachments\n    }\n  }\n}"
   }
 }

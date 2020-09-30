@@ -63,7 +63,7 @@
         }
       ]
     },
-    "query": "query {\n  items: businesses(type: StationeryBusiness) {\n    id,\n    display_name,\n    display_picture,\n    rating\n    ... on StationeryBusiness {\n      cities\n      description\n    }\n  } \n}\n"
+    "query": "query {\n  items: businesses(type: StationeryBusiness) {\n    id,\n    display_name,\n    display_picture,\n    rating\n    ... on StationeryBusiness {\n      city\n      description\n    }\n  } \n}\n"
   },
   "detailed": {
     "appbar": {

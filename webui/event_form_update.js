@@ -2,8 +2,9 @@
 var initialData;
 
 function submitForm() {
-  var data;
+  if (! Form.tryLock()) return;
 
+  var data;
   try {
     data = Form.getFormData('event-form');
     data = Form.removeRedundancy(initialData, data);
@@ -25,14 +26,22 @@ function submitForm() {
     data: data
   }).then(res => {
     $("#loading-blanket").hide();
+    Form.unlock();
 
     if (! res.hasError) {
       alert("Your event has been updated.");
       queryOwnedEvents();
     }
     else {
-      alert(res.errors[0]["message"]);
+      console.log(res.errors[0]["message"]);
+      alert("Failed to update event");
     }
+  }).catch(e => {
+    $("#loading-blanket").hide();
+    Form.unlock();
+
+    console.log(e);
+    alert("Failed to update event");
   });
 }
 

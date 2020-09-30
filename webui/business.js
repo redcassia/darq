@@ -1,5 +1,92 @@
 var businesses = new Object();
 
+function submitAddBusinessForm(mutationName, inputName, getData) {
+  if (! Form.tryLock()) return;
+
+  var data;
+  try {
+    data = getData();
+  }
+  catch (e) {
+    console.log(e);
+    Form.unlock();
+    return;
+  }
+
+  $("#loading-blanket").show();
+
+  GraphQL.mutation(`
+    mutation ($data: ${inputName}!) {
+      ${mutationName}(data: $data)
+    }
+  `, {
+    data: data
+  }).then(res => {
+    $("#loading-blanket").hide();
+    Form.unlock();
+
+    if (! res.hasError) {
+      alert("Your business has been added. The data will be reviewed and we will contact you shortly.");
+      queryOwnedBusinesses();
+      DynamicLoader.unloadFrom('business-content');
+    }
+    else {
+      console.log(res.errors[0]["message"]);
+      alert("Failed to add business");
+    }
+  }).catch(e => {
+    $("#loading-blanket").hide();
+    Form.unlock();
+
+    console.log(e);
+    alert("Failed to add business");
+  });
+}
+
+function submitUpdateBusinessForm(mutationName, inputName, id, getData) {
+  if (! Form.tryLock()) return;
+
+  var data;
+  try {
+    data = getData();
+  }
+  catch (e) {
+    console.log(e);
+    Form.unlock();
+    return;
+  }
+
+  $("#loading-blanket").show();
+
+  GraphQL.mutation(`
+    mutation ($id: ID!, $data: ${inputName}!) {
+      ${mutationName}(id: $id, data: $data)
+    }
+  `, {
+    id: id,
+    data: data
+  }).then(res => {
+    $("#loading-blanket").hide();
+    Form.unlock();
+
+    if (! res.hasError) {
+      alert("Your business has been updated. The data will be reviewed and we will contact you shortly.");
+      queryOwnedBusinesses();
+      DynamicLoader.unloadFrom('business-content');
+    }
+    else {
+      console.log(res.errors[0]["message"]);
+      alert("Failed to update business");
+    }
+  }).catch(e => {
+    $("#loading-blanket").hide();
+    Form.unlock();
+
+    console.log(e);
+    alert("Failed to update business");
+  });
+}
+
 function updateBusinessesMenu() {
 
   var menu;

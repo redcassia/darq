@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:intl/intl.dart';
 
 import 'package:darq/backend.dart';
 import 'package:darq/chat.dart';
@@ -12,9 +11,9 @@ import 'package:darq/views/shared/capsule/right_rounded_capsule.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:graphql/client.dart';
+import 'package:intl/intl.dart';
 
 class ChatRoom extends StatefulWidget {
   final String threadId;

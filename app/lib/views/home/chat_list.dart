@@ -1,8 +1,5 @@
-import 'dart:convert';
 import 'dart:ui';
-import 'package:intl/intl.dart';
 
-import 'package:darq/backend.dart';
 import 'package:darq/chat.dart';
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/res/path_files.dart';
@@ -10,14 +7,12 @@ import 'package:darq/utilities/constants.dart';
 import 'package:darq/views/home/chat_room.dart';
 import 'package:darq/views/shared/app_bars/default_appbar.dart';
 import 'package:darq/views/shared/capsule/right_rounded_capsule.dart';
-import 'package:darq/views/shared/custom_card.dart';
+import 'package:darq/views/shared/image_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:graphql/client.dart';
-import 'package:darq/views/shared/image_container.dart';
+import 'package:intl/intl.dart';
 
 class ChatList extends StatefulWidget {
   @override

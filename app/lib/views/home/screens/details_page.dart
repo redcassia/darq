@@ -13,6 +13,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:graphql/client.dart';
+
 import '../../../backend.dart';
 
 class DetailsPage extends StatefulWidget {

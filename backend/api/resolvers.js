@@ -862,12 +862,14 @@ const resolvers = {
 
       await db.query(
         `
-        INSERT IGNORE INTO
+        INSERT INTO
           rating (business_id, public_user_id, stars)
         VALUES
           (?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+          stars = ?
         `,
-        [id, user.id, stars]
+        [id, user.id, stars, stars]
       );
     },
 

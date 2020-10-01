@@ -132,7 +132,7 @@ type SelfEmployedBusiness implements Business {
   sub_type_string: String!
   gender: Gender!
   nationality: Nationality!
-  phone_number: String!
+  phone_number: [String!]!
   description: String!
   skills: [String!]!
   experience: [PersonalExperience!]!
@@ -149,7 +149,7 @@ input NewSelfEmployedBusinessInput {
   sub_type_string: String
   gender: Gender!
   nationality: Nationality!
-  phone_number: String!
+  phone_number: [String!]!
   description: String!
   skills: [String!]!
   experience: [PersonalExperienceInput!]!
@@ -166,7 +166,7 @@ input UpdateSelfEmployedBusinessInput {
   sub_type_string: String
   gender: Gender
   nationality: Nationality
-  phone_number: String
+  phone_number: [String!]
   description: String
   skills: [String!]
   experience: [PersonalExperienceInput!]

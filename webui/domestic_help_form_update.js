@@ -10,6 +10,7 @@ function submitForm() {
       var data = Form.getFormData('domestic-help-form');
       data = Form.removeRedundancy(initialData, data);
       data = Form.splitAttachments(data, 'old_attachments', 'attachments');
+      // TODO: dedupe personnel and attachments
       return data;
     }
   );

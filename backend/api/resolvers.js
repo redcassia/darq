@@ -486,7 +486,15 @@ async function _storeAttachments(data) {
   if (data.personnel) {
     for (var i = 0; i < data.personnel.length; ++i) {
       if (data.personnel[i].picture) {
-        data.personnel[i].picture = await _writeAttachmentToFile(data.personnel[i].picture);
+        data.personnel[i].picture = 
+          await _writeAttachmentToFile(data.personnel[i].picture);
+      }
+
+      if (data.personnel[i].attachments) {
+        for (var j = 0; j < data.personnel[i].attachments.length; ++j) {
+          data.personnel[i].attachments[j] =
+            await _writeAttachmentToFile(data.personnel[i].attachments[j]);
+        }
       }
     }
   }

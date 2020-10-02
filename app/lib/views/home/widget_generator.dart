@@ -171,7 +171,7 @@ Widget generateWidget(String widgetType,
       return Picture(height: height.h, width: width.w, img: data);
 
     case 'picture_gallery':
-      if (data.length == 0) return null;
+      if (data?.length == 0 || data == null) return null;
       return SizedBox(
           height: 125.h,
           child: Column(

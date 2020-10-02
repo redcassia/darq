@@ -219,13 +219,6 @@ class ProfileView {
     }
 
     if (b["phone_number"]) {
-      html += `
-        <div class="profile-small-text">
-          <i class="fas fa-phone-alt"></i> ${b["phone_number"]}
-        </div>
-      `;
-    }
-    if (b["phone_numbers"]) {
       for (var num of b["phone_numbers"]) {
         html += `
           <div class="profile-small-text">

@@ -48,7 +48,7 @@ const __elementaryBusinessQueryFields = `
     trade_license
     trade_license_number
     street_address
-    phone_numbers: phone_number
+    phone_number
     description
     year_founded
     curriculum
@@ -60,7 +60,7 @@ const __elementaryBusinessQueryFields = `
     trade_license
     trade_license_number
     street_address
-    phone_numbers: phone_number
+    phone_number
     description
     website
     personnel {
@@ -122,7 +122,7 @@ const __elementaryBusinessQueryFields = `
       close
       all_day
     }
-    phone_numbers: phone_number
+    phone_number
     description
     home_service_available
     services
@@ -140,7 +140,7 @@ const __elementaryBusinessQueryFields = `
       close
       all_day
     }
-    phone_numbers: phone_number
+    phone_number
     description
     services
     website
@@ -152,7 +152,7 @@ const __elementaryBusinessQueryFields = `
     trade_license
     trade_license_number
     street_address
-    phone_numbers: phone_number
+    phone_number
     description
     home_service_available
     optional_charge: charge {
@@ -168,7 +168,7 @@ const __elementaryBusinessQueryFields = `
     trade_license
     trade_license_number
     street_address
-    phone_numbers: phone_number
+    phone_number
     website
     attachments
   }
@@ -176,7 +176,7 @@ const __elementaryBusinessQueryFields = `
     madeInQatarSubType: sub_type
     sub_type_string
     street_address
-    phone_numbers: phone_number
+    phone_number
     description
     home_delivery_available
     products
@@ -194,7 +194,7 @@ const __elementaryBusinessQueryFields = `
       close
       all_day
     }
-    phone_numbers: phone_number
+    phone_number
     description
     website
     attachments
@@ -214,7 +214,7 @@ const __elementaryBusinessQueryFields = `
       close
       all_day
     }
-    phone_numbers: phone_number
+    phone_number
     description
     activities
     website
@@ -231,7 +231,7 @@ const __elementaryBusinessQueryFields = `
       close
       all_day
     }
-    phone_numbers: phone_number
+    phone_number
     description
     website
     menu
@@ -248,7 +248,7 @@ const __elementaryBusinessQueryFields = `
       close
       all_day
     }
-    phone_numbers: phone_number
+    phone_number
     description
     home_service_available
     optional_charge: charge {

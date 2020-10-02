@@ -1400,7 +1400,7 @@ const resolvers = {
               `,
               [ id ]
             );
-            data = JSON.parse(data[0]);
+            data = JSON.parse(data[0].updated_data);
             if (data) {
               if (data.attachments || data.old_attachments) {
                 var oldBusiness = await businessLoader.load(id);

@@ -32,8 +32,12 @@ function updateBusinessesMenu() {
 
 function reviewBusiness(id, approve) {
 
+  var b;
+  if (newBusinesses[id]) b = newBusinesses[id];
+  else if (updatedBusinesses[id]) b = updatedBusinesses[id];
+
   var conf = confirm(`
-    Are you sure you want to ${approve ? "Approve" : "Reject"} business '${newBusinesses[id]["display_name"]}'
+    Are you sure you want to ${approve ? "Approve" : "Reject"} business '${b["display_name"]}'
   `);
   if (! conf) return;
 
@@ -50,6 +54,7 @@ function reviewBusiness(id, approve) {
     $("#loading-blanket").hide();
 
     if (res.hasError) {
+      console.log(res.errors[0]["message"]);
       alert(`Failed to ${approve ? "Approve" : "Reject"} business`);
     }
     else {
@@ -65,6 +70,11 @@ function reviewBusiness(id, approve) {
       updateBusinessesMenu();
       document.getElementById("business-content").innerHTML = '';
     }
+  }).catch(e => {
+    $("#loading-blanket").hide();
+
+    console.log(e);
+    alert("Failed to approve business");
   });
 }
 

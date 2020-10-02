@@ -2,38 +2,18 @@
 var initialData;
 
 function submitForm() {
-  var data;
-
-  try {
-    data = Form.getFormData('domestic-help-form');
-    data = Form.removeRedundancy(initialData, data);
-    data = Form.splitAttachments(data, 'old_attachments', 'attachments');
-  }
-  catch (e) {
-    console.log(e);
-    return;
-  }
-
-  $("#loading-blanket").show();
-
-  GraphQL.mutation(`
-    mutation ($id: ID!, $data: UpdateDomesticHelpBusinessInput!) {
-      updateDomesticHelpBusiness(id: $id, data: $data)
+  submitUpdateBusinessForm(
+    "updateDomesticHelpBusiness",
+    "UpdateDomesticHelpBusinessInput",
+    initialData["id"],
+    () => {
+      var data = Form.getFormData('domestic-help-form');
+      data = Form.removeRedundancy(initialData, data);
+      data = Form.splitAttachments(data, 'old_attachments', 'attachments');
+      // TODO: dedupe personnel and attachments
+      return data;
     }
-  `, {
-    id: initialData["id"],
-    data: data
-  }).then(res => {
-    $("#loading-blanket").hide();
-
-    if (! res.hasError) {
-      alert("Your business has been updated. The data will be reviewed and we will contact you shortly.");
-      queryOwnedBusinesses();
-    }
-    else {
-      alert(res.errors[0]["message"]);
-    }
-  });
+  );
 }
 
 function updateProfessionRelevantFields(val, node) {
@@ -53,46 +33,48 @@ function updateProfessionRelevantFields(val, node) {
   }
 }
 
-async function initializeForm(data) {
+function initializeForm(data) {
 
-  await GraphQL.fillOptionsFromEnum("DomesticHelpSubType", [
-    "domestic-help-sub-type"
-  ]);
+  loadingScreen(async () => {
+    await GraphQL.fillOptionsFromEnum("DomesticHelpSubType", [
+      "domestic-help-sub-type"
+    ]);
 
-  await GraphQL.fillOptionsFromEnum("City", [
-    "domestic-help-city"
-  ]);
+    await GraphQL.fillOptionsFromEnum("City", [
+      "domestic-help-city"
+    ]);
 
-  await GraphQL.fillOptionsFromEnum("Profession", [
-    "domestic-help-personnel-profession"
-  ]);
+    await GraphQL.fillOptionsFromEnum("Profession", [
+      "domestic-help-personnel-profession"
+    ]);
 
-  await GraphQL.fillOptionsFromEnum("Gender", [
-    "domestic-help-personnel-gender"
-  ]);
+    await GraphQL.fillOptionsFromEnum("Gender", [
+      "domestic-help-personnel-gender"
+    ]);
 
-  await GraphQL.fillOptionsFromEnum("Nationality", [
-    "domestic-help-personnel-nationality"
-  ]);
+    await GraphQL.fillOptionsFromEnum("Nationality", [
+      "domestic-help-personnel-nationality"
+    ]);
 
-  await GraphQL.fillOptionsFromEnum("MaritalStatus", [
-    "domestic-help-personnel-marital-status"
-  ]);
+    await GraphQL.fillOptionsFromEnum("MaritalStatus", [
+      "domestic-help-personnel-marital-status"
+    ]);
 
-  await GraphQL.fillOptionsFromEnum("Education", [
-    "domestic-help-personnel-education"
-  ]);
+    await GraphQL.fillOptionsFromEnum("Education", [
+      "domestic-help-personnel-education"
+    ]);
 
-  await GraphQL.fillOptionsFromEnum("Country", [
-    "domestic-help-personnel-experience-country"
-  ]);
+    await GraphQL.fillOptionsFromEnum("Country", [
+      "domestic-help-personnel-experience-country"
+    ]);
 
-  await GraphQL.fillOptionsFromEnum("Currency", [
-    "domestic-help-personnel-salary-currency"
-  ]);
+    await GraphQL.fillOptionsFromEnum("Currency", [
+      "domestic-help-personnel-salary-currency"
+    ]);
 
-  if (data["update"]) data = data["update"];
-  data["sub_type"] = data["domesticHelpSubType"];
-  initialData = data;
-  Form.putFormData('domestic-help-form', data);
+    if (data["update"]) data = data["update"];
+    data["sub_type"] = data["domesticHelpSubType"];
+    initialData = data;
+    Form.putFormData('domestic-help-form', data);
+  });
 }

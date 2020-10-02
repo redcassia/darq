@@ -451,4 +451,18 @@ class Form {
 
     return data;
   }
+
+  static tryLock() {
+    if (this.lock){
+      return false;
+    }
+    else {
+      this.lock = true;
+      return true;
+    }
+  }
+
+  static unlock() {
+    this.lock = false;
+  }
 }

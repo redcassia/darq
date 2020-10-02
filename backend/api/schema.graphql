@@ -132,7 +132,7 @@ type SelfEmployedBusiness implements Business {
   sub_type_string: String!
   gender: Gender!
   nationality: Nationality!
-  phone_number: String!
+  phone_number: [String!]!
   description: String!
   skills: [String!]!
   experience: [PersonalExperience!]!
@@ -149,7 +149,7 @@ input NewSelfEmployedBusinessInput {
   sub_type_string: String
   gender: Gender!
   nationality: Nationality!
-  phone_number: String!
+  phone_number: [String!]!
   description: String!
   skills: [String!]!
   experience: [PersonalExperienceInput!]!
@@ -166,7 +166,7 @@ input UpdateSelfEmployedBusinessInput {
   sub_type_string: String
   gender: Gender
   nationality: Nationality
-  phone_number: String
+  phone_number: [String!]
   description: String
   skills: [String!]
   experience: [PersonalExperienceInput!]
@@ -283,6 +283,7 @@ input UpdateDomesticHelpBusinessInput {
   phone_number: [String!]
   description: String
   website: String
+  old_personnel: [UpdateDomesticHelpPersonnelInput!]
   personnel: [DomesticHelpPersonnelInput!]
 }
 
@@ -948,6 +949,7 @@ interface DomesticHelpPersonnel {
   languages: [String!]!
   experience: [PersonalExperience!]!
   phone_number: String!
+  attachments: [String!]
 }
 
 input DomesticHelpPersonnelInput {
@@ -963,6 +965,31 @@ input DomesticHelpPersonnelInput {
   languages: [String!]!
   experience: [PersonalExperienceInput!]!
   phone_number: String!
+  attachments: [Upload!]
+  # extras
+  license_expiry_date: String
+  education: Education
+  height: String
+  weight: String
+  skills: [String!]
+  number_of_children: Int
+}
+
+input UpdateDomesticHelpPersonnelInput {
+  name: String
+  picture: Upload
+  profession: Profession
+  gender: Gender
+  nationality: Nationality
+  religion: String
+  salary: PriceInput
+  date_of_birth: String
+  marital_status: MaritalStatus
+  languages: [String!]
+  experience: [PersonalExperienceInput!]
+  phone_number: String
+  old_attachments: [String!]
+  attachments: [Upload!]
   # extras
   license_expiry_date: String
   education: Education
@@ -985,6 +1012,7 @@ type Driver implements DomesticHelpPersonnel {
   languages: [String!]!
   experience: [PersonalExperience!]!
   phone_number: String!
+  attachments: [String!]
   # specialization
   license_expiry_date: String!
 }
@@ -1002,6 +1030,7 @@ type Nanny implements DomesticHelpPersonnel {
   languages: [String!]!
   experience: [PersonalExperience!]!
   phone_number: String!
+  attachments: [String!]
   # specialization
   education: Education!
   height: String!
@@ -1023,6 +1052,7 @@ type Maid implements DomesticHelpPersonnel {
   languages: [String!]!
   experience: [PersonalExperience!]!
   phone_number: String!
+  attachments: [String!]
   # specialization
   education: Education!
   height: String!
@@ -1044,6 +1074,7 @@ type Cook implements DomesticHelpPersonnel {
   languages: [String!]!
   experience: [PersonalExperience!]!
   phone_number: String!
+  attachments: [String!]
   # specialization
   education: Education!
   height: String!

@@ -62,8 +62,12 @@
 
     <div class="form-line">
         <div class="form-box">
-            <label>Phone Number</label>
-            <input type="tel" name="phone_number" required data-friendly-name="Phone number"/>
+            <label>Phone Number(s)</label>
+            <div class="multistring-input" required data-friendly-name="Phone number">
+                <div class="data"></div>
+                <input type="tel" name="phone_number" />
+                <button>Add</button>
+            </div>
         </div>
     </div>
 

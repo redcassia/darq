@@ -1,12 +1,14 @@
 
 function submitForm() {
-  var data;
+  if (! Form.tryLock()) return;
 
+  var data;
   try {
-    data = getFormData('event-form');
+    data = Form.getFormData('event-form');
   }
   catch (e) {
     console.log(e);
+    Form.unlock();
     return;
   }
 
@@ -20,27 +22,38 @@ function submitForm() {
     "data": data
   }).then(res => {
     $("#loading-blanket").hide();
+    Form.unlock();
 
     if (! res.hasError) {
       alert("Your event has been added. The data will be reviewed and we will contact you shortly.");
       queryOwnedEvents();
     }
     else {
-      alert(res.errors[0]["message"]);
+      console.log(res.errors[0]["message"]);
+      alert("Failed to add event");
     }
+  }).catch(e => {
+    $("#loading-blanket").hide();
+    Form.unlock();
+
+    console.log(e);
+    alert("Failed to add event");
   });
 }
 
 $(document).ready(function() {
-  GraphQL.fillOptionsFromEnum("EventType", [
-    "event-type"
-  ]);
 
-  GraphQL.fillOptionsFromEnum("City", [
-    "event-city"
-  ]);
+  loadingScreen(async () => {
+    await GraphQL.fillOptionsFromEnum("EventType", [
+      "event-type"
+    ]);
 
-  GraphQL.fillOptionsFromEnum("Currency", [
-    "event-ticket-price-currency"
-  ]);
+    await GraphQL.fillOptionsFromEnum("City", [
+      "event-city"
+    ]);
+
+    await GraphQL.fillOptionsFromEnum("Currency", [
+      "event-ticket-price-currency"
+    ]);
+  });
 });

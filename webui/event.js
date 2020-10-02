@@ -57,19 +57,19 @@ function loadEvent(id) {
 }
 
 function queryOwnedEvents() {
-  var showLoadingScreen = setTimeout(() => $("#loading-blanket").show(), 50);
 
-  DynamicLoader.unloadFrom('event-content');
+  loadingScreen(async () => {
+    DynamicLoader.unloadFrom('event-content');
 
-  GraphQL.query(`
-    query {
-      user {
-        owned_events {
-          ${_eventQueryFields}
+    var res = await GraphQL.query(`
+      query {
+        user {
+          owned_events {
+            ${_eventQueryFields}
+          }
         }
       }
-    }
-  `).then(res => {
+    `);
 
     if (! res.hasError) {
       events = new Object();;
@@ -87,9 +87,6 @@ function queryOwnedEvents() {
         $("#owned-events").hide();
       }
     }
-
-    clearTimeout(showLoadingScreen);
-    $("#loading-blanket").hide();
   });
 }
 

@@ -486,7 +486,15 @@ async function _storeAttachments(data) {
   if (data.personnel) {
     for (var i = 0; i < data.personnel.length; ++i) {
       if (data.personnel[i].picture) {
-        data.personnel[i].picture = await _writeAttachmentToFile(data.personnel[i].picture);
+        data.personnel[i].picture = 
+          await _writeAttachmentToFile(data.personnel[i].picture);
+      }
+
+      if (data.personnel[i].attachments) {
+        for (var j = 0; j < data.personnel[i].attachments.length; ++j) {
+          data.personnel[i].attachments[j] =
+            await _writeAttachmentToFile(data.personnel[i].attachments[j]);
+        }
       }
     }
   }
@@ -862,12 +870,14 @@ const resolvers = {
 
       await db.query(
         `
-        INSERT IGNORE INTO
+        INSERT INTO
           rating (business_id, public_user_id, stars)
         VALUES
           (?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+          stars = ?
         `,
-        [id, user.id, stars]
+        [id, user.id, stars, stars]
       );
     },
 
@@ -1390,7 +1400,7 @@ const resolvers = {
               `,
               [ id ]
             );
-            data = JSON.parse(data[0]);
+            data = JSON.parse(data[0].updated_data);
             if (data) {
               if (data.attachments || data.old_attachments) {
                 var oldBusiness = await businessLoader.load(id);

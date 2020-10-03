@@ -12,6 +12,13 @@ const _businessUpdateApproveStatus = {
   REJECTED: "The updated information has been rejected. Please contact the DarQ.",
 };
 
+const _eventApproveStatus = {
+  TENTATIVE: "Your event is waiting to be approved.",
+  APPROVED: "Congratulations! Your event is approved and will be listed on DarQ in the next 24 hours.",
+  APPROVED_AND_LISTED: "Your event is listed on DarQ!",
+  REJECTED: "Your event information has been rejected. Please contact DarQ.",
+};
+
 const __elementaryBusinessQueryFields = `
   id
   approved
@@ -268,6 +275,7 @@ const _businessQueryFields = `
 
 const _eventQueryFields = `
   id
+  approved
   display_name
   display_picture
   type

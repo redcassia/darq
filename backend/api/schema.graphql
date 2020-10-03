@@ -67,6 +67,7 @@ type Mutation {
   authenticateAdmin(key: String!): String
 
   reviewBusiness(id: ID!, approve: Boolean!): Void
+  reviewEvent(id: ID!, approve: Boolean!): Void
 }
 
 scalar Upload
@@ -103,6 +104,7 @@ type Message {
 type Admin {
   tentativeNewBusinesses: [Business!]!
   tentativeBusinessUpdates: [Business!]!
+  tentativeNewEvents: [Event!]!
 }
 
 interface Business {
@@ -834,6 +836,7 @@ input UpdateCleaningAndMaintenanceBusinessInput {
 
 type Event {
   id: ID!
+  approved: ApproveStatus!
   display_name: String!
   display_picture: String!
   type: EventType!

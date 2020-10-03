@@ -344,6 +344,7 @@ async function maintenance() {
   );
 
   businessLoader.clearAll();
+  eventLoader.clearAll();
 
   // update the listing index of businesses ///////////////////////////////////
   await db.query(

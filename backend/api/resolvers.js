@@ -171,6 +171,7 @@ const eventLoader = new DataLoader(
             props,
             '$.id', id,
             '$.owner', owner,
+            '$.approved', approved,
             '$.display_name', display_name,
             '$.display_picture', display_picture,
             '$.type', \`type\`
@@ -301,6 +302,23 @@ async function maintenance() {
     `
   );
 
+  // list all approved events /////////////////////////////////////////////////
+  await db.query(
+    `
+    SET SQL_SAFE_UPDATES = 0;
+
+    UPDATE
+      event
+    SET
+      approved = 'APPROVED_AND_LISTED'
+    WHERE
+      approved = 'APPROVED'
+    ;
+
+    SET SQL_SAFE_UPDATES = 1;
+    `
+  );
+
   // calculate business ratings ///////////////////////////////////////////////
   await db.query(
     `
@@ -326,6 +344,7 @@ async function maintenance() {
   );
 
   businessLoader.clearAll();
+  eventLoader.clearAll();
 
   // update the listing index of businesses ///////////////////////////////////
   await db.query(
@@ -361,6 +380,7 @@ async function maintenance() {
       listing_index = (@curRow := @curRow + 1)
     WHERE
       end > CURRENT_TIMESTAMP
+      AND approved = 'APPROVED_AND_LISTED'
     ORDER BY start
     ;
 
@@ -1475,6 +1495,45 @@ const resolvers = {
           "BUSINESS_UPDATE_APPROVE_FAILED"
         );
       }
+    },
+
+    async reviewEvent(_, { id, approve }, { user }) {
+      _validateAuthenticatedAdmin(user);
+
+      var event = await eventLoader.load(id);
+
+      if (event.approved == 'TENTATIVE' || event.approved == 'REJECTED') {
+        try {
+          await db.query(
+            `
+            UPDATE
+              event
+            SET
+              approved = ?
+            WHERE
+              id = ?
+            `,
+            [ approve ? 'APPROVED' : 'REJECTED', id ]
+          );
+
+          eventLoader.clear(id);
+
+          // TODO: send confirmation email
+        }
+        catch (e) {
+          console.log(e);
+          throw new ApolloError(
+            "Failed to approve event.",
+            "EVENT_APPROVE_FAILED"
+          );
+        }
+      }
+      else {
+        throw new ApolloError(
+          "Event already approved.",
+          "DUPLICATE_EVENT_APPROVE"
+        );
+      }
     }
   },
 
@@ -1678,8 +1737,8 @@ const resolvers = {
         FROM
           business
         WHERE
-        approved = 'TENTATIVE' OR
-        approved = 'REJECTED'
+          approved = 'TENTATIVE' OR
+          approved = 'REJECTED'
         `
       );
 
@@ -1700,6 +1759,30 @@ const resolvers = {
       );
 
       return rows.map(row => businessLoader.load(row.business_id));
+    },
+
+    async tentativeNewEvents() {
+      const rows = await db.query(
+        `
+        SELECT
+          JSON_INSERT(
+            props,
+            '$.id', id,
+            '$.owner', owner,
+            '$.approved', approved,
+            '$.display_name', display_name,
+            '$.display_picture', display_picture,
+            '$.type', \`type\`
+          ) AS data
+        FROM
+          event
+        WHERE
+          approved = 'TENTATIVE' OR
+          approved = 'REJECTED'
+        `
+      );
+
+      return rows.map(row => JSON.parse(row.data));
     }
   },
 

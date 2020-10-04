@@ -39,7 +39,7 @@ function loadEvent(id) {
     var html = `
       <div class"h6">
         <span class="accent">Status: </span>
-        Approved
+        ${_eventApproveStatus[e["approved"]]}
       </div>
       <br />
       <div class="h6 clickable underlined" onclick="editEvent(${id})">

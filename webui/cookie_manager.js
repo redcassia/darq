@@ -9,7 +9,11 @@ class CookieManager {
       d.setTime(d.getTime() + (expiresIn*24*60*60*1000));
       expires = "expires="+ d.toUTCString();
     }
-    document.cookie = name + "=" + value + ";" + expires + ";SameSite=Strict;path=/";
+    document.cookie = 
+      name + "=" + value + 
+      ";" + expires + 
+      ";path=" + window.location.pathname +
+      ";SameSite=Strict";
   }
 
   static get(name) {
@@ -49,6 +53,9 @@ class CookieManager {
   }
 
   static clear(name) {
-    document.cookie = name + '=; Max-Age=-99999999;';
+    document.cookie =
+      name + "=" +
+      ";path=" + window.location.pathname +
+      "; Max-Age=-99999999";
   }
 }

@@ -3,6 +3,42 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppFonts {
+
+  static TextStyle makeStyle(String textSize, Map<String, dynamic> color) {
+    var clr = Color.fromRGBO(color["r"], color["g"], color["b"], color["o"]);
+
+    switch (textSize) {
+      case "superTitle":            return superTitle(color: clr);
+      case "title1":                return title1(color: clr);
+      case "title2":                return title2(color: clr);
+      case "title3":                return title3(color: clr);
+      case "title4":                return title4(color: clr);
+      case "title5":                return title5(color: clr);
+      case "title6":                return title6(color: clr);
+      case "title7":                return title7(color: clr);
+      case "title7Odd":             return title7Odd(color: clr);
+      case "title8":                return title8(color: clr);
+      case "title9":                return title9(color: clr);
+      case "title10":               return title10(color: clr);
+      case "title10OddUnderlined":  return title10OddUnderlined(color: clr);
+      case "title11":               return title11(color: clr);
+      case "title11Odd":            return title11Odd(color: clr);
+      case "tinyTitle":             return tinyTitle(color: clr);
+      case "text1":                 return text1(color: clr);
+      case "text2":                 return text2(color: clr);
+      case "text3":                 return text3(color: clr);
+      case "text4":                 return text4(color: clr);
+      case "text5":                 return text5(color: clr);
+      case "text6":                 return text6(color: clr);
+      case "text6w500":             return text6w500(color: clr);
+      case "text7":                 return text7(color: clr);
+      case "text8":                 return text8(color: clr);
+      case "text9odd":              return text9odd(color: clr);
+      case "text10":                return text10(color: clr);
+      case "text10w500":            return text10w500(color: clr);
+    }
+  }
+
   static TextStyle superTitle({Color color}) {
     return GoogleFonts.roboto(
         fontSize: ScreenUtil().setSp(40, allowFontScalingSelf: true),

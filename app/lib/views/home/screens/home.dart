@@ -231,10 +231,10 @@ class Tweets extends StatelessWidget {
         itemCount: tweets?.length ?? 0,
         itemBuilder: (BuildContext context, int i) {
           return Padding(
-              padding: EdgeInsets.only(top: 20.h),
+              padding: EdgeInsets.only(top: 10.h),
               child: DefaultCard(
                   margin:
-                      EdgeInsets.only(right: 19.w, left: 20.w, bottom: 10.h),
+                      EdgeInsets.only(right: 19.w, left: 20.w, bottom: 2.h),
                   padding: EdgeInsets.only(
                       left: 13.w, right: 28.w, top: 9.w, bottom: 15.h),
                   child: Column(children: [

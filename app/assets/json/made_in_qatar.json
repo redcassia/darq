@@ -1,62 +1,192 @@
 {
-  "profile_appbar": [
-    "no_filter",
-    "Contact Us"
-  ],
-  "list_appbar": [
-    "no_filter",
-    "Made In Qatar"
-  ],
-  "general_c1": [
-    "picture",
-    "sized_box_7",
-    "rating"
-  ],
-  "general_c2": [
-    "business_name",
-    "business_type",
-    "sized_box_3",
-    "description",
-    "sized_box_2",
-    "view_details",
-    "sized_box_10",
-    "contact_us"
-  ],
-  "profile_appbar": [
-    "no_filter",
-    "contact_us"
-  ],
-  "col1": [
-    "picture",
-    "sized_box_6",
-    "rating"
-  ],
-  "col2": [
-    "business_name",
-    "business_type",
-    "sized_box_4",
-    "address",
-    "sized_box_5",
-    "number"
-  ],
-  "col3": [
-    "sized_box_9",
-    "description",
-    "sized_box_17",
-    "divider",
-    "sized_box_17",
-    "home_service",
-    "sized_box_17",
-    "divider",
-    "sized_box_17",
-    "website",
-    "sized_box_17",
-    "divider",
-    "sized_box_17",
-    "products",
-    "sized_box_17",
-    "divider",
-    "sized_box_17",
-    "photos"
-  ]
+  "list": {
+    "appbar": {
+      "filter": false,
+      "title": "Made In Qatar"
+    },
+    "columns": {
+      "start": [
+        {
+          "widget": "picture",
+          "height": 69.0,
+          "width": 70.0,
+          "data": ["display_picture"]
+        },
+        {
+          "widget": "vertical_spacer",
+          "height": 7.0
+        },
+        {
+          "widget": "rating",
+          "data": ["rating"]
+        }
+      ],
+      "end": [
+        {
+          "widget": "text",
+          "textSize": "title9",
+          "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.7 },
+          "data": ["display_name"]
+        },
+        {
+          "widget": "text",
+          "textSize": "title11Odd",
+          "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.5 },
+          "data": ["sub_type_string"]
+        },
+        {
+          "widget": "vertical_spacer",
+          "height": 3.0
+        },
+        {
+          "widget": "text_overflowed",
+          "textSize": "text10w500",
+          "textColor": { "r": 0, "g": 0, "b": 0, "o": 0.37 },
+          "data": ["description"]
+        },
+        {
+          "widget": "vertical_spacer",
+          "height": 2.0
+        },
+        {
+          "widget": "view_details_button",
+          "data": ["id"]
+        },
+        {
+          "widget": "vertical_spacer",
+          "height": 10.0
+        },
+        {
+          "widget": "contact_button",
+          "titleText": "Contact Us",
+          "data": ["id"]
+        }
+      ]
+    },
+    "query": "query {\n  items: businesses(type: MadeInQatarBusiness) {\n    id,\n    display_name,\n    display_picture,\n    rating\n    ... on MadeInQatarBusiness {\n      sub_type_string\n      description\n    }\n  } \n}"
+  },
+  "detailed": {
+    "appbar": {
+      "filter": false,
+      "text": "Contact Us"
+    },
+    "columns": {
+      "header": {
+        "start": [
+          {
+            "widget": "picture",
+            "height": 79.0,
+            "width": 80.0,
+            "data": ["display_picture"]
+          },
+          {
+            "widget": "vertical_spacer",
+            "height": 6.0
+          },
+          {
+            "widget": "rating",
+            "data": ["rating"]
+          }
+        ],
+        "end": [
+          {
+            "widget": "text",
+            "textSize": "title9",
+            "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.7 },
+            "data": ["display_name"]
+          },
+          {
+            "widget": "text",
+            "textSize": "title11Odd",
+            "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.5 },
+            "data": ["sub_type_string"]
+          },
+          {
+            "widget": "vertical_spacer",
+            "height": 4.0
+          },
+          {
+            "widget": "text_with_icon",
+            "textSize": "title11Odd",
+            "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.5 },
+            "iconName": "address.png",
+            "data": ["street_address"]
+          },
+          {
+            "widget": "vertical_spacer",
+            "height": 5.0
+          },
+          {
+            "widget": "wrapped_text_with_icon",
+            "textSize": "title10OddUnderlined",
+            "textColor": {"r": 66, "g": 102, "b": 119, "o": 1.0 },
+            "iconName": "telephone.png",
+            "maxElements": 2,
+            "data": ["phone_number"]
+          }
+        ]
+      },
+      "body": [
+        {
+          "widget": "vertical_spacer",
+          "height": 9.0
+        },
+        {
+          "widget": "text",
+          "textSize": "text6w500",
+          "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.69 },
+          "data": ["description"]
+        },
+        {
+          "widget": "divider"
+        },
+        {
+          "widget": "bool_text_with_title",
+          "titleText": "Home Service:",
+          "titleSize": "title9",
+          "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
+          "textSize": "title11Odd",
+          "textColor": { "r": 225, "g": 168, "b": 84, "o": 1.0 },
+          "textIfTrue": "Available",
+          "textIfFalse": "Not available",
+          "data": ["home_delivery_available"]
+        },
+        {
+          "widget": "divider"
+        },
+        {
+          "widget": "text_with_title",
+          "titleText": "Website:",
+          "titleSize": "title9",
+          "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
+          "textSize": "text9odd",
+          "textColor": { "r": 66, "g": 102, "b": 118, "o": 1.0 },
+          "data": ["website"]
+        },
+        {
+          "widget": "divider"
+        },
+        {
+          "widget": "itemized_text_with_title",
+          "titleText": "Products:",
+          "titleSize": "title9",
+          "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
+          "textSize": "text9odd",
+          "textColor": { "r": 0, "g": 0, "b": 0, "o": 0.5 },
+          "data": ["products"]
+        },
+        {
+          "widget": "divider"
+        },
+        {
+          "widget": "picture_gallery",
+          "titleText": "Photos",
+          "titleSize": "title9",
+          "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
+          "data": ["attachments"]
+        }
+      ]
+    },
+    "query": "query($id: ID!) {\n  item: business(id: $id) {\n    display_name\n    display_picture\n    rating\n    ... on MadeInQatarBusiness {\n      sub_type_string\n      street_address\n      phone_number\n      description\n      home_delivery_available\n      website\n      products\n      attachments\n    }\n  }\n}"
+  }
 }

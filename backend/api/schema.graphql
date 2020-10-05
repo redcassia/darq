@@ -285,8 +285,8 @@ input UpdateDomesticHelpBusinessInput {
   phone_number: [String!]
   description: String
   website: String
-  old_personnel: [UpdateDomesticHelpPersonnelInput!]
-  personnel: [DomesticHelpPersonnelInput!]
+  old_personnel: [String!]
+  personnel: [UpdateDomesticHelpPersonnelInput!]
 }
 
 # beauty
@@ -979,7 +979,7 @@ input DomesticHelpPersonnelInput {
 }
 
 input UpdateDomesticHelpPersonnelInput {
-  name: String
+  name: String!
   picture: Upload
   profession: Profession
   gender: Gender

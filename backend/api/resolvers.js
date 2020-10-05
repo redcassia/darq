@@ -1539,7 +1539,7 @@ const resolvers = {
                 WHERE
                   business_id = ?
                 `,
-                [ data, id ]
+                [ JSON.stringify(data), id ]
               );
             }
 

@@ -535,7 +535,7 @@ async function _storeAttachments(data) {
 }
 
 function _removeAttachment(attachment) {
-  fs.unlink(path.join(process.env.ATTACHMENTS_DIR, attachment));
+  fs.unlink(path.join(process.env.ATTACHMENTS_DIR, attachment), () => {});
 }
 
 function _updateAttachments(original, kept, added) {
@@ -610,6 +610,82 @@ async function _updateBusiness(id, data) {
     console.log(e);
     throw new ApolloError("Failed to update business.", 'UPDATE_BUSINESS_FAILED');
   }
+}
+
+async function _processUpdatedPersonnel(id, data) {
+  var business = await businessLoader.load(id);
+
+  var updated = false;
+
+  var personnel = business["personnel"];
+  if (! personnel) personnel = [];
+
+  // remove personnel not found in 'old_personnel' and not in 'personnel'
+  if (data["old_personnel"]) {
+    for (var i = 0; i < personnel.length; ++i) {
+      if (
+        data["old_personnel"].indexOf(personnel[i]["name"]) == -1
+        && data["personnel"].findIndex(_ => _["name"] == personnel[i]["name"]) == -1
+      ) {
+        personnel.splice(i, 1); --i;
+        updated = true;
+      }
+    }
+
+    // no longer needed
+    delete data["old_personnel"];
+  }
+
+  // update or add
+  if (data["personnel"]) {
+    for (var i = 0; i < data["personnel"].length; ++i) {
+      var p = data["personnel"][i];
+
+      const index = personnel.findIndex(_ => _["name"] == p["name"]);
+      if (index == -1) {    // add
+        personnel.push(p);
+      }
+      else {                // update
+        p = await _storeAttachments(p);
+
+        if (p.attachments || p.old_attachments) {
+          if (personnel[index].attachments) {
+            p.attachments = _updateAttachments(
+              personnel[index].attachments,
+              p.old_attachments || [],
+              p.attachments || []
+            );
+          }
+
+          if (p.old_attachments) delete p.old_attachments;
+        }
+
+        personnel[index] = { ...personnel[index], ...p };
+      }
+
+      updated = true;
+    }
+
+    delete data["personnel"];
+  }
+
+  if (updated) {
+    await db.query(
+      `
+      UPDATE
+        business
+      SET
+        props = JSON_MERGE_PATCH(props, ?)
+      WHERE
+        id = ?
+      `,
+      [ JSON.stringify({ personnel: personnel }), id ]
+    );
+
+    businessLoader.clear(id);
+  }
+
+  return data;
 }
 
 async function _addEvent(data, owner) {
@@ -1190,7 +1266,25 @@ const resolvers = {
       _validateAuthenticatedBusinessUser(user);
       await _validateBusinessOwnerAndType(user, id, 'DomesticHelpBusiness');
 
-      _updateBusiness(id, data);
+      if (data["personnel"] || data["old_personnel"]) {
+        try {
+          data = await _processUpdatedPersonnel(id, data);
+        }
+        catch(e) {
+          console.log(e);
+          throw new ApolloError(
+            "Failed to update business",
+            'PERSONNEL_UPDATE_ERROR'
+          );
+        }
+      }
+
+      if (Object.keys(data).length > 0) {
+        _updateBusiness(id, data);
+      }
+      else {
+        // TODO: send email notification
+      }
     },
 
     async addBeautyBusiness(_, { data }, { user }) {
@@ -1445,7 +1539,7 @@ const resolvers = {
                 WHERE
                   business_id = ?
                 `,
-                [ data, id ]
+                [ JSON.stringify(data), id ]
               );
             }
 

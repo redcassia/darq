@@ -136,7 +136,9 @@ class Form {
 
     for (var child of form.children) {
       if (child.classList[0] == 'form-line' || child.classList[0] == 'form-box') {
-        data = { ...data, ...this._getFormData(child) };
+        if (! $(child).hasClass("hidden")) {
+          data = { ...data, ...this._getFormData(child) };
+        }
       }
       else {
         switch (child.tagName) {

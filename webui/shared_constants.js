@@ -95,6 +95,7 @@ const __elementaryBusinessQueryFields = `
       ... on Driver {
         license_expiry_date
       }
+      attachments
       ... on Nanny {
         education
         height
@@ -314,7 +315,7 @@ function openInNewTab(url) {
 }
 
 function equals(a, b) {
-  if (a == b) {
+  if (a === b) {
     return true;
   }
   else if (a instanceof Array && b instanceof Array) {
@@ -326,10 +327,15 @@ function equals(a, b) {
   }
   else if (a instanceof Object && b instanceof Object) {
     for (var key in a) {
-      if (! b[key] || ! equals(a[key], b[key])) return false;
+      if (
+        (b[key] === undefined && a[key] !== undefined) ||
+        ! equals(a[key], b[key])
+      ) return false;
     }
     for (var key in b) {
-      if (! a[key]) return false;
+      if (
+        a[key] === undefined && b[key] !== undefined
+      ) return false;
     }
     return true;
   }

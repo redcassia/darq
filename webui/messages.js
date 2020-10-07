@@ -20,12 +20,18 @@ function createThreadPreview(thread) {
 function updateThreadView(scrollToBottom) {
   var html = "";
 
+  const lastIndex = activeMsgThread.messages[activeMsgThread.messages.length - 1].index;
+
   for (var m of activeMsgThread.messages) {
     html += `
       <div class="${m.sender == 'BUSINESS' ? "msg-me" : "msg-other"}">
         <p>${m.msg}</p>
       </div>
     `;
+
+    if (m.index == activeMsgThread.targetLastSeenIndex && m.index != lastIndex) {
+      html += `<div class="new-messages-separator">New messages</div>`;
+    }
   }
 
   var el = document.getElementById("messages");
@@ -73,11 +79,19 @@ function loadMoreMessages(data) {
   }
 }
 
-function updateThread(data) {
-  if (data) {
+function updateThread(data, seeIndex) {
+
+  var updateViewNeeded = false;
+
+  if (seeIndex != null) {
+    activeMsgThread.targetLastSeenIndex = seeIndex;
+    updateViewNeeded = true;
+  }
+
+  if (data != null || seeIndex != null) {
     if (data.length > 0 && data[0].index > activeMsgThread.messages[activeMsgThread.messages.length - 1].index) {
       activeMsgThread.messages = activeMsgThread.messages.concat(data);
-      updateThreadView(true);
+      updateViewNeeded = true;
     }
   }
   else {
@@ -87,6 +101,7 @@ function updateThread(data) {
       query ($threadId: ID, $minIndex: Int) {
         user {
           threads(threadId: $threadId) {
+            targetLastSeenIndex
             messages(minIndex: $minIndex) {
               index
               msg
@@ -101,10 +116,46 @@ function updateThread(data) {
       minIndex: activeMsgThread.messages[activeMsgThread.messages.length - 1].index
     }).then(res => {
       if (! res.hasError && activeMsgThread.id == id) {
-        updateThread(res.data["user"]["threads"][0]["messages"]);
+        updateThread(
+          res.data["user"]["threads"][0]["messages"],
+          res.data["user"]["threads"][0]["targetLastSeenIndex"]
+        );
       }
     });
   }
+
+  if (updateViewNeeded) updateThreadView(true);
+}
+
+function see() {
+  var id = activeMsgThread.id;
+  var index = activeMsgThread.messages[activeMsgThread.messages.length - 1].index;
+
+  if (activeMsgThread.targetLastSeenIndex >= index) return;
+
+  GraphQL.mutation(`
+    mutation ($threadId: ID!, $index: Int!) {
+      seeMessage(threadId: $threadId, index: $index) {
+        targetLastSeenIndex
+        messages(minIndex: $index) {
+          index
+          msg
+          time
+          sender
+        }
+      }
+    }
+  `, {
+    threadId: id,
+    index: index,
+  }).then(res => {
+    if (! res.hasError && activeMsgThread.id == id) {
+      updateThread(
+        res.data["seeMessage"]["messages"],
+        res.data["seeMessage"]["targetLastSeenIndex"]
+      );
+    }
+  })
 }
 
 function sendMessage(msg) {
@@ -114,6 +165,7 @@ function sendMessage(msg) {
   GraphQL.mutation(`
     mutation ($msg: String!, $threadId: ID!, $minIndex: Int) {
       sendMessage(msg: $msg, threadId: $threadId) {
+        targetLastSeenIndex
         messages(minIndex: $minIndex) {
           index
           msg
@@ -128,7 +180,10 @@ function sendMessage(msg) {
     minIndex: activeMsgThread.messages[activeMsgThread.messages.length - 1].index
   }).then(res => {
     if (! res.hasError && activeMsgThread.id == id) {
-      updateThread(res.data["sendMessage"]["messages"]);
+      updateThread(
+        res.data["sendMessage"]["messages"],
+        res.data["sendMessage"]["targetLastSeenIndex"]
+      );
     }
   });
 }
@@ -156,6 +211,7 @@ function updateThreads() {
         threads {
           id
           sender
+          targetLastSeenIndex
           messages {
             index
             msg

@@ -690,6 +690,16 @@ hr {
     background-color: var(--accent);
 }
 
+.new-messages-separator {
+    width: calc(100% - 16px);
+    border-radius: 15px;
+    margin: 20px 0;
+    padding: 4px 8px;
+    font-size: 14px;
+    color: var(--white);
+    background-color: var(--green);
+}
+
 #msg-box {
     height: 100px;
     width: 100%;

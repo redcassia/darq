@@ -2,7 +2,7 @@
   "list": {
     "appbar": {
       "filter": false,
-      "title": "Domestic Help"
+      "title": "domestic_help"
     },
     "columns": {
       "start": [
@@ -58,7 +58,7 @@
         },
         {
           "widget": "contact_button",
-          "titleText": "Contact Us",
+          "titleText": "contact_us",
           "data": ["id"]
         }
       ]
@@ -69,7 +69,7 @@
   "detailed": {
     "appbar": {
       "filter": true,
-      "text": "Contact Us",
+      "text": "contact_us",
       "values_query": "query {\n    __type(name: \"Profession\") {\n      enumValues {\n        name\n      }\n    }\n}  ",
       "filter_data_path": "personnel",
       "filter_attribute": "profession"

@@ -163,7 +163,7 @@
         },
         {
           "widget": "wrapped_text_with_title",
-          "titleText": "Skills:",
+          "titleText": "skills",
           "titleSize": "title9",
           "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
           "maxElements": 10,
@@ -181,12 +181,12 @@
         },
         {
           "widget": "price",
-          "titleText": "Charge:",
+          "titleText": "charge",
           "titleSize": "title9",
           "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
           "textSize": "title10",
           "textColor": { "r": 0, "g": 0, "b": 0, "o": 0.7 },
-          "trailingText": "/hr",
+          "trailingText": "per_hr",
           "trailingTextSize": "title10",
           "trailingTextColor": { "r": 0, "g": 0, "b": 0, "o": 0.5 },
           "data": ["charge"]
@@ -196,7 +196,7 @@
         },
         {
           "widget": "picture_gallery",
-          "titleText": "Photos",
+          "titleText": "photos",
           "titleSize": "title9",
           "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
           "data": ["attachments"]

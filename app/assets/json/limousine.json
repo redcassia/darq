@@ -150,7 +150,7 @@
         },
         {
           "widget": "itemized_text_with_title",
-          "titleText": "Services:",
+          "titleText": "services",
           "titleSize": "title9",
           "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
           "textSize": "text9odd",
@@ -162,7 +162,7 @@
         },
         {
           "widget": "picture_gallery",
-          "titleText": "Photos",
+          "titleText": "photos",
           "titleSize": "title9",
           "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
           "data": ["attachments"]

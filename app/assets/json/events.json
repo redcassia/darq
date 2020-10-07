@@ -153,7 +153,7 @@
         },
         {
           "widget": "text_with_title",
-          "titleText": "Ticket Reservation:",
+          "titleText": "ticket_reservation",
           "titleSize": "title9",
           "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
           "textSize": "text9odd",
@@ -165,7 +165,7 @@
         },
         {
           "widget": "price",
-          "titleText": "Ticket Price:",
+          "titleText": "ticket_price",
           "titleSize": "title9",
           "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
           "textSize": "title10",
@@ -180,7 +180,7 @@
         },
         {
           "widget": "text_with_title",
-          "titleText": "Organizer:",
+          "titleText": "organizer",
           "titleSize": "title9",
           "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
           "textSize": "text9odd",
@@ -192,7 +192,7 @@
         },
         {
           "widget": "picture_gallery",
-          "titleText": "Photos",
+          "titleText": "photos",
           "titleSize": "title9",
           "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
           "data": ["attachments"]

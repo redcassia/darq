@@ -2,7 +2,7 @@
   "list": {
     "appbar": {
       "filter": true,
-      "title": "Children Education Centers",
+      "title": "child_education_centers",
       "values_query" : " query {\n    __type(name: \"ChildEducationSubType\") {\n      enumValues {\n        name\n      }\n    }\n}   "
     },
     "columns": {
@@ -35,7 +35,7 @@
         },
         {
           "widget": "text_with_title",
-          "titleText": "Address:",
+          "titleText": "address",
           "titleSize": "title11",
           "titleColor": {"r": 0, "g": 0, "b": 0, "o": 0.7 },
           "textSize": "text10",
@@ -48,7 +48,7 @@
         },
         {
           "widget": "text_with_title",
-          "titleText": "Founded:",
+          "titleText": "founded",
           "titleSize": "title11",
           "titleColor": {"r": 0, "g": 0, "b": 0, "o": 0.7 },
           "textSize": "text10",
@@ -61,7 +61,7 @@
         },
         {
           "widget": "text_with_title",
-          "titleText": "Curriculum:",
+          "titleText": "curriculum",
           "titleSize": "title11",
           "titleColor": {"r": 0, "g": 0, "b": 0, "o": 0.7 },
           "textSize": "text10",
@@ -82,7 +82,7 @@
         },
         {
           "widget": "contact_button",
-          "titleText": "Contact Us",
+          "titleText": "contact_us",
           "data": ["id"]
         }
       ]
@@ -92,7 +92,7 @@
   "detailed": {
     "appbar": {
       "filter": false,
-      "text": "Contact Us"
+      "text": "contact_us"
     },
     "columns": {
       "header": {
@@ -166,7 +166,7 @@
         },
         {
           "widget": "text_with_title",
-          "titleText": "Founded:",
+          "titleText": "founded",
           "titleSize": "title9",
           "titleColor": {"r": 0, "g": 0, "b": 0, "o": 0.67 },
           "textSize": "text9odd",
@@ -178,7 +178,7 @@
         },
         {
           "widget": "text_with_title",
-          "titleText": "Curriculum:",
+          "titleText": "curriculum",
           "titleSize": "title9",
           "titleColor": {"r": 0, "g": 0, "b": 0, "o": 0.67 },
           "textSize": "text9odd",
@@ -190,7 +190,7 @@
         },
         {
           "widget": "picture_gallery",
-          "titleText": "Photos",
+          "titleText": "photos",
           "titleSize": "title9",
           "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
           "data": ["attachments"]

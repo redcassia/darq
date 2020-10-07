@@ -142,13 +142,13 @@
         },
         {
           "widget": "bool_text_with_title",
-          "titleText": "Home Service:",
+          "titleText": "home_service:",
           "titleSize": "title9",
           "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
           "textSize": "title11Odd",
           "textColor": { "r": 225, "g": 168, "b": 84, "o": 1.0 },
-          "textIfTrue": "Available",
-          "textIfFalse": "Not available",
+          "textIfTrue": "available",
+          "textIfFalse": "not_available",
           "data": ["home_delivery_available"]
         },
         {
@@ -156,7 +156,7 @@
         },
         {
           "widget": "text_with_title",
-          "titleText": "Website:",
+          "titleText": "website",
           "titleSize": "title9",
           "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
           "textSize": "text9odd",
@@ -168,7 +168,7 @@
         },
         {
           "widget": "itemized_text_with_title",
-          "titleText": "Products:",
+          "titleText": "products",
           "titleSize": "title9",
           "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
           "textSize": "text9odd",
@@ -180,7 +180,7 @@
         },
         {
           "widget": "picture_gallery",
-          "titleText": "Photos",
+          "titleText": "photos",
           "titleSize": "title9",
           "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
           "data": ["attachments"]

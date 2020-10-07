@@ -62,7 +62,7 @@
         },
         {
           "widget": "contact_button",
-          "titleText": "Contact Us",
+          "titleText": "contact_us",
           "data": ["id"]
         }
       ]
@@ -72,7 +72,7 @@
   "detailed": {
     "appbar": {
       "filter": false,
-      "text": "Contact Us"
+      "text": "contact_us"
     },
     "columns": {
       "header": {

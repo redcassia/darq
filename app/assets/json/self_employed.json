@@ -59,7 +59,7 @@
         },
         {
           "widget": "contact_button",
-          "titleText": "Contact Me",
+          "titleText": "contact_me",
           "data": ["id"]
         }
       ]
@@ -69,7 +69,7 @@
   "detailed": {
     "appbar": {
       "filter": false,
-      "text": "Contact Me"
+      "text": "contact_me"
     },
     "columns": {
       "header": {

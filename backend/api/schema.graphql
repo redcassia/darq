@@ -14,6 +14,7 @@ type Mutation {
   rateBusiness(id: ID!, stars: Int!): Void
 
   sendMessage(msg: String!, threadId: ID, targetBusinessId: ID): MessageThread!
+  seeMessage(threadId: ID!, index: Int!): MessageThread!
 
   createPublicUser: String
   createBusinessUser(email: String!, password: String!): String
@@ -92,6 +93,8 @@ type MessageThread {
   sender: String
   target: Business!
   messages(minIndex: Int, maxIndex: Int, limit: Int! = 20): [Message!]!
+  targetLastSeenIndex: Int
+  senderLastSeenIndex: Int
 }
 
 type Message {

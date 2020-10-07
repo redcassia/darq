@@ -10,6 +10,12 @@
 </div><div class="left-aligned-content with-submenu full-height">
     <div class="hidden" id="thread-view" style="height: 100%;">
         <div id="messages"></div>
-        <textarea id="msg-box" onkeydown="if (event.keyCode === 13) { event.preventDefault(); sendMessage(this.value); this.value = ''; } "></textarea>
+        <textarea 
+            id="msg-box"
+            onkeydown="if (event.keyCode === 13) {
+                event.preventDefault(); sendMessage(this.value); this.value = ''; 
+            }"
+            onfocus="see()"
+        ></textarea>
     </div>
 </div>

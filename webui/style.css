@@ -645,8 +645,10 @@ hr {
     font-size: 12px;
     line-height: 14px;
 }
+.thread-title.unseen > * {
+    font-weight: 800;
+}
 .thread-title > p:first-child {
-    font-weight: 500;
     font-size: 14px;
     line-height: 16px;
 }

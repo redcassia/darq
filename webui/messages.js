@@ -8,11 +8,12 @@ var threadsUpdater;
 function createThreadPreview(thread) {
   var lastMessage = thread.messages[thread.messages.length - 1];
   var preview = lastMessage.msg;
+  var newCount = lastMessage.index - thread.targetLastSeenIndex;
   if (lastMessage.sender == 'BUSINESS') preview = 'You: ' + preview;
   if (preview.length > 30) preview = preview.slice(0, 30) + "...";
 
   return `
-    <p>${thread.sender}</p>
+    <p>${newCount > 0 ? `(${newCount})  ` : ''}${thread.sender}</p>
     <p>${preview}</p>
   `;
 }
@@ -39,7 +40,14 @@ function updateThreadView(scrollToBottom) {
   if (scrollToBottom) {
     el.scrollTo(0, el.scrollHeight);
   }
+
   activeMsgThreadDom.innerHTML = createThreadPreview(activeMsgThread);
+  if (activeMsgThread.targetLastSeenIndex != lastIndex) {
+    $(activeMsgThreadDom).addClass("unseen");
+  }
+  else {
+    $(activeMsgThreadDom).removeClass("unseen");
+  }
 }
 
 function loadMoreMessages(data) {
@@ -240,7 +248,11 @@ function updateThreads() {
     for (var thread of orderedThreads) {
       html += `
         <div
-          class="thread-title ${(activeMsgThread && activeMsgThread.id == thread.id) ? "active" : ""}"
+          class="
+            thread-title
+            ${(activeMsgThread && activeMsgThread.id == thread.id) ? "active" : ""}
+            ${thread.targetLastSeenIndex != thread.messages[thread.messages.length - 1].index ? "unseen" : ""}
+          "
           onclick="selectThread(this, '${thread.id}')"
         >${createThreadPreview(thread)}</div>
       `;

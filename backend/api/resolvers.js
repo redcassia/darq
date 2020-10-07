@@ -224,7 +224,9 @@ const msgThreadLoader = new DataLoader(
           id,
           business_id,
           CAST(public_user_id AS CHAR(18)) AS public_user_id,
-          business_user_id
+          business_user_id,
+          targetLastSeenIndex,
+          senderLastSeenIndex
         FROM
           message_thread
         WHERE
@@ -798,6 +800,50 @@ async function _updateEvent(id, data) {
   }
 }
 
+function _targetSeeMessage(thread, index) {
+  db.query(
+    `
+    UPDATE
+      message_thread
+    SET
+      targetLastSeenIndex = ?
+    WHERE
+      id = ?
+    `,
+    [ index, thread.id ]
+  );
+
+  thread.targetLastSeenIndex = index;
+
+  msgThreadLoader
+    .clear(thread.id)
+    .prime(thread.id, thread);
+
+  return thread;
+}
+
+function _senderSeeMessage(thread, index) {
+  db.query(
+    `
+    UPDATE
+      message_thread
+    SET
+      senderLastSeenIndex = ?
+    WHERE
+      id = ?
+    `,
+    [ index, thread.id ]
+  );
+
+  thread.senderLastSeenIndex = index;
+
+  msgThreadLoader
+    .clear(thread.id)
+    .prime(thread.id, thread);
+
+  return thread;
+}
+
 const resolvers = {
   Query: {
     async user(_, args, { user }) {
@@ -1015,16 +1061,6 @@ const resolvers = {
             'CANNOT_SEND_BUSINESS_USER_NOT_THREAD_OWNER'
           );
         }
-
-        await db.query(
-          `
-          INSERT INTO
-            message(message_thread_id, sender, data)
-          VALUES
-            (?, 'BUSINESS', ?)
-          `,
-          [ thread.id, msg ]
-        );
       }
       else if (user.type == 'PUBLIC') {
         if (thread.public_user_id != user.id) {
@@ -1033,16 +1069,6 @@ const resolvers = {
             'CANNOT_SEND_PUBLIC_USER_NOT_THREAD_OWNER'
           );
         }
-
-        await db.query(
-          `
-          INSERT INTO
-            message(message_thread_id, sender, data)
-          VALUES
-            (?, 'PUBLIC', ?)
-          `,
-          [ thread.id, msg ]
-        );
       }
       else {
         throw new ApolloError(
@@ -1051,12 +1077,89 @@ const resolvers = {
         );
       }
 
-      msgLoader.clear(thread.id);
-      return thread;
+      var messages = await msgLoader.load(thread.id);
+      var m = {
+        index: messages.length > 0 ? messages[messages.length - 1].index + 1 : 0,
+        msg: msg,
+        time: new Date(),
+        sender: user.type
+      };
+
+      messages.push(m);
+      msgLoader
+        .clear(thread.id)
+        .prime(thread.id, messages);
+
+      db.query(
+        `
+        INSERT INTO
+          message(message_thread_id, create_time, sender, data)
+        VALUES
+          (?, ?, ?, ?)
+        `,
+        [ thread.id, m.time, m.sender, m.msg ]
+      );
+
+      if (user.type == 'BUSINESS') return _targetSeeMessage(thread, m.index);
+      else return _senderSeeMessage(thread, m.index);
+    },
+
+    async seeMessage(_, { threadId, index }, { user }) {
+      if (! user) {
+        throw new ApolloError(
+          "Sorry... You're not authenticated! :c",
+          'USER_NOT_AUTHENTICATED'
+        );
+      }
+
+      var thread = await msgThreadLoader.load(threadId);
+
+      if (user.type == 'BUSINESS') {
+
+        if (thread.business_user_id != user.id) {
+          throw new ApolloError(
+            "You are not the owner of this thread",
+            'CANNOT_SEE_BUSINESS_USER_NOT_THREAD_OWNER'
+          );
+        }
+
+        if (thread.targetLastSeenIndex !== null && thread.targetLastSeenIndex >= index) {
+          throw new ApolloError(
+            "Invalid message see index",
+            'INVALID_TARGET_SEE_INDEX'
+          );
+        }
+
+        return _targetSeeMessage(thread, index);
+      }
+      else if (user.type == 'PUBLIC') {
+        if (thread.public_user_id != user.id) {
+          throw new ApolloError(
+            "You are not the owner of this thread",
+            'CANNOT_SEE_PUBLIC_USER_NOT_THREAD_OWNER'
+          );
+        }
+
+        if (thread.senderLastSeenIndex !== null && thread.senderLastSeenIndex >= index) {
+          throw new ApolloError(
+            "Invalid message see index",
+            'INVALID_SENDER_SEE_INDEX'
+          );
+        }
+
+        return _senderSeeMessage(thread, index);
+      }
+      else {
+        throw new ApolloError(
+          "I'm sorry. I made a boom boom. :(",
+          'INVALID_USER_TYPE'
+        );
+      }
     },
 
     async createPublicUser() {
-      const id = cryptoRandomString({length: 18, type: 'numeric'})
+      var id = cryptoRandomString({length: 18, type: 'numeric'});
+      while (id.charAt(0) == '0') cryptoRandomString({length: 18, type: 'numeric'})
 
       try {
         const rows = await db.query(
@@ -1794,7 +1897,7 @@ const resolvers = {
         return user.first_name + ' ' + user.last_name
       }
       else {
-        return "Anonymous User";
+        return "DarQ User";
       }
     },
     target: async(parent, args, ctx) => await businessLoader.load(parent.business_id),

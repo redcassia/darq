@@ -1,18 +1,20 @@
 import 'dart:ui';
 
-import 'package:darq/backend.dart';
+import 'package:darq/backend/auth.dart';
+
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/res/path_files.dart';
 import 'package:darq/utilities/constants.dart';
+import 'package:darq/views/shared/app_bars/back_arrow.dart';
 import 'package:darq/views/shared/app_bars/default_appbar.dart';
 import 'package:darq/views/shared/button.dart';
-import 'package:darq/views/shared/capsule/right_rounded_capsule.dart';
-import 'package:darq/views/shared/custom_card.dart';
+import 'package:darq/views/shared/default_card.dart';
 import 'package:darq/views/shared/star_rating.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 import 'package:graphql/client.dart';
 
 class RatingScreen extends StatefulWidget {
@@ -30,7 +32,7 @@ class _RatingScreenState extends State<RatingScreen> {
   rateBusiness(int rating) {
     print("rating $rating");
     print("id: ${widget.businessId}");
-    Backend.getClient().then((client) => client
+    Auth.getClient().then((client) => client
             .mutate(MutationOptions(documentNode: gql(r'''
            mutation($id : ID!, $rating:  Int!){
           rateBusiness(
@@ -59,27 +61,19 @@ class _RatingScreenState extends State<RatingScreen> {
             child: DefaultAppBar(
                 allowHorizontalPadding: false,
                 bgImage: "app_bar_rectangle.png",
-                leading: RightRoundedCapsule(
-                    iconBgColor: Color.fromRGBO(134, 194, 194, 0.69),
-                    verticalPadding: 5.h,
-                    horizontalPadding: 19.w,
-                    icon: Image(
-                        width: 9.73.w,
-                        fit: BoxFit.fill,
-                        image: AssetImage(PathFiles.ImgPath + "back.png"))),
+                leading: BackArrow(),
                 onLeadingClicked: () => Navigator.pop(context))),
         body: DefaultCard(
             margin: EdgeInsets.only(
-                right: 19.w, left: 20.w, bottom: 10.h, top: 10.h),
+                right: 20.w, left: 20.w, bottom: 10.h, top: 10.h),
             padding: EdgeInsets.zero,
             child: Padding(
-                padding: EdgeInsets.only(
-                    left: 13.w, right: 28.w, top: 30.h, bottom: 30.h),
+                padding: EdgeInsets.symmetric(vertical: 30.h),
                 child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text("What's your rate?",
+                      Text(translate("what_is_your_rate"),
                           style: AppFonts.title7(
                               color: Color.fromRGBO(0, 0, 0, 0.7))),
                       SizedBox(height: 20.h),
@@ -106,7 +100,7 @@ class _RatingScreenState extends State<RatingScreen> {
                       SizedBox(height: 30.h),
                       CustomButton(
                           onButtonPressed: () => rateBusiness(_rating.toInt()),
-                          buttonName: "Rate",
+                          buttonName: translate("rate"),
                           height: 23.h,
                           width: 93.w,
                           color: Color(0xFF426676),

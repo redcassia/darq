@@ -1,17 +1,20 @@
 import 'dart:async';
 
-import 'package:darq/backend.dart';
-import 'package:darq/chat.dart';
+import 'package:darq/backend/auth.dart';
+
+import 'package:darq/backend/chat.dart';
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/res/path_files.dart';
 import 'package:darq/utilities/constants.dart';
 import 'package:darq/utilities/screen_info.dart';
+import 'package:darq/views/shared/app_bars/back_arrow.dart';
 import 'package:darq/views/shared/app_bars/default_appbar.dart';
-import 'package:darq/views/shared/capsule/right_rounded_capsule.dart';
+import 'package:darq/views/shared/rounded_capsule.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 import 'package:graphql/client.dart';
 import 'package:intl/intl.dart';
 
@@ -50,7 +53,7 @@ class _ChatRoomState extends State<ChatRoom> {
       });
       _doRefresh();
     }).catchError((e) async {
-      var client = await Backend.getClient();
+      var client = await Auth.getClient();
       var result = await client.query(QueryOptions(
           documentNode: gql(
               r'''query($id: ID!) { business(id: $id) { display_name } }'''),
@@ -82,7 +85,8 @@ class _ChatRoomState extends State<ChatRoom> {
   }
 
   void _doRefresh() {
-    if (_thread != null) { var lastIndex = _thread.messages.last.index;
+    if (_thread != null) {
+      var lastIndex = _thread.messages.last.index;
       _chatInstance.refreshThread(_thread.id).then((_) {
         if (_refresh) {
           setState(() {
@@ -179,18 +183,21 @@ class _ChatRoomState extends State<ChatRoom> {
                   controller: textFieldController,
                   cursorColor: Color(0xFF86C2C2),
                   decoration: InputDecoration(
-                    hintText: "Send a message",
+                    hintText: translate("send_message"),
                     contentPadding: EdgeInsets.symmetric(vertical: 5.h),
                     isCollapsed: true,
                     border: InputBorder.none,
                   ))),
-          IconButton(
-              icon: Icon(Icons.send),
-              color: Color(0xFF86C2C2),
-              onPressed: () {
-                _sendMsg(textFieldController.text);
-                textFieldController.clear();
-              })
+          RotatedBox(
+              quarterTurns:
+                  Localizations.localeOf(context).languageCode == 'en' ? 0 : 4,
+              child: IconButton(
+                  icon: Icon(Icons.send),
+                  color: Color(0xFF86C2C2),
+                  onPressed: () {
+                    _sendMsg(textFieldController.text);
+                    textFieldController.clear();
+                  }))
         ]));
   }
 
@@ -213,14 +220,7 @@ class _ChatRoomState extends State<ChatRoom> {
                 allowHorizontalPadding: false,
                 title: _businessName,
                 bgImage: "app_bar_rectangle.png",
-                leading: RightRoundedCapsule(
-                    iconBgColor: Color.fromRGBO(134, 194, 194, 0.69),
-                    verticalPadding: 5.h,
-                    horizontalPadding: 19.w,
-                    icon: Image(
-                        width: 9.73.w,
-                        fit: BoxFit.fill,
-                        image: AssetImage(PathFiles.ImgPath + "back.png"))),
+                leading: BackArrow(),
                 onLeadingClicked: () => Navigator.pop(context))),
         body: Column(children: [
           Expanded(

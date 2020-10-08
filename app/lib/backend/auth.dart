@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:graphql/client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Backend {
+class Auth {
   static final HttpLink _backendLink =
       HttpLink(uri: 'http://redcassia.com:3001/api');
   static GraphQLClient _client;

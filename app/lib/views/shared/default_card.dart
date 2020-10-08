@@ -15,8 +15,11 @@ class DefaultCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
+        borderRadius: Localizations.localeOf(context).languageCode == 'en'
+            ? BorderRadius.only(
+                topLeft: Radius.circular(20), bottomRight: Radius.circular(20))
+            : BorderRadius.only(
+                topRight: Radius.circular(20), bottomLeft: Radius.circular(20)),
         child: Container(
             width: double.infinity,
             margin: margin,
@@ -28,9 +31,14 @@ class DefaultCard extends StatelessWidget {
                       blurRadius: 5.0,
                       offset: Offset(1, 1))
                 ],
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    bottomRight: Radius.circular(20))),
+                borderRadius:
+                    Localizations.localeOf(context).languageCode == 'en'
+                        ? BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            bottomRight: Radius.circular(20))
+                        : BorderRadius.only(
+                            topRight: Radius.circular(20),
+                            bottomLeft: Radius.circular(20))),
             child: Padding(padding: padding, child: child)));
   }
 }

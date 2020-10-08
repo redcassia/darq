@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:darq/backend.dart';
+import 'package:darq/backend/auth.dart';
 import 'package:graphql/client.dart';
 
 class Message {
@@ -48,7 +48,7 @@ class Chat {
   HashMap<String, MessageThread> _threads;
   HashMap<String, MessageThread> _threadsByBusiness;
   _init() async {
-    var client = await Backend.getClient();
+    var client = await Auth.getClient();
     var result = await client.query(QueryOptions(documentNode: gql('''
       query{
         user{
@@ -109,7 +109,7 @@ class Chat {
 
   Future<MessageThread> loadMore(String threadId) async {
     var thread = await getThread(threadId: threadId);
-    var client = await Backend.getClient();
+    var client = await Auth.getClient();
     var result = await client.query(QueryOptions(documentNode: gql(r'''
       query ($threadId: ID!, $maxIndex: Int!){
         user{
@@ -138,7 +138,7 @@ class Chat {
 
   Future<MessageThread> refreshThread(String threadId) async {
     var thread = await getThread(threadId: threadId);
-    var client = await Backend.getClient();
+    var client = await Auth.getClient();
     var result = await client.query(QueryOptions(documentNode: gql(r'''
       query ($threadId: ID!, $minIndex: Int!){
         user{
@@ -167,7 +167,7 @@ class Chat {
 
   Future<MessageThread> sendMessage(String message,
       {String threadId, String businessId}) async {
-    var client = await Backend.getClient();
+    var client = await Auth.getClient();
 
     if (threadId != null) {
       var thread = await getThread(threadId: threadId);

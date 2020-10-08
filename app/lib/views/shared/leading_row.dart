@@ -44,11 +44,15 @@ class IconLeadingRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-      Image(
-          width: 12.w,
-          height: 12.w,
-          fit: BoxFit.fill,
-          image: AssetImage(PathFiles.ImgPath + iconName)),
+      RotatedBox(
+          quarterTurns: Localizations.localeOf(context).languageCode == 'en'
+              ? 0
+              : iconName == "telephone.png" ? 3 : 0,
+          child: Image(
+              width: 12.w,
+              height: 12.w,
+              fit: BoxFit.fill,
+              image: AssetImage(PathFiles.ImgPath + iconName))),
       SizedBox(width: 4.5.w),
       Expanded(child: Text(txt, style: textStyle))
     ]);

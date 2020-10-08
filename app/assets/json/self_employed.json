@@ -2,7 +2,7 @@
   "list": {
     "appbar": {
       "filter": true,
-      "title": "Self Employed",
+      "title": "self_employed",
       "values_query": "query {\n    __type(name: \"SelfEmployedSubType\") {\n      enumValues {\n        name\n      }\n    }\n}  "
     },
     "columns": {

@@ -2,7 +2,7 @@
   "list": {
     "appbar": {
       "filter": true,
-      "title": "Sports",
+      "title": "sports",
       "values_query": "query {\n    __type(name: \"SportsBusinessSubType\") {\n      enumValues {\n        name\n      }\n    }\n}"
     },
     "columns": {

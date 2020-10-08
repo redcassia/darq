@@ -4,6 +4,7 @@ import 'package:darq/views/intro/select_language.dart';
 import 'package:darq/views/shared/button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 
 class Welcome extends StatefulWidget {
   @override
@@ -26,7 +27,7 @@ class _WelcomeState extends State<Welcome> {
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text("Welcome",
+                      Text(translate("welcome"),
                           style: AppFonts.superTitle(color: Colors.white)),
                       SizedBox(height: 31.h),
                       RichText(
@@ -34,11 +35,16 @@ class _WelcomeState extends State<Welcome> {
                           text: TextSpan(
                               style: AppFonts.title4(color: Colors.white),
                               children: <TextSpan>[
-                                TextSpan(text: "see what\'s happeing in "),
                                 TextSpan(
-                                    text: 'Qatar',
+                                    text: translate(
+                                        "see_what_is_happening")),
+                                TextSpan(
+                                    text: translate(
+                                        "qatar"),
                                     style: TextStyle(color: Color(0xFF426676))),
-                                TextSpan(text: " right now")
+                                TextSpan(
+                                    text: translate(
+                                        "right_now"))
                               ])),
                       SizedBox(height: 33.h),
                       CustomButton(
@@ -46,12 +52,12 @@ class _WelcomeState extends State<Welcome> {
                           textStyle: AppFonts.title7Odd(color: Colors.white),
                           height: 46.h,
                           width: 109.w,
-                          buttonName: "Continue",
+                          buttonName: translate("continue_button"),
                           color: Color(0xFFE1A854),
-                          onButtonPressed: () => Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) {
-                                return SelectLanguage();
-                              })))
+                          onButtonPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SelectLanguage())))
                     ]))));
   }
 }

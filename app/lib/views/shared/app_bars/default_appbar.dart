@@ -1,5 +1,5 @@
 import 'package:darq/res/path_files.dart';
-import 'package:darq/views/shared/capsule/right_rounded_capsule.dart';
+import 'package:darq/views/shared/rounded_capsule.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -48,8 +48,8 @@ class DefaultAppBar extends StatelessWidget {
                 children: <Widget>[
                   Padding(
                       padding: EdgeInsets.only(
-                          left: allowHorizontalPadding ? 22.w : 0,
-                          right: allowHorizontalPadding ? 18.w : 0,
+                          left: allowHorizontalPadding ? 20.w : 0,
+                          right: allowHorizontalPadding ? 20.w : 0,
                           bottom: 17.h),
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -60,7 +60,10 @@ class DefaultAppBar extends StatelessWidget {
                             trailing ?? Container(height: 0),
                           ])),
                   title != null
-                      ? RightRoundedCapsule(
+                      ? RoundedCapsule(
+                          Localizations.localeOf(context).languageCode == 'en'
+                              ? "right"
+                              : "left",
                           iconBgColor: Color.fromRGBO(134, 194, 194, 0.69),
                           horizontalPadding: 19.w,
                           verticalPadding: 4.h,

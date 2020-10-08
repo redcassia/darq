@@ -8,13 +8,14 @@ import 'package:darq/presentation/custom_icons.dart';
 import 'package:darq/utilities/constants.dart';
 import 'package:darq/views/shared/app_bars/default_appbar.dart';
 import 'package:darq/views/shared/button.dart';
-import 'package:darq/views/shared/custom_card.dart';
+import 'package:darq/views/shared/default_card.dart';
 import 'package:darq/views/shared/drawer/combo_burger.dart';
 import 'package:darq/views/shared/drawer/drawer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 import 'package:link/link.dart';
 import 'package:twitter_api/twitter_api.dart';
 import 'package:video_player/video_player.dart';
@@ -29,7 +30,7 @@ class _HomeState extends State<Home> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   int _currentIndex = 0;
   int liveOrientation = 4;
-  String _screenTitle = "News";
+  String _screenTitle;
   bool _showBottomNavBar = true;
   IconData orientation = Icons.fullscreen;
   static ChewieController _chewieController;
@@ -112,6 +113,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    _screenTitle = translate("news");
     ScreenUtil.init(context, width: 375, height: 667, allowFontScaling: true);
     _children = [
       Tweets(tweets: tweets, start: start, end: end),
@@ -151,12 +153,14 @@ class _HomeState extends State<Home> {
             child: DefaultAppBar(
                 allowHorizontalPadding: true,
                 title: _screenTitle,
-                bgImage: "rounded_app_bar.png",
+                bgImage: Localizations.localeOf(context).languageCode == 'en'
+                    ? "rounded_app_bar.png"
+                    : "rounded_app_bar_left.png",
                 leading: ComboBurger(),
                 trailing: CustomButton(
                     borderRadius: 20.0,
                     textStyle: AppFonts.tinyTitle(color: Colors.white),
-                    buttonName: "Add Your Business",
+                    buttonName: translate("add_your_business_button"),
                     height: 27.h,
                     width: 64.w,
                     color: Color(0xFFE1A854),
@@ -185,11 +189,11 @@ class _HomeState extends State<Home> {
                             : _showBottomNavBar = true;
 
                         if (_currentIndex == 0)
-                          _screenTitle = "News";
+                          _screenTitle = translate("news");
                         else if (_currentIndex == 1)
-                          _screenTitle = "Stock Exchange";
+                          _screenTitle = translate("stock_exchange");
                         else if (_currentIndex == 2)
-                          _screenTitle = "Qatar Live";
+                          _screenTitle = translate("qatar_live");
                       });
                     },
                     showSelectedLabels: true,
@@ -199,13 +203,13 @@ class _HomeState extends State<Home> {
                     items: [
                         BottomNavigationBarItem(
                             icon: Icon(CustomIcons.newspaper),
-                            title: Text("News")),
+                            title: Text(translate("news"))),
                         BottomNavigationBarItem(
                             icon: Icon(Icons.trending_up),
-                            title: Text("Stock Exchange")),
+                            title: Text(translate("stock_exchange"))),
                         BottomNavigationBarItem(
                             icon: Icon(Icons.live_tv),
-                            title: Text("Qatar Live"))
+                            title: Text(translate("live")))
                       ])
                 : Container(height: 0)));
   }
@@ -233,10 +237,12 @@ class Tweets extends StatelessWidget {
           return Padding(
               padding: EdgeInsets.only(top: 10.h),
               child: DefaultCard(
-                  margin:
-                      EdgeInsets.only(right: 19.w, left: 20.w, bottom: 2.h),
-                  padding: EdgeInsets.only(
-                      left: 13.w, right: 28.w, top: 9.w, bottom: 15.h),
+                  margin: EdgeInsets.only(right: 20.w, left: 20.w, bottom: 2.h),
+                  padding: Localizations.localeOf(context).languageCode == 'en'
+                      ? EdgeInsets.only(
+                          left: 13.w, right: 28.w, top: 9.w, bottom: 15.h)
+                      : EdgeInsets.only(
+                          left: 28.w, right: 13.w, top: 9.w, bottom: 15.h),
                   child: Column(children: [
                     Row(
                         mainAxisAlignment: MainAxisAlignment.start,

@@ -3,16 +3,16 @@ import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:darq/elements/app_fonts.dart';
-import 'package:darq/views/home/chat_room.dart';
+import 'package:darq/views/home/screens/chat_room.dart';
 import 'package:darq/views/home/home_screens_style_const.dart';
 import 'package:darq/views/home/screens/details_page.dart';
 import 'package:darq/views/home/screens/personnel_page.dart';
-import 'package:darq/views/home/shared/custom_divider.dart';
-import 'package:darq/views/home/shared/full_img_wrapper.dart';
-import 'package:darq/views/home/shared/leading_row.dart';
-import 'package:darq/views/rating_screen.dart';
+import 'package:darq/views/shared/custom_divider.dart';
+import 'package:darq/views/shared/full_img_wrapper.dart';
+import 'package:darq/views/shared/leading_row.dart';
+import 'package:darq/views/home/screens/rating_screen.dart';
 import 'package:darq/views/shared/button.dart';
-import 'package:darq/views/shared/custom_card.dart';
+import 'package:darq/views/shared/default_card.dart';
 import 'package:darq/views/shared/custom_chip.dart';
 import 'package:darq/views/shared/image_container.dart';
 import 'package:darq/views/shared/star_rating.dart';
@@ -20,6 +20,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 
 Widget generateWidget(String widgetType,
     {BuildContext context,
@@ -75,13 +76,13 @@ Widget generateWidget(String widgetType,
 
       if (trailingText == null) {
         return TextLeadingRow(
-            title: titleText,
+            title: translate(titleText),
             titleStyle: AppFonts.makeStyle(titleSize, titleColor),
             txt: data.toString(),
             txtStyle: AppFonts.makeStyle(textSize, textColor));
       } else {
         return TextLeadingRow(
-            title: titleText,
+            title: translate(titleText),
             titleStyle: AppFonts.makeStyle(titleSize, titleColor),
             widget: RichText(
                 textAlign: TextAlign.start,
@@ -100,9 +101,9 @@ Widget generateWidget(String widgetType,
     case 'bool_text_with_title':
       if (data == null) return null;
       return TextLeadingRow(
-          title: titleText,
+          title: translate(titleText),
           titleStyle: AppFonts.makeStyle(titleSize, titleColor),
-          txt: data ? textIfTrue : textIfFalse,
+          txt: data ? translate(textIfTrue) : translate(textIfFalse),
           txtStyle: AppFonts.makeStyle(textSize, textColor));
 
     case 'text_with_icon':
@@ -117,7 +118,7 @@ Widget generateWidget(String widgetType,
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(titleText, style: AppFonts.makeStyle(titleSize, titleColor)),
+          Text(translate(titleText), style: AppFonts.makeStyle(titleSize, titleColor)),
           SizedBox(height: 5.h),
           ListView.builder(
               physics: NeverScrollableScrollPhysics(),
@@ -149,7 +150,7 @@ Widget generateWidget(String widgetType,
       return Wrap(
         spacing: 6.w,
         children: <Widget>[
-          Text(titleText, style: AppFonts.makeStyle(titleSize, titleColor)),
+          Text(translate(titleText), style: AppFonts.makeStyle(titleSize, titleColor)),
           SizedBox(height: 17.h),
           for (int i = 0; i < min(data.length, maxElements); i++)
             CustomChip(text: data[i]),
@@ -177,7 +178,7 @@ Widget generateWidget(String widgetType,
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(titleText,
+                Text(translate(titleText),
                     style: AppFonts.makeStyle(titleSize, titleColor)),
                 SizedBox(height: 17.h),
                 Flexible(
@@ -244,7 +245,7 @@ Widget generateWidget(String widgetType,
       if (data == null) return null;
       if (data["value"] != null) {
         return TextLeadingRow(
-            title: titleText,
+            title: translate(titleText),
             titleStyle: AppFonts.makeStyle(titleSize, titleColor),
             widget: RichText(
                 textAlign: TextAlign.start,
@@ -259,7 +260,7 @@ Widget generateWidget(String widgetType,
                     ])));
       } else {
         return TextLeadingRow(
-            title: titleText,
+            title: translate(titleText),
             titleStyle: AppFonts.makeStyle(titleSize, titleColor),
             widget: RichText(
                 textAlign: TextAlign.start,
@@ -288,7 +289,7 @@ Widget generateWidget(String widgetType,
                         builder: (context) =>
                             RatingScreen(businessId: id, rating: data)));
             },
-            child: Text("NOT RATED",
+            child: Text(translate("not_rated"),
                 textAlign: TextAlign.center,
                 style: AppFonts.text8(color: Color.fromRGBO(0, 0, 0, 0.7))));
       return SmoothStarRating(
@@ -349,7 +350,7 @@ Widget generateWidget(String widgetType,
             Navigator.push(context, MaterialPageRoute(builder: (context) {
           return DetailsPage(jsonFile: jsonFile, id: data);
         })),
-        child: Text("View Details..",
+        child: Text(translate("view_details"),
             style: AppFonts.title11Odd(color: Color(0xFFE1A854))),
       );
 
@@ -359,7 +360,7 @@ Widget generateWidget(String widgetType,
         CustomButton(
             height: 23.h,
             width: 93.w,
-            buttonName: titleText,
+            buttonName: translate(titleText),
             color: Color(0xFF426676),
             borderRadius: 27,
             textStyle: AppFonts.title11Odd(color: Colors.white),

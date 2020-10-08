@@ -1,6 +1,7 @@
 import 'dart:ui';
 
-import 'package:darq/backend.dart';
+import 'package:darq/backend/auth.dart';
+
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/utilities/constants.dart';
 import 'package:darq/views/shared/button.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 import 'package:graphql/client.dart';
 
 class ListItem {
@@ -32,7 +34,7 @@ class _FilterPageState extends State<FilterPage> {
   List<ListItem> _values = [];
 
   _queryValues() {
-    Backend.getClient().then((client) => client
+    Auth.getClient().then((client) => client
             .query(QueryOptions(documentNode: gql(widget.valuesQuery)))
             .then((result) {
           if (!result.hasException)
@@ -68,15 +70,15 @@ class _FilterPageState extends State<FilterPage> {
                                 for (int i = 0; i < _values.length; i++)
                                   _values[i].isSelected = false;
                               }),
-                          child: Text("Reset",
+                          child: Text(translate("reset"),
                               style: AppFonts.title8(
                                   color: Color.fromRGBO(0, 0, 0, 0.25)))),
-                      Text("Filter Your Search",
+                      Text(translate("filter_your_search"),
                           style: AppFonts.title8(
                               color: Color.fromRGBO(0, 0, 0, 0.7))),
                       GestureDetector(
                           onTap: () => Navigator.pop(context),
-                          child: Text("Cancel",
+                          child: Text(translate("cancel"),
                               style: AppFonts.title8(
                                   color: Color.fromRGBO(0, 0, 0, 0.25))))
                     ]))),
@@ -106,7 +108,7 @@ class _FilterPageState extends State<FilterPage> {
                                 color: Color.fromRGBO(0, 0, 0, 0.25)));
                   })),
           CustomButton(
-              buttonName: "Apply",
+              buttonName: translate("apply"),
               width: 107.04.w,
               height: 41.h,
               color: Color(0xFF426676),

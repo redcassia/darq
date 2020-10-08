@@ -10,9 +10,12 @@ class ComboBurger extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image(
-        width: 26.w,
-        fit: BoxFit.fill,
-        image: AssetImage(PathFiles.ImgPath + "combo_burger.png"));
+    return RotatedBox(
+        quarterTurns:
+            Localizations.localeOf(context).languageCode == 'en' ? 0 : 2,
+        child: Image(
+            width: 26.w,
+            fit: BoxFit.fill,
+            image: AssetImage(PathFiles.ImgPath + "combo_burger.png")));
   }
 }

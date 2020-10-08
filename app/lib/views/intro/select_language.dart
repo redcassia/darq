@@ -5,6 +5,7 @@ import 'package:darq/views/shared/button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 
 class SelectLanguage extends StatelessWidget {
   final ImageProvider bg =
@@ -31,10 +32,13 @@ class SelectLanguage extends StatelessWidget {
                   width: 109.w,
                   buttonName: "English",
                   color: Color(0xFF426676),
-                  onButtonPressed: () => Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return Home();
-                      }))),
+                  onButtonPressed: () {
+                    changeLocale(context, 'en_US');
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return Home();
+                    }));
+                  }),
               SizedBox(height: 11.h),
               CustomButton(
                   borderRadius: 34.1,
@@ -43,7 +47,13 @@ class SelectLanguage extends StatelessWidget {
                   width: 109.w,
                   buttonName: "العربية",
                   color: Color(0xFFE1A854),
-                  onButtonPressed: () => print("pressd")),
+                  onButtonPressed: () {
+                    changeLocale(context, 'ar');
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                          return Home();
+                        }));
+                  }),
             ]))));
   }
 }

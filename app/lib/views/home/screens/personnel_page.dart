@@ -4,11 +4,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/utilities/constants.dart';
 import 'package:darq/views/home/home_screens_style_const.dart';
-import 'package:darq/views/home/shared/custom_divider.dart';
-import 'package:darq/views/home/shared/full_img_wrapper.dart';
-import 'package:darq/views/home/shared/leading_row.dart';
+import 'package:darq/views/shared/custom_divider.dart';
+import 'package:darq/views/shared/full_img_wrapper.dart';
+import 'package:darq/views/shared/leading_row.dart';
 import 'package:darq/views/shared/app_bars/profile_appbar.dart';
-import 'package:darq/views/shared/custom_card.dart';
+import 'package:darq/views/shared/default_card.dart';
 import 'package:darq/views/shared/custom_chip.dart';
 import 'package:darq/views/shared/image_container.dart';
 import 'package:flutter/cupertino.dart';
@@ -27,7 +27,6 @@ class PersonnelPage extends StatefulWidget {
 }
 
 class _PersonnelPageState extends State<PersonnelPage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,14 +34,15 @@ class _PersonnelPageState extends State<PersonnelPage> {
         appBar: PreferredSize(
             preferredSize: Size.fromHeight(ConsDimensions.SmallAppBarHeight.w),
             child: ProfileAppBar(
-                backArrowBgColor: Color.fromRGBO(134, 194, 194, 0.69),
-                filterIndicator: false,
-                buttonName: "Contact Us")),
+                filterIndicator: false, buttonName: "Contact Us")),
         body: DefaultCard(
             margin: EdgeInsets.only(
-                bottom: 33.h, right: 19.w, left: 20.w, top: 6.h),
-            padding: EdgeInsets.only(
-                left: 21.w, right: 19.w, top: 12.h, bottom: 17.h),
+                bottom: 33.h, right: 20.w, left: 20.w, top: 6.h),
+            padding: Localizations.localeOf(context).languageCode == 'en'
+                ? EdgeInsets.only(
+                    left: 21.w, right: 19.w, top: 12.h, bottom: 17.h)
+                : EdgeInsets.only(
+                    left: 19.w, right: 21.w, top: 12.h, bottom: 17.h),
             child: SingleChildScrollView(
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

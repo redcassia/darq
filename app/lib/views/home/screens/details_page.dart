@@ -6,15 +6,15 @@ import 'package:darq/utilities/constants.dart';
 import 'package:darq/views/home/screens/filter_page.dart';
 import 'package:darq/views/home/widget_generator.dart';
 import 'package:darq/views/shared/app_bars/profile_appbar.dart';
-import 'package:darq/views/shared/custom_card.dart';
+import 'package:darq/views/shared/default_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 import 'package:graphql/client.dart';
-
-import '../../../backend.dart';
+import 'package:darq/backend/auth.dart';
 
 class DetailsPage extends StatefulWidget {
   final String id;
@@ -47,7 +47,7 @@ class _DetailsPageState extends State<DetailsPage> {
   }
 
   loadData() {
-    Backend.getClient().then((client) => client
+    Auth.getClient().then((client) => client
             .query(QueryOptions(
                 documentNode: gql(_layout["query"]),
                 variables: {'id': widget.id}))
@@ -81,6 +81,7 @@ class _DetailsPageState extends State<DetailsPage> {
         appBar: PreferredSize(
             preferredSize: Size.fromHeight(ConsDimensions.SmallAppBarHeight.h),
             child: ProfileAppBar(
+                backArrowBgColor: Color(0xFF426676),
                 id: widget.id,
                 filterFunction: () => Navigator.push(
                     context,
@@ -100,12 +101,15 @@ class _DetailsPageState extends State<DetailsPage> {
                     : _layout["appbar"]["filter"],
                 buttonName: _layout == null
                     ? ""
-                    : _layout["appbar"]["text"])),
+                    : translate(_layout["appbar"]["text"]))),
         body: DefaultCard(
             margin: EdgeInsets.only(
-                bottom: 33.h, right: 19.w, left: 20.w, top: 6.h),
-            padding: EdgeInsets.only(
-                left: 21.w, right: 19.w, top: 12.h, bottom: 17.h),
+                bottom: 33.h, right: 20.w, left: 20.w, top: 6.h),
+            padding: Localizations.localeOf(context).languageCode == 'en'
+                ? EdgeInsets.only(
+                    left: 21.w, right: 19.w, top: 12.h, bottom: 17.h)
+                : EdgeInsets.only(
+                    left: 19.w, right: 21.w, top: 12.h, bottom: 17.h),
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,

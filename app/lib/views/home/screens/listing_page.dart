@@ -1,20 +1,22 @@
 import 'dart:convert';
 import 'dart:ui';
 
-import 'package:darq/backend.dart';
+import 'package:darq/backend/auth.dart';
+
 import 'package:darq/res/path_files.dart';
 import 'package:darq/utilities/constants.dart';
 import 'package:darq/views/home/screens/filter_page.dart';
+import 'package:darq/views/shared/app_bars/back_arrow.dart';
 import 'package:darq/views/home/widget_generator.dart';
 import 'package:darq/views/shared/app_bars/default_appbar.dart';
-import 'package:darq/views/shared/capsule/left_rounded_capsule.dart';
-import 'package:darq/views/shared/capsule/right_rounded_capsule.dart';
-import 'package:darq/views/shared/custom_card.dart';
+import 'package:darq/views/shared/rounded_capsule.dart';
+import 'package:darq/views/shared/default_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 import 'package:graphql/client.dart';
 
 class ListingPage extends StatefulWidget {
@@ -32,9 +34,10 @@ class _ListingPageState extends State<ListingPage> {
   double rating = 0.0;
   Map<String, dynamic> _layout;
   dynamic _data;
+  String local;
 
   _loadData() {
-    Backend.getClient().then((client) => client
+    Auth.getClient().then((client) => client
             .query(QueryOptions(
                 documentNode: gql(_layout["query"]),
                 variables: {'sub_types': widget.filterPredicate}))
@@ -58,6 +61,7 @@ class _ListingPageState extends State<ListingPage> {
   @override
   void initState() {
     super.initState();
+
     _layout = widget.layout;
     _loadLayoutAndData();
   }
@@ -70,17 +74,11 @@ class _ListingPageState extends State<ListingPage> {
             preferredSize: Size.fromHeight(ConsDimensions.LargeAppBarHeight.h),
             child: DefaultAppBar(
                 allowHorizontalPadding: false,
-                title:
-                    _layout == null ? "" : _layout["appbar"]["title"],
+                title: _layout == null
+                    ? ""
+                    : translate(_layout["appbar"]["title"]),
                 bgImage: "app_bar_rectangle.png",
-                leading: RightRoundedCapsule(
-                    iconBgColor: Color.fromRGBO(134, 194, 194, 0.69),
-                    verticalPadding: 5.h,
-                    horizontalPadding: 19.w,
-                    icon: Image(
-                        width: 9.73.w,
-                        fit: BoxFit.fill,
-                        image: AssetImage(PathFiles.ImgPath + "back.png"))),
+                leading: BackArrow(),
                 onLeadingClicked: () => Navigator.pop(context),
                 trailing: (_layout == null
                         ? false
@@ -91,8 +89,7 @@ class _ListingPageState extends State<ListingPage> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => FilterPage(
-                                        _layout["appbar"]
-                                            ["values_query"],
+                                        _layout["appbar"]["values_query"],
                                         (context, predicate) =>
                                             Navigator.pushReplacement(
                                                 context,
@@ -107,7 +104,10 @@ class _ListingPageState extends State<ListingPage> {
                                         selectedValues: widget.filterPredicate,
                                       )));
                         },
-                        child: LeftRoundedCapsule(
+                        child: RoundedCapsule(
+                            Localizations.localeOf(context).languageCode == 'en'
+                                ? "left"
+                                : "right",
                             horizontalPadding: 16.w,
                             verticalPadding: 5.h,
                             icon: Image(
@@ -126,11 +126,22 @@ class _ListingPageState extends State<ListingPage> {
                   padding: EdgeInsets.only(top: 20.h),
                   child: DefaultCard(
                       margin: EdgeInsets.only(
-                          right: 19.w, left: 20.w, bottom: 10.h),
+                          right: 20.w, left: 20.w, bottom: 10.h),
                       padding: EdgeInsets.zero,
                       child: Padding(
-                          padding: EdgeInsets.only(
-                              left: 13.w, right: 28.w, top: 9.w, bottom: 8.h),
+                          padding:
+                              Localizations.localeOf(context).languageCode ==
+                                      'en'
+                                  ? EdgeInsets.only(
+                                      left: 13.w,
+                                      right: 28.w,
+                                      top: 9.w,
+                                      bottom: 8.h)
+                                  : EdgeInsets.only(
+                                      left: 28.w,
+                                      right: 13.w,
+                                      top: 9.w,
+                                      bottom: 8.h),
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,13 +149,11 @@ class _ListingPageState extends State<ListingPage> {
                                 SizedBox(
                                     width: 70.w,
                                     child: buildCardColumn(
-                                        _layout["columns"]["start"],
-                                        index)),
+                                        _layout["columns"]["start"], index)),
                                 SizedBox(width: 17.w),
                                 Expanded(
                                     child: buildCardColumn(
-                                        _layout["columns"]["end"],
-                                        index))
+                                        _layout["columns"]["end"], index))
                               ]))));
             }));
   }

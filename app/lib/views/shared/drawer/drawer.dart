@@ -1,6 +1,7 @@
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/res/path_files.dart';
 import 'package:darq/utilities/screen_info.dart';
+import 'package:darq/views/home/screens/change_lang.dart';
 import 'package:darq/views/home/screens/chat_list.dart';
 import 'package:darq/views/home/screens/community.dart';
 import 'package:darq/views/home/screens/home.dart';
@@ -85,7 +86,7 @@ class CustomDrawer extends StatelessWidget {
                   txt: translate("change_lang"),
                   icon: "settings.png",
                   onClick: () => Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ChatList()))),
+                      MaterialPageRoute(builder: (context) => ChangeLang()))),
               DrawerItem(
                   txt: translate("about_us"),
                   icon: "about_us.png",
@@ -94,6 +95,7 @@ class CustomDrawer extends StatelessWidget {
             ]));
   }
 }
+
 class DrawerItem extends StatelessWidget {
   const DrawerItem({@required this.txt, this.onClick, this.icon, Key key})
       : super(key: key);
@@ -105,7 +107,7 @@ class DrawerItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
         child: Padding(
-            padding: EdgeInsets.only(top: 40.h, left: 20.w, right: 25.w),
+            padding: EdgeInsets.only(top: 32.h, left: 20.w, right: 25.w),
             child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[

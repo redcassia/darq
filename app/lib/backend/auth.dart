@@ -8,6 +8,17 @@ class Auth {
       HttpLink(uri: 'http://redcassia.com:3001/api');
   static GraphQLClient _client;
 
+  static Future<bool> checkClient() async {
+    var prefs = await SharedPreferences.getInstance();
+
+    if (_client != null ||
+        prefs.containsKey("token") ||
+        prefs.containsKey("id")) {
+      return true;
+    }
+    return false;
+  }
+
   static Future<GraphQLClient> getClient() async {
     if (_client != null) {
       return _client;
@@ -40,7 +51,6 @@ class Auth {
 
     // try id
     if (token == null && prefs.containsKey("id")) {
-
       var result =
           await GraphQLClient(cache: InMemoryCache(), link: _backendLink)
               .mutate(MutationOptions(
@@ -63,7 +73,6 @@ class Auth {
 
     // create new user id
     if (token == null) {
-
       var result =
           await GraphQLClient(cache: InMemoryCache(), link: _backendLink)
               .mutate(MutationOptions(documentNode: gql(r'''

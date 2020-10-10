@@ -1,5 +1,7 @@
+import 'package:darq/backend/auth.dart';
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/utilities/screen_info.dart';
+import 'package:darq/views/home/screens/home.dart';
 import 'package:darq/views/intro/select_language.dart';
 import 'package:darq/views/shared/button.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +14,16 @@ class Welcome extends StatefulWidget {
 }
 
 class _WelcomeState extends State<Welcome> {
+
+  _checkClient() {
+    Auth.checkClient().then((_) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => _ ? Home() : SelectLanguage()));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context, width: 375, height: 667, allowFontScaling: true);
@@ -36,15 +48,11 @@ class _WelcomeState extends State<Welcome> {
                               style: AppFonts.title4(color: Colors.white),
                               children: <TextSpan>[
                                 TextSpan(
-                                    text: translate(
-                                        "see_what_is_happening")),
+                                    text: translate("see_what_is_happening")),
                                 TextSpan(
-                                    text: translate(
-                                        "qatar"),
+                                    text: translate("qatar"),
                                     style: TextStyle(color: Color(0xFF426676))),
-                                TextSpan(
-                                    text: translate(
-                                        "right_now"))
+                                TextSpan(text: translate("right_now"))
                               ])),
                       SizedBox(height: 33.h),
                       CustomButton(
@@ -54,10 +62,7 @@ class _WelcomeState extends State<Welcome> {
                           width: 109.w,
                           buttonName: translate("continue_button"),
                           color: Color(0xFFE1A854),
-                          onButtonPressed: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SelectLanguage())))
+                          onButtonPressed: () => _checkClient())
                     ]))));
   }
 }

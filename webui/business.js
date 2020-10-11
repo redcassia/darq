@@ -218,7 +218,9 @@ function loadForm(formName) {
     DynamicLoader.loadTo(
       'business-content',
       formName + '.html',
-      formName + '.js'
+      formName + '.js',
+      [],
+      Form.applyEventHandlers
     );
   }
 }

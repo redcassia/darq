@@ -674,7 +674,6 @@ class Form {
   }
 
   static applyEventHandlers() {
-    console.log("hola")
     $("form").submit(function(e) {
       e.preventDefault();
     });

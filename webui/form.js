@@ -220,7 +220,7 @@ class MultiStringInput {
       div.appendChild(p);
       div.appendChild(btn);
 
-      input.children[0].appendChild(div);
+      this.element.children[0].appendChild(div);
     }
   }
 
@@ -550,9 +550,6 @@ class Form {
                 break;
 
               case 'form-object': {
-                if ($(child).hasClass("hidden")) {
-                  $(child).removeClass("hidden");
-                }
                 var obj = data[child.attributes['data-name'].value];
                 if (obj) this._putFormData(child, obj);
               }

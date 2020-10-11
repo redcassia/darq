@@ -16,11 +16,13 @@ type Mutation {
   sendMessage(msg: String!, threadId: ID, targetBusinessId: ID): MessageThread!
   seeMessage(threadId: ID!, index: Int!): MessageThread!
 
-  createPublicUser: String
-  createBusinessUser(email: String!, password: String!): String
+  setLocale(locale: Locale!): String
 
-  authenticatePublicUser(id: ID!): String
-  authenticateBusinessUser(email: String!, password: String!): String
+  createPublicUser(locale: Locale): String!
+  createBusinessUser(email: String!, password: String!): String!
+
+  authenticatePublicUser(id: ID!, locale: Locale): String!
+  authenticateBusinessUser(email: String!, password: String!): String!
 
   changeBusinessUserPassword(oldPassword: String!, newPassword: String!): Void
 
@@ -84,7 +86,7 @@ type User {
   email: String
   rating(businessId: ID!): Int
   owned_businesses: [Business!]
-  owned_events: [Event!]
+  owned_events: [Event_noLocale!]
   threads(threadId: ID): [MessageThread!]!
 }
 
@@ -146,17 +148,40 @@ type SelfEmployedBusiness implements Business {
   attachments: [String!]
 }
 
+type SelfEmployedBusiness_noLocale implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: SelfEmployedSubType!
+  sub_type_string: LocaleString!
+  gender: Gender!
+  nationality: Nationality!
+  phone_number: [String!]!
+  description: LocaleString!
+  skills: [LocaleString!]!
+  experience: [PersonalExperience!]!
+  charge: Price!
+  government_id: String!
+  attachments: [String!]
+}
+
 input NewSelfEmployedBusinessInput {
   display_name: String!
   display_picture: Upload!
   city: City!
   sub_type: SelfEmployedSubType!
-  sub_type_string: String
+  sub_type_string: LocaleStringInput
   gender: Gender!
   nationality: Nationality!
   phone_number: [String!]!
-  description: String!
-  skills: [String!]!
+  description: LocaleStringInput!
+  skills: [LocaleStringInput!]!
   experience: [PersonalExperienceInput!]!
   charge: PriceInput!
   government_id: Upload!
@@ -168,12 +193,12 @@ input UpdateSelfEmployedBusinessInput {
   display_picture: Upload
   city: City
   sub_type: SelfEmployedSubType
-  sub_type_string: String
+  sub_type_string: LocaleStringInput
   gender: Gender
   nationality: Nationality
   phone_number: [String!]
-  description: String
-  skills: [String!]
+  description: LocaleStringInput
+  skills: [LocaleStringInput!]
   experience: [PersonalExperienceInput!]
   charge: PriceInput
   government_id: Upload
@@ -205,19 +230,41 @@ type ChildEducationBusiness implements Business {
   attachments: [String!]
 }
 
+type ChildEducationBusiness_noLocale implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: ChildEducationSubType!
+  sub_type_string: LocaleString!
+  trade_license: String!
+  trade_license_number: String!
+  street_address: String!
+  phone_number: [String!]!
+  description: LocaleString!
+  year_founded: String!
+  curriculum: [LocaleString!]!
+  attachments: [String!]
+}
+
 input NewChildEducationBusinessInput {
   display_name: String!
   display_picture: Upload!
   city: City!
   sub_type: ChildEducationSubType!
-  sub_type_string: String
+  sub_type_string: LocaleStringInput
   trade_license: Upload!
   trade_license_number: String!
   street_address: String!
   phone_number: [String!]!
-  description: String!
+  description: LocaleStringInput!
   year_founded: String!
-  curriculum: [String!]!
+  curriculum: [LocaleStringInput!]!
   attachments: [Upload!]
 }
 
@@ -226,14 +273,14 @@ input UpdateChildEducationBusinessInput {
   display_picture: Upload
   city: City
   sub_type: ChildEducationSubType
-  sub_type_string: String
+  sub_type_string: LocaleStringInput
   trade_license: Upload
   trade_license_number: String
   street_address: String
   phone_number: [String!]
-  description: String
+  description: LocaleStringInput
   year_founded: String
-  curriculum: [String!]
+  curriculum: [LocaleStringInput!]
   old_attachments: [String!]
   attachments: [Upload!]
 }
@@ -261,17 +308,38 @@ type DomesticHelpBusiness implements Business {
   personnel: [DomesticHelpPersonnel!]!
 }
 
+type DomesticHelpBusiness_noLocale implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: DomesticHelpSubType!
+  sub_type_string: LocaleString!
+  trade_license: String!
+  trade_license_number: String!
+  street_address: String!
+  phone_number: [String!]!
+  description: LocaleString!
+  website: String
+  personnel: [DomesticHelpPersonnel_noLocale!]!
+}
+
 input NewDomesticHelpBusinessInput {
   display_name: String!
   display_picture: Upload!
   city: City!
   sub_type: DomesticHelpSubType!
-  sub_type_string: String
+  sub_type_string: LocaleStringInput
   trade_license: Upload!
   trade_license_number: String!
   street_address: String!
   phone_number: [String!]!
-  description: String!
+  description: LocaleStringInput!
   website: String
   personnel: [DomesticHelpPersonnelInput!]!
 }
@@ -281,12 +349,12 @@ input UpdateDomesticHelpBusinessInput {
   display_picture: Upload
   city: City
   sub_type: DomesticHelpSubType
-  sub_type_string: String
+  sub_type_string: LocaleStringInput
   trade_license: Upload
   trade_license_number: String
   street_address: String
   phone_number: [String!]
-  description: String
+  description: LocaleStringInput
   website: String
   old_personnel: [String!]
   personnel: [UpdateDomesticHelpPersonnelInput!]
@@ -318,20 +386,44 @@ type BeautyBusiness implements Business {
   attachments: [String!]
 }
 
+type BeautyBusiness_noLocale implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: BeautyBusinessSubType!
+  sub_type_string: LocaleString!
+  trade_license: String!
+  trade_license_number: String!
+  street_address: String!
+  operating_hours: Hours!
+  phone_number: [String!]!
+  description: LocaleString!
+  home_service_available: Boolean!
+  services: [LocaleString!]!
+  website: String
+  attachments: [String!]
+}
+
 input NewBeautyBusinessInput {
   display_name: String!
   display_picture: Upload!
   city: City!
   sub_type: BeautyBusinessSubType!
-  sub_type_string: String
+  sub_type_string: LocaleStringInput
   trade_license: Upload!
   trade_license_number: String!
   street_address: String!
   operating_hours: HoursInput!
   phone_number: [String!]!
-  description: String!
+  description: LocaleStringInput!
   home_service_available: Boolean!
-  services: [String!]!
+  services: [LocaleStringInput!]!
   website: String
   attachments: [Upload!]
 }
@@ -341,15 +433,15 @@ input UpdateBeautyBusinessInput {
   display_picture: Upload
   city: City
   sub_type: BeautyBusinessSubType
-  sub_type_string: String
+  sub_type_string: LocaleStringInput
   trade_license: Upload
   trade_license_number: String
   street_address: String
   operating_hours: HoursInput
   phone_number: [String!]
-  description: String
+  description: LocaleStringInput
   home_service_available: Boolean
-  services: [String!]
+  services: [LocaleStringInput!]
   website: String
   old_attachments: [String!]
   attachments: [Upload!]
@@ -380,19 +472,42 @@ type TransportationBusiness implements Business {
   attachments: [String!]
 }
 
+type TransportationBusiness_noLocale implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: TransportationBusinessSubType!
+  sub_type_string: LocaleString!
+  trade_license: String!
+  trade_license_number: String!
+  street_address: String!
+  operating_hours: Hours!
+  phone_number: [String!]!
+  description: LocaleString!
+  services: [LocaleString!]!
+  website: String
+  attachments: [String!]
+}
+
 input NewTransportationBusinessInput {
   display_name: String!
   display_picture: Upload!
   city: City!
   sub_type: TransportationBusinessSubType!
-  sub_type_string: String
+  sub_type_string: LocaleStringInput
   trade_license: Upload!
   trade_license_number: String!
   street_address: String!
   operating_hours: HoursInput!
   phone_number: [String!]!
-  description: String!
-  services: [String!]!
+  description: LocaleStringInput!
+  services: [LocaleStringInput!]!
   website: String
   attachments: [Upload!]
 }
@@ -402,14 +517,14 @@ input UpdateTransportationBusinessInput {
   display_picture: Upload
   city: City
   sub_type: TransportationBusinessSubType
-  sub_type_string: String
+  sub_type_string: LocaleStringInput
   trade_license: Upload
   trade_license_number: String
   street_address: String
   operating_hours: HoursInput
   phone_number: [String!]
-  description: String
-  services: [String!]
+  description: LocaleStringInput
+  services: [LocaleStringInput!]
   website: String
   old_attachments: [String!]
   attachments: [Upload!]
@@ -441,20 +556,44 @@ type HospitalityBusiness implements Business {
   attachments: [String!]
 }
 
+type HospitalityBusiness_noLocale implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: HospitalityBusinessSubType!
+  sub_type_string: LocaleString!
+  trade_license: String!
+  trade_license_number: String!
+  street_address: String!
+  phone_number: [String!]!
+  description: LocaleString!
+  home_service_available: Boolean!
+  charge: Price
+  services: [LocaleString!]!
+  website: String
+  attachments: [String!]
+}
+
 input NewHospitalityBusinessInput {
   display_name: String!
   display_picture: Upload!
   city: City!
   sub_type: HospitalityBusinessSubType!
-  sub_type_string: String
+  sub_type_string: LocaleStringInput
   trade_license: Upload!
   trade_license_number: String!
   street_address: String!
   phone_number: [String!]!
-  description: String!
+  description: LocaleStringInput!
   home_service_available: Boolean!
   charge: PriceInput
-  services: [String!]!
+  services: [LocaleStringInput!]!
   website: String
   attachments: [Upload!]
 }
@@ -464,15 +603,15 @@ input UpdateHospitalityBusinessInput {
   display_picture: Upload
   city: City
   sub_type: HospitalityBusinessSubType
-  sub_type_string: String
+  sub_type_string: LocaleStringInput
   trade_license: Upload
   trade_license_number: String
   street_address: String
   phone_number: [String!]
-  description: String
+  description: LocaleStringInput
   home_service_available: Boolean
   charge: PriceInput
-  services: [String!]
+  services: [LocaleStringInput!]
   website: String
   old_attachments: [String!]
   attachments: [Upload!]
@@ -499,11 +638,30 @@ type StationeryBusiness implements Business {
   attachments: [String!]
 }
 
+type StationeryBusiness_noLocale implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  description: LocaleString!
+  trade_license: String!
+  trade_license_number: String!
+  street_address: String!
+  phone_number: [String!]!
+  website: String
+  attachments: [String!]
+}
+
 input NewStationeryBusinessInput {
   display_name: String!
   display_picture: Upload!
   city: City!
-  description: String!
+  description: LocaleStringInput!
   trade_license: Upload!
   trade_license_number: String!
   street_address: String!
@@ -516,7 +674,7 @@ input UpdateStationeryBusinessInput {
   display_name: String
   display_picture: Upload
   city: City
-  description: String
+  description: LocaleStringInput
   trade_license: Upload
   trade_license_number: String
   street_address: String
@@ -549,17 +707,38 @@ type MadeInQatarBusiness implements Business {
   attachments: [String!]
 }
 
+type MadeInQatarBusiness_noLocale implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: MadeInQatarBusinessSubType!
+  sub_type_string: LocaleString!
+  street_address: String!
+  phone_number: [String!]!
+  description: LocaleString!
+  home_delivery_available: Boolean!
+  products: [LocaleString!]!
+  website: String
+  attachments: [String!]
+}
+
 input NewMadeInQatarBusinessInput {
   display_name: String!
   display_picture: Upload!
   city: City!
   sub_type: MadeInQatarBusinessSubType!
-  sub_type_string: String
+  sub_type_string: LocaleStringInput
   street_address: String!
   phone_number: [String!]!
-  description: String!
+  description: LocaleStringInput!
   home_delivery_available: Boolean!
-  products: [String!]!
+  products: [LocaleStringInput!]!
   website: String
   attachments: [Upload!]
 }
@@ -569,12 +748,12 @@ input UpdateMadeInQatarBusinessInput {
   display_picture: Upload
   city: City
   sub_type: MadeInQatarBusinessSubType
-  sub_type_string: String
+  sub_type_string: LocaleStringInput
   street_address: String
   phone_number: [String!]
-  description: String
+  description: LocaleStringInput
   home_delivery_available: Boolean
-  products: [String!]
+  products: [LocaleStringInput!]
   website: String
   old_attachments: [String!]
   attachments: [Upload!]
@@ -605,7 +784,35 @@ type SportsBusiness implements Business {
   #gym
   home_training_available: Boolean
   classes: [String!]
-  genders: String
+  genders: Genders
+  #club
+  teams: [String!]
+}
+
+type SportsBusiness_noLocale implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: SportsBusinessSubType!
+  sub_type_string: LocaleString!
+  trade_license: String!
+  trade_license_number: String!
+  street_address: String!
+  operating_hours: Hours!
+  phone_number: [String!]!
+  description: LocaleString!
+  website: String
+  attachments: [String!]
+  #gym
+  home_training_available: Boolean
+  classes: [LocaleString!]
+  genders: Genders
   #club
   teams: [String!]
 }
@@ -615,18 +822,18 @@ input NewSportsBusinessInput {
   display_picture: Upload!
   city: City!
   sub_type: SportsBusinessSubType!
-  sub_type_string: String
+  sub_type_string: LocaleStringInput
   trade_license: Upload!
   trade_license_number: String!
   street_address: String!
   operating_hours: HoursInput!
   phone_number: [String!]!
-  description: String!
+  description: LocaleStringInput!
   website: String
   attachments: [Upload!]
   home_training_available: Boolean
-  classes: [String!]
-  genders: String
+  classes: [LocaleStringInput!]
+  genders: Genders
   teams: [String!]
 }
 
@@ -635,19 +842,19 @@ input UpdateSportsBusinessInput {
   display_picture: Upload
   city: City
   sub_type: SportsBusinessSubType
-  sub_type_string: String
+  sub_type_string: LocaleStringInput
   trade_license: Upload
   trade_license_number: String
   street_address: String
   operating_hours: HoursInput
   phone_number: [String!]
-  description: String
+  description: LocaleStringInput
   website: String
   old_attachments: [String!]
   attachments: [Upload!]
   home_training_available: Boolean
-  classes: [String!]
-  genders: String
+  classes: [LocaleStringInput!]
+  genders: Genders
   teams: [String!]
 }
 
@@ -676,19 +883,42 @@ type EntertainmentBusiness implements Business {
   attachments: [String!]
 }
 
+type EntertainmentBusiness_noLocale implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: EntertainmentBusinessSubType!
+  sub_type_string: LocaleString!
+  trade_license: String!
+  trade_license_number: String!
+  street_address: String!
+  operating_hours: Hours!
+  phone_number: [String!]!
+  description: LocaleString!
+  activities: [LocaleString!]!
+  website: String
+  attachments: [String!]
+}
+
 input NewEntertainmentBusinessInput {
   display_name: String!
   display_picture: Upload!
   city: City!
   sub_type: EntertainmentBusinessSubType!
-  sub_type_string: String
+  sub_type_string: LocaleStringInput
   trade_license: Upload!
   trade_license_number: String!
   street_address: String!
   operating_hours: HoursInput!
   phone_number: [String!]!
-  description: String!
-  activities: [String!]!
+  description: LocaleStringInput!
+  activities: [LocaleStringInput!]!
   website: String
   attachments: [Upload!]
 }
@@ -698,14 +928,14 @@ input UpdateEntertainmentBusinessInput {
   display_picture: Upload
   city: City
   sub_type: EntertainmentBusinessSubType
-  sub_type_string: String
+  sub_type_string: LocaleStringInput
   trade_license: Upload
   trade_license_number: String
   street_address: String
   operating_hours: HoursInput
   phone_number: [String!]
-  description: String
-  activities: [String!]
+  description: LocaleStringInput
+  activities: [LocaleStringInput!]
   website: String
   old_attachments: [String!]
   attachments: [Upload!]
@@ -736,18 +966,41 @@ type FoodBusiness implements Business {
   attachments: [String!]
 }
 
+type FoodBusiness_noLocale implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: FoodBusinessSubType!
+  sub_type_string: LocaleString!
+  trade_license: String!
+  trade_license_number: String!
+  street_address: String!
+  operating_hours: Hours!
+  phone_number: [String!]!
+  description: LocaleString!
+  website: String
+  menu: [String!]!
+  attachments: [String!]
+}
+
 input NewFoodBusinessInput {
   display_name: String!
   display_picture: Upload!
   city: City!
   sub_type: FoodBusinessSubType!
-  sub_type_string: String
+  sub_type_string: LocaleStringInput
   trade_license: Upload!
   trade_license_number: String!
   street_address: String!
   operating_hours: HoursInput!
   phone_number: [String!]!
-  description: String!
+  description: LocaleStringInput!
   website: String
   menu: [Upload!]!
   attachments: [Upload!]
@@ -758,13 +1011,13 @@ input UpdateFoodBusinessInput {
   display_picture: Upload
   city: City
   sub_type: FoodBusinessSubType
-  sub_type_string: String
+  sub_type_string: LocaleStringInput
   trade_license: Upload
   trade_license_number: String
   street_address: String
   operating_hours: HoursInput
   phone_number: [String!]
-  description: String
+  description: LocaleStringInput
   website: String
   old_menu: [String!]
   menu: [Upload!]
@@ -798,18 +1051,42 @@ type CleaningAndMaintenanceBusiness implements Business {
   attachments: [String!]
 }
 
+type CleaningAndMaintenanceBusiness_noLocale implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: CleaningAndMaintenanceBusinessSubType!
+  sub_type_string: LocaleString!
+  trade_license: String!
+  trade_license_number: String!
+  street_address: String!
+  operating_hours: Hours!
+  phone_number: [String!]!
+  description: LocaleString!
+  home_service_available: Boolean!
+  charge: Price
+  website: String
+  attachments: [String!]
+}
+
 input NewCleaningAndMaintenanceBusinessInput {
   display_name: String!
   display_picture: Upload!
   city: City!
   sub_type: CleaningAndMaintenanceBusinessSubType!
-  sub_type_string: String
+  sub_type_string: LocaleStringInput
   trade_license: Upload!
   trade_license_number: String!
   street_address: String!
   operating_hours: HoursInput!
   phone_number: [String!]!
-  description: String!
+  description: LocaleStringInput!
   home_service_available: Boolean!
   charge: PriceInput
   website: String
@@ -821,13 +1098,13 @@ input UpdateCleaningAndMaintenanceBusinessInput {
   display_picture: Upload
   city: City
   sub_type: CleaningAndMaintenanceBusinessSubType
-  sub_type_string: String
+  sub_type_string: LocaleStringInput
   trade_license: Upload
   trade_license_number: String
   street_address: String
   operating_hours: HoursInput
   phone_number: [String!]
-  description: String
+  description: LocaleStringInput
   home_service_available: Boolean
   charge: PriceInput
   website: String
@@ -855,6 +1132,24 @@ type Event {
   attachments: [String!]
 }
 
+type Event_noLocale {
+  id: ID!
+  approved: ApproveStatus!
+  display_name: String!
+  display_picture: String!
+  type: EventType!
+  city: City
+  street_address: String
+  phone_number: [String!]
+  description: LocaleString!
+  duration: Duration!
+  hours: Hours!
+  ticket_website: String
+  ticket_price: Price
+  organizer: String!
+  attachments: [String!]
+}
+
 input NewEventInput {
   display_name: String!
   display_picture: Upload!
@@ -862,7 +1157,7 @@ input NewEventInput {
   city: City
   street_address: String
   phone_number: [String!]
-  description: String!
+  description: LocaleStringInput!
   duration: DurationInput!
   hours: HoursInput!
   ticket_website: String
@@ -878,7 +1173,7 @@ input UpdateEventInput {
   city: City
   street_address: String
   phone_number: [String!]
-  description: String
+  description: LocaleStringInput
   duration: DurationInput
   hours: HoursInput
   ticket_website: String
@@ -889,6 +1184,16 @@ input UpdateEventInput {
 }
 
 # helping types
+
+type LocaleString {
+  ar: String!
+  en: String!
+}
+
+input LocaleStringInput {
+  ar: String!
+  en: String!
+}
 
 type Price {
   value: Float
@@ -958,6 +1263,22 @@ interface DomesticHelpPersonnel {
   attachments: [String!]
 }
 
+interface DomesticHelpPersonnel_noLocale {
+  name: String!
+  picture: String!
+  profession: Profession!
+  gender: Gender!
+  nationality: Nationality!
+  religion: String!
+  salary: Price!
+  date_of_birth: String!
+  marital_status: MaritalStatus!
+  languages: [LocaleString!]!
+  experience: [PersonalExperience!]!
+  phone_number: String!
+  attachments: [String!]
+}
+
 input DomesticHelpPersonnelInput {
   name: String!
   picture: Upload!
@@ -968,7 +1289,7 @@ input DomesticHelpPersonnelInput {
   salary: PriceInput!
   date_of_birth: String!
   marital_status: MaritalStatus!
-  languages: [String!]!
+  languages: [LocaleStringInput!]!
   experience: [PersonalExperienceInput!]!
   phone_number: String!
   attachments: [Upload!]
@@ -977,7 +1298,7 @@ input DomesticHelpPersonnelInput {
   education: Education
   height: String
   weight: String
-  skills: [String!]
+  skills: [LocaleStringInput!]
   number_of_children: Int
 }
 
@@ -991,7 +1312,7 @@ input UpdateDomesticHelpPersonnelInput {
   salary: PriceInput
   date_of_birth: String
   marital_status: MaritalStatus
-  languages: [String!]
+  languages: [LocaleStringInput!]
   experience: [PersonalExperienceInput!]
   phone_number: String
   old_attachments: [String!]
@@ -1001,7 +1322,7 @@ input UpdateDomesticHelpPersonnelInput {
   education: Education
   height: String
   weight: String
-  skills: [String!]
+  skills: [LocaleStringInput!]
   number_of_children: Int
 }
 
@@ -1016,6 +1337,24 @@ type Driver implements DomesticHelpPersonnel {
   date_of_birth: String!
   marital_status: MaritalStatus!
   languages: [String!]!
+  experience: [PersonalExperience!]!
+  phone_number: String!
+  attachments: [String!]
+  # specialization
+  license_expiry_date: String!
+}
+
+type Driver_noLocale implements DomesticHelpPersonnel_noLocale {
+  name: String!
+  picture: String!
+  profession: Profession!
+  gender: Gender!
+  nationality: Nationality!
+  religion: String!
+  salary: Price!
+  date_of_birth: String!
+  marital_status: MaritalStatus!
+  languages: [LocaleString!]!
   experience: [PersonalExperience!]!
   phone_number: String!
   attachments: [String!]
@@ -1045,6 +1384,28 @@ type Nanny implements DomesticHelpPersonnel {
   number_of_children: Int!
 }
 
+type Nanny_noLocale implements DomesticHelpPersonnel_noLocale {
+  name: String!
+  picture: String!
+  profession: Profession!
+  gender: Gender!
+  nationality: Nationality!
+  religion: String!
+  salary: Price!
+  date_of_birth: String!
+  marital_status: MaritalStatus!
+  languages: [LocaleString!]!
+  experience: [PersonalExperience!]!
+  phone_number: String!
+  attachments: [String!]
+  # specialization
+  education: Education!
+  height: String!
+  weight: String!
+  skills: [LocaleString!]!
+  number_of_children: Int!
+}
+
 type Maid implements DomesticHelpPersonnel {
   name: String!
   picture: String!
@@ -1064,6 +1425,28 @@ type Maid implements DomesticHelpPersonnel {
   height: String!
   weight: String!
   skills: [String!]!
+  number_of_children: Int!
+}
+
+type Maid_noLocale implements DomesticHelpPersonnel_noLocale {
+  name: String!
+  picture: String!
+  profession: Profession!
+  gender: Gender!
+  nationality: Nationality!
+  religion: String!
+  salary: Price!
+  date_of_birth: String!
+  marital_status: MaritalStatus!
+  languages: [LocaleString!]!
+  experience: [PersonalExperience!]!
+  phone_number: String!
+  attachments: [String!]
+  # specialization
+  education: Education!
+  height: String!
+  weight: String!
+  skills: [LocaleString!]!
   number_of_children: Int!
 }
 
@@ -1089,7 +1472,34 @@ type Cook implements DomesticHelpPersonnel {
   number_of_children: Int!
 }
 
+type Cook_noLocale implements DomesticHelpPersonnel_noLocale {
+  name: String!
+  picture: String!
+  profession: Profession!
+  gender: Gender!
+  nationality: Nationality!
+  religion: String!
+  salary: Price!
+  date_of_birth: String!
+  marital_status: MaritalStatus!
+  languages: [LocaleString!]!
+  experience: [PersonalExperience!]!
+  phone_number: String!
+  attachments: [String!]
+  # specialization
+  education: Education!
+  height: String!
+  weight: String!
+  skills: [LocaleString!]!
+  number_of_children: Int!
+}
+
 # enumerations
+
+enum Locale {
+  ar
+  en
+}
 
 enum UserType {
   BUSINESS
@@ -1260,6 +1670,12 @@ enum City {
 enum Gender {
   FEMALE
   MALE
+}
+
+enum Genders {
+  FEMALE_ONLY
+  MALE_ONLY
+  MIXED
 }
 
 enum Country {

@@ -27,14 +27,14 @@ const __elementaryBusinessQueryFields = `
   display_picture
   city
   type
-  ... on SelfEmployedBusiness {
+  ... on SelfEmployedBusiness_noLocale {
     selfEmployedSubType: sub_type
-    sub_type_string
+    sub_type_string { en ar }
     gender
     nationality
     phone_number
-    description
-    skills
+    description { en ar }
+    skills { en ar }
     experience {
       country
       institution
@@ -49,26 +49,26 @@ const __elementaryBusinessQueryFields = `
     government_id
     attachments
   }
-  ... on ChildEducationBusiness {
+  ... on ChildEducationBusiness_noLocale {
     childEducationSubType: sub_type
-    sub_type_string
+    sub_type_string { en ar }
     trade_license
     trade_license_number
     street_address
     phone_number
-    description
+    description { en ar }
     year_founded
-    curriculum
+    curriculum { en ar }
     attachments
   }
-  ... on DomesticHelpBusiness {
+  ... on DomesticHelpBusiness_noLocale {
     domesticHelpSubType: sub_type
-    sub_type_string
+    sub_type_string { en ar }
     trade_license
     trade_license_number
     street_address
     phone_number
-    description
+    description { en ar }
     website
     personnel {
       name
@@ -83,7 +83,7 @@ const __elementaryBusinessQueryFields = `
       }
       date_of_birth
       marital_status
-      languages
+      languages { en ar }
       experience {
         country
         institution
@@ -92,36 +92,36 @@ const __elementaryBusinessQueryFields = `
         in_position
       }
       phone_number
-      ... on Driver {
+      ... on Driver_noLocale {
         license_expiry_date
       }
       attachments
-      ... on Nanny {
+      ... on Nanny_noLocale {
         education
         height
         weight
-        skills
+        skills { en ar }
         number_of_children
       }
-      ... on Maid {
+      ... on Maid_noLocale {
         education
         height
         weight
-        skills
+        skills { en ar }
         number_of_children
       }
-      ... on Cook {
+      ... on Cook_noLocale {
         education
         height
         weight
-        skills
+        skills { en ar }
         number_of_children
       }
     }
   }
-  ... on BeautyBusiness {
+  ... on BeautyBusiness_noLocale {
     beautySubType: sub_type
-    sub_type_string
+    sub_type_string { en ar }
     trade_license
     trade_license_number
     street_address
@@ -131,15 +131,15 @@ const __elementaryBusinessQueryFields = `
       all_day
     }
     phone_number
-    description
+    description { en ar }
     home_service_available
-    services
+    services { en ar }
     website
     attachments
   }
-  ... on TransportationBusiness {
+  ... on TransportationBusiness_noLocale {
     transportationSubType: sub_type
-    sub_type_string
+    sub_type_string { en ar }
     trade_license
     trade_license_number
     street_address
@@ -149,30 +149,30 @@ const __elementaryBusinessQueryFields = `
       all_day
     }
     phone_number
-    description
-    services
+    description { en ar }
+    services { en ar }
     website
     attachments
   }
-  ... on HospitalityBusiness {
+  ... on HospitalityBusiness_noLocale {
     hospitalitySubType: sub_type
-    sub_type_string
+    sub_type_string { en ar }
     trade_license
     trade_license_number
     street_address
     phone_number
-    description
+    description { en ar }
     home_service_available
     optional_charge: charge {
       value
       currency
     }
-    services
+    services { en ar }
     website
     attachments
   }
-  ... on StationeryBusiness {
-    description
+  ... on StationeryBusiness_noLocale {
+    description { en ar }
     trade_license
     trade_license_number
     street_address
@@ -180,20 +180,20 @@ const __elementaryBusinessQueryFields = `
     website
     attachments
   }
-  ... on MadeInQatarBusiness {
+  ... on MadeInQatarBusiness_noLocale {
     madeInQatarSubType: sub_type
-    sub_type_string
+    sub_type_string { en ar }
     street_address
     phone_number
-    description
+    description { en ar }
     home_delivery_available
-    products
+    products { en ar }
     website
     attachments
   }
-  ... on SportsBusiness {
+  ... on SportsBusiness_noLocale {
     sportsSubType: sub_type
-    sub_type_string
+    sub_type_string { en ar }
     trade_license
     trade_license_number
     street_address
@@ -203,17 +203,17 @@ const __elementaryBusinessQueryFields = `
       all_day
     }
     phone_number
-    description
+    description { en ar }
     website
     attachments
     home_training_available
-    classes
+    classes { en ar }
     genders
     teams
   }
-  ... on EntertainmentBusiness {
+  ... on EntertainmentBusiness_noLocale {
     entertainmentSubType: sub_type
-    sub_type_string
+    sub_type_string { en ar }
     trade_license
     trade_license_number
     street_address
@@ -223,14 +223,14 @@ const __elementaryBusinessQueryFields = `
       all_day
     }
     phone_number
-    description
-    activities
+    description { en ar }
+    activities { en ar }
     website
     attachments
   }
-  ... on FoodBusiness {
+  ... on FoodBusiness_noLocale {
     foodSubType: sub_type
-    sub_type_string
+    sub_type_string { en ar }
     trade_license
     trade_license_number
     street_address
@@ -240,14 +240,14 @@ const __elementaryBusinessQueryFields = `
       all_day
     }
     phone_number
-    description
+    description { en ar }
     website
     menu
     attachments
   }
-  ... on CleaningAndMaintenanceBusiness {
+  ... on CleaningAndMaintenanceBusiness_noLocale {
     cleaningAndMaintenanceSubType: sub_type
-    sub_type_string
+    sub_type_string { en ar }
     trade_license
     trade_license_number
     street_address
@@ -257,7 +257,7 @@ const __elementaryBusinessQueryFields = `
       all_day
     }
     phone_number
-    description
+    description { en ar }
     home_service_available
     optional_charge: charge {
       value
@@ -283,7 +283,7 @@ const _eventQueryFields = `
   city
   street_address
   phone_number
-  description
+  description { en ar }
   duration {
     start
     end

@@ -207,7 +207,6 @@ function signup() {
   }).then(res => {
     if (! res.hasError) {
       CookieManager.set('token', res.data["createBusinessUser"], 1);
-      navigateTo($('#profile-btn'), 'profile');
       alert("Account created successfully.");
       loadFirstPage();
       switchToWelcome();

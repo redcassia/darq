@@ -435,9 +435,9 @@ class ProfileView {
 
     html += `
       </div>
-      <div class="profile-medium-text">${b["description"].en}</div>
+      <div class="profile-medium-text">${e["description"].en}</div>
       <br>
-      <div class="profile-medium-text">${b["description"].ar}</div>
+      <div class="profile-medium-text">${e["description"].ar}</div>
       <hr />
       <div class="profile-left" style="height: auto; min-height: 0">
         ${this._text("Start", e["duration"]["start"])}

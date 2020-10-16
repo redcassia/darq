@@ -209,11 +209,11 @@ class ProfileView {
     }
 
     if (b["gender"]) {
-      html += `<div class="profile-small-text">${b["gender"]}</div>`
+      html += `<div class="profile-small-text">${enums["Gender"][b["gender"]] || b["gender"]}</div>`
     }
 
     if (b["nationality"]) {
-      html += `<div class="profile-small-text">${b["nationality"]}</div>`
+      html += `<div class="profile-small-text">${enums["Nationality"][b["nationality"]] || b["nationality"]}</div>`
     }
 
     html += `
@@ -223,7 +223,7 @@ class ProfileView {
     if (b["street_address"]) {
       html += `${b["street_address"]} - `
     }
-    html += `${b["city"]}, Qatar</div>`
+    html += `${enums["City"][b["city"]] || b["city"]}, Qatar</div>`
 
     if (b["operating_hours"]) {
       html += `
@@ -327,7 +327,7 @@ class ProfileView {
     }
 
     if (b["genders"]) {
-      html += '<hr />' + this._text("Gender", b["genders"]);
+      html += '<hr />' + this._text("Gender", enums["Genders"][b["genders"]]);
     }
 
     if (b["website"]) {
@@ -392,7 +392,7 @@ class ProfileView {
     `;
 
     if (e["type"]) {
-        html += `<div class="profile-small-text">${e["type"]}</div>`;
+        html += `<div class="profile-small-text">${enums["EventType"][e["type"]] || e["type"]}</div>`;
     }
 
     if (e["street_address"] || e["city"]) {
@@ -404,7 +404,7 @@ class ProfileView {
         html += `${e["street_address"]} - `
       }
       if (e["city"]) {
-        html += `${e["city"]}, Qatar`
+        html += `${enums["City"][e["city"]] || e["city"]}, Qatar`
       }
 
       html += `</div>`

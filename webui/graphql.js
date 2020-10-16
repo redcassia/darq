@@ -135,7 +135,11 @@ class GraphQL {
     selectTagIds.forEach(id => {
       var select = document.getElementById(id);
       for (var v of res.data.__type.enumValues) {
-        select.innerHTML += `<option value='${v.name}'>${v.name}</option>`;
+        var display = v.name;
+        if (enums[enumName] && enums[enumName][v.name]) {
+          display = enums[enumName][v.name];
+        }
+        select.innerHTML += `<option value='${v.name}'>${display}</option>`;
       }
     });
   }

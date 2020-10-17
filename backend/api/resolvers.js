@@ -10,6 +10,8 @@ var fs = require('fs');
 var path = require('path')
 
 const strings = require('./locale')
+const Mailer = require('./mailer');
+const Mail = require('nodemailer/lib/mailer');
 
 class Database {
   constructor(config) {
@@ -1235,7 +1237,8 @@ const resolvers = {
         );
         id = result.insertId;
 
-        // TODO: send confirmation email
+        // TODO: send activation link
+        Mailer.newUser(email);
       }
       catch(e) {
         console.log(e);
@@ -1432,7 +1435,7 @@ const resolvers = {
         _updateBusiness(id, data);
       }
       else {
-        // TODO: send email notification
+        Mailer.businessUpdate(user, id, true);
       }
     },
 
@@ -1625,7 +1628,11 @@ const resolvers = {
 
           businessLoader.clear(id);
 
-          // TODO: send confirmation email
+          Mailer.businessAdd(
+            (await businessUserLoader.load(business.owner)).email,
+            business.display_name,
+            approve
+          );
         }
         catch (e) {
           console.log(e);
@@ -1727,7 +1734,11 @@ const resolvers = {
 
             businessLoader.clear(id);
 
-            // TODO: send confirmation email
+            Mailer.businessUpdate(
+              (await businessUserLoader.load(business.owner)).email,
+              business.display_name,
+              approve
+            );
           }
         }
       }
@@ -1761,7 +1772,11 @@ const resolvers = {
 
           eventLoader.clear(id);
 
-          // TODO: send confirmation email
+          Mailer.eventAdd(
+            (await businessUserLoader.load(event.owner)).email,
+            event.display_name,
+            approve
+          );
         }
         catch (e) {
           console.log(e);

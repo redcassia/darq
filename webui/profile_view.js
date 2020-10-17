@@ -5,7 +5,12 @@ class ProfileView {
     html += `<div class="profile-big-text">${title}:<div>`;
 
     for (var x of data) {
-      html += `<div class="profile-text-chip">${x}</div>`;
+      if (x.en === undefined) {
+        html += `<div class="profile-text-chip">${x}</div>`;
+      }
+      else {
+        html += `<div class="profile-text-chip">${x.en}; ${x.ar}</div>`;
+      }
     }
 
     html += `</div></div>`;
@@ -18,7 +23,12 @@ class ProfileView {
     html += `<div class="profile-big-text">${title}:<div>`;
 
     for (var x of data) {
-      html += `<div class="profile-small-text-light"> - ${x}</div>`;
+      if (x.en === undefined) {
+        html += `<div class="profile-small-text-light"> - ${x}</div>`;
+      }
+      else {
+        html += `<div class="profile-small-text-light"> - ${x.en}; ${x.ar}</div>`;
+      }
     }
 
     html += `</div></div>`;
@@ -27,12 +37,22 @@ class ProfileView {
   }
 
   static _text(title, data) {
-    return `
-      <div class="profile-big-text">
-        ${title}:
-        <span class="profile-small-text">${data}</span>
-      </div>
-    `
+    if (data.en === undefined) {
+      return `
+        <div class="profile-big-text">
+          ${title}:
+          <span class="profile-small-text">${data}</span>
+        </div>
+      `;
+    }
+    else {
+      return `
+        <div class="profile-big-text">
+          ${title}:
+          <span class="profile-small-text">${data.en}; ${data.ar}</span>
+        </div>
+      `;
+    }
   }
 
   static _link(title, data) {
@@ -185,15 +205,15 @@ class ProfileView {
     `;
 
     if (b["sub_type_string"]) {
-        html += `<div class="profile-small-text">${b["sub_type_string"]}</div>`;
+        html += `<div class="profile-small-text">${b["sub_type_string"].en}; ${b["sub_type_string"].ar}</div>`;
     }
 
     if (b["gender"]) {
-      html += `<div class="profile-small-text">${b["gender"]}</div>`
+      html += `<div class="profile-small-text">${enums["Gender"][b["gender"]] || b["gender"]}</div>`
     }
 
     if (b["nationality"]) {
-      html += `<div class="profile-small-text">${b["nationality"]}</div>`
+      html += `<div class="profile-small-text">${enums["Nationality"][b["nationality"]] || b["nationality"]}</div>`
     }
 
     html += `
@@ -203,7 +223,7 @@ class ProfileView {
     if (b["street_address"]) {
       html += `${b["street_address"]} - `
     }
-    html += `${b["city"]}, Qatar</div>`
+    html += `${enums["City"][b["city"]] || b["city"]}, Qatar</div>`
 
     if (b["operating_hours"]) {
       html += `
@@ -234,7 +254,9 @@ class ProfileView {
 
     if (b["description"]) {
       html += `
-        <div class="profile-medium-text">${b["description"]}</div>
+        <div class="profile-medium-text">${b["description"].en}</div>
+        <br>
+        <div class="profile-medium-text">${b["description"].ar}</div>
       `;
     }
 
@@ -305,7 +327,7 @@ class ProfileView {
     }
 
     if (b["genders"]) {
-      html += '<hr />' + this._text("Gender", b["genders"]);
+      html += '<hr />' + this._text("Gender", enums["Genders"][b["genders"]]);
     }
 
     if (b["website"]) {
@@ -370,7 +392,7 @@ class ProfileView {
     `;
 
     if (e["type"]) {
-        html += `<div class="profile-small-text">${e["type"]}</div>`;
+        html += `<div class="profile-small-text">${enums["EventType"][e["type"]] || e["type"]}</div>`;
     }
 
     if (e["street_address"] || e["city"]) {
@@ -382,7 +404,7 @@ class ProfileView {
         html += `${e["street_address"]} - `
       }
       if (e["city"]) {
-        html += `${e["city"]}, Qatar`
+        html += `${enums["City"][e["city"]] || e["city"]}, Qatar`
       }
 
       html += `</div>`
@@ -413,7 +435,9 @@ class ProfileView {
 
     html += `
       </div>
-      <div class="profile-medium-text">${e["description"]}</div>
+      <div class="profile-medium-text">${e["description"].en}</div>
+      <br>
+      <div class="profile-medium-text">${e["description"].ar}</div>
       <hr />
       <div class="profile-left" style="height: auto; min-height: 0">
         ${this._text("Start", e["duration"]["start"])}

@@ -15,7 +15,17 @@
                 <select name="sub_type" id="hospitality-sub-type" required data-friendly-name="Business sub-type">
                     <option value="" disabled selected>Choose business sub-type</option>
                 </select>
-                <input class="show-when-other" type="text" name="sub_type_string" placeholder="Sub-type"/>
+            </div>
+        </div>
+        <br>
+        <div class="form-object show-if-other hidden" data-name="sub_type_string">
+            <div class="form-box">
+                <label>Custom Business sub-type (EN)</label>
+                <input type="text" name="en" required data-friendly-name="Custom Business sub-type (EN)"/>
+            </div>
+            <div class="form-box">
+                <label>Custom Business sub-type (AR)</label>
+                <input type="text" name="ar" required data-friendly-name="Custom Business sub-type (AR)"/>
             </div>
         </div>
     </div>
@@ -46,9 +56,9 @@
     <div class="form-line">
         <div class="form-box">
             <label>Phone Number(s)</label>
-            <div class="multistring-input" required data-friendly-name="Phone number">
+            <div class="multistring-input" data-name="phone_number" required data-friendly-name="Phone number">
                 <div class="data"></div>
-                <input type="tel" name="phone_number" />
+                <input type="tel" />
                 <button>Add</button>
             </div>
         </div>
@@ -56,10 +66,18 @@
 
     <hr />
 
-    <div class="form-line">
-        <div class="form-box">
-            <label>Description</label>
-            <textarea name="description" required data-friendly-name="Description"></textarea>
+    <div class="form-object" data-name="description">
+        <div class="form-line">
+            <div class="form-box">
+                <label>Description (EN)</label>
+                <textarea name="en" required data-friendly-name="Description (EN)"></textarea>
+            </div>
+        </div>
+        <div class="form-line">
+            <div class="form-box">
+                <label>Description (AR)</label>
+                <textarea name="ar" required data-friendly-name="Description (AR)"></textarea>
+            </div>
         </div>
     </div>
 
@@ -80,9 +98,10 @@
     <div class="form-line">
         <div class="form-box">
             <label>Services</label>
-            <div class="multistring-input" required data-friendly-name="Services">
+            <div class="multistring-input" data-name="services" data-multi-lang required data-friendly-name="Services">
                 <div class="data"></div>
-                <input type="text" name="services" />
+                <input type="text" name="en" placeholder="EN"/>
+                <input type="text" name="ar" placeholder="AR"/>
                 <button>Add</button>
             </div>
         </div>

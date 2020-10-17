@@ -271,9 +271,6 @@ textarea {
 select:active {
     background-image: url('assets/arrow-up-icon.png');
 }
-select + input[type='text'] {
-    display: none;
-}
 
 .img-input > input {
     clip-path: rect(0, 0, 0, 0);
@@ -356,6 +353,9 @@ select + input[type='text'] {
     font-weight: bold;
     font-size: 14px;
     line-height: 16px;
+}
+.multistring-input > input {
+    width: 225px;
 }
 .string-obj {
     position: relative;

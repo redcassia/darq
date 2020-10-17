@@ -1,12 +1,18 @@
-class Form {
 
-  // get //////////////////////////////////////////////////////////////////////
+class ImgInput {
 
-  static _getImgInputData(input) {
-    var name = input.children[0].attributes['name'] ? input.children[0].attributes['name'].value : null;
+  constructor(element) {
+    this.element = element;
+  }
+
+  get() {
+    var name =
+      this.element.children[0].attributes['name']
+      ? this.element.children[0].attributes['name'].value
+      : null;
     var data = [];
 
-    for (var child of input.parentNode.children) {
+    for (var child of this.element.parentNode.children) {
       if (child.classList[0] == 'img-upload-obj') {
         var first = child.children[0];
         if (first) {
@@ -20,34 +26,144 @@ class Form {
       }
     }
 
-    if (input.attributes['required'] && data.length == 0) {
-      alert(`${input.attributes['data-friendly-name'].value} cannot be left empty`);
+    if (this.element.attributes['required'] && data.length == 0) {
+      alert(`${this.element.attributes['data-friendly-name'].value} cannot be left empty`);
       throw new Error("Form validation failed");
     }
 
     var res = new Object();
-    res[name] = input.classList.contains('multiple') ? data : data[0];
+    res[name] = this.element.classList.contains('multiple') ? data : data[0];
 
     return res;
   }
 
-  static _getMultiStringInputData(input) {
-    var name = input.children[1].attributes['name'] ? input.children[1].attributes['name'].value : null;
+  put(data) {
+    var name =
+      this.element.children[0].attributes['name']
+      ? this.element.children[0].attributes['name'].value
+      : null;
+
+    if (! name) return 0;
+    data = data[name];
+    if (! data) return 0;
+
+    if (! Array.isArray(data)) data = [data];
+
+    for (var val of data) {
+      var div = document.createElement("div");
+      div.setAttribute('class', 'img-upload-obj');
+
+      var img = document.createElement("img");
+      img.setAttribute('src', attachmentsEndpoint + val);
+      img.setAttribute('data-val', val);
+
+      var btn = document.createElement("button");
+      btn.onclick = function() {
+        this.parentElement.remove();
+      }
+
+      div.appendChild(img);
+      div.appendChild(btn);
+
+      $(this.element).before(div);
+    }
+
+    return data.length;
+  }
+
+  static applyEventHandlers() {
+    $(".img-input").off("click");
+    $(".img-input").click(function() {
+      $(this).children()[0].click();
+    });
+    $(".img-input > input").off("change");
+    $(".img-input > input").change(function() {
+      var inp = this;
+      var input = $(this);
+      if (input.get()[0].files) {
+        for (var file of input.get()[0].files) {
+          var reader = new FileReader();
+
+          reader.onload = function(e) {
+            var div = document.createElement("div");
+            div.setAttribute('class', 'img-upload-obj');
+
+            var img = document.createElement("img");
+            img.setAttribute('src', e.target.result);
+
+            var btn = document.createElement("button");
+            btn.onclick = function() {
+              this.parentElement.remove();
+            }
+
+            var cloned = inp.cloneNode();
+            cloned.setAttribute('class', 'hidden');
+            div.appendChild(cloned);
+            div.appendChild(img);
+            div.appendChild(btn);
+
+            var parent = input.parent();
+            if (! parent.hasClass('multiple')) {
+              parent.parent().children(".img-upload-obj").remove();
+            }
+            parent.before(div);
+          };
+
+          reader.readAsDataURL(file);
+        }
+      }
+    });
+  }
+}
+
+class MultiStringInput {
+
+  constructor(element) {
+    this.element = element;
+  }
+
+  get() {
+    var name =
+      this.element.attributes['data-name'] ?
+      this.element.attributes['data-name'].value
+      : null;
     var data = [];
 
-    for (var child of input.children[0].children) {
-      if (child.classList[0] == 'string-obj') {
-        data.push(child.attributes['data-string'].value);
+    if (this.element.hasAttribute('data-multi-lang')) {
+      for (var child of this.element.children[0].children) {
+        if (child.classList[0] == 'string-obj') {
+          data.push({
+            en: child.attributes['data-string-en'].value,
+            ar: child.attributes['data-string-ar'].value
+          });
+        }
+      }
+
+      var en = $(this.element).children('input[name="en"]')[0];
+      var ar = $(this.element).children('input[name="ar"]')[0];
+
+      if (en.value && en.value.length > 0 && ar.value && ar.value.length > 0) {
+        data.push({
+          en: en.value,
+          ar: ar.value
+        });
+      }
+    }
+    else {
+      for (var child of this.element.children[0].children) {
+        if (child.classList[0] == 'string-obj') {
+          data.push(child.attributes['data-string'].value)
+        }
+      }
+
+      var inputVal = String(this.element.children[1].value);
+      if (inputVal && inputVal.length > 0) {
+        data.push(inputVal);
       }
     }
 
-    var inputVal = String(input.children[1].value);
-    if (inputVal && inputVal.length > 0 && data.indexOf(inputVal) == -1) {
-      data.push(inputVal);
-    }
-
-    if (input.attributes['required'] && data.length == 0) {
-      alert(`${input.attributes['data-friendly-name'].value} cannot be left empty`);
+    if (this.element.attributes['required'] && data.length == 0) {
+      alert(`${this.element.attributes['data-friendly-name'].value} cannot be left empty`);
       throw new Error("Form validation failed");
     }
 
@@ -57,18 +173,137 @@ class Form {
     return res;
   }
 
-  static _getMultiFormData(form) {
-    var name = form.attributes['data-name'] ? form.attributes['data-name'].value : null;
+  put(data) {
+    var name =
+      this.element.attributes['data-name']
+      ? this.element.attributes['data-name'].value
+      : null;
+
+    if (! name) return;
+    data = data[name];
+    if (! data) return;
+
+    const multi = this.element.hasAttribute('data-multi-lang');
+
+    for (var val of data) {
+      if (multi) {
+        val = {
+          en: String(val.en),
+          ar: String(val.ar)
+        }
+
+        var div = document.createElement("div");
+        div.setAttribute('class', 'string-obj');
+        div.setAttribute('data-string-en', val.en);
+        div.setAttribute('data-string-ar', val.ar);
+
+        var p = document.createElement("p");
+        p.textContent = val.en + "; " + val.ar;
+      }
+      else {
+        val = String(val);
+
+        var div = document.createElement("div");
+        div.setAttribute('class', 'string-obj');
+        div.setAttribute('data-string', val);
+
+        var p = document.createElement("p");
+        p.textContent = val;
+      }
+
+      var btn = document.createElement("button");
+      btn.setAttribute('class', 'remove-btn');
+      btn.onclick = function() {
+        this.parentElement.remove();
+      }
+
+      div.appendChild(p);
+      div.appendChild(btn);
+
+      this.element.children[0].appendChild(div);
+    }
+  }
+
+  static applyEventHandlers() {
+    $(".multistring-input > button").off("click");
+    $(".multistring-input > button").click(function() {
+
+      if (this.parentNode.hasAttribute('data-multi-lang')) {
+        var en = $(this).parent().children('input[name="en"]')[0];
+        var ar = $(this).parent().children('input[name="ar"]')[0];
+
+        if (en.value.length > 0 && ar.value.length > 0) {
+          var div = document.createElement("div");
+          div.setAttribute('class', 'string-obj');
+          div.setAttribute('data-string-en', en.value);
+          div.setAttribute('data-string-ar', ar.value);
+
+          var p = document.createElement("p");
+          p.textContent = en.value + "; " + ar.value;
+
+          var btn = document.createElement("button");
+          btn.setAttribute('class', 'remove-btn');
+          btn.onclick = function() {
+            this.parentElement.remove();
+          }
+
+          div.appendChild(p);
+          div.appendChild(btn);
+
+          $(this).parent().children('div')[0].append(div);
+          en.value = "";
+          ar.value = "";
+        }
+      }
+      else {
+        var inp = $(this).parent().children('input')[0];
+
+        if (inp.value.length > 0) {
+          var div = document.createElement("div");
+          div.setAttribute('class', 'string-obj');
+          div.setAttribute('data-string', inp.value);
+
+          var p = document.createElement("p");
+          p.textContent = inp.value;
+
+          var btn = document.createElement("button");
+          btn.setAttribute('class', 'remove-btn');
+          btn.onclick = function() {
+            this.parentElement.remove();
+          }
+
+          div.appendChild(p);
+          div.appendChild(btn);
+
+          $(this).parent().children('div')[0].append(div);
+          inp.value = "";
+        }
+      }
+    });
+  }
+}
+
+class MultiFormInput {
+
+  constructor(element) {
+    this.element = element;
+  }
+
+  get() {
+    var name =
+      this.element.attributes['data-name']
+      ? this.element.attributes['data-name'].value
+      : null;
     var data = [];
 
-    for (var child of form.children) {
+    for (var child of this.element.children) {
       if (child.classList[0] == 'sub-form') {
-        data.push(this._getFormData(child));
+        data.push(Form._getFormData(child));
       }
     }
 
-    if (form.attributes['required'] && data.length == 0) {
-      alert(`${input.attributes['data-friendly-name'].value} cannot be left empty`);
+    if (this.element.attributes['required'] && data.length == 0) {
+      alert(`${this.element.attributes['data-friendly-name'].value} cannot be left empty`);
       throw new Error("Form validation failed");
     }
 
@@ -77,6 +312,59 @@ class Form {
 
     return res;
   }
+
+  put(data) {
+    var name =
+      this.element.attributes['data-name']
+      ? this.element.attributes['data-name'].value
+      : null;
+
+    if (! name) return;
+    data = data[name];
+    if (! data) return;
+
+    for (var subData of data) {
+      var subForm = $($(this.element).children('.template')[0])
+        .clone()
+        .removeClass("template")
+        .addClass("sub-form")
+
+      Form._putFormData(subForm.get()[0], subData);
+
+      $(this.element).append(subForm);
+
+      $(".remove-btn").off("click");
+      $(".remove-btn").click(function() {
+        this.parentElement.remove();
+      });
+
+      this.applyEventHandlers();
+    }
+  }
+
+  static applyEventHandlers() {
+    $(".multiform > button").off("click");
+    $(".multiform > button").click(function() {
+      $(this).parent().append(
+        $($(this).parent().children('.template')[0])
+          .clone()
+          .removeClass("template")
+          .addClass("sub-form")
+      );
+
+      $(".remove-btn").off("click");
+      $(".remove-btn").click(function() {
+        this.parentElement.remove();
+      });
+
+      MultiFormInput.applyEventHandlers();
+    });
+  }
+}
+
+class Form {
+
+  // get //////////////////////////////////////////////////////////////////////
 
   static _getInputData(input) {
     var name = input.attributes['name'] ? input.attributes['name'].value : null;
@@ -145,7 +433,7 @@ class Form {
           case 'DIV':
             switch (child.classList[0]) {
               case 'img-input':
-                data = { ...data, ...this._getImgInputData(child) };
+                data = { ...data, ...new ImgInput(child).get() };
                 break;
 
               case 'select':
@@ -153,23 +441,25 @@ class Form {
                 break;
 
               case 'multistring-input':
-                data = { ...data, ...this._getMultiStringInputData(child) };
+                data = { ...data, ...new MultiStringInput(child).get() };
                 break;
 
               case 'multiform':
-                data = { ...data, ...this._getMultiFormData(child) };
+                data = { ...data, ...new MultiFormInput(child).get() };
                 break;
 
               case 'form-object': {
-                var obj = this._getFormData(child);
-                var allNull = true;
-                for (var key in obj) {
-                  if (obj[key] != null) {
-                    allNull = false;
-                    break;
+                if (! $(child).hasClass("hidden")) {
+                  var obj = this._getFormData(child);
+                  var allNull = true;
+                  for (var key in obj) {
+                    if (obj[key] != null) {
+                      allNull = false;
+                      break;
+                    }
                   }
+                  data[child.attributes['data-name'].value] = allNull ? null : obj;
                 }
-                data[child.attributes['data-name'].value] = allNull ? null : obj;
               }
               break;
 
@@ -202,94 +492,6 @@ class Form {
   }
 
   // put //////////////////////////////////////////////////////////////////////
-
-  static _putImgInputData(input, data) {
-    var name = input.children[0].attributes['name'] ? input.children[0].attributes['name'].value : null;
-
-    if (! name) return 0;
-    data = data[name];
-    if (! data) return 0;
-
-    if (! Array.isArray(data)) data = [data];
-
-    for (var val of data) {
-      var div = document.createElement("div");
-      div.setAttribute('class', 'img-upload-obj');
-
-      var img = document.createElement("img");
-      img.setAttribute('src', attachmentsEndpoint + val);
-      img.setAttribute('data-val', val);
-
-      var btn = document.createElement("button");
-      btn.onclick = function() {
-        this.parentElement.remove();
-      }
-
-      div.appendChild(img);
-      div.appendChild(btn);
-
-      $(input).before(div);
-    }
-
-    return data.length;
-  }
-
-  static _putMultiStringInputData(input, data) {
-    var name = input.children[1].attributes['name'] ? input.children[1].attributes['name'].value : null;
-
-    if (! name) return;
-    data = data[name];
-    if (! data) return;
-
-    for (var val of data) {
-      val = String(val);
-      if (val.length > 0) {
-        var div = document.createElement("div");
-        div.setAttribute('class', 'string-obj');
-        div.setAttribute('data-string', val);
-    
-        var p = document.createElement("p");
-        p.textContent = val;
-    
-        var btn = document.createElement("button");
-        btn.setAttribute('class', 'remove-btn');
-        btn.onclick = function() {
-          this.parentElement.remove();
-        }
-    
-        div.appendChild(p);
-        div.appendChild(btn);
-
-        input.children[0].appendChild(div);
-      }
-    }
-  }
-
-  static _putMultiFormData(form, data) {
-    var name = form.attributes['data-name'] ? form.attributes['data-name'].value : null;
-
-    if (! name) return;
-    data = data[name];
-    if (! data) return;
-
-    for (var subData of data) {
-      var subForm = $($(form).children('.template')[0])
-        .clone()
-        .removeClass("template")
-        .addClass("sub-form")
-
-      this._putFormData(subForm.get()[0], subData);
-
-      $(form).append(subForm);
-
-      $(".remove-btn").off("click");
-      $(".remove-btn").click(function() {
-        this.parentElement.remove();
-      });
-
-      setGlobalEventHandlers();
-    }
-  }
 
   static _putInputData(input, data) {
     var name = input.attributes['name'] ? input.attributes['name'].value : null;
@@ -332,7 +534,7 @@ class Form {
           case 'DIV':
             switch (child.classList[0]) {
               case 'img-input':
-                i += this._putImgInputData(child, data);
+                i += new ImgInput(child).put(data);
                 break;
 
               case 'select':
@@ -340,11 +542,11 @@ class Form {
                 break;
 
               case 'multistring-input':
-                this._putMultiStringInputData(child, data);
+                new MultiStringInput(child).put(data);
                 break;
 
               case 'multiform':
-                this._putMultiFormData(child, data);
+                new MultiFormInput(child).put(data);
                 break;
 
               case 'form-object': {
@@ -467,4 +669,26 @@ class Form {
   static unlock() {
     this.lock = false;
   }
+
+  static applyEventHandlers() {
+    $("form").submit(function(e) {
+      e.preventDefault();
+    });
+
+    ImgInput.applyEventHandlers();
+    MultiStringInput.applyEventHandlers();
+    MultiFormInput.applyEventHandlers();
+
+    $("select").off("change");
+    $("select").change(function() {
+      if ($(this).val() == 'OTHER') {
+        $(this).parent().parent().siblings(".show-if-other").removeClass("hidden");
+      }
+      else {
+        $(this).parent().parent().siblings(".show-if-other").addClass("hidden");
+      }
+    });
+  }
 }
+
+$(document).ready(Form.applyEventHandlers);

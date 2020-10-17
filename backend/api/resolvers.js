@@ -9,6 +9,8 @@ const { GraphQLScalarType } = require('graphql');
 var fs = require('fs');
 var path = require('path')
 
+const strings = require('./locale')
+
 class Database {
   constructor(config) {
     this.config = config;
@@ -58,6 +60,7 @@ const businessUserLoader = new DataLoader(
         "SELECT * FROM business_user WHERE id = ?",
         [id]
       );
+
       return rows[0];
     });
   }
@@ -65,8 +68,8 @@ const businessUserLoader = new DataLoader(
 
 const publicUserLoader = new DataLoader(
   async (ids) => {
-    return ids.map((id) => {
-      return db.query(
+    return ids.map(async (id) => {
+      const rows = await db.query(
         `
         SELECT
           CAST(id AS CHAR(18)) AS id,
@@ -80,7 +83,9 @@ const publicUserLoader = new DataLoader(
           id = ?
         `,
         [ id ]
-      ).then(rows => rows[0]);
+      );
+
+      return rows[0];
     });
   }
 );
@@ -271,6 +276,24 @@ const msgLoader = new DataLoader(
     });
   }
 );
+
+function _localize(data, locale) {
+
+  if (data[locale] !== undefined) {
+    return data[locale];
+  }
+  else {
+    for (var key in data) {
+      if (data[key] instanceof Object) {
+        data[key] = _localize(data, locale);
+      }
+      else if (data[key] instanceof Array) {
+        data[key] = data[key].map(_ => _localize(_, locale));
+      }
+    }
+    return data;
+  }
+}
 
 // regular backend maintenance
 async function maintenance() {
@@ -556,8 +579,10 @@ async function _addBusiness(data, owner) {
 
     var display_name = data.display_name; delete props.display_name;
     var display_picture = data.display_picture; delete props.display_picture;
+    if (data.sub_type && ! data.sub_type_string) {
+      data.sub_type_string = strings.sub_type_string[data.type][data.sub_type];
+    }
     var type = data.type; delete props.type;
-    if (! props.sub_type_string) props.sub_type_string = props.sub_type;
     var sub_type = data.sub_type; delete props.sub_type;
 
     const result = await db.query(
@@ -872,7 +897,7 @@ const resolvers = {
     async business(_, { id }, { user }) {
       _validateAuthenticatedPublicUser(user);
 
-      return await businessLoader.load(id);
+      return _localize(await businessLoader.load(id), user.locale);
     },
 
     async businesses(_, { limit, offset, type, sub_types }, { user }) {
@@ -930,13 +955,15 @@ const resolvers = {
         )).map(_ => _ ? businessLoader.load(_) : null);
       }
 
-      return res.filter(_ => _ != null);
+      return res
+        .filter(_ => _ != null)
+        .map(_ => _localize(_, user.locale));
     },
 
     async event(_, { id }, { user }) {
       _validateAuthenticatedPublicUser(user);
 
-      return await eventLoader.load(id);
+      return _localize(await eventLoader.load(id), user.locale);
     },
 
     async events(_, { limit, offset, type }, { user }) {
@@ -994,7 +1021,9 @@ const resolvers = {
         )).map(_ => _ ? eventLoader.load(_) : null);
       }
 
-      return res.filter(_ => _ != null);
+      return res
+        .filter(_ => _ != null)
+        .map(_ => _localize(_, user.locale));
     },
 
     // admin queries
@@ -1157,12 +1186,29 @@ const resolvers = {
       }
     },
 
-    async createPublicUser() {
+    async setLocale(_, { locale }, { user }) {
+      if (! user) {
+        throw new ApolloError(
+          "Sorry... You're not authenticated! :c",
+          'USER_NOT_AUTHENTICATED'
+        );
+      }
+
+      user.locale = locale;
+
+      return jsonwebtoken.sign(
+        user,
+        process.env.JWT_SECRET,
+        { expiresIn: '1d' }
+      );
+    },
+
+    async createPublicUser(_, { locale }) {
       var id = cryptoRandomString({length: 18, type: 'numeric'});
       while (id.charAt(0) == '0') cryptoRandomString({length: 18, type: 'numeric'})
 
       try {
-        const rows = await db.query(
+        await db.query(
           "INSERT INTO public_user (id) VALUES (?)",
           [ id ]
         );
@@ -1174,7 +1220,7 @@ const resolvers = {
 
       // return json web token
       return jsonwebtoken.sign(
-        { id: id, type: 'PUBLIC' },
+        { id: id, type: 'PUBLIC', locale: locale || 'en' },
         process.env.JWT_SECRET,
         { expiresIn: '1d' }
       );
@@ -1204,7 +1250,7 @@ const resolvers = {
       );
     },
 
-    async authenticatePublicUser(_, { id }) {
+    async authenticatePublicUser(_, { id, locale }) {
       var valid = false;
       try {
         const result = await db.query(
@@ -1228,7 +1274,7 @@ const resolvers = {
 
         // return json web token
         return jsonwebtoken.sign(
-          { id: id, type: 'PUBLIC' },
+          { id: id, type: 'PUBLIC', locale: locale || 'en' },
           process.env.JWT_SECRET,
           { expiresIn: '1d' }
         );
@@ -1984,8 +2030,9 @@ const resolvers = {
   },
 
   Business: {
-    __resolveType(obj, ctx, info) {
-      return obj.type;
+    __resolveType(obj, { user }, info) {
+      if (user.type == 'PUBLIC') return obj.type;
+      else return obj.type + '_noLocale';
     },
 
     async update(parent, args, { user }) {
@@ -2015,6 +2062,11 @@ const resolvers = {
   DomesticHelpPersonnel: {
     __resolveType(obj, ctx, info) {
       return obj.profession;
+    }
+  },
+  DomesticHelpPersonnel_noLocale: {
+    __resolveType(obj, ctx, info) {
+      return obj.profession + "_noLocale";
     }
   }
 }

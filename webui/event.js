@@ -95,7 +95,9 @@ function showCreateForm() {
   DynamicLoader.loadTo(
     'event-content',
     'event_form.html',
-    'event_form.js'
+    'event_form.js',
+    [],
+    Form.applyEventHandlers
   );
 }
 

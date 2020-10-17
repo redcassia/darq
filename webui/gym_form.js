@@ -17,5 +17,9 @@ $(document).ready(function () {
     await GraphQL.fillOptionsFromEnum("City", [
       "gym-city"
     ]);
+
+    await GraphQL.fillOptionsFromEnum("Genders", [
+      "gym-genders"
+    ]);
   });
 });

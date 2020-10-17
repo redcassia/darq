@@ -21,6 +21,10 @@ function initializeForm(data) {
     await GraphQL.fillOptionsFromEnum("City", [
       "gym-city"
     ]);
+
+    await GraphQL.fillOptionsFromEnum("Genders", [
+      "gym-genders"
+    ]);
   
     if (data["update"]) data = data["update"];
     initialData = data;

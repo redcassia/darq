@@ -75,7 +75,6 @@ class DynamicLoader {
         if (this.readyState !== 4) return;
         if (this.status !== 200) return;
         document.getElementById(tagId).innerHTML = this.responseText;
-        setGlobalEventHandlers();
 
         if (script && script.length > 0) {
           DynamicLoader.loadScript(tagId, script, onload);

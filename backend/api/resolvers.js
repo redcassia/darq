@@ -287,7 +287,7 @@ function _localize(data, locale) {
   else {
     for (var key in data) {
       if (data[key] instanceof Object) {
-        data[key] = _localize(data, locale);
+        data[key] = _localize(data[key], locale);
       }
       else if (data[key] instanceof Array) {
         data[key] = data[key].map(_ => _localize(_, locale));
@@ -957,9 +957,13 @@ const resolvers = {
         )).map(_ => _ ? businessLoader.load(_) : null);
       }
 
-      return res
-        .filter(_ => _ != null)
-        .map(_ => _localize(_, user.locale));
+      res = res.filter(_ => _ != null);
+
+      for (var i = 0; i < res.length; ++i) {
+        res[i] = _localize(await res[i], user.locale);
+      }
+
+      return res;
     },
 
     async event(_, { id }, { user }) {
@@ -1023,9 +1027,13 @@ const resolvers = {
         )).map(_ => _ ? eventLoader.load(_) : null);
       }
 
-      return res
-        .filter(_ => _ != null)
-        .map(_ => _localize(_, user.locale));
+      res = res.filter(_ => _ != null);
+
+      for (var i = 0; i < res.length; ++i) {
+        res[i] = _localize(await res[i], user.locale);
+      }
+
+      return res;
     },
 
     // admin queries

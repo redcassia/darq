@@ -7,6 +7,7 @@ import 'package:darq/views/shared/app_bars/back_arrow.dart';
 import 'package:darq/views/shared/app_bars/default_appbar.dart';
 import 'package:darq/views/shared/button.dart';
 import 'package:darq/views/shared/default_card.dart';
+import 'package:darq/views/shared/shared_prefs_locale.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -19,11 +20,6 @@ class ChangeLang extends StatefulWidget {
 }
 
 class _ChangeLangState extends State<ChangeLang> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +61,8 @@ class _ChangeLangState extends State<ChangeLang> {
                           color: Color(0xFF426676),
                           onButtonPressed: () {
                             changeLocale(context, 'en_US');
-                            setState(() {});
+                            setLocale('en', context)
+                                .then((value) => setState(() {}));
                           }),
                       SizedBox(height: 11.h),
                       CustomButton(
@@ -77,7 +74,8 @@ class _ChangeLangState extends State<ChangeLang> {
                           color: Color(0xFFE1A854),
                           onButtonPressed: () {
                             changeLocale(context, 'ar');
-                            setState(() {});
+                            setLocale('ar', context)
+                                .then((value) => setState(() {}));
                           })
                     ]))));
   }

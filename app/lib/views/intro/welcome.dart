@@ -1,29 +1,14 @@
-import 'package:darq/backend/auth.dart';
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/utilities/screen_info.dart';
 import 'package:darq/views/home/screens/home.dart';
 import 'package:darq/views/intro/select_language.dart';
 import 'package:darq/views/shared/button.dart';
+import 'package:darq/views/shared/shared_prefs_locale.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 
-class Welcome extends StatefulWidget {
-  @override
-  _WelcomeState createState() => _WelcomeState();
-}
-
-class _WelcomeState extends State<Welcome> {
-
-  _checkClient() {
-    Auth.checkClient().then((_) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => _ ? Home() : SelectLanguage()));
-    });
-  }
-
+class Welcome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context, width: 375, height: 667, allowFontScaling: true);
@@ -31,7 +16,6 @@ class _WelcomeState extends State<Welcome> {
         MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
 
     return Scaffold(
-        // TODO: Turn colors into names ...
         backgroundColor: Color(0xFF86C2C2),
         body: Center(
             child: Padding(
@@ -62,7 +46,20 @@ class _WelcomeState extends State<Welcome> {
                           width: 109.w,
                           buttonName: translate("continue_button"),
                           color: Color(0xFFE1A854),
-                          onButtonPressed: () => _checkClient())
+                          onButtonPressed: () => hasLocale(context).then((_) {
+                            if (_)
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Home()));
+                            else
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          SelectLanguage()));
+                          }))
                     ]))));
   }
 }
+

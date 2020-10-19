@@ -2,6 +2,7 @@ import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/res/path_files.dart';
 import 'package:darq/views/home/screens/home.dart';
 import 'package:darq/views/shared/button.dart';
+import 'package:darq/views/shared/shared_prefs_locale.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -34,10 +35,9 @@ class SelectLanguage extends StatelessWidget {
                   color: Color(0xFF426676),
                   onButtonPressed: () {
                     changeLocale(context, 'en_US');
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return Home();
-                    }));
+                    setLocale("en", context).then((value) => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Home())));
                   }),
               SizedBox(height: 11.h),
               CustomButton(
@@ -49,10 +49,9 @@ class SelectLanguage extends StatelessWidget {
                   color: Color(0xFFE1A854),
                   onButtonPressed: () {
                     changeLocale(context, 'ar');
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                          return Home();
-                        }));
+                    setLocale("ar", context).then((value) => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Home())));
                   }),
             ]))));
   }

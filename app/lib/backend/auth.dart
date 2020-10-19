@@ -8,17 +8,6 @@ class Auth {
       HttpLink(uri: 'http://redcassia.com:3001/api');
   static GraphQLClient _client;
 
-  static Future<bool> checkClient() async {
-    var prefs = await SharedPreferences.getInstance();
-
-    if (_client != null ||
-        prefs.containsKey("token") ||
-        prefs.containsKey("id")) {
-      return true;
-    }
-    return false;
-  }
-
   static Future<GraphQLClient> getClient() async {
     if (_client != null) {
       return _client;
@@ -55,12 +44,13 @@ class Auth {
           await GraphQLClient(cache: InMemoryCache(), link: _backendLink)
               .mutate(MutationOptions(
         documentNode: gql(r'''
-            mutation($id: ID!) {
-              authenticatePublicUser(id: $id)
+            mutation($id: ID!, $locale: Locale) {
+              authenticatePublicUser(id: $id, locale: $locale)
             }
           '''),
         variables: <String, dynamic>{
           'id': prefs.getString("id"),
+          'locale': prefs.getString("locale"),
         },
       ));
 
@@ -71,15 +61,19 @@ class Auth {
       }
     }
 
-    // create new user id
     if (token == null) {
       var result =
           await GraphQLClient(cache: InMemoryCache(), link: _backendLink)
-              .mutate(MutationOptions(documentNode: gql(r'''
-            mutation {
-              createPublicUser
+              .mutate(MutationOptions(
+        documentNode: gql(r'''
+            mutation($locale: Locale) {
+              createPublicUser(locale: $locale)
             }
-          ''')));
+          '''),
+        variables: <String, dynamic>{
+          'locale': prefs.getString("locale"),
+        },
+      ));
 
       if (result.hasException) {
         throw Exception("Unable to create new user");

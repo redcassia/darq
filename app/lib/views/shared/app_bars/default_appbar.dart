@@ -11,6 +11,7 @@ class DefaultAppBar extends StatelessWidget {
       this.leading,
       this.trailing,
       this.allowHorizontalPadding,
+      this.bgColor,
       Key key})
       : super(key: key);
 
@@ -26,6 +27,8 @@ class DefaultAppBar extends StatelessWidget {
   ///left icon of type [Widget]
   final Widget leading;
 
+  final Color bgColor;
+
   ///on left icon clicked [Function]
   final Function onLeadingClicked;
 
@@ -36,6 +39,7 @@ class DefaultAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
+            color: bgColor ?? Colors.transparent,
             image: DecorationImage(
                 image: AssetImage(PathFiles.ImgPath + bgImage),
                 fit: BoxFit.fill)),

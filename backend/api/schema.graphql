@@ -109,7 +109,7 @@ type Message {
 type Admin {
   tentativeNewBusinesses: [Business!]!
   tentativeBusinessUpdates: [Business!]!
-  tentativeNewEvents: [Event!]!
+  tentativeNewEvents: [Event_noLocale!]!
 }
 
 interface Business {

@@ -27,6 +27,7 @@ function editEvent(id) {
     [],
     () => {
       initializeForm(events[id]);
+      Form.applyEventHandlers();
     }
   );
 }

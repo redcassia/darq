@@ -337,9 +337,9 @@ class MultiFormInput {
       $(".remove-btn").click(function() {
         this.parentElement.remove();
       });
-
-      this.applyEventHandlers();
     }
+
+    Form.applyEventHandlers();
   }
 
   static applyEventHandlers() {
@@ -357,7 +357,7 @@ class MultiFormInput {
         this.parentElement.remove();
       });
 
-      MultiFormInput.applyEventHandlers();
+      Form.applyEventHandlers();
     });
   }
 }

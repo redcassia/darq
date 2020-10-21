@@ -1492,7 +1492,11 @@ const resolvers = {
         _updateBusiness(id, data);
       }
       else {
-        Mailer.businessUpdate(user, id, true);
+        Mailer.businessUpdate(
+          (await businessUserLoader.load(user.id)).email,
+          (await businessLoader.load(id)).display_name,
+          true
+        );
       }
     },
 

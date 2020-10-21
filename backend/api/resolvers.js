@@ -522,6 +522,10 @@ async function _storeAttachments(data) {
     data.display_picture = await _writeAttachmentToFile(data.display_picture);
   }
 
+  if (data.picture) {
+    data.picture = await _writeAttachmentToFile(data.picture);
+  }
+
   if (data.government_id) {
     data.government_id = await _writeAttachmentToFile(data.government_id);
   }
@@ -654,7 +658,10 @@ async function _processUpdatedPersonnel(id, data) {
     for (var i = 0; i < personnel.length; ++i) {
       if (
         data["old_personnel"].indexOf(personnel[i]["name"]) == -1
-        && data["personnel"].findIndex(_ => _["name"] == personnel[i]["name"]) == -1
+        && (
+          data["personnel"] === undefined ||
+          data["personnel"].findIndex(_ => _["name"] == personnel[i]["name"]) == -1
+        )
       ) {
         personnel.splice(i, 1); --i;
         updated = true;
@@ -670,13 +677,13 @@ async function _processUpdatedPersonnel(id, data) {
     for (var i = 0; i < data["personnel"].length; ++i) {
       var p = data["personnel"][i];
 
+      p = await _storeAttachments(p);
+
       const index = personnel.findIndex(_ => _["name"] == p["name"]);
       if (index == -1) {    // add
         personnel.push(p);
       }
       else {                // update
-        p = await _storeAttachments(p);
-
         if (p.attachments || p.old_attachments) {
           if (personnel[index].attachments) {
             p.attachments = _updateAttachments(

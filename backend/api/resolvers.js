@@ -1417,6 +1417,55 @@ const resolvers = {
     async addDomesticHelpBusiness(_, { data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
 
+      if (data["personnel"]) {
+        for (var p of data["personnel"]) {
+          if (p.profession == 'Driver') {
+            if (p.license_expiry_date === undefined || p.license_expiry_date === null) {
+              throw new ApolloError(
+                "Missing field 'license_expiry_date' in personnel[profession=Driver]",
+                'DOMESTIC_HELP_PERSONNEL_DATA_VALIDATION_ERROR'
+              );
+            }
+          }
+          else {
+            if (p.education === undefined || p.education === null) {
+              throw new ApolloError(
+                `Missing field 'education' in personnel[profession=${p.profession}]`,
+                'DOMESTIC_HELP_PERSONNEL_DATA_VALIDATION_ERROR'
+              );
+            }
+
+            if (p.height === undefined || p.height === null) {
+              throw new ApolloError(
+                `Missing field 'height' in personnel[profession=${p.profession}]`,
+                'DOMESTIC_HELP_PERSONNEL_DATA_VALIDATION_ERROR'
+              );
+            }
+
+            if (p.weight === undefined || p.weight === null) {
+              throw new ApolloError(
+                `Missing field 'weight' in personnel[profession=${p.profession}]`,
+                'DOMESTIC_HELP_PERSONNEL_DATA_VALIDATION_ERROR'
+              );
+            }
+
+            if (p.skills === undefined || p.skills === null) {
+              throw new ApolloError(
+                `Missing field 'education' in personnel[profession=${p.profession}]`,
+                'DOMESTIC_HELP_PERSONNEL_DATA_VALIDATION_ERROR'
+              );
+            }
+
+            if (p.number_of_children === undefined || p.number_of_children === null) {
+              throw new ApolloError(
+                `Missing field 'number_of_children' in personnel[profession=${p.profession}]`,
+                'DOMESTIC_HELP_PERSONNEL_DATA_VALIDATION_ERROR'
+              );
+            }
+          }
+        }
+      }
+
       data.type = 'DomesticHelpBusiness';
 
       _addBusiness(data, user.id);

@@ -22,7 +22,6 @@ class Mailer {
   }
 
   static async newUser(email, token) {
-      // TODO: send activation link
     this._sendMail(
       email,
       "Welcome to DarQ",
@@ -35,11 +34,20 @@ class Mailer {
     );
   }
 
+  static async resetPassword(email, token) {
+    this._sendMail(
+      email,
+      "DarQ Password Reset",
+      `Please use the following link to reset your account password.\n` +
+      `${process.env.RESET_PASSWORD_URL}&email=${email}&token=${token}\n`
+    );
+  }
+
   static async businessAdd(email, business, approve) {
     if (approve) {
       this._sendMail(
         email,
-        "Your business on DarQ has been approved",
+        "Your Business on DarQ Has Been Approved",
         `Congratulations! Your business ${business} has been approved.\n\n` +
         `Your business will be listed on our platform within 24 hours.\n\n`+
         `Welcome to DarQ!`
@@ -48,7 +56,7 @@ class Mailer {
     else {
       this._sendMail(
         email,
-        "Your business on DarQ has been rejected",
+        "Your Business on DarQ Has Been Rejected",
         `The data for your business ${business} have been temporarily rejected.\n\n` +
         `Please contact DarQ administrators to provide any additional documentation or amend your data.\n\n`+
         `As always, we appreciate your choice and your trust in DarQ.\n\n` +
@@ -64,14 +72,14 @@ class Mailer {
     if (approve) {
       this._sendMail(
         email,
-        "Updated business data on DarQ have been approved",
+        "Updated Business on DarQ Has Been Approved",
         `The updated for your business ${business} have been approved.\n\n`
       );
     }
     else {
       this._sendMail(
         email,
-        "Updated business data on DarQ have been rejected",
+        "Updated Business on DarQ Has Been Rejected",
         `The updated data for your business ${business} have been temporarily rejected.\n\n` +
         `Please contact DarQ administrators to provide any additional documentation or amend your data.\n\n`+
         `As always, we appreciate your choice and your trust in DarQ.\n\n` +
@@ -86,7 +94,7 @@ class Mailer {
     if (approve) {
       this._sendMail(
         email,
-        "Your event on DarQ has been approved",
+        "Your Event on DarQ Has Been Approved",
         `Congratulations! Your event ${event} has been approved.\n\n` +
         `Your event will be listed on our platform within 24 hours.`
       );
@@ -94,7 +102,7 @@ class Mailer {
     else {
       this._sendMail(
         email,
-        "Your event on DarQ has been rejected",
+        "Your Event on DarQ Has Been Rejected",
         `Your event ${event} has been temporarily rejected.\n\n` +
         `Please contact DarQ administrators to provide any additional documentation or amend your data.\n\n`+
         `As always, we appreciate your choice and your trust in DarQ.\n\n` +

@@ -11,11 +11,6 @@ type Query {
 }
 
 type Mutation {
-  rateBusiness(id: ID!, stars: Int!): Void
-
-  sendMessage(msg: String!, threadId: ID, targetBusinessId: ID): MessageThread!
-  seeMessage(threadId: ID!, index: Int!): MessageThread!
-
   setLocale(locale: Locale!): String
 
   createPublicUser(locale: Locale): String!
@@ -24,8 +19,14 @@ type Mutation {
   createBusinessUser(email: String!, password: String!): Void
   verifyBusinessUser(email: String!, token: String!): String!
   authenticateBusinessUser(email: String!, password: String!): String!
-
   changeBusinessUserPassword(oldPassword: String!, newPassword: String!): Void
+  requestBusinessUserPasswordReset(email: String!): Void
+  resetBusinessUserPassword(email: String!, token: String!, newPassword: String!): String!
+
+  rateBusiness(id: ID!, stars: Int!): Void
+
+  sendMessage(msg: String!, threadId: ID, targetBusinessId: ID): MessageThread!
+  seeMessage(threadId: ID!, index: Int!): MessageThread!
 
   addSelfEmployedBusiness(data: NewSelfEmployedBusinessInput!): Void
   updateSelfEmployedBusiness(id: ID!, data: UpdateSelfEmployedBusinessInput!): Void

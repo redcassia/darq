@@ -1281,7 +1281,7 @@ const resolvers = {
     },
 
     async createBusinessUser(_, { email, password }) {
-      var token = cryptoRandomString({length: 128, type: 'url-safe'});
+      const token = cryptoRandomString({length: 128, type: 'url-safe'});
 
       try {
         const result = await db.query(
@@ -1444,6 +1444,112 @@ const resolvers = {
           'BUSINESS_USER_PASSWORD_CHANGE_REJECTED'
         );
       }
+    },
+
+    async requestBusinessUserPasswordReset(_, { email }) {
+      var result;
+      try {
+        result = await db.query(
+          "SELECT id, verified FROM business_user WHERE email=?",
+          [ email ]
+        );
+      }
+      catch(e) {
+        console.log(e);
+        return;
+      }
+
+      if (result.length != 1 || result[0].verified == 0) {
+        return;
+      }
+
+      const id = result[0].id;
+      const token = cryptoRandomString({length: 128, type: 'url-safe'});
+
+      try {
+        await db.query(
+          `
+          UPDATE
+            business_user
+          SET
+            token=?
+          WHERE id=?
+          `,
+          [ token, id ]
+        );
+      }
+      catch(e) {
+        console.log(e);
+        return;
+      }
+
+      // delete cached information
+      businessUserLoader.clear(id);
+
+      Mailer.resetPassword(email, token);
+    },
+
+    async resetBusinessUserPassword(_, { email, token, newPassword }) {
+      var result;
+      try {
+        result = await db.query(
+          "SELECT id, verified, token FROM business_user WHERE email=?",
+          [ email ]
+        );
+      }
+      catch(e) {
+        console.log(e);
+        throw new ApolloError(
+          "Failed to verify token.",
+          'BUSINESS_USER_TOKEN_RETRIEVE_FAILURE'
+        );
+      }
+
+      if (result.length != 1 || result[0].token != token) {
+        throw new ApolloError(
+          "Invalid email or token.",
+          'BUSINESS_USER_PASSWORD_RESET_REJECTED'
+        );
+      }
+
+      if (result[0].verified == 0) {
+        throw new ApolloError(
+          "Your account is not activated yet. Please check your email inbox.",
+          'UNVERIFIED_BUSINESS_USER_PASSWORD_RESET'
+        );
+      }
+
+      const id = result[0].id;
+
+      try {
+        await db.query(
+          `UPDATE
+            business_user
+          SET
+            password=?,
+            token=NULL
+          WHERE id=?
+          `,
+          [ await bcrypt.hash(newPassword, 10), id ]
+        );
+      }
+      catch(e) {
+        console.log(e);
+        throw new ApolloError(
+          "Failed to reset password.",
+          'BUSINESS_USER_PASSWORD_REST_FAILURE'
+        );
+      }
+
+      // delete cached information
+      businessUserLoader.clear(id);
+
+      // return json web token
+      return jsonwebtoken.sign(
+        { id: id, type: 'BUSINESS' },
+        process.env.JWT_SECRET,
+        { expiresIn: '1d' }
+      );
     },
 
     async addSelfEmployedBusiness(_, { data }, { user }) {

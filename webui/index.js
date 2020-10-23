@@ -126,13 +126,18 @@ function loadFirstPage() {
   });
 }
 
+var resetPwdEmail;
+var resetPwdToken;
+
 $(document).ready(function() {
 
-  var hash = window.location.hash;
+  var hash = window.location.hash.split('&');
 
-  if (hash == '#resetpwd') {
+  if (hash[0] == '#resetpwd') {
     $("#reset-password-form").show();
     welcomeToSignin(0);
+    resetPwdEmail = hash[1].substr(6);
+    resetPwdToken = hash[2].substr(6);
   }
   else if (CookieManager.exists('token')) {
     GraphQL.query(`
@@ -255,18 +260,79 @@ function signout() {
 }
 
 function requestPasswordReset() {
-  // TODO: request password reset api call
-  alert("Please check your email.");
+
+  var email = document.getElementById("reset-password-email").value;
+
+  if (! email) {
+    alert("Please enter your email");
+    return;
+  }
+
+  if (! isValidEmail(email)) {
+    alert("Please enter a valid email address");
+    return;
+  }
+
+  GraphQL.mutation(`
+    mutation($email: String!) {
+      requestBusinessUserPasswordReset(email: $email)
+    }
+  `, {
+    email: email
+  }).then(res => {
+    if (! res.hasError) {
+      alert("Please check your email.");
+    }
+    else {
+      alert(res.errors[0]["message"]);
+    }
+  });
 }
 
 function resetPassword() {
-  // TODO: reset password api call
-  $("#signin-form").animate({
-    height: 'toggle'
-  }, slideSpeed);
-  $("#reset-password-form").animate({
-    height: 'toggle'
-  }, slideSpeed);
+
+  var pass = document.getElementById("reset-password").value;
+  var pass_conf = document.getElementById("reset-password-conf").value;
+
+  if (! pass) {
+    alert("Please enter your password");
+    return;
+  }
+
+  if (pass.length < 8) {
+    alert("Your password must be 8 characters or more");
+    return;
+  }
+
+  if (! pass_conf) {
+    alert("Please confirm your password");
+    return;
+  }
+
+  if (pass != pass_conf) {
+    alert("Passwords do not match");
+    return;
+  }
+
+  GraphQL.mutation(`
+    mutation($email: String!, $token: String!, $newPassword: String!) {
+      resetBusinessUserPassword(email: $email, token: $token, newPassword: $newPassword)
+    }
+  `, {
+    email: resetPwdEmail,
+    token: resetPwdToken,
+    newPassword: pass
+  }).then(res => {
+    if (! res.hasError) {
+      window.location.hash = '';
+      CookieManager.set('token', res.data["resetBusinessUserPassword"], 1);
+      loadFirstPage();
+      switchToWelcome();
+    }
+    else {
+      alert(res.errors[0]["message"]);
+    }
+  });
 }
 
 function toggleHamburger() {

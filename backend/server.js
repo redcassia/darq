@@ -38,3 +38,12 @@ app.listen(
         console.log('HTTP: GraphQL API server started on localhost:' + process.env.HTTP_PORT + '/api');
     }
 );
+
+var http_to_https = express();
+
+// set up a route to redirect http to https
+http_to_https.get('*', function(req, res) {  
+    res.redirect('https://' + process.env.DOMAIN + req.url);
+})
+
+http_to_https.listen(process.env.HTTP_TO_HTTPS_PORT);

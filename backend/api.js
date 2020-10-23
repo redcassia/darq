@@ -39,17 +39,22 @@ app.use('/attachment', express.static(process.env.ATTACHMENTS_DIR));
 app.use('/admin', express.static(path.join(__dirname, '..', 'webui', 'admin.html')));
 
 app.use('/verifyuser', async (req, res) => {
-  try {
-    const token = await resolvers.Mutation.verifyBusinessUser(
-      null,
-      { email: req.query.email, token: req.query.token },
-    );
+  const email = req.query.email;
+  const token = req.query.token;
 
-    res.setHeader('Set-Cookie', cookie.serialize('token', token, {
-      maxAge: 60 * 60 * 24 // 1 day
-    }));
+  if (email !== undefined && token !== undefined) {
+    try {
+      const tokenCookie = await resolvers.Mutation.verifyBusinessUser(
+        null,
+        { email: email, token: token },
+      );
+
+      res.setHeader('Set-Cookie', cookie.serialize('token', tokenCookie, {
+        maxAge: 60 * 60 * 24 // 1 day
+      }));
+    }
+    catch(e) { }  // ignore
   }
-  catch(e) { }  // ignore
 
   // Redirect back after setting cookie
   res.statusCode = 302;

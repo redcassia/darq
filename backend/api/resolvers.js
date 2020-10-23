@@ -23,7 +23,6 @@ class Database {
     return new Promise((resolve, reject) => {
       this.pool.getConnection(function(err, connection) {
         if (err) {
-          connection.release();
           console.log("Error getting a MySQL connection from pool. ", err);
           reject(err);
         }

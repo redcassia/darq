@@ -206,10 +206,8 @@ function signup() {
     "password": pass
   }).then(res => {
     if (! res.hasError) {
-      CookieManager.set('token', res.data["createBusinessUser"], 1);
-      alert("Account created successfully.");
-      loadFirstPage();
-      switchToWelcome();
+      alert("Your account has been created. Please check your inbox to activate your account.");
+      switchToSignin();
     }
     else {
       alert(res.errors[0]["message"]);

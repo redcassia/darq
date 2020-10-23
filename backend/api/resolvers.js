@@ -12,6 +12,7 @@ var path = require('path')
 const strings = require('./locale')
 const Mailer = require('./mailer');
 const Mail = require('nodemailer/lib/mailer');
+const { verify } = require('crypto');
 
 class Database {
   constructor(config) {
@@ -1242,31 +1243,6 @@ const resolvers = {
       );
     },
 
-    async createBusinessUser(_, { email, password }) {
-      var id;
-      try {
-        const result = await db.query(
-          "INSERT INTO business_user (email, password) VALUES (?, ?)",
-          [ email, await bcrypt.hash(password, 10) ]
-        );
-        id = result.insertId;
-
-        // TODO: send activation link
-        Mailer.newUser(email);
-      }
-      catch(e) {
-        console.log(e);
-        throw new ApolloError("Failed to signup.", 'BUSINESS_USER_SIGNUP_FAILED');
-      }
-
-      // return json web token
-      return jsonwebtoken.sign(
-        { id: id, type: 'BUSINESS' },
-        process.env.JWT_SECRET,
-        { expiresIn: '1d' }
-      );
-    },
-
     async authenticatePublicUser(_, { id, locale }) {
       var valid = false;
       try {
@@ -1304,11 +1280,85 @@ const resolvers = {
       }
     },
 
+    async createBusinessUser(_, { email, password }) {
+      var token = cryptoRandomString({length: 128, type: 'url-safe'});
+
+      try {
+        const result = await db.query(
+          "INSERT INTO business_user (email, password, token) VALUES (?, ?, ?)",
+          [ email, await bcrypt.hash(password, 10), token ]
+        );
+
+        Mailer.newUser(email, token);
+      }
+      catch(e) {
+        console.log(e);
+        throw new ApolloError("Failed to signup.", 'BUSINESS_USER_SIGNUP_FAILED');
+      }
+    },
+
+    async verifyBusinessUser(_, { email, token }) {
+      var result;
+      try {
+        result = await db.query(
+          "SELECT id, verified, token FROM business_user WHERE email=?",
+          [ email ]
+        );
+      }
+      catch(e) {
+        console.log(e);
+        throw new ApolloError(
+          "Failed to verify user.",
+          'BUSINESS_USER_VERIFY_FAILED'
+        );
+      }
+
+      if (result.length != 1 || result[0].verified != 0 || result[0].token != token) {
+        throw new ApolloError(
+          "Invalid email or token.",
+          'BUSINESS_USER_VERIFY_REJECTED'
+        );
+      }
+
+      const id = result[0].id;
+
+      try {
+        await db.query(
+          `
+          UPDATE
+            business_user
+          SET
+            last_login=CURRENT_TIMESTAMP,
+            token=NULL,
+            verified=1
+          WHERE id=?
+          `, [ id ]
+        );
+      }
+      catch(e) {
+        console.log(e);
+        throw new ApolloError(
+          "Failed to verify user.",
+          'BUSINESS_USER_VERIFY_FAILED'
+        );
+      }
+
+      // delete cached information
+      businessUserLoader.clear(id);
+
+      // return json web token
+      return jsonwebtoken.sign(
+        { id: id, type: 'BUSINESS' },
+        process.env.JWT_SECRET,
+        { expiresIn: '1d' }
+      );
+    },
+
     async authenticateBusinessUser(_, { email, password }) {
       var result;
       try {
         result = await db.query(
-          "SELECT id, password FROM business_user WHERE email=?",
+          "SELECT id, verified, password FROM business_user WHERE email=?",
           [ email ]
         );
       }
@@ -1320,35 +1370,41 @@ const resolvers = {
         );
       }
 
-      if (result.length == 1 && await bcrypt.compare(password, result[0].password)) {
-        const id = result[0].id;
-
-        try {
-          db.query(
-            "UPDATE business_user SET last_login=CURRENT_TIMESTAMP WHERE id=?",
-            [ id ]
-          );
-        }
-        catch(e) {
-          console.log(e);
-        }
-
-        // delete cached information
-        businessUserLoader.clear(id);
-
-        // return json web token
-        return jsonwebtoken.sign(
-          { id: id, type: 'BUSINESS' },
-          process.env.JWT_SECRET,
-          { expiresIn: '1d' }
-        );
-      }
-      else {
+      if (result.length != 1 || ! (await bcrypt.compare(password, result[0].password))) {
         throw new ApolloError(
           "Invalid email or password.",
           'BUSINESS_USER_LOGIN_REJECTED'
         );
       }
+
+      if (result[0].verified == 0) {
+        throw new ApolloError(
+          "Your account is not activated yet. Please check your email inbox.",
+          'UNVERIFIED_BUSINESS_USER_LOGIN'
+        );
+      }
+
+      const id = result[0].id;
+
+      try {
+        db.query(
+          "UPDATE business_user SET last_login=CURRENT_TIMESTAMP WHERE id=?",
+          [ id ]
+        );
+      }
+      catch(e) {
+        console.log(e);
+      }
+
+      // delete cached information
+      businessUserLoader.clear(id);
+
+      // return json web token
+      return jsonwebtoken.sign(
+        { id: id, type: 'BUSINESS' },
+        process.env.JWT_SECRET,
+        { expiresIn: '1d' }
+      );
     },
 
     async changeBusinessUserPassword(_, { oldPassword, newPassword }, { user }) {

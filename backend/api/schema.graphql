@@ -19,9 +19,10 @@ type Mutation {
   setLocale(locale: Locale!): String
 
   createPublicUser(locale: Locale): String!
-  createBusinessUser(email: String!, password: String!): String!
-
   authenticatePublicUser(id: ID!, locale: Locale): String!
+
+  createBusinessUser(email: String!, password: String!): Void
+  verifyBusinessUser(email: String!, token: String!): String!
   authenticateBusinessUser(email: String!, password: String!): String!
 
   changeBusinessUserPassword(oldPassword: String!, newPassword: String!): Void

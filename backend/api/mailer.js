@@ -1,3 +1,4 @@
+require('dotenv').config()
 const nodemailer = require("nodemailer");
 
 const mailTransporter = nodemailer.createTransport({
@@ -20,11 +21,14 @@ class Mailer {
     });
   }
 
-  static async newUser(email) {
+  static async newUser(email, token) {
+      // TODO: send activation link
     this._sendMail(
       email,
       "Welcome to DarQ",
       `Welcome to DarQ!\n\n` +
+      `Please use the following link to activate your account.\n` +
+      `${process.env.VERIFY_USER_URL}?email=${email}&token=${token} \n\n` +
       `You are a few steps away from reaching our platform users.\n` +
       `We appreciate your choice and your trust in us!\n` + 
       `From all of us at DarQ, we would like to deeply thank you.`

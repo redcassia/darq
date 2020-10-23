@@ -2,6 +2,7 @@ require('dotenv').config()
 var express = require('express');
 const { ApolloServer, gql, makeExecutableSchema } = require('apollo-server-express');
 const jwt = require('express-jwt')
+var cookie = require('cookie');
 var fs = require('fs')
 var path = require('path')
 
@@ -36,5 +37,24 @@ server.applyMiddleware({ app, path: '/api' });
 app.use('/', express.static(path.join(__dirname, '..', 'webui')));
 app.use('/attachment', express.static(process.env.ATTACHMENTS_DIR));
 app.use('/admin', express.static(path.join(__dirname, '..', 'webui', 'admin.html')));
+
+app.use('/verifyuser', async (req, res) => {
+  try {
+    const token = await resolvers.Mutation.verifyBusinessUser(
+      null,
+      { email: req.query.email, token: req.query.token },
+    );
+
+    res.setHeader('Set-Cookie', cookie.serialize('token', token, {
+      maxAge: 60 * 60 * 24 // 1 day
+    }));
+  }
+  catch(e) { }  // ignore
+
+  // Redirect back after setting cookie
+  res.statusCode = 302;
+  res.setHeader('Location', '/');
+  res.end();
+});
 
 module.exports = app

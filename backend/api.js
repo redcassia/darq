@@ -50,7 +50,8 @@ app.use('/verifyuser', async (req, res) => {
       );
 
       res.setHeader('Set-Cookie', cookie.serialize('token', tokenCookie, {
-        maxAge: 60 * 60 * 24 // 1 day
+        maxAge: 60 * 60 * 24, // 1 day
+        sameSite: 'strict'
       }));
     }
     catch(e) { }  // ignore

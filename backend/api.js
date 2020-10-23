@@ -33,6 +33,8 @@ app.use('/api', auth, function (err, req, res, next) {
 });
 server.applyMiddleware({ app, path: '/api' });
 
+app.use('/', express.static(path.join(__dirname, '..', 'webui')));
 app.use('/attachment', express.static(process.env.ATTACHMENTS_DIR));
+app.use('/admin', express.static(path.join(__dirname, '..', 'webui', 'admin.html')));
 
 module.exports = app

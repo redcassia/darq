@@ -113,8 +113,14 @@
             "data": ["street_address"]
           },
           {
+            "widget": "text",
+            "textSize": "title11Odd",
+            "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.5 },
+            "data": ["city"]
+          },
+          {
             "widget": "vertical_spacer",
-            "height": 6.0
+            "height": 3.0
           },
           {
             "widget": "operating_hours",
@@ -122,7 +128,7 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 5.0
+            "height": 3.0
           },
           {
             "widget": "wrapped_text_with_icon",
@@ -161,6 +167,18 @@
           "widget": "divider"
         },
         {
+          "widget": "website_with_title",
+          "titleText": "website",
+          "titleSize": "title9",
+          "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
+          "textSize": "text9odd",
+          "textColor": { "r": 66, "g": 102, "b": 118, "o": 1.0 },
+          "data": ["website"]
+        },
+        {
+          "widget": "divider"
+        },
+        {
           "widget": "picture_gallery",
           "titleText": "photos",
           "titleSize": "title9",
@@ -169,6 +187,6 @@
         }
       ]
     },
-    "query": "query($id: ID!) {\n  item: business(id: $id) {\n    display_name\n    display_picture\n    rating\n    city\n    ... on TransportationBusiness {\n      sub_type_string\n      street_address\n      operating_hours {\n        open\n        close\n        all_day\n      }\n      phone_number\n      description\n      services\n      attachments\n    }\n  }\n}"
+    "query": "query($id: ID!) {\n  item: business(id: $id) {\n    display_name\n    display_picture\n    rating\n    city\n    ... on TransportationBusiness {\n      sub_type_string\n      street_address\n      city\n      operating_hours {\n        open\n        close\n        all_day\n      }\n      website\n      phone_number\n      description\n      services\n      attachments\n    }\n  }\n}\n"
   }
 }

@@ -117,6 +117,12 @@
             "data": ["street_address"]
           },
           {
+            "widget": "text",
+            "textSize": "title11Odd",
+            "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.5 },
+            "data": ["city"]
+          },
+          {
             "widget": "vertical_spacer",
             "height": 5.0
           },
@@ -145,11 +151,23 @@
           "widget": "divider"
         },
         {
+          "widget": "website_with_title",
+          "titleText": "website",
+          "titleSize": "title9",
+          "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
+          "textSize": "text9odd",
+          "textColor": { "r": 66, "g": 102, "b": 118, "o": 1.0 },
+          "data": ["website"]
+        },
+        {
+          "widget": "divider"
+        },
+        {
           "widget": "personnel",
           "data": ["personnel"]
         }
       ]
     },
-    "query": "query($id: ID!) {\n  item: business(id: $id) {\n    display_name\n    display_picture\n    rating \n  \n    ... on DomesticHelpBusiness {\n      sub_type_string\n      street_address\n      phone_number\n      description\n      personnel{\n        name\n        picture\n        name\n        gender\n        nationality\n        religion\n        profession\n        salary{\n          value\n          valueLower\n          value\n          currency\n        }\n        date_of_birth\n        marital_status\n        languages\n        experience{\n          country\n          institution\n          country\n          from\n          to\n          in_position\n        }\n        phone_number\n        ... on Nanny {\n             education\n             height\n             weight\n             skills\n             number_of_children\n        }\n        ... on Maid {\n             education\n             height\n             weight\n             skills\n             number_of_children\n        }\n        ... on Cook {\n             education\n             height\n             weight\n             skills\n             number_of_children\n        }\n        ... on Driver {\n        license_expiry_date\n        }\n      }\n    }\n  }\n}"
+    "query": "query($id: ID!) {\n  item: business(id: $id) {\n    display_name\n    display_picture\n    rating \n  \n    ... on DomesticHelpBusiness {\n      sub_type_string\n      street_address\n      phone_number\n      description\n      city\n      website\n      personnel{\n        name\n        picture\n        name\n        gender\n        nationality\n        religion\n        profession\n        salary{\n          value\n          valueLower\n          value\n          currency\n        }\n        date_of_birth\n        marital_status\n        languages\n        attachments\n        experience{\n          country\n          institution\n          from\n          to\n          in_position\n        }\n        phone_number\n        ... on Nanny {\n             education\n             height\n             weight\n             skills\n             number_of_children\n        }\n        ... on Maid {\n             education\n             height\n             weight\n             skills\n             number_of_children\n        }\n        ... on Cook {\n             education\n             height\n             weight\n             skills\n             number_of_children\n        }\n        ... on Driver {\n        license_expiry_date\n        }\n      }\n    }\n  }\n}\n\n"
   }
 }

@@ -137,6 +137,12 @@
             "data": ["street_address"]
           },
           {
+            "widget": "text",
+            "textSize": "title11Odd",
+            "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.5 },
+            "data": ["city"]
+          },
+          {
             "widget": "vertical_spacer",
             "height": 5.0
           },
@@ -197,6 +203,6 @@
         }
       ]
     },
-    "query": "query ($id: ID!){\n  item: business(id: $id) {\n    id,\n    display_name,\n    display_picture,\n    rating\n    ... on ChildEducationBusiness {\n      sub_type_string\n      street_address\n      phone_number\n      description\n      year_founded\n      curriculum\n      attachments\n    }\n  } \n}"
+    "query": "query ($id: ID!){\n  item: business(id: $id) {\n    id,\n    display_name,\n    display_picture,\n    rating\n    ... on ChildEducationBusiness {\n      city\n      sub_type_string\n      street_address\n      phone_number\n      description\n      year_founded\n      curriculum\n      attachments\n    }\n  } \n}\n"
   }
 }

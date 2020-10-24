@@ -113,6 +113,12 @@
             "data": ["street_address"]
           },
           {
+            "widget": "text",
+            "textSize": "title11Odd",
+            "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.5 },
+            "data": ["city"]
+          },
+          {
             "widget": "vertical_spacer",
             "height": 5.0
           },
@@ -142,7 +148,7 @@
         },
         {
           "widget": "bool_text_with_title",
-          "titleText": "home_service:",
+          "titleText": "home_delivery",
           "titleSize": "title9",
           "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
           "textSize": "title11Odd",
@@ -150,18 +156,6 @@
           "textIfTrue": "available",
           "textIfFalse": "not_available",
           "data": ["home_delivery_available"]
-        },
-        {
-          "widget": "divider"
-        },
-        {
-          "widget": "text_with_title",
-          "titleText": "website",
-          "titleSize": "title9",
-          "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
-          "textSize": "text9odd",
-          "textColor": { "r": 66, "g": 102, "b": 118, "o": 1.0 },
-          "data": ["website"]
         },
         {
           "widget": "divider"
@@ -179,6 +173,18 @@
           "widget": "divider"
         },
         {
+          "widget": "website_with_title",
+          "titleText": "website",
+          "titleSize": "title9",
+          "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
+          "textSize": "text9odd",
+          "textColor": { "r": 66, "g": 102, "b": 118, "o": 1.0 },
+          "data": ["website"]
+        },
+        {
+          "widget": "divider"
+        },
+        {
           "widget": "picture_gallery",
           "titleText": "photos",
           "titleSize": "title9",
@@ -187,6 +193,6 @@
         }
       ]
     },
-    "query": "query($id: ID!) {\n  item: business(id: $id) {\n    display_name\n    display_picture\n    rating\n    ... on MadeInQatarBusiness {\n      sub_type_string\n      street_address\n      phone_number\n      description\n      home_delivery_available\n      website\n      products\n      attachments\n    }\n  }\n}"
+    "query": "query($id: ID!) {\n  item: business(id: $id) {\n    display_name\n    display_picture\n    rating\n    ... on MadeInQatarBusiness {\n      sub_type_string\n      street_address\n      phone_number\n      city\n      description\n      home_delivery_available\n      website\n      products\n      attachments\n    }\n  }\n}\n"
   }
 }

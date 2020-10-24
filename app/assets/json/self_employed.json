@@ -104,7 +104,7 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 4.0
+            "height": 1.0
           },
           {
             "widget": "text",
@@ -114,28 +114,18 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 5.0
-          },
-          {
-            "widget": "text",
-            "textSize": "title11Odd",
-            "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.5 },
-            "data": ["nationality"]
-          },
-          {
-            "widget": "vertical_spacer",
-            "height": 5.86
+            "height": 1.0
           },
           {
             "widget": "text_with_icon",
             "textSize": "title11Odd",
             "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.5 },
             "iconName": "address.png",
-            "data": ["cities"]
+            "data": ["city"]
           },
           {
             "widget": "vertical_spacer",
-            "height": 5.0
+            "height": 2.0
           },
           {
             "widget": "wrapped_text_with_icon",
@@ -157,6 +147,18 @@
           "textSize": "text6w500",
           "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.69 },
           "data": ["description"]
+        },
+        {
+          "widget": "divider"
+        },
+        {
+          "widget": "text_with_title",
+          "titleText": "nationality",
+          "titleSize": "title9",
+          "titleColor": {"r": 0, "g": 0, "b": 0, "o": 0.67 },
+          "textSize": "text9odd",
+          "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.5 },
+          "data": ["nationality"]
         },
         {
           "widget": "divider"
@@ -203,6 +205,6 @@
         }
       ]
     },
-    "query": "query($id: ID!) {\n  item: business(id: $id) {\n    display_name\n    display_picture\n    rating\n    ... on SelfEmployedBusiness {\n      sub_type_string\n      gender\n      nationality\n      phone_number\n      description\n      skills\n      experience {\n        country\n        from\n        to\n        in_position\n      }\n      charge{\n        value\n        valueLower\n        valueUpper\n        currency\n      }\n      attachments\n    }\n  }\n}"
+    "query": "query($id: ID!) {\n  item: business(id: $id) {\n    display_name\n    display_picture\n    rating\n    ... on SelfEmployedBusiness {\n      sub_type_string\n      gender\n      nationality\n      phone_number\n      description\n      skills\n      city\n      experience {\n        institution\n        country\n        from\n        to\n        in_position\n      }\n      charge{\n        value\n        valueLower\n        valueUpper\n        currency\n      }\n      attachments\n    }\n  }\n}"
   }
 }

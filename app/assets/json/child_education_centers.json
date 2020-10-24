@@ -3,7 +3,7 @@
     "appbar": {
       "filter": true,
       "title": "child_education_centers",
-      "values_query" : " query {\n    __type(name: \"ChildEducationSubType\") {\n      enumValues {\n        name\n      }\n    }\n}   "
+      "values_query" : " query { __type(name: \"ChildEducationSubType\") { enumValues { name } } }   "
     },
     "columns": {
       "start": [
@@ -87,7 +87,7 @@
         }
       ]
     },
-    "query": "query ($sub_types: [String]) {\n  items: businesses(type: ChildEducationBusiness, sub_types: $sub_types) {\n    id,\n    display_name,\n    display_picture,\n    rating\n    ... on ChildEducationBusiness {\n      street_address\n      year_founded\n      curriculum\n    }\n  } \n}"
+    "query": "query ($sub_types: [String]) { items: businesses(type: ChildEducationBusiness, sub_types: $sub_types) { id, display_name, display_picture, rating ... on ChildEducationBusiness { street_address year_founded curriculum } }  }"
   },
   "detailed": {
     "appbar": {
@@ -127,7 +127,7 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 4.0
+            "height": 2.0
           },
           {
             "widget": "text_with_icon",
@@ -144,7 +144,7 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 5.0
+            "height": 2.0
           },
           {
             "widget": "wrapped_text_with_icon",
@@ -203,6 +203,6 @@
         }
       ]
     },
-    "query": "query ($id: ID!){\n  item: business(id: $id) {\n    id,\n    display_name,\n    display_picture,\n    rating\n    ... on ChildEducationBusiness {\n      city\n      sub_type_string\n      street_address\n      phone_number\n      description\n      year_founded\n      curriculum\n      attachments\n    }\n  } \n}\n"
+    "query": "query ($id: ID!){ item: business(id: $id) { id, display_name, display_picture, rating ... on ChildEducationBusiness { city sub_type_string street_address phone_number description year_founded curriculum attachments } }  } "
   }
 }

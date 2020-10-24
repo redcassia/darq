@@ -63,7 +63,7 @@
         }
       ]
     },
-    "query": "query {\n  items: businesses(type: CleaningAndMaintenanceBusiness) {\n    id,\n    display_name,\n    display_picture,\n    rating\n    ... on CleaningAndMaintenanceBusiness {\n      sub_type_string\n      street_address\n      description\n    }\n  } \n}"
+    "query": "query { items: businesses(type: CleaningAndMaintenanceBusiness) { id, display_name, display_picture, rating ... on CleaningAndMaintenanceBusiness { sub_type_string street_address description } }  }"
   },
   "detailed": {
     "appbar": {
@@ -103,7 +103,7 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 4.0
+            "height": 2.0
           },
           {
             "widget": "text_with_icon",
@@ -128,7 +128,7 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 2.0
+            "height": 1.0
           },
           {
             "widget": "wrapped_text_with_icon",
@@ -204,6 +204,6 @@
         }
       ]
     },
-    "query": "query($id: ID!) {\n  item: business(id: $id) {\n    display_name\n    display_picture\n    rating\n    ... on CleaningAndMaintenanceBusiness {\n      sub_type_string\n      street_address\n      phone_number\n      description\n      city\n      operating_hours{\n        open\n        close\n        all_day\n      }\n      website\n      home_service_available\n      charge{\n        value\n        valueLower\n        valueUpper\n        currency\n      }\n      attachments\n    }\n  }\n}"
+    "query": "query($id: ID!) { item: business(id: $id) { display_name display_picture rating ... on CleaningAndMaintenanceBusiness { sub_type_string street_address phone_number description city operating_hours{ open close all_day } website home_service_available charge{ value valueLower valueUpper currency } attachments } } }"
   }
 }

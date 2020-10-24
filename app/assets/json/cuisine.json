@@ -3,7 +3,7 @@
     "appbar": {
       "filter": true,
       "title": "cuisine",
-      "values_query": "query {\n    __type(name: \"FoodBusinessSubType\") {\n      enumValues {\n        name\n      }\n    }\n}  "
+      "values_query": "query { __type(name: \"FoodBusinessSubType\") { enumValues { name } } }  "
     },
     "columns": {
       "start": [
@@ -64,7 +64,7 @@
         }
       ]
     },
-    "query": "query ($sub_types: [String]) {\n  items: businesses(type: FoodBusiness, sub_types: $sub_types) {\n    id,\n    display_name,\n    display_picture,\n    rating\n    ... on FoodBusiness {\n      sub_type_string\n      description\n    }\n  } \n}"
+    "query": "query ($sub_types: [String]) { items: businesses(type: FoodBusiness, sub_types: $sub_types) { id, display_name, display_picture, rating ... on FoodBusiness { sub_type_string description } }  }"
   },
   "detailed": {
     "appbar": {
@@ -104,7 +104,7 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 3.0
+            "height": 2.0
           },
           {
             "widget": "text_with_icon",
@@ -129,7 +129,7 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 3.0
+            "height": 1.0
           },
           {
             "widget": "wrapped_text_with_icon",
@@ -186,6 +186,6 @@
         }
       ]
     },
-    "query": "query($id: ID!) {\n  item: business(id: $id) {\n    display_name\n    display_picture\n    rating\n    ... on FoodBusiness {\n      sub_type_string\n      street_address\n      city\n      operating_hours {\n        open\n        close\n        all_day\n      }\n      phone_number\n      description\n      website\n      menu\n      attachments\n    }\n  }\n}\n"
+    "query": "query($id: ID!) { item: business(id: $id) { display_name display_picture rating ... on FoodBusiness { sub_type_string street_address city operating_hours { open close all_day } phone_number description website menu attachments } } } "
   }
 }

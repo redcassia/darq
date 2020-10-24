@@ -63,7 +63,7 @@
         }
       ]
     },
-    "query": "query {\n  items: businesses(type: MadeInQatarBusiness) {\n    id,\n    display_name,\n    display_picture,\n    rating\n    ... on MadeInQatarBusiness {\n      sub_type_string\n      description\n    }\n  } \n}"
+    "query": "query { items: businesses(type: MadeInQatarBusiness) { id, display_name, display_picture, rating ... on MadeInQatarBusiness { sub_type_string description } }  }"
   },
   "detailed": {
     "appbar": {
@@ -103,7 +103,7 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 4.0
+            "height": 2.0
           },
           {
             "widget": "text_with_icon",
@@ -120,7 +120,7 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 5.0
+            "height": 2.0
           },
           {
             "widget": "wrapped_text_with_icon",
@@ -193,6 +193,6 @@
         }
       ]
     },
-    "query": "query($id: ID!) {\n  item: business(id: $id) {\n    display_name\n    display_picture\n    rating\n    ... on MadeInQatarBusiness {\n      sub_type_string\n      street_address\n      phone_number\n      city\n      description\n      home_delivery_available\n      website\n      products\n      attachments\n    }\n  }\n}\n"
+    "query": "query($id: ID!) { item: business(id: $id) { display_name display_picture rating ... on MadeInQatarBusiness { sub_type_string street_address phone_number city description home_delivery_available website products attachments } } } "
   }
 }

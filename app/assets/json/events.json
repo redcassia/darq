@@ -67,7 +67,7 @@
         }
       ]
     },
-    "query": "query {\n  items: events {\n    id,\n    display_name,\n    display_picture,\n    street_address\n    type\n    description \n    hours{\n      open\n      close\n      all_day\n    }  \n  } \n}"
+    "query": "query { items: events { id, display_name, display_picture, street_address type description  hours{ open close all_day }   }  }"
   },
   "detailed": {
     "appbar": {
@@ -99,7 +99,7 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 4.0
+            "height": 2.0
           },
           {
             "widget": "text_with_icon",
@@ -109,8 +109,14 @@
             "data": ["street_address"]
           },
           {
+            "widget": "text",
+            "textSize": "title11Odd",
+            "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.5 },
+            "data": ["city"]
+          },
+          {
             "widget": "vertical_spacer",
-            "height": 6.0
+            "height": 2.0
           },
           {
             "widget": "operating_hours",
@@ -118,7 +124,7 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 5.0
+            "height": 1.0
           },
           {
             "widget": "wrapped_text_with_icon",
@@ -199,6 +205,6 @@
         }
       ]
     },
-    "query": "query($id: ID!) {\n  item: event(id: $id) {\n    display_name\n    display_picture\n    type\n    street_address\n    hours{\n      open\n      close\n      all_day\n    }\n    phone_number\n    description\n    duration{\n      start\n      end\n    }\n    ticket_website\n    ticket_price{\n      value\n      valueLower\n      valueUpper\n      currency\n    }\n    organizer\n    attachments\n  }\n}"
+    "query": "query($id: ID!) { item: event(id: $id) { display_name display_picture type street_address hours{ open close all_day } city phone_number description duration{ start end } ticket_website ticket_price{ value valueLower valueUpper currency } organizer attachments } }"
   }
 }

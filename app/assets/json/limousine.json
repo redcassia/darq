@@ -63,7 +63,7 @@
         }
       ]
     },
-    "query": "query {\n  items: businesses(type: TransportationBusiness) {\n    id,\n    display_name,\n    display_picture,\n    rating\n    ... on TransportationBusiness {\n      sub_type_string\n      description\n    }\n  } \n}"
+    "query": "query { items: businesses(type: TransportationBusiness) { id, display_name, display_picture, rating ... on TransportationBusiness { sub_type_string description } }  }"
   },
   "detailed": {
     "appbar": {
@@ -103,7 +103,7 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 4.0
+            "height": 2.0
           },
           {
             "widget": "text_with_icon",
@@ -120,7 +120,7 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 3.0
+            "height": 2.0
           },
           {
             "widget": "operating_hours",
@@ -128,7 +128,7 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 3.0
+            "height": 1.0
           },
           {
             "widget": "wrapped_text_with_icon",
@@ -187,6 +187,6 @@
         }
       ]
     },
-    "query": "query($id: ID!) {\n  item: business(id: $id) {\n    display_name\n    display_picture\n    rating\n    city\n    ... on TransportationBusiness {\n      sub_type_string\n      street_address\n      city\n      operating_hours {\n        open\n        close\n        all_day\n      }\n      website\n      phone_number\n      description\n      services\n      attachments\n    }\n  }\n}\n"
+    "query": "query($id: ID!) { item: business(id: $id) { display_name display_picture rating city ... on TransportationBusiness { sub_type_string street_address city operating_hours { open close all_day } website phone_number description services attachments } } } "
   }
 }

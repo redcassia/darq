@@ -3,7 +3,7 @@
     "appbar": {
       "filter": true,
       "title": "sports",
-      "values_query": "query {\n    __type(name: \"SportsBusinessSubType\") {\n      enumValues {\n        name\n      }\n    }\n}"
+      "values_query": "query { __type(name: \"SportsBusinessSubType\") { enumValues { name } } }"
     },
     "columns": {
       "start": [
@@ -64,7 +64,7 @@
         }
       ]
     },
-    "query": "query ($sub_types: [String]) {\n  items: businesses(type: SportsBusiness, sub_types: $sub_types) {\n    id,\n    display_name,\n    display_picture,\n    rating\n    ... on SportsBusiness {\n      sub_type_string\n      description\n    }\n  } \n}"
+    "query": "query ($sub_types: [String]) { items: businesses(type: SportsBusiness, sub_types: $sub_types) { id, display_name, display_picture, rating ... on SportsBusiness { sub_type_string description } }  }"
   },
   "detailed": {
     "appbar": {
@@ -104,7 +104,7 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 4.0
+            "height": 2.0
           },
           {
             "widget": "text_with_icon",
@@ -121,7 +121,7 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 3.0
+            "height": 2.0
           },
           {
             "widget": "operating_hours",
@@ -129,7 +129,7 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 3.0
+            "height": 1.0
           },
           {
             "widget": "wrapped_text_with_icon",
@@ -223,6 +223,6 @@
         }
       ]
     },
-    "query": "query($id: ID!) {\n  item: business(id: $id) {\n    display_name\n    display_picture\n    rating\n    ... on SportsBusiness {\n      description\n      sub_type_string\n      street_address\n    city\n  operating_hours {\n        open\n        close\n        all_day\n      }\n      phone_number\n      home_training_available\n      classes\n   genders\n   teams\n      website\n      attachments\n    }\n  }\n}"
+    "query": "query($id: ID!) { item: business(id: $id) { display_name display_picture rating ... on SportsBusiness { description sub_type_string street_address city operating_hours { open close all_day } phone_number home_training_available classes genders teams website attachments } } }"
   }
 }

@@ -63,7 +63,7 @@
         }
       ]
     },
-    "query": "query {\n  items: businesses(type: BeautyBusiness) {\n    id,\n    display_name,\n    display_picture,\n    rating\n    ... on BeautyBusiness {\n      sub_type_string\n      description\n    }\n  } \n}"
+    "query": "query { items: businesses(type: BeautyBusiness) { id, display_name, display_picture, rating ... on BeautyBusiness { sub_type_string description } }  }"
   },
   "detailed": {
     "appbar": {
@@ -103,7 +103,7 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 4.0
+            "height": 2.0
           },
           {
             "widget": "text_with_icon",
@@ -120,7 +120,7 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 6.0
+            "height": 2.0
           },
           {
             "widget": "operating_hours",
@@ -128,7 +128,7 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 5.0
+            "height": 1.0
           },
           {
             "widget": "wrapped_text_with_icon",
@@ -201,6 +201,6 @@
         }
       ]
     },
-    "query": "query($id: ID!) {\n  item: business(id: $id) {\n    display_name,\n    display_picture,\n    rating\n    ... on BeautyBusiness {\n       sub_type_string\n      street_address\n      city\n      website\n      operating_hours{\n        open\n        close\n        all_day\n      }\n      phone_number\n      description\n      home_service_available\n      services\n      attachments\n    }\n  }\n}"
+    "query": "query($id: ID!) { item: business(id: $id) { display_name, display_picture, rating ... on BeautyBusiness { sub_type_string street_address city website operating_hours{ open close all_day } phone_number description home_service_available services attachments } } }"
   }
 }

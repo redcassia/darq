@@ -63,7 +63,7 @@
         }
       ]
     },
-    "query": "query {\n  items: businesses(type: HospitalityBusiness) {\n    id,\n    display_name,\n    display_picture,\n    rating\n    ... on HospitalityBusiness {\n      sub_type_string\n      description\n    }\n  } \n}"
+    "query": "query { items: businesses(type: HospitalityBusiness) { id, display_name, display_picture, rating ... on HospitalityBusiness { sub_type_string description } }  }"
   },
   "detailed": {
     "appbar": {
@@ -103,7 +103,7 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 4.0
+            "height": 2.0
           },
           {
             "widget": "text_with_icon",
@@ -120,7 +120,7 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 6.0
+            "height": 2.0
           },
           {
             "widget": "wrapped_text_with_icon",
@@ -208,6 +208,6 @@
         }
       ]
     },
-    "query": "query($id: ID!) {\n  item: business(id: $id) {\n    display_name\n    display_picture\n    rating\n    ... on HospitalityBusiness {\n      sub_type_string\n      street_address\n      phone_number\n      description\n      home_service_available\n      city\n      website\n      charge\n      {\n        value\n        valueLower\n        valueUpper\n        currency\n      }\n      services\n      attachments\n    }\n  }\n}"
+    "query": "query($id: ID!) { item: business(id: $id) { display_name display_picture rating ... on HospitalityBusiness { sub_type_string street_address phone_number description home_service_available city website charge { value valueLower valueUpper currency } services attachments } } }"
   }
 }

@@ -3,7 +3,7 @@
     "appbar": {
       "filter": true,
       "title": "self_employed",
-      "values_query": "query {\n    __type(name: \"SelfEmployedSubType\") {\n      enumValues {\n        name\n      }\n    }\n}  "
+      "values_query": "query { __type(name: \"SelfEmployedSubType\") { enumValues { name } } }  "
     },
     "columns": {
       "start": [
@@ -64,7 +64,7 @@
         }
       ]
     },
-    "query": "query ($sub_types: [String]) {\n  items: businesses(type: SelfEmployedBusiness, sub_types: $sub_types) {\n    id,\n    display_name,\n    display_picture,\n    rating\n    ... on SelfEmployedBusiness {\n      sub_type_string\n      description\n    }\n  } \n}"
+    "query": "query ($sub_types: [String]) { items: businesses(type: SelfEmployedBusiness, sub_types: $sub_types) { id, display_name, display_picture, rating ... on SelfEmployedBusiness { sub_type_string description } }  }"
   },
   "detailed": {
     "appbar": {
@@ -104,7 +104,7 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 1.0
+            "height": 2.0
           },
           {
             "widget": "text",
@@ -114,7 +114,7 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 1.0
+            "height": 2.0
           },
           {
             "widget": "text_with_icon",
@@ -125,7 +125,7 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 2.0
+            "height": 1.0
           },
           {
             "widget": "wrapped_text_with_icon",
@@ -205,6 +205,6 @@
         }
       ]
     },
-    "query": "query($id: ID!) {\n  item: business(id: $id) {\n    display_name\n    display_picture\n    rating\n    ... on SelfEmployedBusiness {\n      sub_type_string\n      gender\n      nationality\n      phone_number\n      description\n      skills\n      city\n      experience {\n        institution\n        country\n        from\n        to\n        in_position\n      }\n      charge{\n        value\n        valueLower\n        valueUpper\n        currency\n      }\n      attachments\n    }\n  }\n}"
+    "query": "query($id: ID!) { item: business(id: $id) { display_name display_picture rating ... on SelfEmployedBusiness { sub_type_string gender nationality phone_number description skills city experience { institution country from to in_position } charge{ value valueLower valueUpper currency } attachments } } }"
   }
 }

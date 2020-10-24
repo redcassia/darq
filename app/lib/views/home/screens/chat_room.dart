@@ -113,7 +113,7 @@ class _ChatRoomState extends State<ChatRoom> {
   }
 
   _seeMsg() {
-    if (_thread != null) {
+    if (_thread != null && _thread.messages.last.index > _thread.senderLastSeenIndex) {
       _chatInstance.seeMessage(_thread.id).then((_) {
         setState(() {
           _thread = _;

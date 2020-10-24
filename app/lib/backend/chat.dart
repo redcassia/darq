@@ -45,7 +45,7 @@ class MessageThread {
     messages.addAll(_createMessagesFromResponse(newMessages));
   }
 
-  void updateSenderLastSeenIndex(int senderLastSeen){
+  void updateSenderLastSeenIndex(int senderLastSeen) {
     senderLastSeenIndex = senderLastSeen;
   }
 }
@@ -53,7 +53,7 @@ class MessageThread {
 class Chat {
   HashMap<String, MessageThread> _threads;
   HashMap<String, MessageThread> _threadsByBusiness;
-  _init() async {
+  Future<void> _updateThreads() async {
     var client = await Session.getClient();
     var result = await client.query(QueryOptions(documentNode: gql('''
       query{
@@ -75,16 +75,19 @@ class Chat {
           }
         }
       }
-      ''')));
+      '''), fetchPolicy: FetchPolicy.networkOnly));
     if (result.hasException)
       throw Exception("Failed to initialize message threads");
-    if (_threads == null) _threads = new HashMap();
-    if (_threadsByBusiness == null) _threadsByBusiness = new HashMap();
+    var threads = new HashMap<String, MessageThread>();
+    var threadsByBusiness = new HashMap<String, MessageThread>();
     for (var t in result.data["user"]["threads"]) {
-      _threads.putIfAbsent(t["id"], () => MessageThread(t));
-      _threadsByBusiness.putIfAbsent(t["target"]["id"], () => MessageThread(t));
+      threads[t["id"]] = MessageThread(t);
+      threadsByBusiness[t["target"]["id"]] = MessageThread(t);
     }
+    _threads = threads;
+    _threadsByBusiness = threadsByBusiness;
   }
+
   Future<MessageThread> getThread({String threadId, String businessId}) async {
     if (threadId != null) {
       if (_threads == null) await _init();
@@ -105,8 +108,9 @@ class Chat {
     }
   }
 
-  Future<List<MessageThread>> getThreads() async {
+  Future<List<MessageThread>> getThreads({bool refresh = false}) async {
     if (_threads == null) await _init();
+    if (refresh) await _updateThreads();
     var sortedThreads = _threads.values.toList();
     sortedThreads.sort(
         (a, b) => a.messages.last.time.compareTo(b.messages.last.time) * -1);
@@ -138,7 +142,8 @@ class Chat {
       throw Exception("Failed to load more messages for thread ${thread.id}");
     }
     thread.addMessagesTop(result.data["user"]["threads"][0]["messages"]);
-    thread.updateSenderLastSeenIndex(result.data["user"]["threads"][0]["senderLastSeenIndex"]);
+    thread.updateSenderLastSeenIndex(
+        result.data["user"]["threads"][0]["senderLastSeenIndex"]);
     _threads.update(thread.id, (_) => thread);
     _threadsByBusiness.update(thread.targetId, (_) => thread);
     return thread;
@@ -147,7 +152,8 @@ class Chat {
   Future<MessageThread> refreshThread(String threadId) async {
     var thread = await getThread(threadId: threadId);
     var client = await Session.getClient();
-    var result = await client.query(QueryOptions(documentNode: gql(r'''
+    var result = await client.query(QueryOptions(
+        documentNode: gql(r'''
       query ($threadId: ID!, $minIndex: Int!){
         user{
           threads(threadId: $threadId) {
@@ -161,15 +167,18 @@ class Chat {
           }
         }
       }
-      '''), variables: {
-      "threadId": thread.id,
-      "minIndex": thread.messages.last.index
-    }, fetchPolicy: FetchPolicy.networkOnly));
+      '''),
+        variables: {
+          "threadId": thread.id,
+          "minIndex": thread.messages.last.index
+        },
+        fetchPolicy: FetchPolicy.networkOnly));
     if (result.hasException) {
       throw Exception("Failed to load more messages for thread ${thread.id}");
     }
     thread.addMessagesBottom(result.data["user"]["threads"][0]["messages"]);
-    thread.updateSenderLastSeenIndex(result.data["user"]["threads"][0]["senderLastSeenIndex"]);
+    thread.updateSenderLastSeenIndex(
+        result.data["user"]["threads"][0]["senderLastSeenIndex"]);
     _threads.update(thread.id, (_) => thread);
     _threadsByBusiness.update(thread.targetId, (_) => thread);
     return thread;
@@ -200,11 +209,12 @@ class Chat {
         throw Exception("Failed to see message in thread ${thread.id}");
       }
       thread.addMessagesBottom(result.data["seeMessage"]["messages"]);
-      thread.updateSenderLastSeenIndex(result.data["seeMessage"]["senderLastSeenIndex"]);
+      thread.updateSenderLastSeenIndex(
+          result.data["seeMessage"]["senderLastSeenIndex"]);
       _threads.update(thread.id, (_) => thread);
       _threadsByBusiness.update(thread.targetId, (_) => thread);
       return thread;
-    }  else {
+    } else {
       return null;
     }
   }
@@ -236,7 +246,8 @@ class Chat {
         throw Exception("Failed to send message in thread ${thread.id}");
       }
       thread.addMessagesBottom(result.data["sendMessage"]["messages"]);
-      thread.updateSenderLastSeenIndex(result.data["sendMessage"]["senderLastSeenIndex"]);
+      thread.updateSenderLastSeenIndex(
+          result.data["sendMessage"]["senderLastSeenIndex"]);
       _threads.update(thread.id, (_) => thread);
       _threadsByBusiness.update(thread.targetId, (_) => thread);
       return thread;
@@ -272,6 +283,10 @@ class Chat {
     } else {
       return null;
     }
+  }
+
+  _init() async {
+    await _updateThreads();
   }
 
   static final Chat _singleton = new Chat._internal();

@@ -25,12 +25,12 @@ class _ChatListState extends State<ChatList> {
   Chat chats;
   int unseenMessages;
 
-  void _updateThreads() {
-    chats.getThreads().then((threads) {
-      if(mounted) {
-        setState(() => _chats = threads);
-      }
-      else Future.delayed(Duration(seconds: 10), _updateThreads);
+  void _updateThreads(bool refresh) {
+    chats.getThreads(refresh: refresh).then((threads) {
+      _chats = threads;
+      if (mounted) setState(() {});
+      if (refresh)
+        Future.delayed(Duration(seconds: 30), () => _updateThreads(true));
     });
   }
 
@@ -38,7 +38,7 @@ class _ChatListState extends State<ChatList> {
   void initState() {
     super.initState();
     chats = new Chat();
-    _updateThreads();
+    _updateThreads(true);
   }
 
   bool checkLastSeen(MessageThread msg) {
@@ -79,7 +79,7 @@ class _ChatListState extends State<ChatList> {
                             MaterialPageRoute(
                                 builder: (context) =>
                                     ChatRoom(threadId: _chats[index].id)))
-                        .then((_) => _updateThreads()),
+                        .then((_) => _updateThreads(false)),
                     child: Container(
                         color: checkLastSeen(_chats[index])
                             ? Color(0xFFE1A854).withOpacity(0.3)

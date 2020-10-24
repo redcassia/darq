@@ -1,13 +1,11 @@
 import 'dart:ui';
 
 import 'package:darq/elements/app_fonts.dart';
-import 'package:darq/res/path_files.dart';
 import 'package:darq/utilities/constants.dart';
 import 'package:darq/views/home/screens/listing_page.dart';
 import 'package:darq/views/shared/app_bars/back_arrow.dart';
 import 'package:darq/views/shared/app_bars/default_appbar.dart';
 import 'package:darq/views/shared/button.dart';
-import 'package:darq/views/shared/rounded_capsule.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';

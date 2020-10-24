@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:ui';
 
-import 'package:darq/backend/auth.dart';
+import 'package:darq/backend/session.dart';
 
 import 'package:darq/res/path_files.dart';
 import 'package:darq/utilities/constants.dart';
@@ -37,7 +37,7 @@ class _ListingPageState extends State<ListingPage> {
   String local;
 
   _loadData() {
-    Auth.getClient().then((client) => client
+    Session.getClient().then((client) => client
             .query(QueryOptions(
                 documentNode: gql(_layout["query"]),
                 variables: {'sub_types': widget.filterPredicate}))

@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:darq/backend/auth.dart';
+import 'package:darq/backend/session.dart';
 
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/utilities/constants.dart';
@@ -34,7 +34,7 @@ class _FilterPageState extends State<FilterPage> {
   List<ListItem> _values = [];
 
   _queryValues() {
-    Auth.getClient().then((client) => client
+    Session.getClient().then((client) => client
             .query(QueryOptions(documentNode: gql(widget.valuesQuery)))
             .then((result) {
           if (!result.hasException)
@@ -99,7 +99,7 @@ class _FilterPageState extends State<FilterPage> {
                         onTap: () => setState(() =>
                             _values[i].isSelected = !_values[i].isSelected),
                         selected: _values[i].isSelected,
-                        title: Text(_values[i].data,
+                        title: Text(translate(_values[i].data),
                             style: AppFonts.title8(color: Color(0xFF4D4D4D))),
                         trailing: _values[i].isSelected
                             ? Icon(Icons.radio_button_checked,

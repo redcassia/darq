@@ -14,7 +14,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:graphql/client.dart';
-import 'package:darq/backend/auth.dart';
+import 'package:darq/backend/session.dart';
 
 class DetailsPage extends StatefulWidget {
   final String id;
@@ -47,7 +47,7 @@ class _DetailsPageState extends State<DetailsPage> {
   }
 
   loadData() {
-    Auth.getClient().then((client) => client
+    Session.getClient().then((client) => client
             .query(QueryOptions(
                 documentNode: gql(_layout["query"]),
                 variables: {'id': widget.id}))
@@ -174,7 +174,6 @@ class _DetailsPageState extends State<DetailsPage> {
           jsonFile: widget.jsonFile,
           data: widgetData,
           id: widget.id,
-          detailedPage: true,
           height: columnLayout[widgetIndex]["height"],
           width: columnLayout[widgetIndex]["width"],
           titleText: columnLayout[widgetIndex]["titleText"],

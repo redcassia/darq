@@ -8,7 +8,6 @@ import 'package:darq/views/shared/app_bars/back_arrow.dart';
 import 'package:darq/views/shared/app_bars/default_appbar.dart';
 import 'package:darq/views/shared/button.dart';
 import 'package:darq/views/shared/default_card.dart';
-import 'package:darq/views/shared/shared_prefs_locale.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';

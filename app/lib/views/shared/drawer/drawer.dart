@@ -1,6 +1,7 @@
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/res/path_files.dart';
 import 'package:darq/utilities/screen_info.dart';
+import 'package:darq/views/home/screens/about_us.dart';
 import 'package:darq/views/home/screens/change_lang.dart';
 import 'package:darq/views/home/screens/chat_list.dart';
 import 'package:darq/views/home/screens/community.dart';
@@ -27,6 +28,11 @@ class CustomDrawer extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               SizedBox(height: 60.h),
+              DrawerItem(
+                  txt: translate("home"),
+                  icon: "home.png",
+                  onClick: () => Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Home()))),
               DrawerItem(
                   txt: translate("community"),
                   icon: "community.png",
@@ -73,12 +79,7 @@ class CustomDrawer extends StatelessWidget {
                           builder: (context) =>
                               ListingPage(jsonFile: "made_in_qatar.json")))),
               DrawerItem(
-                  txt: translate("home"),
-                  icon: "home.png",
-                  onClick: () => Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Home()))),
-              DrawerItem(
-                  txt: translate("chat"),
+                  txt: translate("messages"),
                   icon: "chat.png",
                   onClick: () => Navigator.push(context,
                       MaterialPageRoute(builder: (context) => ChatList()))),
@@ -91,7 +92,7 @@ class CustomDrawer extends StatelessWidget {
                   txt: translate("about_us"),
                   icon: "about_us.png",
                   onClick: () => Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ChatList()))),
+                      MaterialPageRoute(builder: (context) => AboutUs()))),
             ]));
   }
 }

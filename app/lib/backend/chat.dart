@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:darq/backend/auth.dart';
+import 'package:darq/backend/session.dart';
 import 'package:graphql/client.dart';
 
 class Message {
@@ -18,6 +18,7 @@ class MessageThread {
   String targetId;
   String targetName;
   String targetPicture;
+  int senderLastSeenIndex;
   List<Message> messages;
 
   MessageThread(dynamic thread) {
@@ -25,6 +26,7 @@ class MessageThread {
     targetId = thread["target"]["id"];
     targetName = thread["target"]["display_name"];
     targetPicture = thread["target"]["display_picture"];
+    senderLastSeenIndex = thread["senderLastSeenIndex"];
     messages = _createMessagesFromResponse(thread["messages"]);
   }
   List<Message> _createMessagesFromResponse(dynamic messages) {
@@ -42,13 +44,17 @@ class MessageThread {
   void addMessagesBottom(dynamic newMessages) {
     messages.addAll(_createMessagesFromResponse(newMessages));
   }
+
+  void updateSenderLastSeenIndex(int senderLastSeen){
+    senderLastSeenIndex = senderLastSeen;
+  }
 }
 
 class Chat {
   HashMap<String, MessageThread> _threads;
   HashMap<String, MessageThread> _threadsByBusiness;
   _init() async {
-    var client = await Auth.getClient();
+    var client = await Session.getClient();
     var result = await client.query(QueryOptions(documentNode: gql('''
       query{
         user{
@@ -59,6 +65,7 @@ class Chat {
               display_name
               display_picture
             }
+            senderLastSeenIndex
             messages{
               sender
               time
@@ -78,7 +85,6 @@ class Chat {
       _threadsByBusiness.putIfAbsent(t["target"]["id"], () => MessageThread(t));
     }
   }
-
   Future<MessageThread> getThread({String threadId, String businessId}) async {
     if (threadId != null) {
       if (_threads == null) await _init();
@@ -109,11 +115,12 @@ class Chat {
 
   Future<MessageThread> loadMore(String threadId) async {
     var thread = await getThread(threadId: threadId);
-    var client = await Auth.getClient();
+    var client = await Session.getClient();
     var result = await client.query(QueryOptions(documentNode: gql(r'''
       query ($threadId: ID!, $maxIndex: Int!){
         user{
           threads(threadId: $threadId) {
+            senderLastSeenIndex
             messages(maxIndex: $maxIndex) {
               sender
               time
@@ -131,6 +138,7 @@ class Chat {
       throw Exception("Failed to load more messages for thread ${thread.id}");
     }
     thread.addMessagesTop(result.data["user"]["threads"][0]["messages"]);
+    thread.updateSenderLastSeenIndex(result.data["user"]["threads"][0]["senderLastSeenIndex"]);
     _threads.update(thread.id, (_) => thread);
     _threadsByBusiness.update(thread.targetId, (_) => thread);
     return thread;
@@ -138,11 +146,12 @@ class Chat {
 
   Future<MessageThread> refreshThread(String threadId) async {
     var thread = await getThread(threadId: threadId);
-    var client = await Auth.getClient();
+    var client = await Session.getClient();
     var result = await client.query(QueryOptions(documentNode: gql(r'''
       query ($threadId: ID!, $minIndex: Int!){
         user{
           threads(threadId: $threadId) {
+            senderLastSeenIndex
             messages(minIndex: $minIndex) {
               sender
               time
@@ -160,20 +169,56 @@ class Chat {
       throw Exception("Failed to load more messages for thread ${thread.id}");
     }
     thread.addMessagesBottom(result.data["user"]["threads"][0]["messages"]);
+    thread.updateSenderLastSeenIndex(result.data["user"]["threads"][0]["senderLastSeenIndex"]);
     _threads.update(thread.id, (_) => thread);
     _threadsByBusiness.update(thread.targetId, (_) => thread);
     return thread;
   }
 
+  Future<MessageThread> seeMessage(String threadId) async {
+    var client = await Session.getClient();
+
+    if (threadId != null) {
+      var thread = await getThread(threadId: threadId);
+      var result = await client.mutate(MutationOptions(documentNode: gql(r'''
+          mutation ($threadId: ID!, $index: Int!) {
+            seeMessage(threadId: $threadId, index: $index) {
+              senderLastSeenIndex
+              messages(minIndex: $index) {
+                index
+                msg
+                time
+                sender
+              }
+            }
+          }
+      '''), variables: {
+        "threadId": thread.id,
+        "index": thread.messages.last.index
+      }));
+      if (result.hasException) {
+        throw Exception("Failed to see message in thread ${thread.id}");
+      }
+      thread.addMessagesBottom(result.data["seeMessage"]["messages"]);
+      thread.updateSenderLastSeenIndex(result.data["seeMessage"]["senderLastSeenIndex"]);
+      _threads.update(thread.id, (_) => thread);
+      _threadsByBusiness.update(thread.targetId, (_) => thread);
+      return thread;
+    }  else {
+      return null;
+    }
+  }
+
   Future<MessageThread> sendMessage(String message,
       {String threadId, String businessId}) async {
-    var client = await Auth.getClient();
+    var client = await Session.getClient();
 
     if (threadId != null) {
       var thread = await getThread(threadId: threadId);
       var result = await client.mutate(MutationOptions(documentNode: gql(r'''
         mutation ($msg: String!, $threadId: ID!, $minIndex: Int!){
           sendMessage(msg: $msg, threadId: $threadId) {
+            senderLastSeenIndex
             messages(minIndex: $minIndex) {
               sender
               time
@@ -191,6 +236,7 @@ class Chat {
         throw Exception("Failed to send message in thread ${thread.id}");
       }
       thread.addMessagesBottom(result.data["sendMessage"]["messages"]);
+      thread.updateSenderLastSeenIndex(result.data["sendMessage"]["senderLastSeenIndex"]);
       _threads.update(thread.id, (_) => thread);
       _threadsByBusiness.update(thread.targetId, (_) => thread);
       return thread;
@@ -200,6 +246,7 @@ class Chat {
         mutation ($msg: String!, $targetBusinessId: ID!){
           sendMessage(msg: $msg, targetBusinessId: $targetBusinessId) {
             id
+            senderLastSeenIndex
             target{
               id
               display_name
@@ -219,7 +266,7 @@ class Chat {
       }
       _threads.putIfAbsent(result.data["sendMessage"]["id"],
           () => MessageThread(result.data["sendMessage"]));
-      _threadsByBusiness.putIfAbsent(result.data["sendMessage"]["id"],
+      _threadsByBusiness.putIfAbsent(result.data["sendMessage"]["target"]["id"],
           () => MessageThread(result.data["sendMessage"]));
       return _threads[result.data["sendMessage"]["id"]];
     } else {

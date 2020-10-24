@@ -1,15 +1,13 @@
 import 'dart:async';
 
-import 'package:darq/backend/auth.dart';
+import 'package:darq/backend/session.dart';
 
 import 'package:darq/backend/chat.dart';
 import 'package:darq/elements/app_fonts.dart';
-import 'package:darq/res/path_files.dart';
 import 'package:darq/utilities/constants.dart';
 import 'package:darq/utilities/screen_info.dart';
 import 'package:darq/views/shared/app_bars/back_arrow.dart';
 import 'package:darq/views/shared/app_bars/default_appbar.dart';
-import 'package:darq/views/shared/rounded_capsule.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -38,7 +36,7 @@ class _ChatRoomState extends State<ChatRoom> {
   int _oldMessageCount;
   bool _refresh = true;
   String _businessName = "";
-
+  bool _messageInFlight = false;
   @override
   void initState() {
     super.initState();
@@ -53,7 +51,7 @@ class _ChatRoomState extends State<ChatRoom> {
       });
       _doRefresh();
     }).catchError((e) async {
-      var client = await Auth.getClient();
+      var client = await Session.getClient();
       var result = await client.query(QueryOptions(
           documentNode: gql(
               r'''query($id: ID!) { business(id: $id) { display_name } }'''),
@@ -101,63 +99,81 @@ class _ChatRoomState extends State<ChatRoom> {
     }
   }
 
-  String formatDate(DateTime val) {
-    return DateFormat("dd / MM / y  \u2014  hh:mm a", "en_US")
-        .format(val.toLocal())
-        .toString();
-  }
-
   _sendMsg(String msg) {
     if (msg == null || msg.trim().length == 0) return;
+    _messageInFlight = true;
     _chatInstance
         .sendMessage(msg,
             threadId: _thread?.id ?? null, businessId: widget.businessId)
         .then((_) => setState(() {
               _thread = _;
               _scrollToEnd = true;
+              _messageInFlight = false;
             }));
   }
 
+  _seeMsg() {
+    if (_thread != null) {
+      _chatInstance.seeMessage(_thread.id).then((_) {
+        setState(() {
+          _thread = _;
+        });
+      });
+    }
+  }
+
   Widget _chatBubble(Message msg) {
-    return Container(
-        height: 68.h,
-        child: Column(children: [
-          Container(
-              alignment: msg.sender == "PUBLIC"
-                  ? Alignment.topRight
-                  : Alignment.topLeft,
-              child: Container(
-                  constraints: BoxConstraints(maxWidth: SI.screenWidth * 0.80),
-                  padding: EdgeInsets.all(10.w),
-                  margin: EdgeInsets.symmetric(vertical: 8.h),
-                  decoration: BoxDecoration(
-                      color: msg.sender == "PUBLIC"
-                          ? Color(0xFF86C2C2)
-                          : Colors.white,
-                      borderRadius: BorderRadius.circular(15)),
-                  child: Text(msg.msg,
-                      style: AppFonts.text7(
-                          color: msg.sender == "PUBLIC"
-                              ? Colors.white
-                              : Colors.black87)))),
-          msg.sender == "PUBLIC"
-              ? Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(formatDate(msg.time),
-                      style: AppFonts.text8(color: Colors.black45)))
-              : Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(formatDate(msg.time),
-                      style: AppFonts.text8(color: Colors.black45)))
-        ]));
+    return Column(children: [
+      Visibility(
+        child: Container(
+            padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 5.w),
+            width: double.infinity,
+            decoration: BoxDecoration(
+                color: Color(0xFFE1A854),
+                borderRadius: BorderRadius.circular(15)),
+            child: Center(
+                child: Text(translate("new_messages"),
+                    style: AppFonts.text7(color: Colors.black87)))),
+        visible: msg.index - 1 == _thread.senderLastSeenIndex,
+      ),
+      Column(children: [
+        Container(
+            alignment:
+                msg.sender == "PUBLIC" ? Alignment.topRight : Alignment.topLeft,
+            child: Container(
+                constraints: BoxConstraints(maxWidth: SI.screenWidth * 0.80),
+                padding: EdgeInsets.all(10.w),
+                margin: EdgeInsets.symmetric(vertical: 8.h),
+                decoration: BoxDecoration(
+                    color: msg.sender == "PUBLIC"
+                        ? Color(0xFF86C2C2)
+                        : Colors.white,
+                    borderRadius: BorderRadius.circular(15)),
+                child: Text(msg.msg,
+                    style: AppFonts.text7(
+                        color: msg.sender == "PUBLIC"
+                            ? Colors.white
+                            : Colors.black87)))),
+        msg.sender == "PUBLIC"
+            ? Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                    Session.formatDateTimeMessages(msg.time, fullDate: true),
+                    style: AppFonts.text8(color: Colors.black45)))
+            : Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                    Session.formatDateTimeMessages(msg.time, fullDate: true),
+                    style: AppFonts.text8(color: Colors.black45)))
+      ])
+    ]);
   }
 
   void _setScrollPosition() {
     if (_scrollToEnd) {
       _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
     } else if (_oldMessageCount != null) {
-      _scrollController
-          .jumpTo(68.h * (_thread.messages.length - _oldMessageCount));
+      _scrollController.jumpTo(_scrollController.position.minScrollExtent);
     }
     _oldMessageCount = null;
   }
@@ -177,6 +193,7 @@ class _ChatRoomState extends State<ChatRoom> {
                   maxLines: 20,
                   minLines: 1,
                   onTap: () {
+                    _seeMsg();
                     _scrollToEnd = true;
                     _setScrollPosition();
                   },
@@ -195,8 +212,10 @@ class _ChatRoomState extends State<ChatRoom> {
                   icon: Icon(Icons.send),
                   color: Color(0xFF86C2C2),
                   onPressed: () {
-                    _sendMsg(textFieldController.text);
-                    textFieldController.clear();
+                    if (!_messageInFlight) {
+                      _sendMsg(textFieldController.text);
+                      textFieldController.clear();
+                    }
                   }))
         ]));
   }

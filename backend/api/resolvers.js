@@ -1204,17 +1204,10 @@ const resolvers = {
     },
 
     async setLocale(_, { locale }, { user }) {
-      if (! user) {
-        throw new ApolloError(
-          "Sorry... You're not authenticated! :c",
-          'USER_NOT_AUTHENTICATED'
-        );
-      }
-
-      user.locale = locale;
+      _validateAuthenticatedPublicUser(user);
 
       return jsonwebtoken.sign(
-        user,
+        { id: user.id, type: 'PUBLIC', locale: locale },
         process.env.JWT_SECRET,
         { expiresIn: '1d' }
       );

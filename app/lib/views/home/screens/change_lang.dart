@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:darq/backend/session.dart';
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/res/path_files.dart';
 import 'package:darq/utilities/constants.dart';
@@ -61,8 +62,7 @@ class _ChangeLangState extends State<ChangeLang> {
                           color: Color(0xFF426676),
                           onButtonPressed: () {
                             changeLocale(context, 'en_US');
-                            setLocale('en', context)
-                                .then((value) => setState(() {}));
+                            Session.setLocale('en');
                           }),
                       SizedBox(height: 11.h),
                       CustomButton(
@@ -74,8 +74,7 @@ class _ChangeLangState extends State<ChangeLang> {
                           color: Color(0xFFE1A854),
                           onButtonPressed: () {
                             changeLocale(context, 'ar');
-                            setLocale('ar', context)
-                                .then((value) => setState(() {}));
+                            Session.setLocale('ar');
                           })
                     ]))));
   }

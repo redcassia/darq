@@ -43,7 +43,7 @@ class IconLeadingRow extends StatelessWidget {
   final TextStyle textStyle;
   @override
   Widget build(BuildContext context) {
-    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
+    return Row(crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
       RotatedBox(
           quarterTurns: Localizations.localeOf(context).languageCode == 'en'
               ? 0

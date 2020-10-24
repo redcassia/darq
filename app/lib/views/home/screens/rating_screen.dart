@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:darq/backend/auth.dart';
+import 'package:darq/backend/session.dart';
 
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/res/path_files.dart';
@@ -30,9 +30,7 @@ class _RatingScreenState extends State<RatingScreen> {
   double _rating;
 
   rateBusiness(int rating) {
-    print("rating $rating");
-    print("id: ${widget.businessId}");
-    Auth.getClient().then((client) => client
+    Session.getClient().then((client) => client
             .mutate(MutationOptions(documentNode: gql(r'''
            mutation($id : ID!, $rating:  Int!){
           rateBusiness(
@@ -84,7 +82,6 @@ class _RatingScreenState extends State<RatingScreen> {
                           image: AssetImage(PathFiles.ImgPath + "rating.png")),
                       SizedBox(height: 15.h),
                       SmoothStarRating(
-                          lockRatingChange: false,
                           mainAxisAlignment: MainAxisAlignment.center,
                           onRatingChanged: (_) => setState(() => _rating = _),
                           allowHalfRating: true,

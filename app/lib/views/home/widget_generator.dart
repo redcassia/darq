@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
-
+import 'package:darq/backend/session.dart';
+import 'package:link/link.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/views/home/screens/chat_room.dart';
@@ -10,7 +11,6 @@ import 'package:darq/views/home/screens/personnel_page.dart';
 import 'package:darq/views/shared/custom_divider.dart';
 import 'package:darq/views/shared/full_img_wrapper.dart';
 import 'package:darq/views/shared/leading_row.dart';
-import 'package:darq/views/home/screens/rating_screen.dart';
 import 'package:darq/views/shared/button.dart';
 import 'package:darq/views/shared/default_card.dart';
 import 'package:darq/views/shared/custom_chip.dart';
@@ -25,7 +25,6 @@ import 'package:flutter_translate/flutter_translate.dart';
 Widget generateWidget(String widgetType,
     {BuildContext context,
     dynamic data,
-    bool detailedPage = false,
     String id,
     String jsonFile,
     double height,
@@ -61,17 +60,38 @@ Widget generateWidget(String widgetType,
       if (data == null) return null;
       return Text(data,
           style: AppFonts.makeStyle(textSize, textColor),
+          maxLines: 3,
           overflow: TextOverflow.ellipsis);
 
     case 'text':
       if (text != null) data = text;
       if (data == null) return null;
+      try {
+        data = translate(data);
+      } catch (e) {}
       return Text(data, style: AppFonts.makeStyle(textSize, textColor));
+
+    case "website_with_title":
+      if (data == null) return null;
+      return TextLeadingRow(
+          title: translate(titleText),
+          titleStyle: AppFonts.makeStyle(titleSize, titleColor),
+          widget: Link(
+              url: data.toString(),
+              child: Text(data.toString().split('/').last,
+                  style: AppFonts.makeStyle(textSize, textColor))));
+      break;
 
     case 'text_with_title':
       if (data == null) return null;
-      if (data is List<dynamic>) {
-        data = data.join(", ");
+      if (data is List<dynamic>) data = data.join(", ");
+      try {
+        data = translate(data);
+      } catch (e) {}
+
+      if (double.tryParse(data) != null &&
+          Localizations.localeOf(context).languageCode == 'ar') {
+        data = Session.formatInt(int.parse(data));
       }
 
       if (trailingText == null) {
@@ -108,49 +128,56 @@ Widget generateWidget(String widgetType,
 
     case 'text_with_icon':
       if (data == null) return null;
+      try {
+        data = translate(data);
+      } catch (e) {}
+      if (double.tryParse(data) != null &&
+          Localizations.localeOf(context).languageCode == 'ar') {
+        data = Session.formatInt(int.parse(data));
+      }
       return IconLeadingRow(
           iconName: iconName,
           txt: data,
           textStyle: AppFonts.makeStyle(textSize, textColor));
 
     case 'itemized_text_with_title':
-      if (data == null) return null;
+      if (data == null || data.length == 0) return null;
       return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(translate(titleText), style: AppFonts.makeStyle(titleSize, titleColor)),
-          SizedBox(height: 5.h),
-          ListView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              padding: EdgeInsets.zero,
-              itemCount: data.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text("- ${data[index]}",
-                        style: AppFonts.makeStyle(textSize, textColor)),
-                    SizedBox(height: 3.h),
-                  ],
-                );
-              }),
-        ],
-      );
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(translate(titleText),
+                style: AppFonts.makeStyle(titleSize, titleColor)),
+            SizedBox(height: 5.h),
+            ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                padding: EdgeInsets.zero,
+                itemCount: data.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text("- ${data[index]}",
+                            style: AppFonts.makeStyle(textSize, textColor)),
+                        SizedBox(height: 3.h)
+                      ]);
+                })
+          ]);
 
     case 'wrapped_text':
-      if (data == null) return null;
+      if (data == null || data.length == 0) return null;
       return Wrap(
           spacing: 6.w,
           children: List.generate(min(data.length, maxElements),
               (index) => CustomChip(text: data[index])));
 
     case 'wrapped_text_with_title':
-      if (data == null) return null;
+      if (data == null || data.length == 0) return null;
       return Wrap(
         spacing: 6.w,
         children: <Widget>[
-          Text(translate(titleText), style: AppFonts.makeStyle(titleSize, titleColor)),
+          Text(translate(titleText),
+              style: AppFonts.makeStyle(titleSize, titleColor)),
           SizedBox(height: 17.h),
           for (int i = 0; i < min(data.length, maxElements); i++)
             CustomChip(text: data[i]),
@@ -159,20 +186,25 @@ Widget generateWidget(String widgetType,
 
     case 'wrapped_text_with_icon':
       if (data == null) return null;
+
       return Wrap(
           spacing: 6.w,
-          children: List.generate(
-              min(data.length, maxElements),
-              (index) => IconLeadingRow(
-                  iconName: iconName,
-                  txt: data[index],
-                  textStyle: AppFonts.makeStyle(textSize, textColor))));
+          children: List.generate(min(data.length, maxElements), (index) {
+            if (double.tryParse(data[index]) != null &&
+                Localizations.localeOf(context).languageCode == 'ar') {
+              data[index] = Session.formatInt(int.parse(data[index]));
+            }
+            return IconLeadingRow(
+                iconName: iconName,
+                txt: data[index],
+                textStyle: AppFonts.makeStyle(textSize, textColor));
+          }));
 
     case 'picture':
       return Picture(height: height.h, width: width.w, img: data);
 
     case 'picture_gallery':
-      if (data?.length == 0 || data == null) return null;
+      if (data == null || data.length == 0) return null;
       return SizedBox(
           height: 125.h,
           child: Column(
@@ -215,29 +247,32 @@ Widget generateWidget(String widgetType,
       if (data == null) return null;
       return IconLeadingRow(
           iconName: "clock.png",
-          txt:
-              data["all_day"] ? "24 hrs" : "${data["open"]} - ${data["close"]}",
+          txt: data["all_day"]
+              ? "${translate("24_hrs")}"
+              : "${Session.formatTime("0000-00-00 ${data["open"]}")} - ${Session.formatTime("0000-00-00 ${data["close"]}")}",
           textStyle: AppFonts.title11Odd(color: Color.fromRGBO(0, 0, 0, 0.5)));
 
     case 'operating_hours_no_icon':
       if (data == null) return null;
       return Text(
-          data["all_day"] ? "24 hrs" : "${data["open"]} - ${data["close"]}",
+          data["all_day"]
+              ? translate("24_hrs")
+              : "${Session.formatTime("0000-00-00 ${data["open"]}")} - ${Session.formatTime("0000-00-00 ${data["close"]}")}",
           style: AppFonts.title11Odd(color: Color.fromRGBO(0, 0, 0, 0.7)));
 
     case 'duration':
       if (data == null) return null;
       return Wrap(children: <Widget>[
         TextLeadingRow(
-            title: "Start:",
+            title: translate("start"),
             titleStyle: kTitle9Rgb_67,
-            txt: data["start"],
+            txt: Session.formatDateTime(data["start"]),
             txtStyle: kText9OddRgb_05),
         SizedBox(width: 53.h, height: 5.h),
         TextLeadingRow(
-            title: "End:",
+            title: translate("end"),
             titleStyle: kTitle9Rgb_67,
-            txt: data["end"],
+            txt: Session.formatDateTime(data["end"]),
             txtStyle: kText9OddRgb_05)
       ]);
 
@@ -249,15 +284,29 @@ Widget generateWidget(String widgetType,
             titleStyle: AppFonts.makeStyle(titleSize, titleColor),
             widget: RichText(
                 textAlign: TextAlign.start,
-                text: TextSpan(
-                    style: AppFonts.makeStyle(textSize, textColor),
-                    children: <TextSpan>[
-                      TextSpan(text: "${data["value"]} ${data["currency"]}"),
-                      TextSpan(
-                          text: trailingText,
-                          style: AppFonts.makeStyle(
-                              trailingTextSize, trailingTextColor))
-                    ])));
+                text: Localizations.localeOf(context).languageCode == 'en'
+                    ? TextSpan(
+                        style: AppFonts.makeStyle(textSize, textColor),
+                        children: <TextSpan>[
+                            TextSpan(
+                                text:
+                                    "${Session.formatInt(data["value"])} ${translate(data["currency"])} "),
+                            TextSpan(
+                                text: translate(trailingText),
+                                style: AppFonts.makeStyle(
+                                    trailingTextSize, trailingTextColor))
+                          ])
+                    : TextSpan(
+                        style: AppFonts.makeStyle(textSize, textColor),
+                        children: <TextSpan>[
+                            TextSpan(
+                                text:
+                                    "${Session.formatInt(data["value"])} ${translate(data["currency"])} "),
+                            TextSpan(
+                                text: translate(trailingText),
+                                style: AppFonts.makeStyle(
+                                    trailingTextSize, trailingTextColor))
+                          ])));
       } else {
         return TextLeadingRow(
             title: translate(titleText),
@@ -269,9 +318,9 @@ Widget generateWidget(String widgetType,
                     children: <TextSpan>[
                       TextSpan(
                           text:
-                              "${data["valueLower"]} : ${data["valueUpper"]} ${data["currency"]}"),
+                              "${Session.formatInt(data["valueLower"])} ${translate("to")} ${Session.formatInt(data["valueUpper"])} ${translate(data["currency"])}"),
                       TextSpan(
-                          text: trailingText,
+                          text: translate(trailingText),
                           style: AppFonts.makeStyle(
                               trailingTextSize, trailingTextColor))
                     ])));
@@ -280,26 +329,10 @@ Widget generateWidget(String widgetType,
 
     case 'rating':
       if (data == null)
-        return InkWell(
-            onTap: () {
-              if (detailedPage)
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            RatingScreen(businessId: id, rating: data)));
-            },
-            child: Text(translate("not_rated"),
-                textAlign: TextAlign.center,
-                style: AppFonts.text8(color: Color.fromRGBO(0, 0, 0, 0.7))));
+        return Text(translate("not_rated"),
+            textAlign: TextAlign.center,
+            style: AppFonts.text8(color: Color.fromRGBO(0, 0, 0, 0.7)));
       return SmoothStarRating(
-          onBoxClicked:()=> detailedPage
-              ?      Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      RatingScreen(businessId: id, rating: data)))
-              : {},
           mainAxisAlignment: MainAxisAlignment.start,
           allowHalfRating: true,
           size: 14.w,
@@ -313,9 +346,9 @@ Widget generateWidget(String widgetType,
           spacing: 0.0);
 
     case 'experience':
-      if (data == null) return null;
+      if (data == null || data.length == 0) return null;
       return TextLeadingRow(
-          title: "Experience:",
+          title: translate("experience"),
           titleStyle: kTitle9Rgb_67,
           widget: Flexible(
               child: Column(children: <Widget>[
@@ -331,11 +364,11 @@ Widget generateWidget(String widgetType,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                            "${data[i]["country"]}${data[i]["institution"] != null ? " - ${data[i]["institution"]}" : ""}",
+                            "${translate(data[i]["country"])}${data[i]["institution"] != null ? " - ${data[i]["institution"]}" : ""}",
                             style: AppFonts.title11Odd(
                                 color: Color.fromRGBO(0, 0, 0, 0.69))),
                         Text(
-                            "${data[i]["from"]} - ${data[i]["in_position"] ? "Present" : "${data[i]["to"]}"}",
+                            "${Session.formatDate(data[i]["from"])} - ${data[i]["in_position"] ? translate("present") : "${Session.formatDate(data[i]["to"])}"}",
                             style: AppFonts.text9odd(
                                 color: Color.fromRGBO(0, 0, 0, 0.5))),
                         SizedBox(height: 4.h)
@@ -388,29 +421,31 @@ Widget generateWidget(String widgetType,
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                PersonnelPage(data: data[i]))),
+                                PersonnelPage(data: data[i], id: id))),
                     child: DefaultCard(
                         margin: EdgeInsets.zero,
-                        padding:
-                            EdgeInsets.only(top: 6.h, left: 10.w, right: 9.w),
+                        padding: EdgeInsets.only(
+                            top: 6.h, left: 10.w, right: 9.w, bottom: 3.h),
                         color: Color(0xFFF5F9FA),
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
-                              Picture(
-                                  height: 43.h,
-                                  width: 44.w,
-                                  img: data[i]["picture"]),
+                              Expanded(
+                                child: Picture(
+                                    height: 43.h,
+                                    width: 44.w,
+                                    img: data[i]["picture"]),
+                              ),
                               SizedBox(height: 2.h),
                               Text("${data[i]["name"]}",
                                   style: AppFonts.title11Odd(
                                       color: Color(0xFF545454)),
                                   textAlign: TextAlign.center),
-                              Text("${data[i]["nationality"]}",
+                              Text(translate(data[i]["nationality"]),
                                   style: AppFonts.text9odd(
                                       color: Color.fromRGBO(0, 0, 0, 0.5))),
-                              Text("${data[i]["profession"]}",
+                              Text(translate(data[i]["profession"]),
                                   style: AppFonts.text10w500(
                                       color: Color.fromRGBO(0, 0, 0, 0.37)))
                             ])));

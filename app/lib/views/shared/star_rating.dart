@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 typedef void RatingChangeCallback(double rating);
 
 class SmoothStarRating extends StatelessWidget {
-  final Function onBoxClicked;
-  final bool lockRatingChange;
   final int starCount;
   final double rating;
   final RatingChangeCallback onRatingChanged;
@@ -21,8 +19,6 @@ class SmoothStarRating extends StatelessWidget {
   final double spacing;
   final MainAxisAlignment mainAxisAlignment;
   SmoothStarRating({
-    this.lockRatingChange = true,
-    this.onBoxClicked,
     this.mainAxisAlignment,
     this.starCount = 5,
     this.spacing,
@@ -62,33 +58,25 @@ class SmoothStarRating extends StatelessWidget {
       );
     }
 
-    if (lockRatingChange)
-      return GestureDetector(
-        onTap: () {
-          onBoxClicked();
-        },
-        child: icon,
-      );
-    else
-      return new GestureDetector(
-        onTap: () {
-          if (this.onRatingChanged != null) onRatingChanged(index + 1.0);
-        },
-        onHorizontalDragUpdate: (dragDetails) {
-          RenderBox box = context.findRenderObject();
-          var _pos = box.globalToLocal(dragDetails.globalPosition);
-          var i = _pos.dx / size;
-          var newRating = allowHalfRating ? i : i.round().toDouble();
-          if (newRating > starCount) {
-            newRating = starCount.toDouble();
-          }
-          if (newRating < 0) {
-            newRating = 0.0;
-          }
-          if (this.onRatingChanged != null) onRatingChanged(newRating);
-        },
-        child: icon,
-      );
+    return new GestureDetector(
+      onTap: () {
+        if (this.onRatingChanged != null) onRatingChanged(index + 1.0);
+      },
+      onHorizontalDragUpdate: (dragDetails) {
+        RenderBox box = context.findRenderObject();
+        var _pos = box.globalToLocal(dragDetails.globalPosition);
+        var i = _pos.dx / size;
+        var newRating = allowHalfRating ? i : i.round().toDouble();
+        if (newRating > starCount) {
+          newRating = starCount.toDouble();
+        }
+        if (newRating < 0) {
+          newRating = 0.0;
+        }
+        if (this.onRatingChanged != null) onRatingChanged(newRating);
+      },
+      child: icon,
+    );
   }
 
   @override

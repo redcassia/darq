@@ -238,6 +238,13 @@ class AppFonts {
         color: color);
   }
 
+  static TextStyle text8w500({Color color}) {
+    return GoogleFonts.roboto(
+        fontSize: ScreenUtil().setSp(12, allowFontScalingSelf: true),
+        fontWeight: FontWeight.w500,
+        color: color);
+  }
+
   static TextStyle text9odd({Color color}) {
     return GoogleFonts.roboto(
         fontSize: ScreenUtil().setSp(11, allowFontScalingSelf: true),

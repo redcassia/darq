@@ -139,7 +139,7 @@
         },
         {
           "widget": "text",
-          "textSize": "text6w500",
+          "textSize": "text8w500",
           "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.69 },
           "data": ["description"]
         },

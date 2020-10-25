@@ -182,10 +182,24 @@ class AppFonts {
         color: color);
   }
 
+  static TextStyle text4w700({Color color}) {
+    return GoogleFonts.roboto(
+        fontSize: ScreenUtil().setSp(20, allowFontScalingSelf: true),
+        fontWeight: FontWeight.w700,
+        color: color);
+  }
+
   static TextStyle text5({Color color}) {
     return GoogleFonts.roboto(
         fontSize: ScreenUtil().setSp(18, allowFontScalingSelf: true),
         fontWeight: FontWeight.normal,
+        color: color);
+  }
+
+  static TextStyle text5w500({Color color}) {
+    return GoogleFonts.roboto(
+        fontSize: ScreenUtil().setSp(18, allowFontScalingSelf: true),
+        fontWeight: FontWeight.w500,
         color: color);
   }
 
@@ -196,6 +210,13 @@ class AppFonts {
         color: color);
   }
 
+  static TextStyle text6w500({Color color}) {
+    return GoogleFonts.roboto(
+        fontSize: ScreenUtil().setSp(16, allowFontScalingSelf: true),
+        fontWeight: FontWeight.w500,
+        color: color);
+  }
+
   static TextStyle text7({Color color}) {
     return GoogleFonts.roboto(
         fontSize: ScreenUtil().setSp(14, allowFontScalingSelf: true),
@@ -203,17 +224,17 @@ class AppFonts {
         color: color);
   }
 
+  static TextStyle text7w500({Color color}) {
+    return GoogleFonts.roboto(
+        fontSize: ScreenUtil().setSp(14, allowFontScalingSelf: true),
+        fontWeight: FontWeight.w500,
+        color: color);
+  }
+
   static TextStyle text8({Color color}) {
     return GoogleFonts.roboto(
         fontSize: ScreenUtil().setSp(12, allowFontScalingSelf: true),
         fontWeight: FontWeight.normal,
-        color: color);
-  }
-
-  static TextStyle text6w500({Color color}) {
-    return GoogleFonts.roboto(
-        fontSize: ScreenUtil().setSp(12, allowFontScalingSelf: true),
-        fontWeight: FontWeight.w500,
         color: color);
   }
 

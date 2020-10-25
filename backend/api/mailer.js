@@ -19,10 +19,12 @@ const mailTransporter = nodemailer.createTransport({
   },
 });
 
+const sender = `"DarQ" <noreply@${process.env.DOMAIN}>`
+
 class Mailer {
   static async _sendMail(email, subject, message) {
     mailTransporter.sendMail({
-      from: '"DarQ" <noreply@darq.qa>',
+      from: sender,
       to: email,
       subject: subject,
       text: message

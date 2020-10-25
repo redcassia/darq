@@ -39,7 +39,7 @@ var http_to_https = express();
 
 // set up a route to redirect http to https
 http_to_https.get('*', function(req, res) {  
-  res.redirect('https://' + process.env.DOMAIN + req.url);
+  res.redirect('https://' + process.env.HTTPS_REDIRECT_DOMAIN + req.url);
 });
 
 http_to_https.listen(process.env.HTTP_TO_HTTPS_PORT);

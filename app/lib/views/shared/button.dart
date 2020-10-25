@@ -86,12 +86,12 @@ class CustomClipRRect extends StatelessWidget {
     return ClipRRect(
         borderRadius: Localizations.localeOf(context).languageCode == 'en'
             ? BorderRadius.only(
-                topLeft: Radius.circular(borderRadius),
-                bottomRight: Radius.circular(borderRadius),
+                topLeft: Radius.circular(borderRadius.w),
+                bottomRight: Radius.circular(borderRadius.w),
               )
             : BorderRadius.only(
-                topRight: Radius.circular(borderRadius),
-                bottomLeft: Radius.circular(borderRadius)),
+                topRight: Radius.circular(borderRadius.w),
+                bottomLeft: Radius.circular(borderRadius.w)),
         child: Container(
             height: height,
             width: width,
@@ -109,12 +109,11 @@ class CustomClipRRect extends StatelessWidget {
                 borderRadius:
                     Localizations.localeOf(context).languageCode == 'en'
                         ? BorderRadius.only(
-                            topLeft: Radius.circular(borderRadius),
-                            bottomRight: Radius.circular(borderRadius),
-                          )
+                            topLeft: Radius.circular(borderRadius.w),
+                            bottomRight: Radius.circular(borderRadius.w))
                         : BorderRadius.only(
-                            topRight: Radius.circular(borderRadius),
-                            bottomLeft: Radius.circular(borderRadius))),
+                            topRight: Radius.circular(borderRadius.w),
+                            bottomLeft: Radius.circular(borderRadius.w))),
             child: widget));
   }
 }

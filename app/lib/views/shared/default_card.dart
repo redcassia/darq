@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class DefaultCard extends StatelessWidget {
   const DefaultCard(
@@ -17,9 +18,9 @@ class DefaultCard extends StatelessWidget {
     return ClipRRect(
         borderRadius: Localizations.localeOf(context).languageCode == 'en'
             ? BorderRadius.only(
-                topLeft: Radius.circular(20), bottomRight: Radius.circular(20))
+                topLeft: Radius.circular(20.w), bottomRight: Radius.circular(20.w))
             : BorderRadius.only(
-                topRight: Radius.circular(20), bottomLeft: Radius.circular(20)),
+                topRight: Radius.circular(20.w), bottomLeft: Radius.circular(20.w)),
         child: Container(
             width: double.infinity,
             margin: margin,
@@ -34,11 +35,11 @@ class DefaultCard extends StatelessWidget {
                 borderRadius:
                     Localizations.localeOf(context).languageCode == 'en'
                         ? BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            bottomRight: Radius.circular(20))
+                            topLeft: Radius.circular(20.w),
+                            bottomRight: Radius.circular(20.w))
                         : BorderRadius.only(
-                            topRight: Radius.circular(20),
-                            bottomLeft: Radius.circular(20))),
+                            topRight: Radius.circular(20.w),
+                            bottomLeft: Radius.circular(20.w))),
             child: Padding(padding: padding, child: child)));
   }
 }

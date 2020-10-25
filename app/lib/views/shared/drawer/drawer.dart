@@ -22,12 +22,12 @@ class CustomDrawer extends StatelessWidget {
         decoration: BoxDecoration(
             color: Color(0xFF86C2C2),
             borderRadius: Localizations.localeOf(context).languageCode == 'en'
-                ? BorderRadius.only(topRight: const Radius.circular(80))
-                : BorderRadius.only(topLeft: const Radius.circular(80))),
+                ? BorderRadius.only(topRight:  Radius.circular(80.w))
+                : BorderRadius.only(topLeft:  Radius.circular(80.w))),
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              SizedBox(height: 60.h),
+              SizedBox(height: 38.h),
               DrawerItem(
                   txt: translate("home"),
                   icon: "home.png",
@@ -108,7 +108,7 @@ class DrawerItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
         child: Padding(
-            padding: EdgeInsets.only(top: 32.h, left: 20.w, right: 25.w),
+            padding: EdgeInsets.only(top: 30.h, left: 20.w, right: 25.w),
             child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[

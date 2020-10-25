@@ -44,7 +44,7 @@ class DefaultAppBar extends StatelessWidget {
                 image: AssetImage(PathFiles.ImgPath + bgImage),
                 fit: BoxFit.fill)),
         child: Padding(
-            padding: EdgeInsets.only(bottom: 7.h, top: 35.h),
+            padding: EdgeInsets.only(bottom: 6.h, top: 35.h),
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,

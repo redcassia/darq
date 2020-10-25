@@ -25,15 +25,15 @@ class _AboutUsState extends State<AboutUs> {
             preferredSize: Size.fromHeight(ConsDimensions.SmallAppBarHeight.h),
             child: Container(
                 decoration: BoxDecoration(
-                  color: Color(0xFF86C2C2),
-                  borderRadius:
-                      Localizations.localeOf(context).languageCode == 'en'
-                          ? BorderRadius.only(
-                              bottomRight: Radius.circular(45),
-                            )
-                          : BorderRadius.only(bottomLeft: Radius.circular(45)),
-                ),
-                padding: EdgeInsets.only(top: 26.h, bottom: 22.h),
+                    color: Color(0xFF86C2C2),
+                    borderRadius: Localizations.localeOf(context)
+                                .languageCode ==
+                            'en'
+                        ? BorderRadius.only(
+                            bottomRight: Radius.circular(45),
+                          )
+                        : BorderRadius.only(bottomLeft: Radius.circular(45))),
+                padding: EdgeInsets.only(top: 33.h, bottom: 22.h),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

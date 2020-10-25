@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:graphql/client.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Session {
   static final HttpLink _backendLink =

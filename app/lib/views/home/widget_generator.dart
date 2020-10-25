@@ -1,26 +1,27 @@
 import 'dart:math';
 import 'dart:ui';
-import 'package:darq/backend/session.dart';
-import 'package:link/link.dart';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:darq/backend/session.dart';
 import 'package:darq/elements/app_fonts.dart';
-import 'package:darq/views/home/screens/chat_room.dart';
 import 'package:darq/views/home/home_screens_style_const.dart';
+import 'package:darq/views/home/screens/chat_room.dart';
 import 'package:darq/views/home/screens/details_page.dart';
 import 'package:darq/views/home/screens/personnel_page.dart';
-import 'package:darq/views/shared/custom_divider.dart';
-import 'package:darq/views/shared/full_img_wrapper.dart';
-import 'package:darq/views/shared/leading_row.dart';
 import 'package:darq/views/shared/button.dart';
-import 'package:darq/views/shared/default_card.dart';
 import 'package:darq/views/shared/custom_chip.dart';
+import 'package:darq/views/shared/custom_divider.dart';
+import 'package:darq/views/shared/default_card.dart';
+import 'package:darq/views/shared/full_img_wrapper.dart';
 import 'package:darq/views/shared/image_container.dart';
+import 'package:darq/views/shared/leading_row.dart';
 import 'package:darq/views/shared/star_rating.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_translate/flutter_translate.dart';
+import 'package:link/link.dart';
 
 Widget generateWidget(String widgetType,
     {BuildContext context,

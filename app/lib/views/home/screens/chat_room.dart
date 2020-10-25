@@ -1,8 +1,7 @@
 import 'dart:async';
 
-import 'package:darq/backend/session.dart';
-
 import 'package:darq/backend/chat.dart';
+import 'package:darq/backend/session.dart';
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/utilities/constants.dart';
 import 'package:darq/utilities/screen_info.dart';
@@ -14,7 +13,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:graphql/client.dart';
-import 'package:intl/intl.dart';
 
 class ChatRoom extends StatefulWidget {
   final String threadId;

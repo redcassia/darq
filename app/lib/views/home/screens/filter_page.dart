@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:darq/backend/session.dart';
-
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/utilities/constants.dart';
 import 'package:darq/views/shared/button.dart';

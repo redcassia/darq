@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:darq/backend/session.dart';
 import 'package:darq/res/path_files.dart';
 import 'package:darq/utilities/constants.dart';
 import 'package:darq/views/home/screens/filter_page.dart';
@@ -14,7 +15,6 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:graphql/client.dart';
-import 'package:darq/backend/session.dart';
 
 class DetailsPage extends StatefulWidget {
   final String id;

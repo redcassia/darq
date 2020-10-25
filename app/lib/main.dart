@@ -2,9 +2,9 @@ import 'package:darq/res/path_files.dart';
 import 'package:darq/views/intro/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_translate_preferences/flutter_translate_preferences.dart';
-import 'package:flutter_translate/flutter_translate.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_translate/flutter_translate.dart';
+import 'package:flutter_translate_preferences/flutter_translate_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

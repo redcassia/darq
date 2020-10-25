@@ -118,7 +118,8 @@ class _PersonnelPageState extends State<PersonnelPage> {
                                         title: translate(
                                             "license_expiration_date"),
                                         titleStyle: kTitle9Rgb_67,
-                                        txt: widget.data["license_expiry_date"],
+                                        txt: Session.formatDate(
+                                            widget.data["license_expiry_date"]),
                                         txtStyle: kText9OddRgb_05),
                                     SizedBox(height: 17.h),
                                     CustomDivider()

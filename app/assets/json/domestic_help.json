@@ -114,13 +114,13 @@
             "textSize": "title11Odd",
             "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.5 },
             "iconName": "address.png",
-            "data": ["street_address"]
-          },
-          {
-            "widget": "text",
-            "textSize": "title11Odd",
-            "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.5 },
-            "data": ["city"]
+            "joinedData": {
+              "separator": ", ",
+              "children": [
+                ["street_address"],
+                ["city"]
+              ]
+            }
           },
           {
             "widget": "vertical_spacer",

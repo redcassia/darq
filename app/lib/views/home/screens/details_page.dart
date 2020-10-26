@@ -160,38 +160,16 @@ class _DetailsPageState extends State<DetailsPage> {
       for (var widgetIndex = 0;
           widgetIndex < columnLayout.length;
           ++widgetIndex) {
-        String widgetType = columnLayout[widgetIndex]["widget"];
-
-        var dataPath = columnLayout[widgetIndex]["data"];
-        var widgetData = _data;
-        if (dataPath != null && _data != null) {
-          for (var x in dataPath) widgetData = widgetData[x];
-        }
 
         Widget child = generateWidget(
-          widgetType,
-          context: context,
-          jsonFile: widget.jsonFile,
-          data: widgetData,
+          context,
+          columnLayout[widgetIndex],
+          _data,
           id: widget.id,
-          height: columnLayout[widgetIndex]["height"],
-          width: columnLayout[widgetIndex]["width"],
-          titleText: columnLayout[widgetIndex]["titleText"],
-          titleSize: columnLayout[widgetIndex]["titleSize"],
-          titleColor: columnLayout[widgetIndex]["titleColor"],
-          trailingText: columnLayout[widgetIndex]["trailingText"],
-          trailingTextSize: columnLayout[widgetIndex]["trailingTextSize"],
-          trailingTextColor: columnLayout[widgetIndex]["trailingTextColor"],
-          text: columnLayout[widgetIndex]["text"],
-          textSize: columnLayout[widgetIndex]["textSize"],
-          textColor: columnLayout[widgetIndex]["textColor"],
-          iconName: columnLayout[widgetIndex]["iconName"],
-          textIfTrue: columnLayout[widgetIndex]["textIfTrue"],
-          textIfFalse: columnLayout[widgetIndex]["textIfFalse"],
-          maxElements: columnLayout[widgetIndex]["maxElements"],
+          jsonFile: widget.jsonFile
         );
 
-        if (widgetType == "divider") {
+        if (columnLayout[widgetIndex]["widget"] == "divider") {
           if (divisionEmpty) child = null;
           divisionEmpty = true;
         } else {

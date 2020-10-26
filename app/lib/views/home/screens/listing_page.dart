@@ -166,32 +166,12 @@ class _ListingPageState extends State<ListingPage> {
         padding: EdgeInsets.zero,
         itemCount: columnLayout.length,
         itemBuilder: (BuildContext context, int widgetIndex) {
-          var dataPath = columnLayout[widgetIndex]["data"];
-          var widgetData = cardData;
-          if (dataPath != null && cardData != null) {
-            for (var x in dataPath) widgetData = widgetData[x];
-          }
 
           return generateWidget(
-            columnLayout[widgetIndex]["widget"],
-            context: context,
-            jsonFile: widget.jsonFile,
-            data: widgetData,
-            height: columnLayout[widgetIndex]["height"],
-            width: columnLayout[widgetIndex]["width"],
-            titleText: columnLayout[widgetIndex]["titleText"],
-            titleSize: columnLayout[widgetIndex]["titleSize"],
-            titleColor: columnLayout[widgetIndex]["titleColor"],
-            trailingText: columnLayout[widgetIndex]["trailingText"],
-            trailingTextSize: columnLayout[widgetIndex]["trailingTextSize"],
-            trailingTextColor: columnLayout[widgetIndex]["trailingTextColor"],
-            text: columnLayout[widgetIndex]["text"],
-            textSize: columnLayout[widgetIndex]["textSize"],
-            textColor: columnLayout[widgetIndex]["textColor"],
-            iconName: columnLayout[widgetIndex]["iconName"],
-            textIfTrue: columnLayout[widgetIndex]["textIfTrue"],
-            textIfFalse: columnLayout[widgetIndex]["textIfFalse"],
-            maxElements: columnLayout[widgetIndex]["maxElements"],
+              context,
+              columnLayout[widgetIndex],
+              cardData,
+              jsonFile: widget.jsonFile
           );
         });
   }

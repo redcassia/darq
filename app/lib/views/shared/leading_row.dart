@@ -54,7 +54,7 @@ class IconLeadingRow extends StatelessWidget {
               fit: BoxFit.fill,
               image: AssetImage(PathFiles.ImgPath + iconName))),
       SizedBox(width: 4.5.w),
-      Expanded(child: Text(txt, style: textStyle, maxLines: 2,overflow: TextOverflow.ellipsis,))
+      Text(txt, style: textStyle, maxLines: 2,overflow: TextOverflow.ellipsis,)
     ]);
   }
 }

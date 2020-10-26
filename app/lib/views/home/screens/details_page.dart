@@ -110,15 +110,14 @@ class _DetailsPageState extends State<DetailsPage> {
                     left: 21.w, right: 19.w, top: 12.h, bottom: 17.h)
                 : EdgeInsets.only(
                     left: 19.w, right: 21.w, top: 12.h, bottom: 17.h),
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
+            child: ListView(
+                physics: AlwaysScrollableScrollPhysics(),
+                padding: EdgeInsets.zero,
                 children: <Widget>[
-                  Flexible(
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
                         SizedBox(
                             width: 80.w,
                             height: 110.h,
@@ -126,32 +125,22 @@ class _DetailsPageState extends State<DetailsPage> {
                                 context,
                                 _layout == null
                                     ? null
-                                    : _layout["columns"]["header"]
-                                        ["start"],
+                                    : _layout["columns"]["header"]["start"],
                                 false)),
                         SizedBox(width: 17.w),
-                        Flexible(
-                            flex: 2,
-                            child: buildCardColumn(
-                                context,
-                                _layout == null
-                                    ? null
-                                    : _layout["columns"]["header"]
-                                        ["end"],
-                                false))
-                      ])),
-                  Flexible(
-                      flex: 4,
-                      child: buildCardColumn(
-                          context,
-                          _layout == null
-                              ? null
-                              : _layout["columns"]["body"],
-                          true))
+                        buildCardColumn(
+                            context,
+                            _layout == null
+                                ? null
+                                : _layout["columns"]["header"]["end"],
+                            false)
+                      ]),
+                  buildCardColumn(context,
+                      _layout == null ? null : _layout["columns"]["body"], true)
                 ])));
   }
 
-  ListView buildCardColumn(
+  Widget buildCardColumn(
       BuildContext context, List<dynamic> columnLayout, bool scroll) {
     bool divisionEmpty = false;
     List<Widget> children = new List();
@@ -160,14 +149,8 @@ class _DetailsPageState extends State<DetailsPage> {
       for (var widgetIndex = 0;
           widgetIndex < columnLayout.length;
           ++widgetIndex) {
-
-        Widget child = generateWidget(
-          context,
-          columnLayout[widgetIndex],
-          _data,
-          id: widget.id,
-          jsonFile: widget.jsonFile
-        );
+        Widget child = generateWidget(context, columnLayout[widgetIndex], _data,
+            id: widget.id, jsonFile: widget.jsonFile);
 
         if (columnLayout[widgetIndex]["widget"] == "divider") {
           if (divisionEmpty) child = null;
@@ -183,11 +166,9 @@ class _DetailsPageState extends State<DetailsPage> {
       }
     }
 
-    return ListView(
-        physics: scroll
-            ? AlwaysScrollableScrollPhysics()
-            : NeverScrollableScrollPhysics(),
-        padding: EdgeInsets.zero,
-        children: children);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: children,
+    );
   }
 }

@@ -33,6 +33,7 @@ class AppFonts {
       case "text6w500":             return text6w500(color: clr);
       case "text7":                 return text7(color: clr);
       case "text8":                 return text8(color: clr);
+      case "text8w500":             return text8w500(color: clr);
       case "text9odd":              return text9odd(color: clr);
       case "text10":                return text10(color: clr);
       case "text10w500":            return text10w500(color: clr);

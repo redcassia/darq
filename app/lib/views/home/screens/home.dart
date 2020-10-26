@@ -54,7 +54,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    _screenTitle = translate("news");
+    _screenTitle = "news";
     getTwitterNews();
   }
 
@@ -227,7 +227,7 @@ class _HomeState extends State<Home> {
             child: DefaultAppBar(
                 bgColor: _currentIndex == 1 ? Colors.white : null,
                 allowHorizontalPadding: true,
-                title: _screenTitle,
+                title: translate(_screenTitle),
                 bgImage: Localizations.localeOf(context).languageCode == 'en'
                     ? "rounded_app_bar.png"
                     : "rounded_app_bar_left.png",
@@ -260,16 +260,16 @@ class _HomeState extends State<Home> {
                         switch (_currentIndex) {
                           case 0:
                             getTwitterNews();
-                            _screenTitle = translate("news");
+                            _screenTitle = "news";
                             _showBottomNavBar = true;
                             break;
                           case 1:
-                            _screenTitle = translate("stock_exchange");
+                            _screenTitle = "stock_exchange";
                             _showBottomNavBar = false;
 
                             break;
                           case 2:
-                            _screenTitle = translate("live");
+                            _screenTitle = "live";
                             _showBottomNavBar = true;
 
                             break;

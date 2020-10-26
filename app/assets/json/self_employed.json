@@ -104,7 +104,7 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 2.0
+            "height": 3.0
           },
           {
             "widget": "text",
@@ -125,7 +125,7 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 1.0
+            "height": 2.0
           },
           {
             "widget": "wrapped_text_with_icon",

@@ -68,4 +68,3 @@ class Welcome extends StatelessWidget {
                     ]))));
   }
 }
-

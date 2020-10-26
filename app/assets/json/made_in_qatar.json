@@ -103,7 +103,7 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 2.0
+            "height": 3.0
           },
           {
             "widget": "text_with_icon",

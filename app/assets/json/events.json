@@ -139,7 +139,7 @@
       "body": [
         {
           "widget": "vertical_spacer",
-          "height": 9.0
+          "height": 2.0
         },
         {
           "widget": "text",

@@ -41,6 +41,8 @@ class _AboutUsState extends State<AboutUs> {
                           backArrowBgColor:
                               Color.fromRGBO(134, 194, 194, 0.69)),
                       Image(
+                          width: 38.w,
+                          fit: BoxFit.fitHeight,
                           image:
                               AssetImage(PathFiles.ImgPath + "logo_notxt.png")),
                       Visibility(

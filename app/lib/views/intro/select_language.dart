@@ -13,7 +13,6 @@ class SelectLanguage extends StatelessWidget {
       AssetImage(PathFiles.ImgPath + "select_language_bg.png");
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, width: 375, height: 667, allowFontScaling: true);
     return Scaffold(
         body: Container(
             decoration: BoxDecoration(
@@ -36,8 +35,7 @@ class SelectLanguage extends StatelessWidget {
                   onButtonPressed: () {
                     changeLocale(context, 'en_US');
                     Session.setLocale("en");
-                    Navigator.push(
-                        context,
+                    Navigator.push(context,
                         MaterialPageRoute(builder: (context) => Home()));
                   }),
               SizedBox(height: 11.h),
@@ -51,8 +49,7 @@ class SelectLanguage extends StatelessWidget {
                   onButtonPressed: () {
                     changeLocale(context, 'ar');
                     Session.setLocale("ar");
-                    Navigator.push(
-                        context,
+                    Navigator.push(context,
                         MaterialPageRoute(builder: (context) => Home()));
                   }),
             ]))));

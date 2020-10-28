@@ -87,67 +87,102 @@ class _ChatListState extends State<ChatList> {
                         child: Padding(
                             padding: EdgeInsets.symmetric(
                                 vertical: 10.h, horizontal: 20.w),
-                            child:
-                                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                              Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Picture(
-                                        height: 42.h,
-                                        width: 42.w,
-                                        img: _chats[index].targetPicture),
-                                    SizedBox(width: 10.w),
-                                    Column(
+                            child: Row(
+                                crossAxisAlignment:
+                                    CrossAxisAlignment.center,
+                                children: [
+                                  Picture(
+                                      height: 42.h,
+                                      width: 42.w,
+                                      img: _chats[index].targetPicture),
+                                  SizedBox(width: 10.w),
+                                  Expanded(
+                                    child: Column(
                                         mainAxisSize: MainAxisSize.max,
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text(_chats[index].targetName,
-                                              style: AppFonts.title9(
-                                                  color: Color.fromRGBO(
-                                                      0, 0, 0, 0.7))),
+                                          Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                    _chats[index]
+                                                        .targetName,
+                                                    style: AppFonts.title9(
+                                                        color:
+                                                            Color.fromRGBO(
+                                                                0,
+                                                                0,
+                                                                0,
+                                                                0.7))),
+                                                Text(
+                                                    Session
+                                                        .formatDateTimeMessages(
+                                                            _chats[index]
+                                                                .messages
+                                                                .last
+                                                                .time),
+                                                    style: AppFonts.text10(
+                                                        color:
+                                                            Color.fromRGBO(
+                                                                0,
+                                                                0,
+                                                                0,
+                                                                0.5)))
+                                              ]),
                                           SizedBox(height: 1.h),
-                                          Text(_chats[index].messages.last.msg,
-                                              // overflow: TextOverflow.ellipsis,
-                                              style: AppFonts.text6w500(
-                                                  color: Color.fromRGBO(
-                                                      0, 0, 0, 0.5)),
-                                              overflow: TextOverflow.ellipsis)
-                                        ])
-                                  ]),
-                              Column(children: [
-                                checkLastSeen(_chats[index])
-                                    ? Stack(children: <Widget>[
-                                        new Icon(Icons.notifications,
-                                            size: 30.w),
-                                        new Positioned(
-                                            // draw a red marble
-                                            top: 0.0,
-                                            right: 0.0,
-                                            child: Container(
-                                                decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color: Colors.red),
-                                                child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            5.0),
+                                          Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                SizedBox(
+                                                    width: 180.w,
                                                     child: Text(
-                                                        numberOfUnseenMessages(
-                                                                _chats[index])
-                                                            .toString(),
-                                                        style: AppFonts.text10(
-                                                            color: Colors
-                                                                .white)))))
-                                      ])
-                                    : Container(),
-                                Text(
-                                    Session.formatDateTimeMessages(
-                                        _chats[index].messages.last.time),
-                                    style: AppFonts.text10(
-                                        color: Color.fromRGBO(0, 0, 0, 0.5)))
-                              ])
-                            ])))),
+                                                        _chats[index]
+                                                            .messages
+                                                            .last
+                                                            .msg,
+                                                        maxLines: 1,
+                                                        overflow:
+                                                            TextOverflow
+                                                                .ellipsis,
+                                                        style: AppFonts.text6w500(
+                                                            color: Color
+                                                                .fromRGBO(
+                                                                    0,
+                                                                    0,
+                                                                    0,
+                                                                    0.5)))),
+                                                checkLastSeen(_chats[index])
+                                                    ? Stack(
+                                                        children: <Widget>[
+                                                            Icon(
+                                                                Icons
+                                                                    .notifications,
+                                                                size: 30.w),
+                                                            Positioned(
+                                                                // draw a red marble
+                                                                top: 0.0,
+                                                                right: 0.0,
+                                                                child: Container(
+                                                                    decoration: BoxDecoration(
+                                                                        shape: BoxShape
+                                                                            .circle,
+                                                                        color: Colors
+                                                                            .red),
+                                                                    child: Padding(
+                                                                        padding:
+                                                                            const EdgeInsets.all(5.0),
+                                                                        child: Text(numberOfUnseenMessages(_chats[index]).toString(), style: AppFonts.text10(color: Colors.white)))))
+                                                          ])
+                                                    : Container()
+                                              ])
+                                        ]),
+                                  )
+                                ])))),
                 Divider(height: 1, color: Colors.black12)
               ]);
             }));

@@ -6,21 +6,21 @@ import 'package:darq/views/shared/button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_translate/flutter_translate.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Welcome extends StatelessWidget {
-
   Future hasLocale(BuildContext context) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  return prefs.containsKey('locale');
-}
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.containsKey('locale');
+  }
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, width: 375, height: 667, allowFontScaling: true);
+    ScreenUtil.init(context,
+        designSize: Size(375, 667));
     SI.setScreenDimensions(
         MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
-
     return Scaffold(
         backgroundColor: Color(0xFF86C2C2),
         body: Center(

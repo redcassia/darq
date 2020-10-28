@@ -139,7 +139,7 @@ class _ChatRoomState extends State<ChatRoom> {
             alignment:
                 msg.sender == "PUBLIC" ? Alignment.topRight : Alignment.topLeft,
             child: Container(
-                constraints: BoxConstraints(maxWidth: SI.screenWidth * 0.80),
+                constraints: BoxConstraints(maxWidth: 80.w),
                 padding: EdgeInsets.all(10.w),
                 margin: EdgeInsets.symmetric(vertical: 8.h),
                 decoration: BoxDecoration(

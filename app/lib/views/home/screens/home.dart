@@ -180,8 +180,8 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    screenWidth = SI.screenWidth;
-    ScreenUtil.init(context, width: 375, height: 667, allowFontScaling: true);
+    ScreenUtil.init(context,
+        designSize: Size(375, 667), allowFontScaling: true);
     _tabs = [
       Loading(
           position: position,

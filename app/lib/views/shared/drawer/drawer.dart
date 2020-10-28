@@ -27,7 +27,7 @@ class CustomDrawer extends StatelessWidget {
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              SizedBox(height: 38.h),
+              SizedBox(height: 15.h),
               DrawerItem(
                   txt: translate("home"),
                   icon: "home.png",

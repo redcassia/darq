@@ -52,7 +52,7 @@ class _PersonnelPageState extends State<PersonnelPage> {
                 buttonName: translate("contact_us"))),
         body: DefaultCard(
             margin: EdgeInsets.only(
-                bottom: 33.h, right: 20.w, left: 20.w, top: 6.h),
+                bottom: 33.h, right: 20.w, left: 20.w),
             padding: Localizations.localeOf(context).languageCode == 'en'
                 ? EdgeInsets.only(
                     left: 21.w, right: 19.w, top: 12.h, bottom: 17.h)
@@ -68,288 +68,283 @@ class _PersonnelPageState extends State<PersonnelPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         SizedBox(
-                            width: 80.w,
-                            height: 79.h,
+                            height: 80.w,
                             child: Picture(
                                 height: 79.h,
                                 width: 80.w,
                                 img: widget.data["picture"])),
                         SizedBox(width: 17.w),
-                        Flexible(
-                            flex: 2,
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(widget.data["name"],
-                                      style: AppFonts.title9(
-                                          color:
-                                              Color.fromRGBO(0, 0, 0, 0.67))),
-                                  SizedBox(height: 10.h),
-                                  DataWidget(
-                                      data:
-                                          translate(widget.data["profession"])),
-                                  SizedBox(height: 5.h),
-                                  DataWidget(
-                                      data: translate(widget.data["gender"])),
-                                  SizedBox(height: 5.h),
-                                  DataWidget(
-                                      data:
-                                          translate(widget.data["nationality"]))
-                                ]))
+                        Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(widget.data["name"],
+                                  style: AppFonts.title9(
+                                      color:
+                                          Color.fromRGBO(0, 0, 0, 0.67))),
+                              SizedBox(height: 5.h),
+                              DataWidget(
+                                  data:
+                                      translate(widget.data["profession"])),
+                              SizedBox(height: 3.h),
+                              DataWidget(
+                                  data: translate(widget.data["gender"])),
+                              SizedBox(height: 3.h),
+                              DataWidget(
+                                  data:
+                                      translate(widget.data["nationality"]))
+                            ])
                       ]),
-                  Flexible(
-                      flex: 4,
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(height: 14.h),
-                            CustomDivider(),
-                            BipartiteRow(
-                                leftTitle: translate("religion"),
-                                leftTxt: widget.data["religion"],
-                                rightTitle: translate("salary"),
-                                rightTxt:
-                                    "${Session.formatInt(widget.data["salary"]["value"])} ${translate(widget.data["salary"]["currency"])}"),
-                            CustomDivider(),
-                            widget.data["profession"] == "Driver"
-                                ? Column(children: [
-                                    SizedBox(height: 17.h),
-                                    TextLeadingRow(
-                                        title: translate(
-                                            "license_expiration_date"),
-                                        titleStyle: kTitle9Rgb_67,
-                                        txt: Session.formatDate(
-                                            widget.data["license_expiry_date"]),
-                                        txtStyle: kText9OddRgb_05),
-                                    SizedBox(height: 17.h),
-                                    CustomDivider()
-                                  ])
-                                : Container(),
-                            SizedBox(height: 17.h),
-                            TextLeadingRow(
-                                title: translate("date_of_birth"),
-                                titleStyle: kTitle9Rgb_67,
-                                txt: Session.formatDate(
-                                    widget.data["date_of_birth"]),
-                                txtStyle: kText9OddRgb_05),
-                            SizedBox(height: 17.h),
-                            CustomDivider(),
-                            BipartiteRow(
-                                leftTitle: translate("status"),
-                                leftTxt:
-                                    translate(widget.data["marital_status"]),
-                                rightTitle: translate("age"),
-                                rightTxt: Session.formatInt(
-                                    getAge(widget.data["date_of_birth"]))),
-                            CustomDivider(),
-                            BipartiteRow(
-                                leftTitle: translate("contact"),
-                                leftTxt: Session.formatInt(
-                                    int.parse(widget.data["phone_number"])),
-                                rightTitle:
-                                    widget.data["profession"] != "Driver"
-                                        ? translate("children")
-                                        : "",
-                                rightTxt:
-                                    widget.data["number_of_children"] != null
-                                        ? Session.formatInt(
-                                            widget.data["number_of_children"])
-                                        : ""),
-                            CustomDivider(),
-                            widget.data["profession"] != "Driver"
-                                ? Column(children: [
-                                    SizedBox(height: 17.h),
-                                    TextLeadingRow(
-                                        title: translate("education"),
-                                        titleStyle: kTitle9Rgb_67,
-                                        txt:
-                                            translate(widget.data["education"]),
-                                        txtStyle: kText9OddRgb_05),
-                                    SizedBox(height: 17.h),
-                                    CustomDivider()
-                                  ])
-                                : Container(),
-                            SizedBox(height: 17.h),
-                            Wrap(
-                                spacing: 6.w,
-                                crossAxisAlignment: WrapCrossAlignment.start,
-                                children: <Widget>[
-                                  Text(translate("languages"),
-                                      style: kTitle9Rgb_67),
-                                  SizedBox(height: 17.h),
-                                  for (int i = 0;
-                                      i < widget.data["languages"]?.length ?? 0;
-                                      i++)
-                                    CustomChip(
-                                        text: widget.data["languages"][i])
-                                ]),
-                            SizedBox(height: 17.h),
-                            CustomDivider(),
-                            SizedBox(height: 17.h),
-                            TextLeadingRow(
-                                title: translate("experience"),
-                                titleStyle: kTitle9Rgb_67,
-                                widget: widget.data["experience"].length != 0
-                                    ? Flexible(
-                                        child: Column(children: <Widget>[
-                                        SizedBox(height: 3.h),
-                                        ListView.builder(
-                                            physics:
-                                                NeverScrollableScrollPhysics(),
-                                            shrinkWrap: true,
-                                            padding: EdgeInsets.zero,
-                                            itemCount: widget
-                                                .data["experience"].length,
-                                            itemBuilder:
-                                                (BuildContext context, int i) {
-                                              return Column(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: <Widget>[
-                                                    Text(
-                                                        "${translate(widget.data["experience"][i]["country"])}${widget.data["experience"][i]["institution"] != null ? " - ${widget.data["experience"][i]["institution"]}" : ""}",
-                                                        style:
-                                                            AppFonts.title11Odd(
-                                                                color: Color
-                                                                    .fromRGBO(
-                                                                        0,
-                                                                        0,
-                                                                        0,
-                                                                        0.69))),
-                                                    Text(
-                                                        "${Session.formatDate(widget.data["experience"][i]["from"])}   -   ${widget.data["experience"][i]["in_position"] ? translate("present") : "${Session.formatDate(widget.data["experience"][i]["to"])}"}",
-                                                        style:
-                                                            AppFonts.text9odd(
-                                                                color: Color
-                                                                    .fromRGBO(
-                                                                        0,
-                                                                        0,
-                                                                        0,
-                                                                        0.5))),
-                                                    SizedBox(height: 4.h)
-                                                  ]);
-                                            })
-                                      ]))
-                                    : Text(translate("none"),
-                                        style: kText9OddRgb_05)),
-                            SizedBox(height: 17.h),
-                            CustomDivider(),
-                            widget.isDriver
-                                ? Container()
-                                : BipartiteRow(
-                                    leftTitle: translate("height"),
-                                    leftWidget: RichText(
-                                        textAlign: TextAlign.start,
-                                        text: TextSpan(
-                                            style: kText9OddRgb_05,
-                                            children: <TextSpan>[
-                                              TextSpan(
-                                                  text: Session.formatInt(
-                                                      int.parse(widget
-                                                          .data["height"]))),
-                                              TextSpan(
-                                                  text: translate("cm"),
-                                                  style: AppFonts.title10(
-                                                      color: Color.fromRGBO(
-                                                          0, 0, 0, 0.7)))
-                                            ])),
-                                    rightTitle: translate("weight"),
-                                    rightWidget: RichText(
-                                        textAlign: TextAlign.start,
-                                        text: TextSpan(
-                                            style: kText9OddRgb_05,
-                                            children: <TextSpan>[
-                                              TextSpan(
-                                                  text: Session.formatInt(
-                                                      int.parse(widget
-                                                          .data["weight"]))),
-                                              TextSpan(
-                                                  text: translate("kg"),
-                                                  style: AppFonts.title10(
-                                                      color: Color.fromRGBO(
-                                                          0, 0, 0, 0.7)))
-                                            ])),
-                                  ),
-                            widget.isDriver ? Container() : CustomDivider(),
-                            widget.isDriver
-                                ? Container()
-                                : SizedBox(height: 17.h),
-                            widget.isDriver
-                                ? Container()
-                                : Wrap(spacing: 6.w, children: <Widget>[
-                                    Text(translate("skills"),
-                                        style: kTitle9Rgb_67),
-                                    SizedBox(height: 17.h),
-                                    for (int i = 0;
-                                        i < widget.data["skills"]?.length ?? 0;
-                                        i++)
-                                      CustomChip(text: widget.data["skills"][i])
-                                  ]),
-                            widget.isDriver
-                                ? Container()
-                                : SizedBox(height: 17.h),
-                            widget.isDriver ? Container() : CustomDivider(),
-                            SizedBox(height: 17.h),
-                            widget.data["attachments"].length != 0
-                                ? SizedBox(
-                                    height: 125.h,
-                                    child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Text(translate("attachments"),
-                                              style: kTitle9Rgb_67),
-                                          SizedBox(height: 17.h),
-                                          Flexible(
-                                              child: ListView.builder(
-                                                  scrollDirection:
-                                                      Axis.horizontal,
-                                                  shrinkWrap: true,
-                                                  padding: EdgeInsets.zero,
-                                                  itemCount: widget
-                                                          .data["attachments"]
-                                                          ?.length ??
-                                                      0,
-                                                  itemBuilder:
-                                                      (BuildContext context,
-                                                          int index) {
-                                                    return Padding(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                right: 6.w),
-                                                        child: InkWell(
-                                                            child: CachedNetworkImage(
-                                                                imageUrl:
-                                                                    "http://redcassia.com:3001/attachment/${widget.data["attachments"][index]}",
-                                                                placeholder: (context,
-                                                                        url) =>
-                                                                    CircularProgressIndicator(),
-                                                                errorWidget: (context,
-                                                                        url,
-                                                                        error) =>
-                                                                    Icon(Icons
-                                                                        .error),
-                                                                filterQuality:
-                                                                    FilterQuality
-                                                                        .high,
-                                                                width: 141.w,
-                                                                height: 101.h,
-                                                                fit: BoxFit
-                                                                    .contain),
-                                                            onTap: () {
-                                                              Navigator.push(
-                                                                  context,
-                                                                  MaterialPageRoute(
-                                                                      builder: (context) =>
-                                                                          FullImageWrapper(
-                                                                              imageProvider: "http://redcassia.com:3001/attachment/${widget.data["attachments"][index]}")));
-                                                            }));
-                                                  }))
-                                        ]))
-                                : Container()
-                          ]))
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 14.h),
+                        CustomDivider(),
+                        BipartiteRow(
+                            leftTitle: translate("religion"),
+                            leftTxt: widget.data["religion"],
+                            rightTitle: translate("salary"),
+                            rightTxt:
+                                "${Session.formatInt(widget.data["salary"]["value"])} ${translate(widget.data["salary"]["currency"])}"),
+                        CustomDivider(),
+                        widget.data["profession"] == "Driver"
+                            ? Column(children: [
+                                SizedBox(height: 17.h),
+                                TextLeadingRow(
+                                    title: translate(
+                                        "license_expiration_date"),
+                                    titleStyle: kTitle9Rgb_67,
+                                    txt: Session.formatDate(
+                                        widget.data["license_expiry_date"]),
+                                    txtStyle: kText9OddRgb_05),
+                                SizedBox(height: 17.h),
+                                CustomDivider()
+                              ])
+                            : Container(),
+                        SizedBox(height: 17.h),
+                        TextLeadingRow(
+                            title: translate("date_of_birth"),
+                            titleStyle: kTitle9Rgb_67,
+                            txt: Session.formatDate(
+                                widget.data["date_of_birth"]),
+                            txtStyle: kText9OddRgb_05),
+                        SizedBox(height: 17.h),
+                        CustomDivider(),
+                        BipartiteRow(
+                            leftTitle: translate("status"),
+                            leftTxt:
+                                translate(widget.data["marital_status"]),
+                            rightTitle: translate("age"),
+                            rightTxt: Session.formatInt(
+                                getAge(widget.data["date_of_birth"]))),
+                        CustomDivider(),
+                        BipartiteRow(
+                            leftTitle: translate("contact"),
+                            leftTxt: Session.formatInt(
+                                int.parse(widget.data["phone_number"])),
+                            rightTitle:
+                                widget.data["profession"] != "Driver"
+                                    ? translate("children")
+                                    : "",
+                            rightTxt:
+                                widget.data["number_of_children"] != null
+                                    ? Session.formatInt(
+                                        widget.data["number_of_children"])
+                                    : ""),
+                        CustomDivider(),
+                        widget.data["profession"] != "Driver"
+                            ? Column(children: [
+                                SizedBox(height: 17.h),
+                                TextLeadingRow(
+                                    title: translate("education"),
+                                    titleStyle: kTitle9Rgb_67,
+                                    txt:
+                                        translate(widget.data["education"]),
+                                    txtStyle: kText9OddRgb_05),
+                                SizedBox(height: 17.h),
+                                CustomDivider()
+                              ])
+                            : Container(),
+                        SizedBox(height: 17.h),
+                        Wrap(
+                            spacing: 6.w,
+                            crossAxisAlignment: WrapCrossAlignment.start,
+                            children: <Widget>[
+                              Text(translate("languages"),
+                                  style: kTitle9Rgb_67),
+                              SizedBox(height: 17.h),
+                              for (int i = 0;
+                                  i < widget.data["languages"]?.length ?? 0;
+                                  i++)
+                                CustomChip(
+                                    text: widget.data["languages"][i])
+                            ]),
+                        SizedBox(height: 17.h),
+                        CustomDivider(),
+                        SizedBox(height: 17.h),
+                        TextLeadingRow(
+                            title: translate("experience"),
+                            titleStyle: kTitle9Rgb_67,
+                            widget: widget.data["experience"].length != 0
+                                ? Flexible(
+                                    child: Column(children: <Widget>[
+                                    SizedBox(height: 3.h),
+                                    ListView.builder(
+                                        physics:
+                                            NeverScrollableScrollPhysics(),
+                                        shrinkWrap: true,
+                                        padding: EdgeInsets.zero,
+                                        itemCount: widget
+                                            .data["experience"].length,
+                                        itemBuilder:
+                                            (BuildContext context, int i) {
+                                          return Column(
+                                              mainAxisSize:
+                                                  MainAxisSize.min,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: <Widget>[
+                                                Text(
+                                                    "${translate(widget.data["experience"][i]["country"])}${widget.data["experience"][i]["institution"] != null ? " - ${widget.data["experience"][i]["institution"]}" : ""}",
+                                                    style:
+                                                        AppFonts.title11Odd(
+                                                            color: Color
+                                                                .fromRGBO(
+                                                                    0,
+                                                                    0,
+                                                                    0,
+                                                                    0.69))),
+                                                Text(
+                                                    "${Session.formatDate(widget.data["experience"][i]["from"])}   -   ${widget.data["experience"][i]["in_position"] ? translate("present") : "${Session.formatDate(widget.data["experience"][i]["to"])}"}",
+                                                    style:
+                                                        AppFonts.text9odd(
+                                                            color: Color
+                                                                .fromRGBO(
+                                                                    0,
+                                                                    0,
+                                                                    0,
+                                                                    0.5))),
+                                                SizedBox(height: 4.h)
+                                              ]);
+                                        })
+                                  ]))
+                                : Text(translate("none"),
+                                    style: kText9OddRgb_05)),
+                        SizedBox(height: 17.h),
+                        CustomDivider(),
+                        widget.isDriver
+                            ? Container()
+                            : BipartiteRow(
+                                leftTitle: translate("height"),
+                                leftWidget: RichText(
+                                    textAlign: TextAlign.start,
+                                    text: TextSpan(
+                                        style: kText9OddRgb_05,
+                                        children: <TextSpan>[
+                                          TextSpan(
+                                              text: Session.formatInt(
+                                                  int.parse(widget
+                                                      .data["height"]))),
+                                          TextSpan(
+                                              text: translate("cm"),
+                                              style: AppFonts.title10(
+                                                  color: Color.fromRGBO(
+                                                      0, 0, 0, 0.7)))
+                                        ])),
+                                rightTitle: translate("weight"),
+                                rightWidget: RichText(
+                                    textAlign: TextAlign.start,
+                                    text: TextSpan(
+                                        style: kText9OddRgb_05,
+                                        children: <TextSpan>[
+                                          TextSpan(
+                                              text: Session.formatInt(
+                                                  int.parse(widget
+                                                      .data["weight"]))),
+                                          TextSpan(
+                                              text: translate("kg"),
+                                              style: AppFonts.title10(
+                                                  color: Color.fromRGBO(
+                                                      0, 0, 0, 0.7)))
+                                        ])),
+                              ),
+                        widget.isDriver ? Container() : CustomDivider(),
+                        widget.isDriver
+                            ? Container()
+                            : SizedBox(height: 17.h),
+                        widget.isDriver
+                            ? Container()
+                            : Wrap(spacing: 6.w, children: <Widget>[
+                                Text(translate("skills"),
+                                    style: kTitle9Rgb_67),
+                                SizedBox(height: 17.h),
+                                for (int i = 0;
+                                    i < widget.data["skills"]?.length ?? 0;
+                                    i++)
+                                  CustomChip(text: widget.data["skills"][i])
+                              ]),
+                        widget.isDriver
+                            ? Container()
+                            : SizedBox(height: 17.h),
+                        widget.isDriver ? Container() : CustomDivider(),
+                        SizedBox(height: 17.h),
+                        widget.data["attachments"].length != 0
+                            ? SizedBox(
+                                height: 125.h,
+                                child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text(translate("attachments"),
+                                          style: kTitle9Rgb_67),
+                                      SizedBox(height: 17.h),
+                                      Flexible(
+                                          child: ListView.builder(
+                                              scrollDirection:
+                                                  Axis.horizontal,
+                                              shrinkWrap: true,
+                                              padding: EdgeInsets.zero,
+                                              itemCount: widget
+                                                      .data["attachments"]
+                                                      ?.length ??
+                                                  0,
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      int index) {
+                                                return Padding(
+                                                    padding:
+                                                        EdgeInsets.only(
+                                                            right: 6.w),
+                                                    child: InkWell(
+                                                        child: CachedNetworkImage(
+                                                            imageUrl:
+                                                                "http://redcassia.com:3001/attachment/${widget.data["attachments"][index]}",
+                                                            placeholder: (context,
+                                                                    url) =>
+                                                                CircularProgressIndicator(),
+                                                            errorWidget: (context,
+                                                                    url,
+                                                                    error) =>
+                                                                Icon(Icons
+                                                                    .error),
+                                                            filterQuality:
+                                                                FilterQuality
+                                                                    .high,
+                                                            width: 141.w,
+                                                            height: 101.h,
+                                                            fit: BoxFit
+                                                                .contain),
+                                                        onTap: () {
+                                                          Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder: (context) =>
+                                                                      FullImageWrapper(
+                                                                          imageProvider: "http://redcassia.com:3001/attachment/${widget.data["attachments"][index]}")));
+                                                        }));
+                                              }))
+                                    ]))
+                            : Container()
+                      ])
                 ]))));
   }
 }

@@ -22,6 +22,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:link/link.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 Widget generateWidget(
     BuildContext context,
@@ -206,11 +207,42 @@ Widget generateWidget(
             return IconLeadingRow(
                 iconName: layout["iconName"],
                 txt: data[index],
-                textStyle: AppFonts.makeStyle(layout["textSize"], layout["textColor"]));
+                textStyle: AppFonts.makeStyle(
+                    layout["textSize"], layout["textColor"]));
+          }));
+
+    case 'phone_number':
+      if (data == null) return null;
+
+      return Wrap(
+          spacing: 6.w,
+          children:
+              List.generate(min(data.length, layout["maxElements"]), (index) {
+            if (double.tryParse(data[index]) != null &&
+                Localizations.localeOf(context).languageCode == 'ar') {
+              data[index] = Session.formatInt(int.parse(data[index]));
+            }
+            return InkWell(
+              onTap: () async {
+                if (await canLaunch("tel:${data[index]}")) {
+                  await launch("tel:${data[index]}");
+                } else {
+                  throw 'Could not launch ${data[index]}';
+                }
+              },
+              child: IconLeadingRow(
+                  iconName: layout["iconName"],
+                  txt: data[index],
+                  textStyle: AppFonts.makeStyle(
+                      layout["textSize"], layout["textColor"])),
+            );
           }));
 
     case 'picture':
-      return Picture(height: (layout["height"] as double).h, width: (layout["width"] as double).w, img: data);
+      return Picture(
+          height: (layout["height"] as double).h,
+          width: (layout["width"] as double).w,
+          img: data);
 
     case 'picture_gallery':
       if (data == null || data.length == 0) return null;
@@ -220,7 +252,8 @@ Widget generateWidget(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(translate(layout["titleText"]),
-                    style: AppFonts.makeStyle(layout["titleSize"], layout["titleColor"])),
+                    style: AppFonts.makeStyle(
+                        layout["titleSize"], layout["titleColor"])),
                 SizedBox(height: 17.h),
                 Flexible(
                     child: ListView.builder(
@@ -290,12 +323,14 @@ Widget generateWidget(
       if (data["value"] != null) {
         return TextLeadingRow(
             title: translate(layout["titleText"]),
-            titleStyle: AppFonts.makeStyle(layout["titleSize"], layout["titleColor"]),
+            titleStyle:
+                AppFonts.makeStyle(layout["titleSize"], layout["titleColor"]),
             widget: RichText(
                 textAlign: TextAlign.start,
                 text: Localizations.localeOf(context).languageCode == 'en'
                     ? TextSpan(
-                        style: AppFonts.makeStyle(layout["textSize"], layout["textColor"]),
+                        style: AppFonts.makeStyle(
+                            layout["textSize"], layout["textColor"]),
                         children: <TextSpan>[
                             TextSpan(
                                 text:
@@ -303,10 +338,12 @@ Widget generateWidget(
                             TextSpan(
                                 text: translate(layout["trailingText"]),
                                 style: AppFonts.makeStyle(
-                                    layout["trailingTextSize"], layout["trailingTextColor"]))
+                                    layout["trailingTextSize"],
+                                    layout["trailingTextColor"]))
                           ])
                     : TextSpan(
-                        style: AppFonts.makeStyle(layout["textSize"], layout["textColor"]),
+                        style: AppFonts.makeStyle(
+                            layout["textSize"], layout["textColor"]),
                         children: <TextSpan>[
                             TextSpan(
                                 text:
@@ -314,24 +351,27 @@ Widget generateWidget(
                             TextSpan(
                                 text: translate(layout["trailingText"]),
                                 style: AppFonts.makeStyle(
-                                    layout["trailingTextSize"], layout["trailingTextColor"]))
+                                    layout["trailingTextSize"],
+                                    layout["trailingTextColor"]))
                           ])));
       } else {
         return TextLeadingRow(
             title: translate(layout["titleText"]),
-            titleStyle: AppFonts.makeStyle(layout["titleSize"], layout["titleColor"]),
+            titleStyle:
+                AppFonts.makeStyle(layout["titleSize"], layout["titleColor"]),
             widget: RichText(
                 textAlign: TextAlign.start,
                 text: TextSpan(
-                    style: AppFonts.makeStyle(layout["textSize"], layout["textColor"]),
+                    style: AppFonts.makeStyle(
+                        layout["textSize"], layout["textColor"]),
                     children: <TextSpan>[
                       TextSpan(
                           text:
                               "${Session.formatInt(data["valueLower"])} ${translate("to")} ${Session.formatInt(data["valueUpper"])} ${translate(data["currency"])}"),
                       TextSpan(
                           text: translate(layout["trailingText"]),
-                          style: AppFonts.makeStyle(
-                              layout["trailingTextSize"], layout["trailingTextColor"]))
+                          style: AppFonts.makeStyle(layout["trailingTextSize"],
+                              layout["trailingTextColor"]))
                     ])));
       }
       break;

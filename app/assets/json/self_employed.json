@@ -128,7 +128,7 @@
             "height": 2.0
           },
           {
-            "widget": "wrapped_text_with_icon",
+            "widget": "phone_number",
             "textSize": "title10OddUnderlined",
             "textColor": {"r": 66, "g": 102, "b": 118, "o": 1.0 },
             "iconName": "telephone.png",

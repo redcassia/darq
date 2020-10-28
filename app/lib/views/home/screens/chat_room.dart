@@ -111,7 +111,8 @@ class _ChatRoomState extends State<ChatRoom> {
   }
 
   _seeMsg() {
-    if (_thread != null && _thread.messages.last.index > _thread.senderLastSeenIndex) {
+    if (_thread != null &&
+        _thread.messages.last.index > _thread.senderLastSeenIndex) {
       _chatInstance.seeMessage(_thread.id).then((_) {
         setState(() {
           _thread = _;
@@ -123,23 +124,22 @@ class _ChatRoomState extends State<ChatRoom> {
   Widget _chatBubble(Message msg) {
     return Column(children: [
       Visibility(
-        child: Container(
-            padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 5.w),
-            width: double.infinity,
-            decoration: BoxDecoration(
-                color: Color(0xFFE1A854),
-                borderRadius: BorderRadius.circular(15)),
-            child: Center(
-                child: Text(translate("new_messages"),
-                    style: AppFonts.text7(color: Colors.black87)))),
-        visible: msg.index - 1 == _thread.senderLastSeenIndex,
-      ),
+          child: Container(
+              padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 5.w),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                  color: Color(0xFFE1A854),
+                  borderRadius: BorderRadius.circular(15)),
+              child: Center(
+                  child: Text(translate("new_messages"),
+                      style: AppFonts.text7(color: Colors.black87)))),
+          visible: msg.index - 1 == _thread.senderLastSeenIndex),
       Column(children: [
         Container(
             alignment:
                 msg.sender == "PUBLIC" ? Alignment.topRight : Alignment.topLeft,
             child: Container(
-                constraints: BoxConstraints(maxWidth: 80.w),
+                constraints: BoxConstraints(maxWidth: 280.w),
                 padding: EdgeInsets.all(10.w),
                 margin: EdgeInsets.symmetric(vertical: 8.h),
                 decoration: BoxDecoration(
@@ -187,6 +187,7 @@ class _ChatRoomState extends State<ChatRoom> {
         child: Row(children: [
           Expanded(
               child: TextField(
+                style: AppFonts.text7(color: Colors.black),
                   keyboardType: TextInputType.multiline,
                   maxLines: 20,
                   minLines: 1,
@@ -199,6 +200,7 @@ class _ChatRoomState extends State<ChatRoom> {
                   cursorColor: Color(0xFF86C2C2),
                   decoration: InputDecoration(
                     hintText: translate("send_message"),
+                    hintStyle: AppFonts.text7w500(color:  Colors.black38),
                     contentPadding: EdgeInsets.symmetric(vertical: 5.h),
                     isCollapsed: true,
                     border: InputBorder.none,
@@ -208,6 +210,7 @@ class _ChatRoomState extends State<ChatRoom> {
                   Localizations.localeOf(context).languageCode == 'en' ? 0 : 4,
               child: IconButton(
                   icon: Icon(Icons.send),
+                  iconSize: 30.w,
                   color: Color(0xFF86C2C2),
                   onPressed: () {
                     if (!_messageInFlight) {

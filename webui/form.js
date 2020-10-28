@@ -407,7 +407,11 @@ class Form {
         }
     }
 
-    if (input.attributes['required'] && (!data || data.length == 0)) {
+    if (input.attributes['required'] && (
+      data === undefined ||
+      data === null ||
+      (data instanceof String && data.length == 0)
+    )) {
       alert(`${input.attributes['data-friendly-name'].value} cannot be left empty`);
       throw new Error("Form validation failed");
     }

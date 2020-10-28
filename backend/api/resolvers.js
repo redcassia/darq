@@ -2193,6 +2193,7 @@ const resolvers = {
       else low = messages.length - limit;
 
       if (low < 0) low = 0;
+      if (maxIndex == null) maxIndex = low + limit;
 
       return messages.slice(low, maxIndex);
     }

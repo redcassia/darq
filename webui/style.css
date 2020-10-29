@@ -250,7 +250,6 @@ textarea {
 }
 
 .select select {
-    /* background: transparent; */
     -webkit-appearance: none;
 
     border: 0.5px solid var(--medium);
@@ -263,7 +262,13 @@ textarea {
     line-height: 16px;
     color: var(--dark);
 
-    background: url('assets/arrow-down-icon.png') no-repeat right 8px center;
+    background-image: url('assets/arrow-down-icon.png');
+    background-repeat: no-repeat;
+    background-color: transparent;
+    background-position: right 8px center;
+}
+.select.select.ar > select {
+    background-position: left 8px center;
 }
 .select {
     display: inline-block;
@@ -588,7 +593,6 @@ hr {
 
     width: 264px;
     height: 100%;
-    text-align: left;
     padding: 32px 0;
     margin:0;
 

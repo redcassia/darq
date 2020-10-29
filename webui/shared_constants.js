@@ -309,560 +309,1746 @@ const attachmentsEndpoint = "https://darq.qa/attachment/";
 
 const enums = {
   SelfEmployedSubType: {
-    A: "A",
-    B: "B",
-    OTHER: "Other"
+    SOCIAL_MEDIA_SPECIALIST: {
+      en: "Social Media Specialist",
+      ar: "أخصائي وسائل الاعلام الاجتماعية",
+    },
+    ACADEMIC_TUTOR: {
+      en: "Academic Tutor",
+      ar: "مدرس أكاديمي",
+    },
+    MUSIC_TUTOR: {
+      en: "Music Tutor",
+      ar: "مدرس موسيقى",
+    },
+    ENGLISH_TUTOR: {
+      en: "English Tutor",
+      ar: "مدرس لغة إنجليزية",
+    },
+    ARABIC_TUTOR: {
+      en: "Arabic Tutor",
+      ar: "مدرس لغة عربية",
+    },
+    SPANISH_TUTOR: {
+      en: "Spanish Tutor",
+      ar: "مدرس اسباني",
+    },
+    FRENCH_TUTOR: {
+      en: "French Tutor",
+      ar: "مدرس فرنسي",
+    },
+    GERMAN_TUTOR: {
+      en: "German Tutor",
+      ar: "مدرس ألماني",
+    },
+    ELDER_CARE: {
+      en: "Elder Care",
+      ar: "رعاية المسنين",
+    },
+    CONSULTANT: {
+      en: "Consultant",
+      ar: "استشاري",
+    },
+    VIDEO_PRODUCTION: {
+      en: "Video Production",
+      ar: "انتاج فيديو",
+    },
+    WRITER: {
+      en: "Writer",
+      ar: "كاتب",
+    },
+    WEB_DESIGNER: {
+      en: "Web Designer",
+      ar: "مصمم ويب",
+    },
+    BLOGGER: {
+      en: "Blogger",
+      ar: "مدون",
+    },
+    CAREER_COACH: {
+      en: "Career Coach",
+      ar: "مدرب مهني",
+    },
+    LIFE_COACH: {
+      en: "Life Coach",
+      ar: "مدرب الحياة",
+    },
+    VOICE_OVER_SPECIALIST: {
+      en: "Voice-Over Specialist",
+      ar: "اختصاصي الاصوات",
+    },
+    GRAPHIC_DESIGNER: {
+      en: "Graphic Designer",
+      ar: "مصمم جرافيك",
+    },
+    VIRTUAL_ASSISTANT: {
+      en: "Virtual Assistant",
+      ar: "مساعد افتراضي",
+    },
+    PET_SITTER: {
+      en: "Pet Sitter",
+      ar: "جليسة حيوانات أليفة",
+    },
+    PERSONAL_TRAINER: {
+      en: "Personal Trainer",
+      ar: "مدرب شخصي",
+    },
+    PHOTOGRAPHER: {
+      en: "Photographer",
+      ar: "مصور فوتوغرافي",
+    },
+    CARPENTER: {
+      en: "Carpenter",
+      ar: "نجار",
+    },
+    PAINTER: {
+      en: "Painter",
+      ar: "رسام",
+    },
+    REAL_ESTATE_BROKER: {
+      en: "Real-estate Broker",
+      ar: "سمسار عقارات",
+    },
+    PROGRAMMER: {
+      en: "Programmer",
+      ar: "مبرمج",
+    },
+    DIGITAL_MARKETER: {
+      en: "Digital Marketer",
+      ar: "مسوق رقمي",
+    },
+    DATA_ENTRY: {
+      en: "Data Entry",
+      ar: "ادخال بيانات",
+    },
+    ENGLISH_CONTENT_WRITER: {
+      en: "English Content Writer",
+      ar: "كاتب محتوى إنجليزي",
+    },
+    SALES_AGENT_ONLINE: {
+      en: "Sales Agent Online",
+      ar: "وكيل مبيعات على الإنترنت",
+    },
+    VIDEOGRAPHER: {
+      en: "Videographer",
+      ar: "مصور فيديو",
+    },
+    GAME_DEVELOPER: {
+      en: "Game Developer",
+      ar: "مطور العاب",
+    },
+    MOBILE_DEVELOPER: {
+      en: "Mobile Developer",
+      ar: "مطور موبايل",
+    },
+    MOTION_GRAPHIC_DESIGNER: {
+      en: "Motion Graphic Designer",
+      ar: "مصمم جرافيك موشن",
+    },
+    TRANSLATOR: {
+      en: "Translator",
+      ar: "مترجم",
+    },
+    NANNY: {
+      en: "Nanny",
+      ar: "مربية",
+    },
+    COOK: {
+      en: "Cook",
+      ar: "طباخ",
+    },
+    DRIVER: {
+      en: "Driver",
+      ar: "سائق",
+    },
+    NURSE: {
+      en: "Nurse",
+      ar: "ممرضة",
+    },
+    TEACHER: {
+      en: "Teacher",
+      ar: "مدرس",
+    },
+    EVENT_PLANNER: {
+      en: "Event Planner",
+      ar: "مخطط احداث",
+    },
+    STYLIST: {
+      en: "Stylist",
+      ar: "مصمم أزياء",
+    },
+    HAIR_STYLIST: {
+      en: "Hair Stylist",
+      ar: "مصفف شعر",
+    },
+    MAKEUP_ARTIST: {
+      en: "Makeup Artist",
+      ar: "خبيرة تجميل",
+    },
+    SPECIAL_NEEDS_TEACHER: {
+      en: "Special Needs Teacher",
+      ar: "مدرس احتياجات خاصة",
+    },
+    OTHER: {
+      en: "Other",
+      ar: "آخر",
+    },
   },
   ChildEducationSubType: {
-    A: "A",
-    B: "B",
-    OTHER: "Other"
+    SKILLS_DEVELOPMENT_CENTER: {
+      en: "Skills Development Center",
+      ar: "مركز تنمية المهارات",
+    },
+    EDUCATION_CENTER: {
+      en: "Education Center",
+      ar: "مركز تعليمي",
+    },
+    NURSERY: {
+      en: "Nursery",
+      ar: "حضانة",
+    },
+    SPECIAL_NEEDS_CENTER: {
+      en: "Special Needs Center",
+      ar: "مركز ذوي الاحتياجات الخاصة",
+    },
+    OTHER: {
+      en: "Other",
+      ar: "آخر",
+    },
   },
   DomesticHelpSubType: {
-    A: "A",
-    B: "B",
-    OTHER: "Other"
+    OTHER: {
+      en: "Other",
+      ar: "آخر",
+    }
   },
   BeautyBusinessSubType: {
-    A: "A",
-    B: "B",
-    OTHER: "Other"
+    OTHER: {
+      en: "Other",
+      ar: "آخر",
+    }
   },
   TransportationBusinessSubType: {
-    A: "A",
-    B: "B",
-    OTHER: "Other"
+    OTHER: {
+      en: "Other",
+      ar: "آخر",
+    }
   },
   HospitalityBusinessSubType: {
-    A: "A",
-    B: "B",
-    OTHER: "Other"
+    OTHER: {
+      en: "Other",
+      ar: "آخر",
+    }
   },
   MadeInQatarBusinessSubType: {
-    A: "A",
-    B: "B",
-    OTHER: "Other"
+    OTHER: {
+      en: "Other",
+      ar: "آخر",
+    }
   },
   SportsBusinessSubType: {
-    GYM: "Gym",
-    CLUB: "Club",
+    GYM: {
+      en: "Gym",
+      ar: "صالون رياضي",
+    },
+    CLUB: {
+      en: "Club",
+      ar: "نادي رياضي",
+    }
   },
   EntertainmentBusinessSubType: {
-    A: "A",
-    B: "B",
-    OTHER: "Other"
+    PARK: {
+      en: "Park",
+      ar: "منتزه",
+    },
+    SHOPPING_MALL: {
+      en: "Shopping Mall",
+      ar: "مركز تسوق",
+    },
+    KIDS_PLAYING_AREA: {
+      en: "Kids Playing Area",
+      ar: "منطقة العاب الاطفال",
+    },
+    BIRTHDAY_AREA: {
+      en: "Birthday Area",
+      ar: "منطقة اعياد الميلاد",
+    },
+    OTHER: {
+      en: "Other",
+      ar: "آخر"
+    }
   },
   FoodBusinessSubType: {
-    A: "A",
-    B: "B",
-    OTHER: "Other"
+    AMERICAN_RESTAURANT: {
+      en: "American Restaurant",
+      ar: "مطعم أمريكي",
+    },
+    ARGENTINEAN_RESTAURANT: {
+      en: "Argentinean Restaurant",
+      ar: "مطعم أرجنتيني",
+    },
+    ARABIAN_RESTAURANT: {
+      en: "Arabian Restaurant",
+      ar: "مطعم عربي",
+    },
+    ASIAN_RESTAURANT: {
+      en: "Asian Restaurant",
+      ar: "مطعم آسيوي",
+    },
+    AUSTRALIAN_RESTAURANT: {
+      en: "Australian Restaurant",
+      ar: "مطعم استرالي",
+    },
+    CHINESE_RESTAURANT: {
+      en: "Chinese Restaurant",
+      ar: "مطعم صيني",
+    },
+    EUROPEAN_RESTAURANT: {
+      en: "European Restaurant",
+      ar: "مطعم أوروبي",
+    },
+    FRENCH_RESTAURANT: {
+      en: "French Restaurant",
+      ar: "مطعم فرنسي",
+    },
+    LEBANESE_RESTAURANT: {
+      en: "Lebanese Restaurant",
+      ar: "مطعم لبناني",
+    },
+    MEXICAN_RESTAURANT: {
+      en: "Mexican Restaurant",
+      ar: "مطعم مكسيكي",
+    },
+    ORIENTAL_RESTAURANT: {
+      en: "Oriental Restaurant",
+      ar: "مطعم شرقي",
+    },
+    OTHER: {
+      en: "Other",
+      ar: "آخر"
+    }
   },
   CleaningAndMaintenanceBusinessSubType: {
-    A: "A",
-    B: "B",
-    OTHER: "Other"
+    OTHER: {
+      en: "Other",
+      ar: "آخر"
+    }
   },
   EventType: {
-    A: "A",
-    B: "B",
-    OTHER: "Other"
+    OTHER: {
+      en: "Other",
+      ar: "آخر"
+    }
   },
   Profession: {
-    Driver: "Driver",
-    Nanny: "Nanny",
-    Maid: "Maid",
-    Cook: "Cook"
+    Driver: {
+      en: "Driver",
+    },
+    Nanny: {
+      en: "Nanny",
+    },
+    Maid: {
+      en: "Maid",
+    },
+    Cook: {
+      en: "Cook",
+    },
   },
   MaritalStatus: {
-    SINGLE: "Single",
-    MARRIED: "Married",
-    DIVORCED: "Divorced",
-    WIDOWED: "Widowed"
+    SINGLE: {
+      en: "Single",
+    },
+    MARRIED: {
+      en: "Married",
+    },
+    DIVORCED: {
+      en: "Divorced",
+    },
+    WIDOWED: {
+      en: "Widowed",
+    },
   },
   Education: {
-    NONE: "No education",
-    SECONDARY: "Secondary",
-    POST_SECONDARY: "College / Post-secondary",
-    POST_GRADUATE: "Post graduate"
+    NONE: {
+      en: "No education",
+    },
+    SECONDARY: {
+      en: "Secondary",
+    },
+    POST_SECONDARY: {
+      en: "College / Post-secondary",
+    },
+    POST_GRADUATE: {
+      en: "Post graduate",
+    },
   },
   Currency: {
-    QAR: "QAR",
-    USD: "USD",
+    QAR: {
+      en: "QAR",
+    },
+    USD: {
+      en: "USD",
+    },
   },
   City: {
-    DOHA: "Doha",
-    ABU_AZ_ZULUF: "Abu az Zuluf",
-    ABU_THAYLAH: "Abu Thaylah",
-    AD_DAWHAH_AL_JADIDAH: "Ad Dawhah al Jadidah",
-    AL_ARISH: "Al `Arish",
-    AL_BIDA_ASH_SHARQIYAH: "Al Bida` ash Sharqiyah",
-    AL_GHANIM: "Al Ghanim",
-    AL_GHUWARIYAH: "Al Ghuwariyah",
-    AL_HILAL_AL_GHARBIYAH: "Al Hilal al Gharbiyah",
-    AL_HILAL_ASH_SHARQIYAH: "Al Hilal ash Sharqiyah",
-    AL_HITMI: "Al Hitmi",
-    AL_JASRAH: "Al Jasrah",
-    AL_JUMALIYAH: "Al Jumaliyah",
-    AL_KA_BIYAH: "Al Ka`biyah",
-    AL_KHALIFAT: "Al Khalifat",
-    AL_KHOR: "Al Khor",
-    AL_KHAWR: "Al Khawr",
-    AL_KHUWAYR: "Al Khuwayr",
-    AL_MAFJAR: "Al Mafjar",
-    AL_QA_ABIYAH: "Al Qa`abiyah",
-    AL_WAKRAH_SECOND_CITY: "Al Wakrah, second city",
-    AL_ADHBAH: "Al `Adhbah",
-    AN_NAJMAH: "An Najmah",
-    AR_RAKIYAT: "Ar Rakiyat",
-    AL_RAYYAN: "Al Rayyan",
-    AR_RUAYS: "Ar Ru'ays",
-    AS_SALATAH: "As Salatah",
-    AS_SALATAH_AL_JADIDAH: "As Salatah al Jadidah",
-    AS_SANI: "As Sani`",
-    AS_SAWQ: "As Sawq",
-    ATH_THAQAB: "Ath Thaqab",
-    BLARE: "Blaré",
-    DUKHAN: "Dukhan",
-    RAS_LAFFAN_INDUSTRIAL_CITY: "Ras Laffan Industrial City",
-    UMM_BAB: "Umm Bab",
-    UMM_SAID: "Umm Sa'id",
-    UMM_SALAL_ALI: "Umm Salal Ali",
-    UMM_SALAL_MOHAMMED: "Umm Salal Mohammed",
-    OTHER: "Other"
+    DOHA: {
+      en: "Doha",
+    },
+    ABU_AZ_ZULUF: {
+      en: "Abu az Zuluf",
+    },
+    ABU_THAYLAH: {
+      en: "Abu Thaylah",
+    },
+    AL_ARISH: {
+      en: "Al `Arish",
+    },
+    AL_GHUWARIYAH: {
+      en: "Al Ghuwariyah",
+    },
+    AL_JUMALIYAH: {
+      en: "Al Jumaliyah",
+    },
+    AL_KA_BIYAH: {
+      en: "Al Ka`biyah",
+    },
+    AL_KHOR: {
+      en: "Al Khoo",
+    },
+    KHOR_AL_UDAID: {
+      en: "Khor Al Udaid",
+    },	
+    AL_MAFJAR: {
+      en: "Al Mafjar",
+    },
+    AL_QA_ABIYAH: {
+      en: "Al Qa`abiyah",
+    },
+    AL_WAKRAH: {
+      en: "Al Wakrah",
+    },
+    AR_RAKIYAT: {
+      en: "Ar Rakiyat",
+    },
+    AL_RAYYAN: {
+      en: "Al Rayyan",
+    },
+    AL_RUWAIS: {
+      en: "Al Ruwais",
+    },
+    ATH_THAQAB: {
+      en: "Ath Thaqab",
+    },
+    DUKHAN: {
+      en: "Dukhan",
+    },
+    RAS_LAFFAN_INDUSTRIAL_CITY: {
+      en: "Ras Laffan Industrial City",
+    },
+    MESAIEED: {
+      en: "Mesaieed",
+    },
+    AL_ZUBARA: {
+      en: "Al Zubara",
+    },
+    UMM_BAB: {
+      en: "Umm Bab",
+    },
+    UMM_SALAL_ALI: {
+      en: "Umm Salal Ali",
+    },
+    UMM_SALAL_MOHAMMED: {
+      en: "Umm Salal Mohammed",
+    },
+    OTHER: {
+      en: "Other",
+    },
   },
   Gender: {
-    FEMALE: "Female",
-    MALE: "Male"
+    FEMALE: {
+      en: "Female",
+    },
+    MALE: {
+      en: "Male",
+    },
   },
   Genders: {
-    FEMALE_ONLY: "Female only",
-    MALE_ONLY: "Male only",
-    MIXED: "Mixed"
+    FEMALE_ONLY: {
+      en: "Female only",
+    },
+    MALE_ONLY: {
+      en: "Male only",
+    },
+    MIXED: {
+      en: "Mixed",
+    },
   },
   Country: {
-    QATAR: "Qatar",
-    AFGHANISTAN: "Afghanistan",
-    ALBANIA: "Albania",
-    ALGERIA: "Algeria",
-    ANDORRA: "Andorra",
-    ANGOLA: "Angola",
-    ANTIGUA_AND_BARBUDA: "Antigua and Barbuda",
-    ARGENTINA: "Argentina",
-    ARMENIA: "Armenia",
-    AUSTRALIA: "Australia",
-    AUSTRIA: "Austria",
-    AZERBAIJAN: "Azerbaijan",
-    THE_BAHAMAS: "The Bahamas",
-    BAHRAIN: "Bahrain",
-    BANGLADESH: "Bangladesh",
-    BARBADOS: "Barbados",
-    BELARUS: "Belarus",
-    BELGIUM: "Belgium",
-    BELIZE: "Belize",
-    BENIN: "Benin",
-    BHUTAN: "Bhutan",
-    BOLIVIA: "Bolivia",
-    BOSNIA_AND_HERZEGOVINA: "Bosnia and Herzegovina",
-    BOTSWANA: "Botswana",
-    BRAZIL: "Brazil",
-    BRUNEI: "Brunei",
-    BULGARIA: "Bulgaria",
-    BURKINA_FASO: "Burkina Faso",
-    BURUNDI: "Burundi",
-    CABO_VERDE: "Cabo Verde",
-    CAMBODIA: "Cambodia",
-    CAMEROON: "Cameroon",
-    CANADA: "Canada",
-    CENTRAL_AFRICAN_REPUBLIC: "Central African Republic",
-    CHAD: "Chad",
-    CHILE: "Chile",
-    CHINA: "China",
-    COLOMBIA: "Colombia",
-    COMOROS: "Comoros",
-    CONGO__DEMOCRATIC_REPUBLIC_OF_THE: "Congo, Democratic Republic of the",
-    CONGO__REPUBLIC_OF_THE: "Congo, Republic of the",
-    COSTA_RICA: "Costa Rica",
-    COTE_D_IVOIRE: "Côte d’Ivoire",
-    CROATIA: "Croatia",
-    CUBA: "Cuba",
-    CYPRUS: "Cyprus",
-    CZECH_REPUBLIC: "Czech Republic",
-    DENMARK: "Denmark",
-    DJIBOUTI: "Djibouti",
-    DOMINICA: "Dominica",
-    DOMINICAN_REPUBLIC: "Dominican Republic",
-    EAST_TIMOR__TIMOR_LESTE_: "East Timor (Timor-Leste)",
-    ECUADOR: "Ecuador",
-    EGYPT: "Egypt",
-    EL_SALVADOR: "El Salvador",
-    EQUATORIAL_GUINEA: "Equatorial Guinea",
-    ERITREA: "Eritrea",
-    ESTONIA: "Estonia",
-    ESWATINI: "Eswatini",
-    ETHIOPIA: "Ethiopia",
-    FIJI: "Fiji",
-    FINLAND: "Finland",
-    FRANCE: "France",
-    GABON: "Gabon",
-    THE_GAMBIA: "The Gambia",
-    GEORGIA: "Georgia",
-    GERMANY: "Germany",
-    GHANA: "Ghana",
-    GREECE: "Greece",
-    GRENADA: "Grenada",
-    GUATEMALA: "Guatemala",
-    GUINEA: "Guinea",
-    GUINEA_BISSAU: "Guinea-Bissau",
-    GUYANA: "Guyana",
-    HAITI: "Haiti",
-    HONDURAS: "Honduras",
-    HUNGARY: "Hungary",
-    ICELAND: "Iceland",
-    INDIA: "India",
-    INDONESIA: "Indonesia",
-    IRAN: "Iran",
-    IRAQ: "Iraq",
-    IRELAND: "Ireland",
-    ISRAEL: "Israel",
-    ITALY: "Italy",
-    JAMAICA: "Jamaica",
-    JAPAN: "Japan",
-    JORDAN: "Jordan",
-    KAZAKHSTAN: "Kazakhstan",
-    KENYA: "Kenya",
-    KIRIBATI: "Kiribati",
-    KOREA__NORTH: "Korea, North",
-    KOREA__SOUTH: "Korea, South",
-    KOSOVO: "Kosovo",
-    KUWAIT: "Kuwait",
-    KYRGYZSTAN: "Kyrgyzstan",
-    LAOS: "Laos",
-    LATVIA: "Latvia",
-    LEBANON: "Lebanon",
-    LESOTHO: "Lesotho",
-    LIBERIA: "Liberia",
-    LIBYA: "Libya",
-    LIECHTENSTEIN: "Liechtenstein",
-    LITHUANIA: "Lithuania",
-    LUXEMBOURG: "Luxembourg",
-    MADAGASCAR: "Madagascar",
-    MALAWI: "Malawi",
-    MALAYSIA: "Malaysia",
-    MALDIVES: "Maldives",
-    MALI: "Mali",
-    MALTA: "Malta",
-    MARSHALL_ISLANDS: "Marshall Islands",
-    MAURITANIA: "Mauritania",
-    MAURITIUS: "Mauritius",
-    MEXICO: "Mexico",
-    MICRONESIA__FEDERATED_STATES_OF: "Micronesia, Federated States of",
-    MOLDOVA: "Moldova",
-    MONACO: "Monaco",
-    MONGOLIA: "Mongolia",
-    MONTENEGRO: "Montenegro",
-    MOROCCO: "Morocco",
-    MOZAMBIQUE: "Mozambique",
-    MYANMAR__BURMA_: "Myanmar (Burma)",
-    NAMIBIA: "Namibia",
-    NAURU: "Nauru",
-    NEPAL: "Nepal",
-    NETHERLANDS: "Netherlands",
-    NEW_ZEALAND: "New Zealand",
-    NICARAGUA: "Nicaragua",
-    NIGER: "Niger",
-    NIGERIA: "Nigeria",
-    NORTH_MACEDONIA: "North Macedonia",
-    NORWAY: "Norway",
-    OMAN: "Oman",
-    PAKISTAN: "Pakistan",
-    PALAU: "Palau",
-    PANAMA: "Panama",
-    PAPUA_NEW_GUINEA: "Papua New Guinea",
-    PARAGUAY: "Paraguay",
-    PERU: "Peru",
-    PHILIPPINES: "Philippines",
-    POLAND: "Poland",
-    PORTUGAL: "Portugal",
-    ROMANIA: "Romania",
-    RUSSIA: "Russia",
-    RWANDA: "Rwanda",
-    SAINT_KITTS_AND_NEVIS: "Saint Kitts and Nevis",
-    SAINT_LUCIA: "Saint Lucia",
-    SAINT_VINCENT_AND_THE_GRENADINES: "Saint Vincent and the Grenadines",
-    SAMOA: "Samoa",
-    SAN_MARINO: "San Marino",
-    SAO_TOME_AND_PRINCIPE: "Sao Tome and Principe",
-    SAUDI_ARABIA: "Saudi Arabia",
-    SENEGAL: "Senegal",
-    SERBIA: "Serbia",
-    SEYCHELLES: "Seychelles",
-    SIERRA_LEONE: "Sierra Leone",
-    SINGAPORE: "Singapore",
-    SLOVAKIA: "Slovakia",
-    SLOVENIA: "Slovenia",
-    SOLOMON_ISLANDS: "Solomon Islands",
-    SOMALIA: "Somalia",
-    SOUTH_AFRICA: "South Africa",
-    SPAIN: "Spain",
-    SRI_LANKA: "Sri Lanka",
-    SUDAN: "Sudan",
-    SUDAN__SOUTH: "Sudan, South",
-    SURINAME: "Suriname",
-    SWEDEN: "Sweden",
-    SWITZERLAND: "Switzerland",
-    SYRIA: "Syria",
-    TAIWAN: "Taiwan",
-    TAJIKISTAN: "Tajikistan",
-    TANZANIA: "Tanzania",
-    THAILAND: "Thailand",
-    TOGO: "Togo",
-    TONGA: "Tonga",
-    TRINIDAD_AND_TOBAGO: "Trinidad and Tobago",
-    TUNISIA: "Tunisia",
-    TURKEY: "Turkey",
-    TURKMENISTAN: "Turkmenistan",
-    TUVALU: "Tuvalu",
-    UGANDA: "Uganda",
-    UKRAINE: "Ukraine",
-    UNITED_ARAB_EMIRATES: "United Arab Emirates",
-    UNITED_KINGDOM: "United Kingdom",
-    UNITED_STATES: "United States",
-    URUGUAY: "Uruguay",
-    UZBEKISTAN: "Uzbekistan",
-    VANUATU: "Vanuatu",
-    VATICAN_CITY: "Vatican City",
-    VENEZUELA: "Venezuela",
-    VIETNAM: "Vietnam",
-    YEMEN: "Yemen",
-    ZAMBIA: "Zambia",
-    ZIMBABWE: "Zimbabwe"
+    QATAR: {
+      en: "Qatar",
+    },
+    AFGHANISTAN: {
+      en: "Afghanistan",
+    },
+    ALBANIA: {
+      en: "Albania",
+    },
+    ALGERIA: {
+      en: "Algeria",
+    },
+    ANDORRA: {
+      en: "Andorra",
+    },
+    ANGOLA: {
+      en: "Angola",
+    },
+    ANTIGUA_AND_BARBUDA: {
+      en: "Antigua and Barbuda",
+    },
+    ARGENTINA: {
+      en: "Argentina",
+    },
+    ARMENIA: {
+      en: "Armenia",
+    },
+    AUSTRALIA: {
+      en: "Australia",
+    },
+    AUSTRIA: {
+      en: "Austria",
+    },
+    AZERBAIJAN: {
+      en: "Azerbaijan",
+    },
+    THE_BAHAMAS: {
+      en: "The Bahamas",
+    },
+    BAHRAIN: {
+      en: "Bahrain",
+    },
+    BANGLADESH: {
+      en: "Bangladesh",
+    },
+    BARBADOS: {
+      en: "Barbados",
+    },
+    BELARUS: {
+      en: "Belarus",
+    },
+    BELGIUM: {
+      en: "Belgium",
+    },
+    BELIZE: {
+      en: "Belize",
+    },
+    BENIN: {
+      en: "Benin",
+    },
+    BHUTAN: {
+      en: "Bhutan",
+    },
+    BOLIVIA: {
+      en: "Bolivia",
+    },
+    BOSNIA_AND_HERZEGOVINA: {
+      en: "Bosnia and Herzegovina",
+    },
+    BOTSWANA: {
+      en: "Botswana",
+    },
+    BRAZIL: {
+      en: "Brazil",
+    },
+    BRUNEI: {
+      en: "Brunei",
+    },
+    BULGARIA: {
+      en: "Bulgaria",
+    },
+    BURKINA_FASO: {
+      en: "Burkina Faso",
+    },
+    BURUNDI: {
+      en: "Burundi",
+    },
+    CABO_VERDE: {
+      en: "Cabo Verde",
+    },
+    CAMBODIA: {
+      en: "Cambodia",
+    },
+    CAMEROON: {
+      en: "Cameroon",
+    },
+    CANADA: {
+      en: "Canada",
+    },
+    CENTRAL_AFRICAN_REPUBLIC: {
+      en: "Central African Republic",
+    },
+    CHAD: {
+      en: "Chad",
+    },
+    CHILE: {
+      en: "Chile",
+    },
+    CHINA: {
+      en: "China",
+    },
+    COLOMBIA: {
+      en: "Colombia",
+    },
+    COMOROS: {
+      en: "Comoros",
+    },
+    CONGO__DEMOCRATIC_REPUBLIC_OF_THE: {
+      en: "Congo, Democratic Republic of the",
+    },
+    CONGO__REPUBLIC_OF_THE: {
+      en: "Congo, Republic of the",
+    },
+    COSTA_RICA: {
+      en: "Costa Rica",
+    },
+    COTE_D_IVOIRE: {
+      en: "Côte d’Ivoire",
+    },
+    CROATIA: {
+      en: "Croatia",
+    },
+    CUBA: {
+      en: "Cuba",
+    },
+    CYPRUS: {
+      en: "Cyprus",
+    },
+    CZECH_REPUBLIC: {
+      en: "Czech Republic",
+    },
+    DENMARK: {
+      en: "Denmark",
+    },
+    DJIBOUTI: {
+      en: "Djibouti",
+    },
+    DOMINICA: {
+      en: "Dominica",
+    },
+    DOMINICAN_REPUBLIC: {
+      en: "Dominican Republic",
+    },
+    EAST_TIMOR__TIMOR_LESTE_: {
+      en: "East Timor (Timor-Leste)",
+    },
+    ECUADOR: {
+      en: "Ecuador",
+    },
+    EGYPT: {
+      en: "Egypt",
+    },
+    EL_SALVADOR: {
+      en: "El Salvador",
+    },
+    EQUATORIAL_GUINEA: {
+      en: "Equatorial Guinea",
+    },
+    ERITREA: {
+      en: "Eritrea",
+    },
+    ESTONIA: {
+      en: "Estonia",
+    },
+    ESWATINI: {
+      en: "Eswatini",
+    },
+    ETHIOPIA: {
+      en: "Ethiopia",
+    },
+    FIJI: {
+      en: "Fiji",
+    },
+    FINLAND: {
+      en: "Finland",
+    },
+    FRANCE: {
+      en: "France",
+    },
+    GABON: {
+      en: "Gabon",
+    },
+    THE_GAMBIA: {
+      en: "The Gambia",
+    },
+    GEORGIA: {
+      en: "Georgia",
+    },
+    GERMANY: {
+      en: "Germany",
+    },
+    GHANA: {
+      en: "Ghana",
+    },
+    GREECE: {
+      en: "Greece",
+    },
+    GRENADA: {
+      en: "Grenada",
+    },
+    GUATEMALA: {
+      en: "Guatemala",
+    },
+    GUINEA: {
+      en: "Guinea",
+    },
+    GUINEA_BISSAU: {
+      en: "Guinea-Bissau",
+    },
+    GUYANA: {
+      en: "Guyana",
+    },
+    HAITI: {
+      en: "Haiti",
+    },
+    HONDURAS: {
+      en: "Honduras",
+    },
+    HUNGARY: {
+      en: "Hungary",
+    },
+    ICELAND: {
+      en: "Iceland",
+    },
+    INDIA: {
+      en: "India",
+    },
+    INDONESIA: {
+      en: "Indonesia",
+    },
+    IRAN: {
+      en: "Iran",
+    },
+    IRAQ: {
+      en: "Iraq",
+    },
+    IRELAND: {
+      en: "Ireland",
+    },
+    ISRAEL: {
+      en: "Israel",
+    },
+    ITALY: {
+      en: "Italy",
+    },
+    JAMAICA: {
+      en: "Jamaica",
+    },
+    JAPAN: {
+      en: "Japan",
+    },
+    JORDAN: {
+      en: "Jordan",
+    },
+    KAZAKHSTAN: {
+      en: "Kazakhstan",
+    },
+    KENYA: {
+      en: "Kenya",
+    },
+    KIRIBATI: {
+      en: "Kiribati",
+    },
+    KOREA__NORTH: {
+      en: "Korea, North",
+    },
+    KOREA__SOUTH: {
+      en: "Korea, South",
+    },
+    KOSOVO: {
+      en: "Kosovo",
+    },
+    KUWAIT: {
+      en: "Kuwait",
+    },
+    KYRGYZSTAN: {
+      en: "Kyrgyzstan",
+    },
+    LAOS: {
+      en: "Laos",
+    },
+    LATVIA: {
+      en: "Latvia",
+    },
+    LEBANON: {
+      en: "Lebanon",
+    },
+    LESOTHO: {
+      en: "Lesotho",
+    },
+    LIBERIA: {
+      en: "Liberia",
+    },
+    LIBYA: {
+      en: "Libya",
+    },
+    LIECHTENSTEIN: {
+      en: "Liechtenstein",
+    },
+    LITHUANIA: {
+      en: "Lithuania",
+    },
+    LUXEMBOURG: {
+      en: "Luxembourg",
+    },
+    MADAGASCAR: {
+      en: "Madagascar",
+    },
+    MALAWI: {
+      en: "Malawi",
+    },
+    MALAYSIA: {
+      en: "Malaysia",
+    },
+    MALDIVES: {
+      en: "Maldives",
+    },
+    MALI: {
+      en: "Mali",
+    },
+    MALTA: {
+      en: "Malta",
+    },
+    MARSHALL_ISLANDS: {
+      en: "Marshall Islands",
+    },
+    MAURITANIA: {
+      en: "Mauritania",
+    },
+    MAURITIUS: {
+      en: "Mauritius",
+    },
+    MEXICO: {
+      en: "Mexico",
+    },
+    MICRONESIA__FEDERATED_STATES_OF: {
+      en: "Micronesia, Federated States of",
+    },
+    MOLDOVA: {
+      en: "Moldova",
+    },
+    MONACO: {
+      en: "Monaco",
+    },
+    MONGOLIA: {
+      en: "Mongolia",
+    },
+    MONTENEGRO: {
+      en: "Montenegro",
+    },
+    MOROCCO: {
+      en: "Morocco",
+    },
+    MOZAMBIQUE: {
+      en: "Mozambique",
+    },
+    MYANMAR__BURMA_: {
+      en: "Myanmar (Burma)",
+    },
+    NAMIBIA: {
+      en: "Namibia",
+    },
+    NAURU: {
+      en: "Nauru",
+    },
+    NEPAL: {
+      en: "Nepal",
+    },
+    NETHERLANDS: {
+      en: "Netherlands",
+    },
+    NEW_ZEALAND: {
+      en: "New Zealand",
+    },
+    NICARAGUA: {
+      en: "Nicaragua",
+    },
+    NIGER: {
+      en: "Niger",
+    },
+    NIGERIA: {
+      en: "Nigeria",
+    },
+    NORTH_MACEDONIA: {
+      en: "North Macedonia",
+    },
+    NORWAY: {
+      en: "Norway",
+    },
+    OMAN: {
+      en: "Oman",
+    },
+    PAKISTAN: {
+      en: "Pakistan",
+    },
+    PALAU: {
+      en: "Palau",
+    },
+    PANAMA: {
+      en: "Panama",
+    },
+    PAPUA_NEW_GUINEA: {
+      en: "Papua New Guinea",
+    },
+    PARAGUAY: {
+      en: "Paraguay",
+    },
+    PERU: {
+      en: "Peru",
+    },
+    PHILIPPINES: {
+      en: "Philippines",
+    },
+    POLAND: {
+      en: "Poland",
+    },
+    PORTUGAL: {
+      en: "Portugal",
+    },
+    ROMANIA: {
+      en: "Romania",
+    },
+    RUSSIA: {
+      en: "Russia",
+    },
+    RWANDA: {
+      en: "Rwanda",
+    },
+    SAINT_KITTS_AND_NEVIS: {
+      en: "Saint Kitts and Nevis",
+    },
+    SAINT_LUCIA: {
+      en: "Saint Lucia",
+    },
+    SAINT_VINCENT_AND_THE_GRENADINES: {
+      en: "Saint Vincent and the Grenadines",
+    },
+    SAMOA: {
+      en: "Samoa",
+    },
+    SAN_MARINO: {
+      en: "San Marino",
+    },
+    SAO_TOME_AND_PRINCIPE: {
+      en: "Sao Tome and Principe",
+    },
+    SAUDI_ARABIA: {
+      en: "Saudi Arabia",
+    },
+    SENEGAL: {
+      en: "Senegal",
+    },
+    SERBIA: {
+      en: "Serbia",
+    },
+    SEYCHELLES: {
+      en: "Seychelles",
+    },
+    SIERRA_LEONE: {
+      en: "Sierra Leone",
+    },
+    SINGAPORE: {
+      en: "Singapore",
+    },
+    SLOVAKIA: {
+      en: "Slovakia",
+    },
+    SLOVENIA: {
+      en: "Slovenia",
+    },
+    SOLOMON_ISLANDS: {
+      en: "Solomon Islands",
+    },
+    SOMALIA: {
+      en: "Somalia",
+    },
+    SOUTH_AFRICA: {
+      en: "South Africa",
+    },
+    SPAIN: {
+      en: "Spain",
+    },
+    SRI_LANKA: {
+      en: "Sri Lanka",
+    },
+    SUDAN: {
+      en: "Sudan",
+    },
+    SUDAN__SOUTH: {
+      en: "Sudan, South",
+    },
+    SURINAME: {
+      en: "Suriname",
+    },
+    SWEDEN: {
+      en: "Sweden",
+    },
+    SWITZERLAND: {
+      en: "Switzerland",
+    },
+    SYRIA: {
+      en: "Syria",
+    },
+    TAIWAN: {
+      en: "Taiwan",
+    },
+    TAJIKISTAN: {
+      en: "Tajikistan",
+    },
+    TANZANIA: {
+      en: "Tanzania",
+    },
+    THAILAND: {
+      en: "Thailand",
+    },
+    TOGO: {
+      en: "Togo",
+    },
+    TONGA: {
+      en: "Tonga",
+    },
+    TRINIDAD_AND_TOBAGO: {
+      en: "Trinidad and Tobago",
+    },
+    TUNISIA: {
+      en: "Tunisia",
+    },
+    TURKEY: {
+      en: "Turkey",
+    },
+    TURKMENISTAN: {
+      en: "Turkmenistan",
+    },
+    TUVALU: {
+      en: "Tuvalu",
+    },
+    UGANDA: {
+      en: "Uganda",
+    },
+    UKRAINE: {
+      en: "Ukraine",
+    },
+    UNITED_ARAB_EMIRATES: {
+      en: "United Arab Emirates",
+    },
+    UNITED_KINGDOM: {
+      en: "United Kingdom",
+    },
+    UNITED_STATES: {
+      en: "United States",
+    },
+    URUGUAY: {
+      en: "Uruguay",
+    },
+    UZBEKISTAN: {
+      en: "Uzbekistan",
+    },
+    VANUATU: {
+      en: "Vanuatu",
+    },
+    VATICAN_CITY: {
+      en: "Vatican City",
+    },
+    VENEZUELA: {
+      en: "Venezuela",
+    },
+    VIETNAM: {
+      en: "Vietnam",
+    },
+    YEMEN: {
+      en: "Yemen",
+    },
+    ZAMBIA: {
+      en: "Zambia",
+    },
+    ZIMBABWE: {
+      en: "Zimbabwe",
+    },
   },
   Nationality: {
-    QATARI: "Qatari",
-    AFGHAN: "Afghan",
-    ALBANIAN: "Albanian",
-    ALGERIAN: "Algerian",
-    AMERICAN: "American",
-    ANDORRAN: "Andorran",
-    ANGOLAN: "Angolan",
-    ANGUILLAN: "Anguillan",
-    ARGENTINE: "Argentine",
-    ARMENIAN: "Armenian",
-    AUSTRALIAN: "Australian",
-    AUSTRIAN: "Austrian",
-    AZERBAIJANI: "Azerbaijani",
-    BAHAMIAN: "Bahamian",
-    BAHRAINI: "Bahraini",
-    BANGLADESHI: "Bangladeshi",
-    BARBADIAN: "Barbadian",
-    BELARUSIAN: "Belarusian",
-    BELGIAN: "Belgian",
-    BELIZEAN: "Belizean",
-    BENINESE: "Beninese",
-    BERMUDIAN: "Bermudian",
-    BHUTANESE: "Bhutanese",
-    BOLIVIAN: "Bolivian",
-    BOTSWANAN: "Botswanan",
-    BRAZILIAN: "Brazilian",
-    BRITISH: "British",
-    BRITISH_VIRGIN_ISLANDER: "British Virgin Islander",
-    BRUNEIAN: "Bruneian",
-    BULGARIAN: "Bulgarian",
-    BURKINAN: "Burkinan",
-    BURMESE: "Burmese",
-    BURUNDIAN: "Burundian",
-    CAMBODIAN: "Cambodian",
-    CAMEROONIAN: "Cameroonian",
-    CANADIAN: "Canadian",
-    CAPE_VERDEAN: "Cape Verdean",
-    CAYMAN_ISLANDER: "Cayman Islander",
-    CENTRAL_AFRICAN: "Central African",
-    CHADIAN: "Chadian",
-    CHILEAN: "Chilean",
-    CHINESE: "Chinese",
-    CITIZEN_OF_ANTIGUA_AND_BARBUDA: "Citizen of Antigua and Barbuda",
-    CITIZEN_OF_BOSNIA_AND_HERZEGOVINA: "Citizen of Bosnia and Herzegovina",
-    CITIZEN_OF_GUINEA_BISSAU: "Citizen of Guinea-Bissau",
-    CITIZEN_OF_KIRIBATI: "Citizen of Kiribati",
-    CITIZEN_OF_SEYCHELLES: "Citizen of Seychelles",
-    CITIZEN_OF_THE_DOMINICAN_REPUBLIC: "Citizen of the Dominican Republic",
-    CITIZEN_OF_VANUATU: "Citizen of Vanuatu ",
-    COLOMBIAN: "Colombian",
-    COMORAN: "Comoran",
-    CONGOLESE__CONGO_: "Congolese (Congo)",
-    CONGOLESE__DRC_: "Congolese (DRC)",
-    COOK_ISLANDER: "Cook Islander",
-    COSTA_RICAN: "Costa Rican",
-    CROATIAN: "Croatian",
-    CUBAN: "Cuban",
-    CYMRAES: "Cymraes",
-    CYMRO: "Cymro",
-    CYPRIOT: "Cypriot",
-    CZECH: "Czech",
-    DANISH: "Danish",
-    DJIBOUTIAN: "Djiboutian",
-    DOMINICAN: "Dominican",
-    DUTCH: "Dutch",
-    EAST_TIMORESE: "East Timorese",
-    ECUADOREAN: "Ecuadorean",
-    EGYPTIAN: "Egyptian",
-    EMIRATI: "Emirati",
-    ENGLISH: "English",
-    EQUATORIAL_GUINEAN: "Equatorial Guinean",
-    ERITREAN: "Eritrean",
-    ESTONIAN: "Estonian",
-    ETHIOPIAN: "Ethiopian",
-    FAROESE: "Faroese",
-    FIJIAN: "Fijian",
-    FILIPINO: "Filipino",
-    FINNISH: "Finnish",
-    FRENCH: "French",
-    GABONESE: "Gabonese",
-    GAMBIAN: "Gambian",
-    GEORGIAN: "Georgian",
-    GERMAN: "German",
-    GHANAIAN: "Ghanaian",
-    GIBRALTARIAN: "Gibraltarian",
-    GREEK: "Greek",
-    GREENLANDIC: "Greenlandic",
-    GRENADIAN: "Grenadian",
-    GUAMANIAN: "Guamanian",
-    GUATEMALAN: "Guatemalan",
-    GUINEAN: "Guinean",
-    GUYANESE: "Guyanese",
-    HAITIAN: "Haitian",
-    HONDURAN: "Honduran",
-    HONG_KONGER: "Hong Konger",
-    HUNGARIAN: "Hungarian",
-    ICELANDIC: "Icelandic",
-    INDIAN: "Indian",
-    INDONESIAN: "Indonesian",
-    IRANIAN: "Iranian",
-    IRAQI: "Iraqi",
-    IRISH: "Irish",
-    ISRAELI: "Israeli",
-    ITALIAN: "Italian",
-    IVORIAN: "Ivorian",
-    JAMAICAN: "Jamaican",
-    JAPANESE: "Japanese",
-    JORDANIAN: "Jordanian",
-    KAZAKH: "Kazakh",
-    KENYAN: "Kenyan",
-    KITTITIAN: "Kittitian",
-    KOSOVAN: "Kosovan",
-    KUWAITI: "Kuwaiti",
-    KYRGYZ: "Kyrgyz",
-    LAO: "Lao",
-    LATVIAN: "Latvian",
-    LEBANESE: "Lebanese",
-    LIBERIAN: "Liberian",
-    LIBYAN: "Libyan",
-    LIECHTENSTEIN_CITIZEN: "Liechtenstein citizen",
-    LITHUANIAN: "Lithuanian",
-    LUXEMBOURGER: "Luxembourger",
-    MACANESE: "Macanese",
-    MACEDONIAN: "Macedonian",
-    MALAGASY: "Malagasy",
-    MALAWIAN: "Malawian",
-    MALAYSIAN: "Malaysian",
-    MALDIVIAN: "Maldivian",
-    MALIAN: "Malian",
-    MALTESE: "Maltese",
-    MARSHALLESE: "Marshallese",
-    MARTINIQUAIS: "Martiniquais",
-    MAURITANIAN: "Mauritanian",
-    MAURITIAN: "Mauritian",
-    MEXICAN: "Mexican",
-    MICRONESIAN: "Micronesian",
-    MOLDOVAN: "Moldovan",
-    MONEGASQUE: "Monegasque",
-    MONGOLIAN: "Mongolian",
-    MONTENEGRIN: "Montenegrin",
-    MONTSERRATIAN: "Montserratian",
-    MOROCCAN: "Moroccan",
-    MOSOTHO: "Mosotho",
-    MOZAMBICAN: "Mozambican",
-    NAMIBIAN: "Namibian",
-    NAURUAN: "Nauruan",
-    NEPALESE: "Nepalese",
-    NEW_ZEALANDER: "New Zealander",
-    NICARAGUAN: "Nicaraguan",
-    NIGERIAN: "Nigerian",
-    NIGERIEN: "Nigerien",
-    NIUEAN: "Niuean",
-    NORTH_KOREAN: "North Korean",
-    NORTHERN_IRISH: "Northern Irish",
-    NORWEGIAN: "Norwegian",
-    OMANI: "Omani",
-    PAKISTANI: "Pakistani",
-    PALAUAN: "Palauan",
-    PALESTINIAN: "Palestinian",
-    PANAMANIAN: "Panamanian",
-    PAPUA_NEW_GUINEAN: "Papua New Guinean",
-    PARAGUAYAN: "Paraguayan",
-    PERUVIAN: "Peruvian",
-    PITCAIRN_ISLANDER: "Pitcairn Islander",
-    POLISH: "Polish",
-    PORTUGUESE: "Portuguese",
-    PRYDEINIG: "Prydeinig",
-    PUERTO_RICAN: "Puerto Rican",
-    ROMANIAN: "Romanian",
-    RUSSIAN: "Russian",
-    RWANDAN: "Rwandan",
-    SALVADOREAN: "Salvadorean",
-    SAMMARINESE: "Sammarinese",
-    SAMOAN: "Samoan",
-    SAO_TOMEAN: "Sao Tomean",
-    SAUDI_ARABIAN: "Saudi Arabian",
-    SCOTTISH: "Scottish",
-    SENEGALESE: "Senegalese",
-    SERBIAN: "Serbian",
-    SIERRA_LEONEAN: "Sierra Leonean",
-    SINGAPOREAN: "Singaporean",
-    SLOVAK: "Slovak",
-    SLOVENIAN: "Slovenian",
-    SOLOMON_ISLANDER: "Solomon Islander",
-    SOMALI: "Somali",
-    SOUTH_AFRICAN: "South African",
-    SOUTH_KOREAN: "South Korean",
-    SOUTH_SUDANESE: "South Sudanese",
-    SPANISH: "Spanish",
-    SRI_LANKAN: "Sri Lankan",
-    ST_HELENIAN: "St Helenian",
-    ST_LUCIAN: "St Lucian",
-    STATELESS: "Stateless",
-    SUDANESE: "Sudanese",
-    SURINAMESE: "Surinamese",
-    SWAZI: "Swazi",
-    SWEDISH: "Swedish",
-    SWISS: "Swiss",
-    SYRIAN: "Syrian",
-    TAIWANESE: "Taiwanese",
-    TAJIK: "Tajik",
-    TANZANIAN: "Tanzanian",
-    THAI: "Thai",
-    TOGOLESE: "Togolese",
-    TONGAN: "Tongan",
-    TRINIDADIAN: "Trinidadian",
-    TRISTANIAN: "Tristanian",
-    TUNISIAN: "Tunisian",
-    TURKISH: "Turkish",
-    TURKMEN: "Turkmen",
-    TURKS_AND_CAICOS_ISLANDER: "Turks and Caicos Islander",
-    TUVALUAN: "Tuvaluan",
-    UGANDAN: "Ugandan",
-    UKRAINIAN: "Ukrainian",
-    URUGUAYAN: "Uruguayan",
-    UZBEK: "Uzbek",
-    VATICAN_CITIZEN: "Vatican citizen",
-    VENEZUELAN: "Venezuelan",
-    VIETNAMESE: "Vietnamese",
-    VINCENTIAN: "Vincentian",
-    WALLISIAN: "Wallisian",
-    WELSH: "Welsh",
-    YEMENI: "Yemeni",
-    ZAMBIAN: "Zambian",
-    ZIMBABWEAN: "Zimbabwean"
+    QATARI: {
+      en: "Qatari",
+    },
+    AFGHAN: {
+      en: "Afghan",
+    },
+    ALBANIAN: {
+      en: "Albanian",
+    },
+    ALGERIAN: {
+      en: "Algerian",
+    },
+    AMERICAN: {
+      en: "American",
+    },
+    ANDORRAN: {
+      en: "Andorran",
+    },
+    ANGOLAN: {
+      en: "Angolan",
+    },
+    ANGUILLAN: {
+      en: "Anguillan",
+    },
+    ARGENTINE: {
+      en: "Argentine",
+    },
+    ARMENIAN: {
+      en: "Armenian",
+    },
+    AUSTRALIAN: {
+      en: "Australian",
+    },
+    AUSTRIAN: {
+      en: "Austrian",
+    },
+    AZERBAIJANI: {
+      en: "Azerbaijani",
+    },
+    BAHAMIAN: {
+      en: "Bahamian",
+    },
+    BAHRAINI: {
+      en: "Bahraini",
+    },
+    BANGLADESHI: {
+      en: "Bangladeshi",
+    },
+    BARBADIAN: {
+      en: "Barbadian",
+    },
+    BELARUSIAN: {
+      en: "Belarusian",
+    },
+    BELGIAN: {
+      en: "Belgian",
+    },
+    BELIZEAN: {
+      en: "Belizean",
+    },
+    BENINESE: {
+      en: "Beninese",
+    },
+    BERMUDIAN: {
+      en: "Bermudian",
+    },
+    BHUTANESE: {
+      en: "Bhutanese",
+    },
+    BOLIVIAN: {
+      en: "Bolivian",
+    },
+    BOTSWANAN: {
+      en: "Botswanan",
+    },
+    BRAZILIAN: {
+      en: "Brazilian",
+    },
+    BRITISH: {
+      en: "British",
+    },
+    BRITISH_VIRGIN_ISLANDER: {
+      en: "British Virgin Islander",
+    },
+    BRUNEIAN: {
+      en: "Bruneian",
+    },
+    BULGARIAN: {
+      en: "Bulgarian",
+    },
+    BURKINAN: {
+      en: "Burkinan",
+    },
+    BURMESE: {
+      en: "Burmese",
+    },
+    BURUNDIAN: {
+      en: "Burundian",
+    },
+    CAMBODIAN: {
+      en: "Cambodian",
+    },
+    CAMEROONIAN: {
+      en: "Cameroonian",
+    },
+    CANADIAN: {
+      en: "Canadian",
+    },
+    CAPE_VERDEAN: {
+      en: "Cape Verdean",
+    },
+    CAYMAN_ISLANDER: {
+      en: "Cayman Islander",
+    },
+    CENTRAL_AFRICAN: {
+      en: "Central African",
+    },
+    CHADIAN: {
+      en: "Chadian",
+    },
+    CHILEAN: {
+      en: "Chilean",
+    },
+    CHINESE: {
+      en: "Chinese",
+    },
+    CITIZEN_OF_ANTIGUA_AND_BARBUDA: {
+      en: "Citizen of Antigua and Barbuda",
+    },
+    CITIZEN_OF_BOSNIA_AND_HERZEGOVINA: {
+      en: "Citizen of Bosnia and Herzegovina",
+    },
+    CITIZEN_OF_GUINEA_BISSAU: {
+      en: "Citizen of Guinea-Bissau",
+    },
+    CITIZEN_OF_KIRIBATI: {
+      en: "Citizen of Kiribati",
+    },
+    CITIZEN_OF_SEYCHELLES: {
+      en: "Citizen of Seychelles",
+    },
+    CITIZEN_OF_THE_DOMINICAN_REPUBLIC: {
+      en: "Citizen of the Dominican Republic",
+    },
+    CITIZEN_OF_VANUATU: {
+      en: "Citizen of Vanuatu ",
+    },
+    COLOMBIAN: {
+      en: "Colombian",
+    },
+    COMORAN: {
+      en: "Comoran",
+    },
+    CONGOLESE__CONGO_: {
+      en: "Congolese (Congo)",
+    },
+    CONGOLESE__DRC_: {
+      en: "Congolese (DRC)",
+    },
+    COOK_ISLANDER: {
+      en: "Cook Islander",
+    },
+    COSTA_RICAN: {
+      en: "Costa Rican",
+    },
+    CROATIAN: {
+      en: "Croatian",
+    },
+    CUBAN: {
+      en: "Cuban",
+    },
+    CYMRAES: {
+      en: "Cymraes",
+    },
+    CYMRO: {
+      en: "Cymro",
+    },
+    CYPRIOT: {
+      en: "Cypriot",
+    },
+    CZECH: {
+      en: "Czech",
+    },
+    DANISH: {
+      en: "Danish",
+    },
+    DJIBOUTIAN: {
+      en: "Djiboutian",
+    },
+    DOMINICAN: {
+      en: "Dominican",
+    },
+    DUTCH: {
+      en: "Dutch",
+    },
+    EAST_TIMORESE: {
+      en: "East Timorese",
+    },
+    ECUADOREAN: {
+      en: "Ecuadorean",
+    },
+    EGYPTIAN: {
+      en: "Egyptian",
+    },
+    EMIRATI: {
+      en: "Emirati",
+    },
+    ENGLISH: {
+      en: "English",
+    },
+    EQUATORIAL_GUINEAN: {
+      en: "Equatorial Guinean",
+    },
+    ERITREAN: {
+      en: "Eritrean",
+    },
+    ESTONIAN: {
+      en: "Estonian",
+    },
+    ETHIOPIAN: {
+      en: "Ethiopian",
+    },
+    FAROESE: {
+      en: "Faroese",
+    },
+    FIJIAN: {
+      en: "Fijian",
+    },
+    FILIPINO: {
+      en: "Filipino",
+    },
+    FINNISH: {
+      en: "Finnish",
+    },
+    FRENCH: {
+      en: "French",
+    },
+    GABONESE: {
+      en: "Gabonese",
+    },
+    GAMBIAN: {
+      en: "Gambian",
+    },
+    GEORGIAN: {
+      en: "Georgian",
+    },
+    GERMAN: {
+      en: "German",
+    },
+    GHANAIAN: {
+      en: "Ghanaian",
+    },
+    GIBRALTARIAN: {
+      en: "Gibraltarian",
+    },
+    GREEK: {
+      en: "Greek",
+    },
+    GREENLANDIC: {
+      en: "Greenlandic",
+    },
+    GRENADIAN: {
+      en: "Grenadian",
+    },
+    GUAMANIAN: {
+      en: "Guamanian",
+    },
+    GUATEMALAN: {
+      en: "Guatemalan",
+    },
+    GUINEAN: {
+      en: "Guinean",
+    },
+    GUYANESE: {
+      en: "Guyanese",
+    },
+    HAITIAN: {
+      en: "Haitian",
+    },
+    HONDURAN: {
+      en: "Honduran",
+    },
+    HONG_KONGER: {
+      en: "Hong Konger",
+    },
+    HUNGARIAN: {
+      en: "Hungarian",
+    },
+    ICELANDIC: {
+      en: "Icelandic",
+    },
+    INDIAN: {
+      en: "Indian",
+    },
+    INDONESIAN: {
+      en: "Indonesian",
+    },
+    IRANIAN: {
+      en: "Iranian",
+    },
+    IRAQI: {
+      en: "Iraqi",
+    },
+    IRISH: {
+      en: "Irish",
+    },
+    ISRAELI: {
+      en: "Israeli",
+    },
+    ITALIAN: {
+      en: "Italian",
+    },
+    IVORIAN: {
+      en: "Ivorian",
+    },
+    JAMAICAN: {
+      en: "Jamaican",
+    },
+    JAPANESE: {
+      en: "Japanese",
+    },
+    JORDANIAN: {
+      en: "Jordanian",
+    },
+    KAZAKH: {
+      en: "Kazakh",
+    },
+    KENYAN: {
+      en: "Kenyan",
+    },
+    KITTITIAN: {
+      en: "Kittitian",
+    },
+    KOSOVAN: {
+      en: "Kosovan",
+    },
+    KUWAITI: {
+      en: "Kuwaiti",
+    },
+    KYRGYZ: {
+      en: "Kyrgyz",
+    },
+    LAO: {
+      en: "Lao",
+    },
+    LATVIAN: {
+      en: "Latvian",
+    },
+    LEBANESE: {
+      en: "Lebanese",
+    },
+    LIBERIAN: {
+      en: "Liberian",
+    },
+    LIBYAN: {
+      en: "Libyan",
+    },
+    LIECHTENSTEIN_CITIZEN: {
+      en: "Liechtenstein citizen",
+    },
+    LITHUANIAN: {
+      en: "Lithuanian",
+    },
+    LUXEMBOURGER: {
+      en: "Luxembourger",
+    },
+    MACANESE: {
+      en: "Macanese",
+    },
+    MACEDONIAN: {
+      en: "Macedonian",
+    },
+    MALAGASY: {
+      en: "Malagasy",
+    },
+    MALAWIAN: {
+      en: "Malawian",
+    },
+    MALAYSIAN: {
+      en: "Malaysian",
+    },
+    MALDIVIAN: {
+      en: "Maldivian",
+    },
+    MALIAN: {
+      en: "Malian",
+    },
+    MALTESE: {
+      en: "Maltese",
+    },
+    MARSHALLESE: {
+      en: "Marshallese",
+    },
+    MARTINIQUAIS: {
+      en: "Martiniquais",
+    },
+    MAURITANIAN: {
+      en: "Mauritanian",
+    },
+    MAURITIAN: {
+      en: "Mauritian",
+    },
+    MEXICAN: {
+      en: "Mexican",
+    },
+    MICRONESIAN: {
+      en: "Micronesian",
+    },
+    MOLDOVAN: {
+      en: "Moldovan",
+    },
+    MONEGASQUE: {
+      en: "Monegasque",
+    },
+    MONGOLIAN: {
+      en: "Mongolian",
+    },
+    MONTENEGRIN: {
+      en: "Montenegrin",
+    },
+    MONTSERRATIAN: {
+      en: "Montserratian",
+    },
+    MOROCCAN: {
+      en: "Moroccan",
+    },
+    MOSOTHO: {
+      en: "Mosotho",
+    },
+    MOZAMBICAN: {
+      en: "Mozambican",
+    },
+    NAMIBIAN: {
+      en: "Namibian",
+    },
+    NAURUAN: {
+      en: "Nauruan",
+    },
+    NEPALESE: {
+      en: "Nepalese",
+    },
+    NEW_ZEALANDER: {
+      en: "New Zealander",
+    },
+    NICARAGUAN: {
+      en: "Nicaraguan",
+    },
+    NIGERIAN: {
+      en: "Nigerian",
+    },
+    NIGERIEN: {
+      en: "Nigerien",
+    },
+    NIUEAN: {
+      en: "Niuean",
+    },
+    NORTH_KOREAN: {
+      en: "North Korean",
+    },
+    NORTHERN_IRISH: {
+      en: "Northern Irish",
+    },
+    NORWEGIAN: {
+      en: "Norwegian",
+    },
+    OMANI: {
+      en: "Omani",
+    },
+    PAKISTANI: {
+      en: "Pakistani",
+    },
+    PALAUAN: {
+      en: "Palauan",
+    },
+    PALESTINIAN: {
+      en: "Palestinian",
+    },
+    PANAMANIAN: {
+      en: "Panamanian",
+    },
+    PAPUA_NEW_GUINEAN: {
+      en: "Papua New Guinean",
+    },
+    PARAGUAYAN: {
+      en: "Paraguayan",
+    },
+    PERUVIAN: {
+      en: "Peruvian",
+    },
+    PITCAIRN_ISLANDER: {
+      en: "Pitcairn Islander",
+    },
+    POLISH: {
+      en: "Polish",
+    },
+    PORTUGUESE: {
+      en: "Portuguese",
+    },
+    PRYDEINIG: {
+      en: "Prydeinig",
+    },
+    PUERTO_RICAN: {
+      en: "Puerto Rican",
+    },
+    ROMANIAN: {
+      en: "Romanian",
+    },
+    RUSSIAN: {
+      en: "Russian",
+    },
+    RWANDAN: {
+      en: "Rwandan",
+    },
+    SALVADOREAN: {
+      en: "Salvadorean",
+    },
+    SAMMARINESE: {
+      en: "Sammarinese",
+    },
+    SAMOAN: {
+      en: "Samoan",
+    },
+    SAO_TOMEAN: {
+      en: "Sao Tomean",
+    },
+    SAUDI_ARABIAN: {
+      en: "Saudi Arabian",
+    },
+    SCOTTISH: {
+      en: "Scottish",
+    },
+    SENEGALESE: {
+      en: "Senegalese",
+    },
+    SERBIAN: {
+      en: "Serbian",
+    },
+    SIERRA_LEONEAN: {
+      en: "Sierra Leonean",
+    },
+    SINGAPOREAN: {
+      en: "Singaporean",
+    },
+    SLOVAK: {
+      en: "Slovak",
+    },
+    SLOVENIAN: {
+      en: "Slovenian",
+    },
+    SOLOMON_ISLANDER: {
+      en: "Solomon Islander",
+    },
+    SOMALI: {
+      en: "Somali",
+    },
+    SOUTH_AFRICAN: {
+      en: "South African",
+    },
+    SOUTH_KOREAN: {
+      en: "South Korean",
+    },
+    SOUTH_SUDANESE: {
+      en: "South Sudanese",
+    },
+    SPANISH: {
+      en: "Spanish",
+    },
+    SRI_LANKAN: {
+      en: "Sri Lankan",
+    },
+    ST_HELENIAN: {
+      en: "St Helenian",
+    },
+    ST_LUCIAN: {
+      en: "St Lucian",
+    },
+    STATELESS: {
+      en: "Stateless",
+    },
+    SUDANESE: {
+      en: "Sudanese",
+    },
+    SURINAMESE: {
+      en: "Surinamese",
+    },
+    SWAZI: {
+      en: "Swazi",
+    },
+    SWEDISH: {
+      en: "Swedish",
+    },
+    SWISS: {
+      en: "Swiss",
+    },
+    SYRIAN: {
+      en: "Syrian",
+    },
+    TAIWANESE: {
+      en: "Taiwanese",
+    },
+    TAJIK: {
+      en: "Tajik",
+    },
+    TANZANIAN: {
+      en: "Tanzanian",
+    },
+    THAI: {
+      en: "Thai",
+    },
+    TOGOLESE: {
+      en: "Togolese",
+    },
+    TONGAN: {
+      en: "Tongan",
+    },
+    TRINIDADIAN: {
+      en: "Trinidadian",
+    },
+    TRISTANIAN: {
+      en: "Tristanian",
+    },
+    TUNISIAN: {
+      en: "Tunisian",
+    },
+    TURKISH: {
+      en: "Turkish",
+    },
+    TURKMEN: {
+      en: "Turkmen",
+    },
+    TURKS_AND_CAICOS_ISLANDER: {
+      en: "Turks and Caicos Islander",
+    },
+    TUVALUAN: {
+      en: "Tuvaluan",
+    },
+    UGANDAN: {
+      en: "Ugandan",
+    },
+    UKRAINIAN: {
+      en: "Ukrainian",
+    },
+    URUGUAYAN: {
+      en: "Uruguayan",
+    },
+    UZBEK: {
+      en: "Uzbek",
+    },
+    VATICAN_CITIZEN: {
+      en: "Vatican citizen",
+    },
+    VENEZUELAN: {
+      en: "Venezuelan",
+    },
+    VIETNAMESE: {
+      en: "Vietnamese",
+    },
+    VINCENTIAN: {
+      en: "Vincentian",
+    },
+    WALLISIAN: {
+      en: "Wallisian",
+    },
+    WELSH: {
+      en: "Welsh",
+    },
+    YEMENI: {
+      en: "Yemeni",
+    },
+    ZAMBIAN: {
+      en: "Zambian",
+    },
+    ZIMBABWEAN: {
+      en: "Zimbabwean",
+    },
   }
 };
 

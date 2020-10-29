@@ -136,8 +136,12 @@ class GraphQL {
       var select = document.getElementById(id);
       for (var v of res.data.__type.enumValues) {
         var display = v.name;
-        if (enums[enumName] && enums[enumName][v.name]) {
-          display = enums[enumName][v.name];
+        if (
+          enums[enumName] !== undefined &&
+          enums[enumName][v.name] !== undefined &&
+          enums[enumName][v.name]["en"] !== undefined
+        ) {
+          display = enums[enumName][v.name]["en"];
         }
         select.innerHTML += `<option value='${v.name}'>${display}</option>`;
       }

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter_translate/flutter_translate.dart';
 import 'package:graphql/client.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -168,7 +169,7 @@ class Session {
       return DateFormat("dd / MM / y", _locale == "en" ? 'en_US' : 'ar_EG')
           .format(dateTime.toLocal());
     if (currentDate.year == dateTime.year &&
-        currentDate.day - 1 == dateTime.day) return "Yesterday";
+        currentDate.day - 1 == dateTime.day) return translate("yesterday");
 
     if (currentDate.year == dateTime.year && currentDate.day == dateTime.day)
       return DateFormat("hh:mm a", _locale == "en" ? 'en_US' : 'ar_EG')

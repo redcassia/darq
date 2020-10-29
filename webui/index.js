@@ -1,6 +1,11 @@
 const slideSpeed = 150;
 const welcomeSpeed = 200;
 
+function switchLocale(locale) {
+  CookieManager.set("locale", locale, 1000);
+  location.reload();
+}
+
 function switchToSignup() {
   const slideDisplacement = $("#signin-screen > .inactive-home-pane").offset().left;
 

@@ -90,3 +90,17 @@
     content: url('assets/logo.png');
     background: none;
 }
+
+#locale-switcher {
+    z-index: 1000;
+    position: fixed;
+    top: 0;
+
+    background-color: transparent;
+    color: white;
+    padding: 20px;
+    font-size: 14px;
+}
+#locale-switcher:hover {
+    cursor: pointer;
+}

@@ -34,11 +34,53 @@ app.use('/api', auth, function (err, req, res, next) {
 });
 server.applyMiddleware({ app, path: '/api' });
 
-app.use('/', express.static(path.join(__dirname, '..', 'webui')));
-app.use('/attachment', express.static(process.env.ATTACHMENTS_DIR));
-app.use('/admin', express.static(path.join(__dirname, '..', 'webui', 'admin.html')));
+const webui_dir = path.join(__dirname, '..', 'webui')
 
-app.use('/verifyuser', async (req, res) => {
+app.use('/', express.static(webui_dir));
+
+app.get('/', (req, res) => {
+  var cookies = cookie.parse(req.headers.cookie || '');
+
+  var locale;
+  if (cookies.locale !== undefined) {
+    locale = cookies.locale;
+  }
+  else {
+    res.setHeader('Set-Cookie', cookie.serialize('locale', 'en', {
+      maxAge: 60 * 60 * 24 * 1000, // 1000 days
+      sameSite: 'strict'
+    }));
+
+    locale = "en";
+  }
+
+  res.sendFile(path.join(webui_dir, 'html', locale, 'index.html'));
+});
+
+app.get('/*.html', (req, res) => {
+
+  var cookies = cookie.parse(req.headers.cookie || '');
+
+  var locale;
+  if (cookies.locale !== undefined) {
+    locale = cookies.locale;
+  }
+  else {
+    res.setHeader('Set-Cookie', cookie.serialize('locale', 'en', {
+      sameSite: 'strict'
+    }));
+
+    locale = "en";
+  }
+
+  res.sendFile(path.join(webui_dir, 'html', locale, req.url));
+});
+
+app.use('/attachment', express.static(process.env.ATTACHMENTS_DIR));
+
+app.use('/admin', express.static(path.join(webui_dir, 'admin.html')));
+
+app.get('/verifyuser', async (req, res) => {
   const email = req.query.email;
   const token = req.query.token;
 

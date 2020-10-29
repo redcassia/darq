@@ -8,7 +8,12 @@
         <link rel="stylesheet" href="index.css">
     </head>
     <body>
+
         <script src="https://kit.fontawesome.com/d3fa62ec11.js" crossorigin="anonymous"></script>
+
+        <style>#main-screen, input{ direction: rtl; }</style>
+
+        <div id="locale-switcher" onclick="switchLocale('en')" style="left: 0;">English</div>
 
         <div class="hidden" id="loading-blanket">
             <i class="fas fa-sync fa-spin"></i>
@@ -17,22 +22,21 @@
         <div id="signup-screen" class="screen" style="z-index: 0;">
             <div class="home-pane inactive-home-pane">
                 <div class="home-pane-content white">
-                    <h3>Welcome Back</h3>
-                    <button onclick="switchToSignin()">Sign in</button>
+                    <h3>مرحبا بعودتك</h3>
+                    <button onclick="switchToSignin()">تسجيل الدخول</button>
                 </div>
             </div>
 
             <div class="home-pane active-home-pane">
                 <div id="signup-form" class="home-pane-content dark">
                     <h4>
-                        <span>Create an account to <br/> engage with customers on</span>
-                        <br/>
                         <span class="accent h3">DarQ</span>
+                        <span>إنشاء حساب على</span>
                     </h4>
-                    <input type="email" id="signup-email" placeholder="Email" onkeydown="if (event.keyCode === 13 ) signup();" /> <br/>
-                    <input type="password" id="signup-password" placeholder="Password" onkeydown="if (event.keyCode === 13 ) signup();" /> <br/>
-                    <input type="password" id="signup-password-confirm" placeholder="Confirm Password" onkeydown="if (event.keyCode === 13 ) signup();" /> <br/>
-                    <button onclick="signup()">Create Account</button>
+                    <input type="email" id="signup-email" placeholder="البريد الإلكتروني" onkeydown="if (event.keyCode === 13 ) signup();" /> <br/>
+                    <input type="password" id="signup-password" placeholder="كلمه السر" onkeydown="if (event.keyCode === 13 ) signup();" /> <br/>
+                    <input type="password" id="signup-password-confirm" placeholder="تأكيد كلمة السر" onkeydown="if (event.keyCode === 13 ) signup();" /> <br/>
+                    <button onclick="signup()">إنشاء حساب</button>
                 </div>
             </div>
         </div>
@@ -41,35 +45,34 @@
             <div class="home-pane active-home-pane">
                 <div id="signin-form" class="home-pane-content dark" style="display: none;">
                     <h4>
-                        <span>Sign in to <br/> engage with customers on</span>
-                        <br/>
                         <span class="accent h3">DarQ</span>
+                        <span>سجّل الدخول إلى</span>
                     </h4>
-                    <input type="email" id="signin-email" placeholder="Email" onkeydown="if (event.keyCode === 13 ) signin();"/> <br/>
-                    <input type="password" id="signin-password" placeholder="Password" onkeydown="if (event.keyCode === 13 ) signin();"/> <br/>
+                    <input type="email" id="signin-email" placeholder="البريد الإلكتروني" onkeydown="if (event.keyCode === 13 ) signin();"/> <br/>
+                    <input type="password" id="signin-password" placeholder="كلمه السر" onkeydown="if (event.keyCode === 13 ) signin();"/> <br/>
                     <div style="text-align: right;">
-                        <span class="clickable" onclick="switchToForgotPassword()">Forgot password?</span>
+                        <span class="clickable" onclick="switchToForgotPassword()">نسيت كلمة السر؟</span>
                     </div>
-                    <button onclick="signin()">Sign in</button>
+                    <button onclick="signin()">تسجيل الدخول</button>
                 </div>
 
                 <div id="forgot-password-form" class="home-pane-content dark" style="display: none;">
-                    <h4>Forgot password?</h4>
-                    <input type="email" id="reset-password-email" placeholder="Email" onkeydown="if (event.keyCode === 13 ) requestPasswordReset();"/> <br/>
-                    <button onclick="requestPasswordReset()">Reset Password</button>
+                    <h4>نسيت كلمة السر؟</h4>
+                    <input type="email" id="reset-password-email" placeholder="البريد الإلكتروني" onkeydown="if (event.keyCode === 13 ) requestPasswordReset();"/> <br/>
+                    <button onclick="requestPasswordReset()">إعادة تعيين كلمة المرور</button>
                 </div>
 
                 <div id="reset-password-form" class="home-pane-content dark" style="display: none;">
-                    <input type="password" id="reset-password" placeholder="Password" onkeydown="if (event.keyCode === 13 ) resetPassword();" /> <br/>
-                    <input type="password" id="reset-password-conf" placeholder="Confirm Password" onkeydown="if (event.keyCode === 13 ) resetPassword();" /> <br/>
-                    <button onclick="resetPassword()">Reset Password</button>
+                    <input type="password" id="reset-password" placeholder="كلمه السر" onkeydown="if (event.keyCode === 13 ) resetPassword();" /> <br/>
+                    <input type="password" id="reset-password-conf" placeholder="تأكيد كلمة السر" onkeydown="if (event.keyCode === 13 ) resetPassword();" /> <br/>
+                    <button onclick="resetPassword()">إعادة تعيين كلمة المرور</button>
                 </div>
             </div>
 
             <div class="home-pane inactive-home-pane">
                 <div class="home-pane-content white">
-                    <h3>Become a partner</h3>
-                    <button onclick="switchToSignup()">Create Account</button>
+                    <h3>أصبح شريكا</h3>
+                    <button onclick="switchToSignup()">إنشاء حساب</button>
                 </div>
             </div>
         </div>
@@ -87,27 +90,27 @@
 
                     <div id="messages-btn" class="side-bar-btn clickable" onclick="navigateTo('messages')">
                         <img src="assets/msg-icon.png" data-icon-name="msg" class="clickable" />
-                        <span>Inbox</span>
+                        <span>صندوق البريد</span>
                     </div>
 
                     <div id="business-btn" class="side-bar-btn clickable" onclick="navigateTo('business')">
                         <img src="assets/briefcase-icon.png" data-icon-name="briefcase" class="clickable" />
-                        <span>Businesses</span>
+                        <span>الأعمال</span>
                     </div>
 
                     <div id="events-btn" class="side-bar-btn clickable" onclick="navigateTo('event')">
                         <img src="assets/calendar-icon.png" data-icon-name="calendar" class="clickable" />
-                        <span>Events</span>
+                        <span>الأحداث</span>
                     </div>
 
                     <div id="settings-btn" class="side-bar-btn clickable" onclick="navigateTo('settings')">
                         <img src="assets/gear-icon.png" data-icon-name="gear" class="clickable" />
-                        <span>Settings</span>
+                        <span>إعدادات</span>
                     </div>
 
                     <div class="side-bar-btn">
                         <img src="assets/gear-icon.png" data-icon-name="gear" class="invisible" />
-                        <span class="accent clickable underlined" onclick="signout()">Logout</span>
+                        <span class="accent clickable underlined" onclick="signout()">تسجيل خروج</span>
                     </div>
                 </div>
 

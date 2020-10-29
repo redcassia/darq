@@ -212,7 +212,7 @@ function queryOwnedBusinesses() {
 
 var currentForm;
 function loadForm(formName) {
-  if (currentForm != formName) {
+  if (formName.length > 0 && currentForm != formName) {
     currentForm = formName;
 
     DynamicLoader.unloadFrom('business-content');

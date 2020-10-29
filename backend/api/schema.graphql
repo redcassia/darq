@@ -11,20 +11,22 @@ type Query {
 }
 
 type Mutation {
+  setLocale(locale: Locale!): String
+
+  createPublicUser(locale: Locale): String!
+  authenticatePublicUser(id: ID!, locale: Locale): String!
+
+  createBusinessUser(email: String!, password: String!): Void
+  verifyBusinessUser(email: String!, token: String!): String!
+  authenticateBusinessUser(email: String!, password: String!): String!
+  changeBusinessUserPassword(oldPassword: String!, newPassword: String!): Void
+  requestBusinessUserPasswordReset(email: String!): Void
+  resetBusinessUserPassword(email: String!, token: String!, newPassword: String!): String!
+
   rateBusiness(id: ID!, stars: Int!): Void
 
   sendMessage(msg: String!, threadId: ID, targetBusinessId: ID): MessageThread!
   seeMessage(threadId: ID!, index: Int!): MessageThread!
-
-  setLocale(locale: Locale!): String
-
-  createPublicUser(locale: Locale): String!
-  createBusinessUser(email: String!, password: String!): String!
-
-  authenticatePublicUser(id: ID!, locale: Locale): String!
-  authenticateBusinessUser(email: String!, password: String!): String!
-
-  changeBusinessUserPassword(oldPassword: String!, newPassword: String!): Void
 
   addSelfEmployedBusiness(data: NewSelfEmployedBusinessInput!): Void
   updateSelfEmployedBusiness(id: ID!, data: UpdateSelfEmployedBusinessInput!): Void
@@ -109,7 +111,7 @@ type Message {
 type Admin {
   tentativeNewBusinesses: [Business!]!
   tentativeBusinessUpdates: [Business!]!
-  tentativeNewEvents: [Event!]!
+  tentativeNewEvents: [Event_noLocale!]!
 }
 
 interface Business {

@@ -312,7 +312,7 @@ class ProfileView {
     }
 
     if (b["curriculum"]) {
-      html += '<hr />' + this._text("Curriculum", b["curriculum"].join(', '));
+      html += '<hr />' + this._itemizedText("Curriculum", b["curriculum"]);
     }
 
     if (b["government_id"]) {

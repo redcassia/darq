@@ -137,6 +137,7 @@ function editBusiness(id) {
     [],
     () => {
       initializeForm(businesses[id]);
+      Form.applyEventHandlers();
     }
   );
 }

@@ -15,11 +15,11 @@ function updateProfessionRelevantFields(val, node) {
     if (line.classList.contains('form-line') && line.attributes['data-show-with']) {
       var show = line.attributes['data-show-with'].value;
       if (show.indexOf(val) != -1) {
-        $(line).show();
+        $(line).removeClass("hidden");
         Form.setRequired(line, true);
       }
       else {
-        $(line).hide();
+        $(line).addClass("hidden");
         Form.setRequired(line, false);
       }
     }

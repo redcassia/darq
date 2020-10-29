@@ -10,6 +10,9 @@ var fs = require('fs');
 var path = require('path')
 
 const strings = require('./locale')
+const Mailer = require('./mailer');
+const Mail = require('nodemailer/lib/mailer');
+const { verify } = require('crypto');
 
 class Database {
   constructor(config) {
@@ -21,7 +24,6 @@ class Database {
     return new Promise((resolve, reject) => {
       this.pool.getConnection(function(err, connection) {
         if (err) {
-          connection.release();
           console.log("Error getting a MySQL connection from pool. ", err);
           reject(err);
         }
@@ -285,7 +287,7 @@ function _localize(data, locale) {
   else {
     for (var key in data) {
       if (data[key] instanceof Object) {
-        data[key] = _localize(data, locale);
+        data[key] = _localize(data[key], locale);
       }
       else if (data[key] instanceof Array) {
         data[key] = data[key].map(_ => _localize(_, locale));
@@ -520,6 +522,10 @@ async function _storeAttachments(data) {
     data.display_picture = await _writeAttachmentToFile(data.display_picture);
   }
 
+  if (data.picture) {
+    data.picture = await _writeAttachmentToFile(data.picture);
+  }
+
   if (data.government_id) {
     data.government_id = await _writeAttachmentToFile(data.government_id);
   }
@@ -652,7 +658,10 @@ async function _processUpdatedPersonnel(id, data) {
     for (var i = 0; i < personnel.length; ++i) {
       if (
         data["old_personnel"].indexOf(personnel[i]["name"]) == -1
-        && data["personnel"].findIndex(_ => _["name"] == personnel[i]["name"]) == -1
+        && (
+          data["personnel"] === undefined ||
+          data["personnel"].findIndex(_ => _["name"] == personnel[i]["name"]) == -1
+        )
       ) {
         personnel.splice(i, 1); --i;
         updated = true;
@@ -668,13 +677,13 @@ async function _processUpdatedPersonnel(id, data) {
     for (var i = 0; i < data["personnel"].length; ++i) {
       var p = data["personnel"][i];
 
+      p = await _storeAttachments(p);
+
       const index = personnel.findIndex(_ => _["name"] == p["name"]);
       if (index == -1) {    // add
         personnel.push(p);
       }
       else {                // update
-        p = await _storeAttachments(p);
-
         if (p.attachments || p.old_attachments) {
           if (personnel[index].attachments) {
             p.attachments = _updateAttachments(
@@ -955,9 +964,13 @@ const resolvers = {
         )).map(_ => _ ? businessLoader.load(_) : null);
       }
 
-      return res
-        .filter(_ => _ != null)
-        .map(_ => _localize(_, user.locale));
+      res = res.filter(_ => _ != null);
+
+      for (var i = 0; i < res.length; ++i) {
+        res[i] = _localize(await res[i], user.locale);
+      }
+
+      return res;
     },
 
     async event(_, { id }, { user }) {
@@ -1021,9 +1034,13 @@ const resolvers = {
         )).map(_ => _ ? eventLoader.load(_) : null);
       }
 
-      return res
-        .filter(_ => _ != null)
-        .map(_ => _localize(_, user.locale));
+      res = res.filter(_ => _ != null);
+
+      for (var i = 0; i < res.length; ++i) {
+        res[i] = _localize(await res[i], user.locale);
+      }
+
+      return res;
     },
 
     // admin queries
@@ -1187,17 +1204,10 @@ const resolvers = {
     },
 
     async setLocale(_, { locale }, { user }) {
-      if (! user) {
-        throw new ApolloError(
-          "Sorry... You're not authenticated! :c",
-          'USER_NOT_AUTHENTICATED'
-        );
-      }
-
-      user.locale = locale;
+      _validateAuthenticatedPublicUser(user);
 
       return jsonwebtoken.sign(
-        user,
+        { id: user.id, type: 'PUBLIC', locale: locale },
         process.env.JWT_SECRET,
         { expiresIn: '1d' }
       );
@@ -1221,30 +1231,6 @@ const resolvers = {
       // return json web token
       return jsonwebtoken.sign(
         { id: id, type: 'PUBLIC', locale: locale || 'en' },
-        process.env.JWT_SECRET,
-        { expiresIn: '1d' }
-      );
-    },
-
-    async createBusinessUser(_, { email, password }) {
-      var id;
-      try {
-        const result = await db.query(
-          "INSERT INTO business_user (email, password) VALUES (?, ?)",
-          [ email, await bcrypt.hash(password, 10) ]
-        );
-        id = result.insertId;
-
-        // TODO: send confirmation email
-      }
-      catch(e) {
-        console.log(e);
-        throw new ApolloError("Failed to signup.", 'BUSINESS_USER_SIGNUP_FAILED');
-      }
-
-      // return json web token
-      return jsonwebtoken.sign(
-        { id: id, type: 'BUSINESS' },
         process.env.JWT_SECRET,
         { expiresIn: '1d' }
       );
@@ -1287,11 +1273,85 @@ const resolvers = {
       }
     },
 
+    async createBusinessUser(_, { email, password }) {
+      const token = cryptoRandomString({length: 128, type: 'url-safe'});
+
+      try {
+        const result = await db.query(
+          "INSERT INTO business_user (email, password, token) VALUES (?, ?, ?)",
+          [ email, await bcrypt.hash(password, 10), token ]
+        );
+
+        Mailer.newUser(email, token);
+      }
+      catch(e) {
+        console.log(e);
+        throw new ApolloError("Failed to signup.", 'BUSINESS_USER_SIGNUP_FAILED');
+      }
+    },
+
+    async verifyBusinessUser(_, { email, token }) {
+      var result;
+      try {
+        result = await db.query(
+          "SELECT id, verified, token FROM business_user WHERE email=?",
+          [ email ]
+        );
+      }
+      catch(e) {
+        console.log(e);
+        throw new ApolloError(
+          "Failed to verify user.",
+          'BUSINESS_USER_VERIFY_FAILED'
+        );
+      }
+
+      if (result.length != 1 || result[0].verified != 0 || result[0].token != token) {
+        throw new ApolloError(
+          "Invalid email or token.",
+          'BUSINESS_USER_VERIFY_REJECTED'
+        );
+      }
+
+      const id = result[0].id;
+
+      try {
+        await db.query(
+          `
+          UPDATE
+            business_user
+          SET
+            last_login=CURRENT_TIMESTAMP,
+            token=NULL,
+            verified=1
+          WHERE id=?
+          `, [ id ]
+        );
+      }
+      catch(e) {
+        console.log(e);
+        throw new ApolloError(
+          "Failed to verify user.",
+          'BUSINESS_USER_VERIFY_FAILED'
+        );
+      }
+
+      // delete cached information
+      businessUserLoader.clear(id);
+
+      // return json web token
+      return jsonwebtoken.sign(
+        { id: id, type: 'BUSINESS' },
+        process.env.JWT_SECRET,
+        { expiresIn: '1d' }
+      );
+    },
+
     async authenticateBusinessUser(_, { email, password }) {
       var result;
       try {
         result = await db.query(
-          "SELECT id, password FROM business_user WHERE email=?",
+          "SELECT id, verified, password FROM business_user WHERE email=?",
           [ email ]
         );
       }
@@ -1303,35 +1363,41 @@ const resolvers = {
         );
       }
 
-      if (result.length == 1 && await bcrypt.compare(password, result[0].password)) {
-        const id = result[0].id;
-
-        try {
-          db.query(
-            "UPDATE business_user SET last_login=CURRENT_TIMESTAMP WHERE id=?",
-            [ id ]
-          );
-        }
-        catch(e) {
-          console.log(e);
-        }
-
-        // delete cached information
-        businessUserLoader.clear(id);
-
-        // return json web token
-        return jsonwebtoken.sign(
-          { id: id, type: 'BUSINESS' },
-          process.env.JWT_SECRET,
-          { expiresIn: '1d' }
-        );
-      }
-      else {
+      if (result.length != 1 || ! (await bcrypt.compare(password, result[0].password))) {
         throw new ApolloError(
           "Invalid email or password.",
           'BUSINESS_USER_LOGIN_REJECTED'
         );
       }
+
+      if (result[0].verified == 0) {
+        throw new ApolloError(
+          "Your account is not activated yet. Please check your email inbox.",
+          'UNVERIFIED_BUSINESS_USER_LOGIN'
+        );
+      }
+
+      const id = result[0].id;
+
+      try {
+        db.query(
+          "UPDATE business_user SET last_login=CURRENT_TIMESTAMP WHERE id=?",
+          [ id ]
+        );
+      }
+      catch(e) {
+        console.log(e);
+      }
+
+      // delete cached information
+      businessUserLoader.clear(id);
+
+      // return json web token
+      return jsonwebtoken.sign(
+        { id: id, type: 'BUSINESS' },
+        process.env.JWT_SECRET,
+        { expiresIn: '1d' }
+      );
     },
 
     async changeBusinessUserPassword(_, { oldPassword, newPassword }, { user }) {
@@ -1373,6 +1439,112 @@ const resolvers = {
       }
     },
 
+    async requestBusinessUserPasswordReset(_, { email }) {
+      var result;
+      try {
+        result = await db.query(
+          "SELECT id, verified FROM business_user WHERE email=?",
+          [ email ]
+        );
+      }
+      catch(e) {
+        console.log(e);
+        return;
+      }
+
+      if (result.length != 1 || result[0].verified == 0) {
+        return;
+      }
+
+      const id = result[0].id;
+      const token = cryptoRandomString({length: 128, type: 'url-safe'});
+
+      try {
+        await db.query(
+          `
+          UPDATE
+            business_user
+          SET
+            token=?
+          WHERE id=?
+          `,
+          [ token, id ]
+        );
+      }
+      catch(e) {
+        console.log(e);
+        return;
+      }
+
+      // delete cached information
+      businessUserLoader.clear(id);
+
+      Mailer.resetPassword(email, token);
+    },
+
+    async resetBusinessUserPassword(_, { email, token, newPassword }) {
+      var result;
+      try {
+        result = await db.query(
+          "SELECT id, verified, token FROM business_user WHERE email=?",
+          [ email ]
+        );
+      }
+      catch(e) {
+        console.log(e);
+        throw new ApolloError(
+          "Failed to verify token.",
+          'BUSINESS_USER_TOKEN_RETRIEVE_FAILURE'
+        );
+      }
+
+      if (result.length != 1 || result[0].token != token) {
+        throw new ApolloError(
+          "Invalid email or token.",
+          'BUSINESS_USER_PASSWORD_RESET_REJECTED'
+        );
+      }
+
+      if (result[0].verified == 0) {
+        throw new ApolloError(
+          "Your account is not activated yet. Please check your email inbox.",
+          'UNVERIFIED_BUSINESS_USER_PASSWORD_RESET'
+        );
+      }
+
+      const id = result[0].id;
+
+      try {
+        await db.query(
+          `UPDATE
+            business_user
+          SET
+            password=?,
+            token=NULL
+          WHERE id=?
+          `,
+          [ await bcrypt.hash(newPassword, 10), id ]
+        );
+      }
+      catch(e) {
+        console.log(e);
+        throw new ApolloError(
+          "Failed to reset password.",
+          'BUSINESS_USER_PASSWORD_REST_FAILURE'
+        );
+      }
+
+      // delete cached information
+      businessUserLoader.clear(id);
+
+      // return json web token
+      return jsonwebtoken.sign(
+        { id: id, type: 'BUSINESS' },
+        process.env.JWT_SECRET,
+        { expiresIn: '1d' }
+      );
+    },
+
     async addSelfEmployedBusiness(_, { data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
 
@@ -1406,6 +1578,55 @@ const resolvers = {
     async addDomesticHelpBusiness(_, { data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
 
+      if (data["personnel"]) {
+        for (var p of data["personnel"]) {
+          if (p.profession == 'Driver') {
+            if (p.license_expiry_date === undefined || p.license_expiry_date === null) {
+              throw new ApolloError(
+                "Missing field 'license_expiry_date' in personnel[profession=Driver]",
+                'DOMESTIC_HELP_PERSONNEL_DATA_VALIDATION_ERROR'
+              );
+            }
+          }
+          else {
+            if (p.education === undefined || p.education === null) {
+              throw new ApolloError(
+                `Missing field 'education' in personnel[profession=${p.profession}]`,
+                'DOMESTIC_HELP_PERSONNEL_DATA_VALIDATION_ERROR'
+              );
+            }
+
+            if (p.height === undefined || p.height === null) {
+              throw new ApolloError(
+                `Missing field 'height' in personnel[profession=${p.profession}]`,
+                'DOMESTIC_HELP_PERSONNEL_DATA_VALIDATION_ERROR'
+              );
+            }
+
+            if (p.weight === undefined || p.weight === null) {
+              throw new ApolloError(
+                `Missing field 'weight' in personnel[profession=${p.profession}]`,
+                'DOMESTIC_HELP_PERSONNEL_DATA_VALIDATION_ERROR'
+              );
+            }
+
+            if (p.skills === undefined || p.skills === null) {
+              throw new ApolloError(
+                `Missing field 'education' in personnel[profession=${p.profession}]`,
+                'DOMESTIC_HELP_PERSONNEL_DATA_VALIDATION_ERROR'
+              );
+            }
+
+            if (p.number_of_children === undefined || p.number_of_children === null) {
+              throw new ApolloError(
+                `Missing field 'number_of_children' in personnel[profession=${p.profession}]`,
+                'DOMESTIC_HELP_PERSONNEL_DATA_VALIDATION_ERROR'
+              );
+            }
+          }
+        }
+      }
+
       data.type = 'DomesticHelpBusiness';
 
       _addBusiness(data, user.id);
@@ -1432,7 +1653,11 @@ const resolvers = {
         _updateBusiness(id, data);
       }
       else {
-        // TODO: send email notification
+        Mailer.businessUpdate(
+          (await businessUserLoader.load(user.id)).email,
+          (await businessLoader.load(id)).display_name,
+          true
+        );
       }
     },
 
@@ -1625,7 +1850,11 @@ const resolvers = {
 
           businessLoader.clear(id);
 
-          // TODO: send confirmation email
+          Mailer.businessAdd(
+            (await businessUserLoader.load(business.owner)).email,
+            business.display_name,
+            approve
+          );
         }
         catch (e) {
           console.log(e);
@@ -1727,7 +1956,11 @@ const resolvers = {
 
             businessLoader.clear(id);
 
-            // TODO: send confirmation email
+            Mailer.businessUpdate(
+              (await businessUserLoader.load(business.owner)).email,
+              business.display_name,
+              approve
+            );
           }
         }
       }
@@ -1761,7 +1994,11 @@ const resolvers = {
 
           eventLoader.clear(id);
 
-          // TODO: send confirmation email
+          Mailer.eventAdd(
+            (await businessUserLoader.load(event.owner)).email,
+            event.display_name,
+            approve
+          );
         }
         catch (e) {
           console.log(e);
@@ -1956,6 +2193,7 @@ const resolvers = {
       else low = messages.length - limit;
 
       if (low < 0) low = 0;
+      if (maxIndex == null) maxIndex = low + limit;
 
       return messages.slice(low, maxIndex);
     }

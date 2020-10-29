@@ -304,8 +304,8 @@ const _eventQueryFields = `
   attachments
 `;
 
-const graphqlEndpoint = 'https://redcassia.com:3000/api'
-const attachmentsEndpoint = "https://redcassia.com:3000/attachment/";
+const graphqlEndpoint = 'https://darq.qa/api'
+const attachmentsEndpoint = "https://darq.qa/attachment/";
 
 const enums = {
   SelfEmployedSubType: {

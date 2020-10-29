@@ -55,13 +55,13 @@
 
                 <div id="forgot-password-form" class="home-pane-content dark" style="display: none;">
                     <h4>Forgot password?</h4>
-                    <input type="email" placeholder="Email"/> <br/>
+                    <input type="email" id="reset-password-email" placeholder="Email" onkeydown="if (event.keyCode === 13 ) requestPasswordReset();"/> <br/>
                     <button onclick="requestPasswordReset()">Reset Password</button>
                 </div>
 
                 <div id="reset-password-form" class="home-pane-content dark" style="display: none;">
-                    <input type="password" placeholder="Password"/> <br/>
-                    <input type="password" placeholder="Confirm Password"/> <br/>
+                    <input type="password" id="reset-password" placeholder="Password" onkeydown="if (event.keyCode === 13 ) resetPassword();" /> <br/>
+                    <input type="password" id="reset-password-conf" placeholder="Confirm Password" onkeydown="if (event.keyCode === 13 ) resetPassword();" /> <br/>
                     <button onclick="resetPassword()">Reset Password</button>
                 </div>
             </div>

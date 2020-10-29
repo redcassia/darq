@@ -33,35 +33,28 @@ function splitAndRemoveRedundantPersonnel(initialData, data) {
         _["name"] == data["personnel"][i]["name"]
       );
 
-      data["personnel"][i] = Form.removeRedundancy(
-        initial,
-        data["personnel"][i]
-      );
+      if (initial) {
+        data["personnel"][i] = Form.removeRedundancy(
+          initial,
+          data["personnel"][i]
+        );
 
-      data["personnel"][i] = Form.splitAttachments(
-        data["personnel"][i],
-        'old_attachments',
-        'attachments'
-      );
+        data["personnel"][i] = Form.splitAttachments(
+          data["personnel"][i],
+          'old_attachments',
+          'attachments'
+        );
 
-      data["personnel"][i]["name"] = initial["name"];
+        data["personnel"][i]["name"] = initial["name"];
+      }
     }
 
-    if (
-      data["personnel"].length == 0
-      && data["old_personnel"].length == initialData["personnel"].length
-    ) {
-      delete data["old_personnel"];
+    if (data["personnel"].length == 0) {
       delete data["personnel"];
     }
-    else {
-      if (data["old_personnel"].length == 0) {
-        delete data["old_personnel"];
-      }
-  
-      if (data["personnel"].length == 0) {
-        delete data["personnel"];
-      }
+
+    if (data["old_personnel"].length == initialData["personnel"].length) {
+      delete data["old_personnel"];
     }
   }
 

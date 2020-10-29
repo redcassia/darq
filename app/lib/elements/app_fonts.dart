@@ -269,4 +269,10 @@ class AppFonts {
         fontWeight: FontWeight.w500,
         color: color);
   }
+  static TextStyle text11({Color color}) {
+    return GoogleFonts.roboto(
+        fontSize: 8.ssp,
+        fontWeight: FontWeight.normal,
+        color: color);
+  }
 }

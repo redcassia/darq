@@ -125,45 +125,48 @@ class _ChatRoomState extends State<ChatRoom> {
     return Column(children: [
       Visibility(
           child: Container(
-              padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 5.w),
+            margin: EdgeInsets.only(top: 8.h),
+              padding: EdgeInsets.symmetric(vertical: 5.h),
               width: double.infinity,
               decoration: BoxDecoration(
-                  color: Color(0xFFE1A854),
-                  borderRadius: BorderRadius.circular(15)),
+                  color: Color(0xFFC3E1E1)),
               child: Center(
                   child: Text(translate("new_messages"),
-                      style: AppFonts.text7(color: Colors.black87)))),
+                      style: AppFonts.text7w500(color: Colors.black54)))),
           visible: msg.index - 1 == _thread.senderLastSeenIndex),
-      Column(children: [
-        Container(
-            alignment:
-                msg.sender == "PUBLIC" ? Alignment.topRight : Alignment.topLeft,
-            child: Container(
-                constraints: BoxConstraints(maxWidth: 280.w),
-                padding: EdgeInsets.all(10.w),
-                margin: EdgeInsets.symmetric(vertical: 8.h),
-                decoration: BoxDecoration(
-                    color: msg.sender == "PUBLIC"
-                        ? Color(0xFF86C2C2)
-                        : Colors.white,
-                    borderRadius: BorderRadius.circular(15)),
-                child: Text(msg.msg,
-                    style: AppFonts.text7(
-                        color: msg.sender == "PUBLIC"
-                            ? Colors.white
-                            : Colors.black87)))),
-        msg.sender == "PUBLIC"
-            ? Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                    Session.formatDateTimeMessages(msg.time, fullDate: true),
-                    style: AppFonts.text8(color: Colors.black45)))
-            : Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                    Session.formatDateTimeMessages(msg.time, fullDate: true),
-                    style: AppFonts.text8(color: Colors.black45)))
-      ])
+      Padding(
+        padding:  EdgeInsets.symmetric(horizontal: 20.w),
+        child: Column(children: [
+          Container(
+              alignment:
+                  msg.sender == "PUBLIC" ? Alignment.topRight : Alignment.topLeft,
+              child: Container(
+                  constraints: BoxConstraints(maxWidth: 280.w),
+                  padding: EdgeInsets.all(10.w),
+                  margin: EdgeInsets.symmetric(vertical: 8.h),
+                  decoration: BoxDecoration(
+                      color: msg.sender == "PUBLIC"
+                          ? Color(0xFF86C2C2)
+                          : Colors.white,
+                      borderRadius: BorderRadius.circular(15)),
+                  child: Text(msg.msg,
+                      style: AppFonts.text7(
+                          color: msg.sender == "PUBLIC"
+                              ? Colors.white
+                              : Colors.black87)))),
+          msg.sender == "PUBLIC"
+              ? Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                      Session.formatDateTimeMessages(msg.time, fullDate: true),
+                      style: AppFonts.text8(color: Colors.black45)))
+              : Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                      Session.formatDateTimeMessages(msg.time, fullDate: true),
+                      style: AppFonts.text8(color: Colors.black45)))
+        ]),
+      )
     ]);
   }
 
@@ -247,7 +250,7 @@ class _ChatRoomState extends State<ChatRoom> {
               child: ListView.builder(
                   controller: _scrollController,
                   padding:
-                      EdgeInsets.only(left: 20.w, right: 20.w, bottom: 11.h),
+                      EdgeInsets.only(bottom: 11.h),
                   itemCount: _thread?.messages?.length ?? 0,
                   itemBuilder: (BuildContext context, int i) {
                     /// check if sender is current user id

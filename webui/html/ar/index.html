@@ -11,7 +11,68 @@
 
         <script src="https://kit.fontawesome.com/d3fa62ec11.js" crossorigin="anonymous"></script>
 
-        <style>#main-screen, input, select{ direction: rtl; }</style>
+        <script>
+            function switchToSignup() {
+                const slideDisplacement = $("#signin-screen > .active-home-pane").offset().left;
+
+                $(".inactive-home-pane > .home-pane-content").hide();
+                $("#signin-form").hide();
+                $("#forgot-password-form").hide();
+                $("#reset-password-form").hide();
+
+                $("#signup-form").css({
+                    right: '-100%'
+                }).animate({
+                    right: '50%'
+                }, slideSpeed);
+                $("#signin-screen > .inactive-home-pane").animate({
+                    right: '-=' + slideDisplacement + 'px'
+                }, slideSpeed, function() {
+                    $("#signup-screen").css('z-index', '1');
+                    $("#signin-screen").css('z-index', '0');
+                    $(".inactive-home-pane > .home-pane-content").show();
+                    $("#signin-form").show();
+                    $(this).css({
+                        right: '0px'
+                    })
+                });
+            }
+
+            function switchToSignin() {
+                const slideDisplacement = $("#signin-screen > .active-home-pane").offset().left;
+
+                $(".inactive-home-pane > .home-pane-content").hide();
+                $("#signup-form").hide();
+
+                $("#signin-form").css({
+                    right: '200%'
+                }).animate({
+                    right: '50%'
+                }, slideSpeed);
+                $("#signup-screen > .inactive-home-pane").animate({
+                    right: '+=' + slideDisplacement + 'px'
+                }, slideSpeed, function() {
+                    $("#signin-screen").css('z-index', '1');
+                    $("#signup-screen").css('z-index', '0');
+                    $(".inactive-home-pane > .home-pane-content").show();
+                    $("#signup-form").show();
+                    $(this).css({
+                        right: '0px'
+                    })
+                });
+            }
+
+            function welcomeToSignin(d) {
+                $("#welcome-screen > .inactive-home-pane").delay(d).animate({
+                    width: '45%'
+                }, welcomeSpeed, "easeInQuad", function() {
+                    $("#welcome-screen").hide();
+                });
+            }
+
+        </script>
+
+        <style>#main-screen, input, select{ direction: rtl; } button{border-radius: 0px 34.0741px;}</style>
 
         <div id="locale-switcher" onclick="switchLocale('en')" style="left: 0;">English</div>
 
@@ -20,16 +81,9 @@
         </div>
 
         <div id="signup-screen" class="screen" style="z-index: 0;">
-            <div class="home-pane inactive-home-pane">
-                <div class="home-pane-content white">
-                    <h3>مرحبا بعودتك</h3>
-                    <button onclick="switchToSignin()">تسجيل الدخول</button>
-                </div>
-            </div>
-
             <div class="home-pane active-home-pane">
                 <div id="signup-form" class="home-pane-content dark">
-                    <h4>
+                    <h4 style="text-align: right;">
                         <span class="accent h3">DarQ</span>
                         <span>إنشاء حساب على</span>
                     </h4>
@@ -39,12 +93,26 @@
                     <button onclick="signup()">إنشاء حساب</button>
                 </div>
             </div>
+
+            <div class="home-pane inactive-home-pane">
+                <div class="home-pane-content white">
+                    <h3>مرحبا بعودتك</h3>
+                    <button onclick="switchToSignin()">تسجيل الدخول</button>
+                </div>
+            </div>
         </div>
 
         <div id="signin-screen" class="screen" style="z-index: 1;">
+            <div class="home-pane inactive-home-pane">
+                <div class="home-pane-content white">
+                    <h3>أصبح شريكا</h3>
+                    <button onclick="switchToSignup()">إنشاء حساب</button>
+                </div>
+            </div>
+
             <div class="home-pane active-home-pane">
                 <div id="signin-form" class="home-pane-content dark" style="display: none;">
-                    <h4>
+                    <h4 style="text-align: right;">
                         <span class="accent h3">DarQ</span>
                         <span>سجّل الدخول إلى</span>
                     </h4>
@@ -68,13 +136,6 @@
                     <button onclick="resetPassword()">إعادة تعيين كلمة المرور</button>
                 </div>
             </div>
-
-            <div class="home-pane inactive-home-pane">
-                <div class="home-pane-content white">
-                    <h3>أصبح شريكا</h3>
-                    <button onclick="switchToSignup()">إنشاء حساب</button>
-                </div>
-            </div>
         </div>
 
         <div id="welcome-screen" class="screen" style="z-index: 2;">
@@ -85,7 +146,7 @@
             <div class="screen-body">
                 <div class="side-bar">
                     <div class="side-bar-btn" style="text-align: right;">
-                        <img id="hamburger-btn" class="clickable" onClick="toggleHamburger()" src="assets/hamburger-icon.png" data-icon-name="hamburger" class="clickable" />
+                        <img id="hamburger-btn" class="clickable" onClick="toggleHamburger()" src="assets/hamburger-icon.png" data-icon-name="hamburger" class="clickable" style="transform: scaleX(-1);" />
                     </div>
 
                     <div id="messages-btn" class="side-bar-btn clickable" onclick="navigateTo('messages')">

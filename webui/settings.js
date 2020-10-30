@@ -32,3 +32,5 @@ function changePassword() {
     })
   }
 }
+
+$(document).ready(Form.applyEventHandlers);

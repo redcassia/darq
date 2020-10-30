@@ -740,17 +740,17 @@ hr {
 /* styles for data preview */
 
 .profile-left-pane {
-    float: left;
+    display: inline-block;
     max-width: 500px;
-    padding-right: 50px;
+    padding-inline-end: 50px;
 }
 
 .profile-right-pane {
-    float: left;
+    display: inline-block;
     max-width: 500px;
-    padding-left: 50px;
+    padding-inline-start: 50px;
 
-    border-left: solid 1px var(--medium-dark);
+    border-inline-start: solid 1px var(--medium-dark);
 }
 
 .profile-left {

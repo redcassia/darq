@@ -19,5 +19,7 @@ $(document).ready(function () {
     await GraphQL.fillOptionsFromEnum("City", [
       "child-education-city"
     ]);
+
+    if (formLoadOnComplete) formLoadOnComplete();
   });
 });

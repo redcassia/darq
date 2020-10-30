@@ -19,5 +19,7 @@ $(document).ready(function () {
     await GraphQL.fillOptionsFromEnum("City", [
       "beauty-city"
     ]);
+
+    if (formLoadOnComplete) formLoadOnComplete();
   });
 });

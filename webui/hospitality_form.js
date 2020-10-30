@@ -23,5 +23,7 @@ $(document).ready(function () {
     await GraphQL.fillOptionsFromEnum("Currency", [
       "hospitality-fees-currency"
     ]);
+
+    if (formLoadOnComplete) formLoadOnComplete();
   });
 });

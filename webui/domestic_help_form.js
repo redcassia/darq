@@ -64,5 +64,7 @@ $(document).ready(function () {
     await GraphQL.fillOptionsFromEnum("Currency", [
       "domestic-help-personnel-salary-currency"
     ]);
+
+    if (formLoadOnComplete) formLoadOnComplete();
   })
 });

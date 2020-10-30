@@ -15,5 +15,7 @@ $(document).ready(function () {
     await GraphQL.fillOptionsFromEnum("City", [
       "stationery-city"
     ]);
+
+    if (formLoadOnComplete) formLoadOnComplete();
   });
 });

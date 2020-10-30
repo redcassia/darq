@@ -211,9 +211,14 @@ function queryOwnedBusinesses() {
 }
 
 var currentForm;
-function loadForm(formName) {
+var formLoadOnComplete;
+function loadForm(formName, onComplete) {
+
+  $("#business-type-select").val(formName);
+
   if (formName.length > 0 && currentForm != formName) {
     currentForm = formName;
+    formLoadOnComplete = onComplete;
 
     DynamicLoader.unloadFrom('business-content');
     DynamicLoader.loadTo(
@@ -221,7 +226,12 @@ function loadForm(formName) {
       formName + '.html',
       formName + '.js',
       [],
-      Form.applyEventHandlers
+      () => {
+        var hash = window.location.hash.split('&');
+        hash[1] = formName;
+        window.location.hash = hash.join('&');
+        Form.applyEventHandlers();
+      }
     );
   }
 }

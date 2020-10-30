@@ -364,8 +364,17 @@ function isValidEmail(email) {
   return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email);
 }
 
+var showLoadingScreen;
+function _attemptToShowLoadBlanket() {
+  if (inWelcome) {
+    showLoadingScreen = setTimeout(_attemptToShowLoadBlanket, 50);
+  }
+  else {
+    $("#loading-blanket").show();
+  }
+}
 async function loadingScreen(func) {
-  var showLoadingScreen = setTimeout(() => $("#loading-blanket").show(), 50);
+  showLoadingScreen = setTimeout(_attemptToShowLoadBlanket, 50);
 
   await func();
 

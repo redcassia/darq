@@ -91,15 +91,23 @@ function queryOwnedEvents() {
   });
 }
 
-function showCreateForm() {
+var formLoadOnComplete;
+function showCreateForm(onComplete) {
+  formLoadOnComplete = onComplete;
+
   DynamicLoader.unloadFrom('event-content');
   DynamicLoader.loadTo(
     'event-content',
     'event_form.html',
     'event_form.js',
     [],
-    Form.applyEventHandlers
-  );
+    () => {
+      var hash = window.location.hash.split('&');
+      hash[1] = 'event_form';
+      window.location.hash = hash.join('&');
+      Form.applyEventHandlers();
+    }
+);
 }
 
 $(document).ready(queryOwnedEvents);

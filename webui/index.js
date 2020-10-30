@@ -1,9 +1,17 @@
 const slideSpeed = 150;
-const welcomeSpeed = 200;
+const welcomeSpeed = 150;
 
 function switchLocale(locale) {
   CookieManager.set("locale", locale, 1000);
-  location.reload();
+  $("#welcome-screen").show();
+  $("#main-screen").hide();
+  $("#welcome-screen > .inactive-home-pane").animate({
+    height: '100%',
+    width: '100%',
+    left: '0'
+  }, welcomeSpeed, "easeInQuad", function() {
+    location.reload();
+  });
 }
 
 function switchToForgotPassword() {
@@ -26,7 +34,9 @@ function switchToWelcome() {
   welcomeToDarQ(0);
 }
 
+var inWelcome = true;
 function welcomeToDarQ(d) {
+  inWelcome = true;
   $("#welcome-screen > .inactive-home-pane").delay(d).animate({
     height: '64px',
     width: '100%',
@@ -34,6 +44,7 @@ function welcomeToDarQ(d) {
   }, welcomeSpeed, "easeInQuad", function() {
     $("#welcome-screen").hide();
     $("#main-screen").show();
+    inWelcome = false;
   });
 }
 
@@ -50,26 +61,31 @@ function setGlobalEventHandlers() {
   });
 }
 
-function loadFirstPage() {
-  GraphQL.query(`
-    query {
-      user {
-        owned_businesses {
-          id
+function loadFirstPage(path) {
+  if (path !== undefined && path.length > 0) {
+    navigateTo(path, () => { welcomeToDarQ(200); });
+  }
+  else {
+    GraphQL.query(`
+      query {
+        user {
+          owned_businesses {
+            id
+          }
         }
       }
-    }
-  `).then(res => {
-    if (! res.hasError) {
-      businesses = res.data["owned_businesses"];
-      if (res.data["user"]["owned_businesses"].length > 0) {
-        navigateTo('messages');
+    `).then(res => {
+      if (! res.hasError) {
+        businesses = res.data["owned_businesses"];
+        if (res.data["user"]["owned_businesses"].length > 0) {
+          navigateTo('messages', () => { welcomeToDarQ(200); });
+        }
+        else {
+          navigateTo('welcome', () => { welcomeToDarQ(200); });
+        }
       }
-      else {
-        navigateTo('welcome');
-      }
-    }
-  });
+    });
+  }
 }
 
 var resetPwdEmail;
@@ -96,8 +112,11 @@ $(document).ready(function() {
       if (! res.hasError) {
         $("#signin-screen").hide();
         $("#signup-screen").hide();
-        loadFirstPage();
-        welcomeToDarQ(400);
+        var path = hash[0].length > 0 ? hash : undefined;
+        if (path !== undefined && path.length > 0) {
+          path[0] = path[0].substr(1);
+        }
+        loadFirstPage(path);
       }
       else {
         $("#signin-form").show();
@@ -285,24 +304,36 @@ function toggleHamburger() {
   $(".side-bar").toggleClass('open');
 }
 
-function navigateTo(content) {
+function navigateTo(path, onComplete) {
+
+  if (typeof path == 'string') {
+    path = [ path ];
+  }
+
   $(".side-bar").children().removeClass("active");
 
   DynamicLoader.unloadFrom('content');
 
-  switch(content) {
+  switch(path[0]) {
     case 'welcome':
       DynamicLoader.loadTo('content',
-        'welcome.html'
+        'welcome.html',
+        '',
+        [],
+        onComplete
       );
+      window.location.hash = '#welcome';
       break;
 
     case 'messages':
       DynamicLoader.loadTo('content',
         'messages.html',
-        'messages.js'
+        'messages.js',
+        [],
+        onComplete
       );
       $('#messages-btn').addClass("active");
+      window.location.hash = '#messages';
       break;
 
     case 'business':
@@ -318,9 +349,14 @@ function navigateTo(content) {
             src: 'profile_view.js',
             singleLoad: true
           }
-        ]
+        ],
+        () => {
+          if (path.length > 1) loadForm(path[1], onComplete);
+          else if (onComplete) onComplete();
+        }
       );
       $('#business-btn').addClass("active");
+      window.location.hash = '#business';
       break;
 
     case 'event':
@@ -336,9 +372,14 @@ function navigateTo(content) {
             src: 'profile_view.js',
             singleLoad: true
           }
-        ]
+        ],
+        () => {
+          if (path.length > 1 && path[1] == 'event_form') showCreateForm(onComplete);
+          else if (onComplete) onComplete();
+        }
       );
       $('#events-btn').addClass("active");
+      window.location.hash = '#event';
       break;
 
     case 'settings':
@@ -350,9 +391,11 @@ function navigateTo(content) {
             src: 'form.js',
             singleLoad: true
           }
-        ]
+        ],
+        onComplete
       );
       $('#settings-btn').addClass("active");
+      window.location.hash = '#settings';
       break;
 
     default: break;

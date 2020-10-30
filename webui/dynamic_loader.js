@@ -79,6 +79,9 @@ class DynamicLoader {
         if (script && script.length > 0) {
           DynamicLoader.loadScript(tagId, script, onload);
         }
+        else {
+          if (onload) onload();
+        }
       };
       xhr.send();
     }

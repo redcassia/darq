@@ -55,5 +55,7 @@ $(document).ready(function() {
     await GraphQL.fillOptionsFromEnum("Currency", [
       "event-ticket-price-currency"
     ]);
+
+    if (formLoadOnComplete) formLoadOnComplete();
   });
 });

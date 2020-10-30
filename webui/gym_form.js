@@ -21,5 +21,7 @@ $(document).ready(function () {
     await GraphQL.fillOptionsFromEnum("Genders", [
       "gym-genders"
     ]);
+
+    if (formLoadOnComplete) formLoadOnComplete();
   });
 });

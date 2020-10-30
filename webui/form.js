@@ -426,7 +426,7 @@ class Form {
     )) {
       alert(
         getString('REQUIRED_FIELD_ALERT_1') + 
-        this.element.attributes['data-friendly-name'].value +
+        input.attributes['data-friendly-name'].value +
         getString('REQUIRED_FIELD_ALERT_2')
       );
       throw new Error("Form validation failed");

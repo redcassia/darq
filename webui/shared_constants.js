@@ -1,23 +1,227 @@
-const _businessApproveStatus = {
-  TENTATIVE: "Your business is waiting to be approved.",
-  APPROVED: "Congratulations! Your business is approved and will be listed on DarQ in the next 24 hours.",
-  APPROVED_AND_LISTED: "Your business is listed on DarQ!",
-  REJECTED: "Your business information has been rejected. Please contact DarQ.",
-};
 
-const _businessUpdateApproveStatus = {
-  TENTATIVE: "The updated data is waiting to be approved.",
-  APPROVED: "The updated data has been approved and will be listed shortly.",
-  APPROVED_AND_LISTED: "The updated data has been approved and listed on DarQ!",
-  REJECTED: "The updated information has been rejected. Please contact the DarQ.",
-};
+const graphqlEndpoint = 'https://darq.qa/api'
+const attachmentsEndpoint = "https://darq.qa/attachment/";
 
-const _eventApproveStatus = {
-  TENTATIVE: "Your event is waiting to be approved.",
-  APPROVED: "Congratulations! Your event is approved and will be listed on DarQ in the next 24 hours.",
-  APPROVED_AND_LISTED: "Your event is listed on DarQ!",
-  REJECTED: "Your event information has been rejected. Please contact DarQ.",
-};
+const strings = {
+  BUSINESS_APPROVE_STATUS: {
+    en: {
+      TENTATIVE: "Your business is waiting to be approved.",
+      APPROVED: "Congratulations! Your business is approved and will be listed on DarQ in the next 24 hours.",
+      APPROVED_AND_LISTED: "Your business is listed on DarQ!",
+      REJECTED: "Your business information has been rejected. Please contact DarQ administrators.",
+    },
+    ar: {
+      TENTATIVE: "عملك ينتظر الموافقة.",
+      APPROVED: "تهانينا! تمت الموافقة على عملك وسيتم إدراجه في DarQ خلال الـ 24 ساعة القادمة.",
+      APPROVED_AND_LISTED: "عملك مدرج في DarQ!",
+      REJECTED: "تم رفض معلومات عملك. يرجى الاتصال بمسؤولي DarQ.",
+    },
+  },
+
+  BUSINESS_UPDATE_APPROVE_STATUS: {
+    en: {
+      TENTATIVE: "The updated data is waiting to be approved.",
+      APPROVED: "The updated data has been approved and will be listed shortly.",
+      APPROVED_AND_LISTED: "The updated data has been approved and listed on DarQ!",
+      REJECTED: "The updated information has been rejected. Please contact the DarQ administrators.",
+    },
+    ar: {
+      TENTATIVE: "البيانات المحدثة في انتظار الموافقة عليها.",
+      APPROVED: "تمت الموافقة على البيانات المحدثة وسيتم إدراجها قريبًا.",
+      APPROVED_AND_LISTED: "تمت الموافقة على البيانات المحدثة وإدراجها في DarQ!",
+      REJECTED: "تم رفض المعلومات المحدثة. يرجى الاتصال بمسؤولي DarQ.",
+    },
+  },
+
+  EVENT_APPROVE_STATUS: {
+    en: {
+      TENTATIVE: "Your event is waiting to be approved.",
+      APPROVED: "Congratulations! Your event is approved and will be listed on DarQ in the next 24 hours.",
+      APPROVED_AND_LISTED: "Your event is listed on DarQ!",
+      REJECTED: "Your event information has been rejected. Please contact DarQ administrators.",
+    },
+    ar: {
+      TENTATIVE: "حدثك ينتظر الموافقة عليه.",
+      APPROVED: "تهانينا! تمت الموافقة على الحدث الخاص بك وسيتم إدراجه في DarQ خلال الـ 24 ساعة القادمة.",
+      APPROVED_AND_LISTED: "حدثك مدرج في DarQ!",
+      REJECTED: "تم رفض معلومات الحدث الخاص بك. يرجى الاتصال بمسؤولي DarQ.",
+    },
+  },
+
+  BUSINESS_ADD_SUCCESS_ALERT: {
+    en: "Your business has been added. The data will be reviewed and we will contact you shortly.",
+    ar: "تمت إضافة عملك. ستتم مراجعة البيانات وسنتصل بك قريبًا.",
+  },
+
+  BUSINESS_ADD_FAIL_ALERT: {
+    en: "Failed to add business.",
+    ar: "فشل إضافة العمل.",
+  },
+
+  BUSINESS_UPDATE_SUCCESS_ALERT: {
+    en: "Your business has been updated. The data will be reviewed and we will contact you shortly.",
+    ar: "تم تحديث عملك. ستتم مراجعة البيانات وسنتصل بك قريبًا.",
+  },
+
+  BUSINESS_UPDATE_FAIL_ALERT: {
+    en: "Failed to update business.",
+    ar: "فشل تحديث العمل",
+  },
+
+  REJECTED: {
+    en: "REJECTED",
+    ar: "مرفوض",
+  },
+
+  EDIT: {
+    en: "Edit",
+    ar: "تعديل",
+  },
+
+  MISSING_EMAIL_ALERT: {
+    en: "Please enter your email.",
+    ar: "يرجى إدخال البريد الإلكتروني الخاص بك.",
+  },
+
+  INVALID_EMAIL_ALERT: {
+    en: "Please enter a valid email address.",
+    ar: "يرجى إدخال بريد إلكتروني صالح.",
+  },
+
+  MISSING_PASSWORD_ALERT: {
+    en: "Please enter your password.",
+    ar: "يرجى إدخال كلمة السر.",
+  },
+
+  SHORT_PASSWORD_ALERT: {
+    en: "Your password must be 8 characters or more.",
+    ar: "يجب أن تتكون كلمة السر الخاصة بك من 8 أحرف أو أكثر.",
+  },
+
+  MISSING_PASSWORD_CONFIRM_ALERT: {
+    en: "Please confirm your password.",
+    ar: "يرجى تأكيد كلمة السر الخاصة بك.",
+  },
+
+  MISMATCHING_PASSWORDS_ALERT: {
+    en: "Passwords do not match.",
+    ar: "كلمة السر غير مطابقة.",
+  },
+
+  SINGUP_SUCCESS_ALERT: {
+    en: "Your account has been created. Please check your inbox to activate your account.",
+    ar: "لقد تم إنشاء حسابك. يرجى التحقق من البريد الوارد الخاص بك لتفعيل حسابك.",
+  },
+
+  SINGIN_REJECTED_ALERT: {
+    en: "Invalid email or password.",
+    ar: "البريد الإلكتروني أو كلمة السر خاطئة.",
+  },
+
+  CONFIRM_LOGOUT: {
+    en: "Are you sure you want to Logout?",
+    ar: "هل أنت متأكد أنك تريد تسجيل الخروج؟",
+  },
+
+  RESET_PASSWORD_REQUEST_SUCCESS_ALERT: {
+    en: "Please check your email.",
+    ar: "يرجى التحقق من بريدك الالكتروني.",
+  },
+
+  RESET_PASSWORD_REQUEST_FAIL_ALERT: {
+    en: "Failed to request a password reset.",
+    ar: "فشل طلب إعادة تعيين كلمة السر.",
+  },
+
+  RESET_PASSWORD_FAIL_ALERT: {
+    en: "Reset password failed.",
+    ar: "فشل إعادة تعيين كلمة السر.",
+  },
+
+  YOU: {
+    en: "You",
+    ar: "أنت",
+  },
+
+  NEW_MESSAGES: {
+    en: "New messages",
+    ar: "رسائل جديدة",
+  },
+
+  PASSWORD_CHANGE_SUCCESS_ALERT: {
+    en: "Your password has been changed.",
+    ar: "تم تغيير كلمة السر الخاصة بك.",
+  },
+
+  PASSWORD_CHANGE_FAIL_ALERT: {
+    en: "Password change failed.",
+    ar: "فشل تغيير كلمة السر.",
+  },
+
+  REQUIRED_FIELD_ALERT_1: {
+    en: "",
+    ar: "لا يمكن ترك ",
+  },
+
+  REQUIRED_FIELD_ALERT_2: {
+    en: " cannot be left empty",
+    ar: " فارغا"
+  },
+}
+
+function getString(str) {
+  return strings[str][CookieManager.get("locale")];
+}
+
+function openInNewTab(url) {
+  if (! url.startsWith("http")) url = 'https://' + url;
+  console.log(`Opening ${url}`);
+  var win = window.open(url, '_blank');
+  win.focus();
+}
+
+function equals(a, b) {
+  if (a === b) {
+    return true;
+  }
+  else if (a instanceof Array && b instanceof Array) {
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; ++i) {
+      if (! equals(a[i], b[i])) return false;
+    }
+    return true;
+  }
+  else if (a instanceof Object && b instanceof Object) {
+    for (var key in a) {
+      if (
+        (b[key] === undefined && a[key] !== undefined) ||
+        ! equals(a[key], b[key])
+      ) return false;
+    }
+    for (var key in b) {
+      if (
+        a[key] === undefined && b[key] !== undefined
+      ) return false;
+    }
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+function isValidEmail(email) {
+  return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email);
+}
+
+async function loadingScreen(func) {
+  var showLoadingScreen = setTimeout(() => $("#loading-blanket").show(), 50);
+
+  await func();
+
+  clearTimeout(showLoadingScreen);
+  $("#loading-blanket").hide();
+}
 
 const __elementaryBusinessQueryFields = `
   id
@@ -303,9 +507,6 @@ const _eventQueryFields = `
   organizer
   attachments
 `;
-
-const graphqlEndpoint = 'https://darq.qa/api'
-const attachmentsEndpoint = "https://darq.qa/attachment/";
 
 const enums = {
   SelfEmployedSubType: {
@@ -2051,53 +2252,3 @@ const enums = {
     },
   }
 };
-
-function openInNewTab(url) {
-  if (! url.startsWith("http")) url = 'https://' + url;
-  console.log(`Opening ${url}`);
-  var win = window.open(url, '_blank');
-  win.focus();
-}
-
-function equals(a, b) {
-  if (a === b) {
-    return true;
-  }
-  else if (a instanceof Array && b instanceof Array) {
-    if (a.length != b.length) return false;
-    for (var i = 0; i < a.length; ++i) {
-      if (! equals(a[i], b[i])) return false;
-    }
-    return true;
-  }
-  else if (a instanceof Object && b instanceof Object) {
-    for (var key in a) {
-      if (
-        (b[key] === undefined && a[key] !== undefined) ||
-        ! equals(a[key], b[key])
-      ) return false;
-    }
-    for (var key in b) {
-      if (
-        a[key] === undefined && b[key] !== undefined
-      ) return false;
-    }
-    return true;
-  }
-  else {
-    return false;
-  }
-}
-
-function isValidEmail(email) {
-  return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email);
-}
-
-async function loadingScreen(func) {
-  var showLoadingScreen = setTimeout(() => $("#loading-blanket").show(), 50);
-
-  await func();
-
-  clearTimeout(showLoadingScreen);
-  $("#loading-blanket").hide();
-}

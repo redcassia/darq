@@ -119,32 +119,32 @@ function signup() {
   var pass_conf = document.getElementById("signup-password-confirm").value;
 
   if (! email) {
-    alert("Please enter your email");
+    alert(getString('MISSING_EMAIL_ALERT'));
     return;
   }
 
   if (! isValidEmail(email)) {
-    alert("Please enter a valid email address");
+    alert(getString('INVALID_EMAIL_ALERT'));
     return;
   }
 
   if (! pass) {
-    alert("Please enter your password");
+    alert(getString('MISSING_PASSWORD_ALERT'));
     return;
   }
 
   if (pass.length < 8) {
-    alert("Your password must be 8 characters or more");
+    alert(getString('SHORT_PASSWORD_ALERT'));
     return;
   }
 
   if (! pass_conf) {
-    alert("Please confirm your password");
+    alert(getString('MISSING_PASSWORD_CONFIRM_ALERT'));
     return;
   }
 
   if (pass != pass_conf) {
-    alert("Passwords do not match");
+    alert(getString('MISMATCHING_PASSWORDS_ALERT'));
     return;
   }
 
@@ -157,7 +157,7 @@ function signup() {
     "password": pass
   }).then(res => {
     if (! res.hasError) {
-      alert("Your account has been created. Please check your inbox to activate your account.");
+      alert('SINGUP_SUCCESS_ALERT');
       switchToSignin();
     }
     else {
@@ -171,12 +171,12 @@ function signin() {
   var pass = document.getElementById("signin-password").value;
 
   if (! email) {
-    alert("Please enter your email");
+    alert(getString('MISSING_EMAIL_ALERT'));
     return;
   }
 
   if (! pass) {
-    alert("Please enter your password");
+    alert(getString('MISSING_PASSWORD_ALERT'));
     return;
   }
 
@@ -194,12 +194,12 @@ function signin() {
       switchToWelcome();
     }
     else {
-      alert(res.errors[0]["message"]);
+      alert('SIGNIN_REJECTED_ALERT');
     }
   });
 }
 function signout() {
-  if (confirm("Are you sure you want to Logout?")) {
+  if (confirm(getString('CONFIRM_LOGOUT'))) {
     CookieManager.clear('token');
     location.reload();
   }
@@ -210,12 +210,12 @@ function requestPasswordReset() {
   var email = document.getElementById("reset-password-email").value;
 
   if (! email) {
-    alert("Please enter your email");
+    alert(getString('MISSING_EMAIL_ALERT'));
     return;
   }
 
   if (! isValidEmail(email)) {
-    alert("Please enter a valid email address");
+    alert(getString('INVALID_EMAIL_ALERT'));
     return;
   }
 
@@ -227,10 +227,10 @@ function requestPasswordReset() {
     email: email
   }).then(res => {
     if (! res.hasError) {
-      alert("Please check your email.");
+      alert(getString('RESET_PASSWORD_REQUEST_SUCCESS_ALERT'));
     }
     else {
-      alert(res.errors[0]["message"]);
+      alert(getString('RESET_PASSWORD_REQUEST_FAIL_ALERT'));
     }
   });
 }
@@ -241,22 +241,22 @@ function resetPassword() {
   var pass_conf = document.getElementById("reset-password-conf").value;
 
   if (! pass) {
-    alert("Please enter your password");
+    alert(getString('MISSING_PASSWORD_ALERT'));
     return;
   }
 
   if (pass.length < 8) {
-    alert("Your password must be 8 characters or more");
+    alert(getString('SHORT_PASSWORD_ALERT'));
     return;
   }
 
   if (! pass_conf) {
-    alert("Please confirm your password");
+    alert(getString('MISSING_PASSWORD_CONFIRM_ALERT'));
     return;
   }
 
   if (pass != pass_conf) {
-    alert("Passwords do not match");
+    alert(getString('MISMATCHING_PASSWORDS_ALERT'));
     return;
   }
 
@@ -276,7 +276,7 @@ function resetPassword() {
       switchToWelcome();
     }
     else {
-      alert(res.errors[0]["message"]);
+      alert(getString('RESET_PASSWORD_FAIL_ALERT'));
     }
   });
 }

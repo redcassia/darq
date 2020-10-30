@@ -9,10 +9,10 @@ function changePassword() {
   }
 
   if (data["newPassword"].length < 8) {
-    alert("Password must be 8 characters or more");
+    alert(getString('SHORT_PASSWORD_ALERT'));
   }
   else if (data["newPassword"] != data["confirm"]) {
-    alert("Passwords do not match!");
+    alert(getString('MISMATCHING_PASSWORDS_ALERT'));
   }
   else {
     delete data["confirm"];
@@ -23,11 +23,11 @@ function changePassword() {
       }
     `, data).then(res => {
       if (! res.hasError) {
-        alert("Your password has been changed.");
+        alert(getString('PASSWORD_CHANGE_SUCCESS_ALERT'));
         navigateTo('settings');
       }
       else {
-        alert(res.errors[0]["message"]);
+        alert(getString('PASSWORD_CHANGE_FAIL_ALERT'));
       }
     })
   }

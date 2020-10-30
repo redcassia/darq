@@ -9,7 +9,9 @@ function createThreadPreview(thread) {
   var lastMessage = thread.messages[thread.messages.length - 1];
   var preview = lastMessage.msg;
   var newCount = lastMessage.index - thread.targetLastSeenIndex;
-  if (lastMessage.sender == 'BUSINESS') preview = 'You: ' + preview;
+  if (lastMessage.sender == 'BUSINESS') {
+    preview = `${getString('YOU')}: ${preview}`
+  }
   if (preview.length > 30) preview = preview.slice(0, 30) + "...";
 
   return `
@@ -31,7 +33,7 @@ function updateThreadView(scrollToBottom) {
     `;
 
     if (m.index == activeMsgThread.targetLastSeenIndex && m.index != lastIndex) {
-      html += `<div class="new-messages-separator">New messages</div>`;
+      html += `<div class="new-messages-separator">${getString('NEW_MESSAGES')}</div>`;
     }
   }
 

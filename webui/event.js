@@ -12,7 +12,7 @@ function updateEventsMenu() {
       <div
         class="content-submenu-clickable-box"
         onclick="loadEvent(${e["id"]})"
-      >${e["approved"] == 'REJECTED' ? "[REJECTED] - " : ""}${e["display_name"]}</div>
+      >${e["approved"] == 'REJECTED' ? `[${getString('REJECTED')}] - ` : ""}${e["display_name"]}</div>
     `);
   }
 }
@@ -40,11 +40,11 @@ function loadEvent(id) {
     var html = `
       <div class"h6">
         <span class="accent">Status: </span>
-        ${_eventApproveStatus[e["approved"]]}
+        ${getString('EVENT_APPROVE_STATUS')[e["approved"]]}
       </div>
       <br />
       <div class="h6 clickable underlined" onclick="editEvent(${id})">
-        <i class="fas fa-pencil-alt"></i> Edit
+        <i class="fas fa-pencil-alt"></i> ${getString('EDIT')}
       </div>
       <br />
       <br />

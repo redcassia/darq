@@ -207,6 +207,16 @@ textarea {
     background-color: var(--white);
 }
 
+input[name='en'],
+textarea[name='en'] {
+    text-align: left;
+}
+
+input[name='ar'],
+textarea[name='ar'] {
+    text-align: right;
+}
+
 input:focus,
 textarea:focus,
 select:focus {

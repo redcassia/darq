@@ -1,8 +1,8 @@
 <form id="cleaning-maintenance-form" novalidate>
     <div class="form-line">
         <div class="form-box">
-            <label>Profile picture</label>
-            <div class="img-input" required data-friendly-name="Profile picture">
+            <label>صورة العرض</label>
+            <div class="img-input" required data-friendly-name="صورة العرض">
                 <input type="file" name="display_picture"/>
             </div>
         </div>
@@ -10,44 +10,44 @@
 
     <div class="form-line">
         <div class="form-box">
-            <label>Business sub-type</label>
-            <div class="select">
+            <label>نوع العمل</label>
+            <div class="select ar">
                 <select name="sub_type" id="cleaning-maintenance-sub-type">
-                    <option value="" disabled selected>Choose business sub-type</option>
+                    <option value="" disabled selected>اختر نوع العمل</option>
                 </select>
             </div>
         </div>
         <br>
         <div class="form-object show-if-other hidden" data-name="sub_type_string">
             <div class="form-box">
-                <label>Custom Business sub-type (EN)</label>
-                <input type="text" name="en" required data-friendly-name="Custom Business sub-type (EN)"/>
+                <label>نوع العمل (English)</label>
+                <input type="text" name="en" required data-friendly-name="نوع العمل (English)"/>
             </div>
             <div class="form-box">
-                <label>Custom Business sub-type (AR)</label>
-                <input type="text" name="ar" required data-friendly-name="Custom Business sub-type (AR)"/>
+                <label>نوع العمل (العربية)</label>
+                <input type="text" name="ar" required data-friendly-name="نوع العمل (العربية)"/>
             </div>
         </div>
     </div>
 
     <div class="form-line">
         <div class="form-box">
-            <label>Display Name</label>
-            <input type="text" name="display_name" required data-friendly-name="Display name" />
+            <label>الإ سم</label>
+            <input type="text" name="display_name" required data-friendly-name="الإ سم" />
         </div>
     </div>
 
     <div class="form-line">
         <div class="form-box">
-            <label>Address</label>
-            <input type="text" name="street_address" required data-friendly-name="Address" />
+            <label>العنوان</label>
+            <input type="text" name="street_address" required data-friendly-name="العنوان" />
         </div>
 
         <div class="form-box">
-            <label>City</label>
-            <div class="select">
-                <select name="city" id="cleaning-maintenance-city" required data-friendly-name="City">
-                    <option value="" disabled selected>Choose city </option>
+            <label>المدينة</label>
+            <div class="select ar">
+                <select name="city" id="cleaning-maintenance-city" required data-friendly-name="المدينة">
+                    <option value="" disabled selected>اختر المدينة </option>
                 </select>
             </div>
         </div>
@@ -55,11 +55,11 @@
 
     <div class="form-line">
         <div class="form-box">
-            <label>Phone Number(s)</label>
-            <div class="multistring-input" data-name="phone_number" required data-friendly-name="Phone number">
+            <label>رقم الهاتف</label>
+            <div class="multistring-input" data-name="phone_number" required data-friendly-name="رقم الهاتف">
                 <div class="data"></div>
                 <input type="tel" />
-                <button>Add</button>
+                <button>أضف</button>
             </div>
         </div>
     </div>
@@ -69,27 +69,27 @@
     <div class="form-object" data-name="description">
         <div class="form-line">
             <div class="form-box">
-                <label>Description (EN)</label>
-                <textarea name="en" required data-friendly-name="Description (EN)"></textarea>
+                <label>الوصف (English)</label>
+                <textarea name="en" required data-friendly-name="الوصف (English)"></textarea>
             </div>
         </div>
         <div class="form-line">
             <div class="form-box">
-                <label>Description (AR)</label>
-                <textarea name="ar" required data-friendly-name="Description (AR)"></textarea>
+                <label>الوصف (العربية)</label>
+                <textarea name="ar" required data-friendly-name="الوصف (العربية)"></textarea>
             </div>
         </div>
     </div>
 
     <div class="form-line">
         <div class="form-box">
-            <label>Operating Hours</label>
+            <label>ساعات العمل</label>
             <div class="form-object" data-name="operating_hours">
-                <span>Open</span>
+                <span>مفتوح</span>
                 <input type="time" name="open" />
-                <span>Close</span>
+                <span>مغلق</span>
                 <input type="time" name="close" />
-                <span>All day</span>
+                <span>طوال اليوم</span>
                 <input type="checkbox" name="all_day" />
             </div>
         </div>
@@ -98,28 +98,28 @@
     <div class="form-line">
         <div class="form-box">
             <div class="form-object" data-name="charge">
-                <label>Fees</label>
-                <input type="text" data-special-type="float" style="width:105px" name="value" required data-friendly-name="Charge" />
-                <div class="select">
+                <label>التكلفة</label>
+                <input type="text" data-special-type="float" style="width:105px" name="value" required data-friendly-name="التكلفة" />
+                <div class="select ar">
                     <select name="currency" id="cleaning-maintenance-fees-currency" style="width:150px">
                     </select>
                 </div>
-                <span>/hr</span>
+                <span>/ساعة</span>
             </div>
         </div>
     </div>
 
     <div class="form-line">
         <div class="form-box">
-            <label>Home Services</label>
+            <label>خدمات منزلية</label>
             <input type="checkbox" name="home_service_available" />
-            <span>Available</span>
+            <span>متاح</span>
         </div>
     </div>
 
     <div class="form-line">
         <div class="form-box">
-            <label>Website</label>
+            <label>الموقع الكتروني</label>
             <input type="text" name="website" />
         </div>
     </div>
@@ -128,20 +128,20 @@
 
     <div class="form-line">
         <div class="form-box">
-            <label>Trade License</label>
-            <div class="img-input" required data-friendly-name="Trade license">
+            <label>الرخصة التجارية</label>
+            <div class="img-input" required data-friendly-name="الرخصة التجارية">
                 <input type="file" name="trade_license"/>
             </div>
         </div>
         <div class="form-box">
-            <label>Trade License Number</label>
-            <input type="text" name="trade_license_number" required data-friendly-name="Trade license number" />
+            <label>رقم الرخصة التجارية</label>
+            <input type="text" name="trade_license_number" required data-friendly-name="رقم الرخصة التجارية" />
         </div>
     </div>
 
     <div class="form-line">
         <div class="form-box">
-            <label>Gallery</label>
+            <label>الصور</label>
             <div class="img-input multiple">
                 <input type="file" name="attachments" />
             </div>
@@ -150,5 +150,5 @@
 
     <hr />
 
-    <input type="submit" onclick="submitForm()">
+    <button onclick="submitForm()">حفظ</button>
 </form>

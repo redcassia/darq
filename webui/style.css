@@ -125,8 +125,8 @@ label {
     display: block;
 
     font-weight: 500;
-    font-size: 14px;
-    line-height: 16px;
+    font-size: 16px;
+    line-height: 18px;
 
     color: var(--medium-dark);
 }
@@ -185,11 +185,12 @@ input[type='submit']:active {
     position: relative;
     display: inline-block;
     padding: 0;
-    margin: 0 0 0 32px;
+    margin: 0;
+    margin-inline-start: 32px;
     vertical-align: top;
 }
 .form-box:first-child {
-    margin: 0;
+    margin-inline-start: 0;
 }
 
 input,
@@ -295,7 +296,7 @@ select:active {
     cursor: pointer;
     width: 100px;
     height: 100px;
-    margin: 10px 20px 10px 0px;
+    margin: 10px 0px;
 
     background: url('assets/picture-icon.png') no-repeat;
     background-position: center;
@@ -309,10 +310,20 @@ select:active {
     display: inline-block;
     width: 100px;
     height: 100px;
-    margin: 10px 20px 10px 0px;
+    margin: 10px 0px;
+    margin-inline-end: 15px;
     overflow: hidden;
 
     background-color: var(--light);
+}
+.img-upload-obj:nth-child(6),
+.img-upload-obj:nth-child(11),
+.img-upload-obj:nth-child(16),
+.img-upload-obj:nth-child(21),
+.img-upload-obj:nth-child(26),
+.img-upload-obj:nth-child(31),
+.img-upload-obj:nth-child(36) {
+    margin-inline-end: 0;
 }
 .img-upload-obj > img {
     position: relative;
@@ -353,7 +364,8 @@ select:active {
 .multistring-input > button {
     padding: 6px 20px;
     border-radius: 20px 0;
-    margin: 0 0 0 20px;
+    margin: 0;
+    margin-inline-start: 20px;
 
     font-weight: bold;
     font-size: 14px;
@@ -404,7 +416,7 @@ select:active {
     box-shadow: unset;
     text-decoration: underline;
     padding: 0;
-    margin: 20px 0 0 0;
+    margin: 20px;
     cursor: pointer;
 }
 .multiform > .template {
@@ -565,7 +577,7 @@ hr {
     padding: 32px 0 0 32px;
 }
 
-.left-aligned-content {
+.left-aligned-content, .right-aligned-content {
     position: relative;
     display: inline-block;
     vertical-align: top;
@@ -579,10 +591,13 @@ hr {
     text-align: left;
     overflow-y: auto;
 }
-.left-aligned-content.with-submenu {
+.right-aligned-content {
+    text-align: right;
+}
+.left-aligned-content.with-submenu, .right-aligned-content.with-submenu {
     width: calc(100% - 64px - 264px);
 }
-.left-aligned-content.full-height {
+.left-aligned-content.full-height, .right-aligned-content.full-height {
     height: calc(100% - 64px);
 }
 
@@ -596,7 +611,7 @@ hr {
     padding: 32px 0;
     margin:0;
 
-    border-right: 1px solid #E5E5E5;
+    border-inline-end: 1px solid #E5E5E5;
     box-sizing: border-box;
 
     overflow-y: auto;

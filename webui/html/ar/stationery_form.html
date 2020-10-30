@@ -1,8 +1,8 @@
 <form id="stationery-form" novalidate>
     <div class="form-line">
         <div class="form-box">
-            <label>Profile picture</label>
-            <div class="img-input" required data-friendly-name="Profile picture">
+            <label>صورة العرض</label>
+            <div class="img-input" required data-friendly-name="صورة العرض">
                 <input type="file" name="display_picture"/>
             </div>
         </div>
@@ -10,22 +10,22 @@
 
     <div class="form-line">
         <div class="form-box">
-            <label>Display Name</label>
-            <input type="text" name="display_name" required data-friendly-name="Display name" />
+            <label>الإ سم</label>
+            <input type="text" name="display_name" required data-friendly-name="الإ سم" />
         </div>
     </div>
 
     <div class="form-line">
         <div class="form-box">
-            <label>Address</label>
-            <input type="text" name="street_address" required data-friendly-name="Address" />
+            <label>العنوان</label>
+            <input type="text" name="street_address" required data-friendly-name="العنوان" />
         </div>
 
         <div class="form-box">
-            <label>City</label>
-            <div class="select">
+            <label>المدينة</label>
+            <div class="select ar">
                 <select name="city" id="stationery-city">
-                    <option value="" disabled selected>Choose city </option>
+                    <option value="" disabled selected>اختر المدينة </option>
                 </select>
             </div>
         </div>
@@ -33,11 +33,11 @@
 
     <div class="form-line">
         <div class="form-box">
-            <label>Phone Number(s)</label>
-            <div class="multistring-input" data-name="phone_number" required data-friendly-name="Phone number">
+            <label>رقم الهاتف</label>
+            <div class="multistring-input" data-name="phone_number" required data-friendly-name="رقم الهاتف">
                 <div class="data"></div>
                 <input type="tel" />
-                <button>Add</button>
+                <button>أضف</button>
             </div>
         </div>
     </div>
@@ -47,21 +47,21 @@
     <div class="form-object" data-name="description">
         <div class="form-line">
             <div class="form-box">
-                <label>Description (EN)</label>
-                <textarea name="en" required data-friendly-name="Description (EN)"></textarea>
+                <label>الوصف (English)</label>
+                <textarea name="en" required data-friendly-name="الوصف (English)"></textarea>
             </div>
         </div>
         <div class="form-line">
             <div class="form-box">
-                <label>Description (AR)</label>
-                <textarea name="ar" required data-friendly-name="Description (AR)"></textarea>
+                <label>الوصف (العربية)</label>
+                <textarea name="ar" required data-friendly-name="الوصف (العربية)"></textarea>
             </div>
         </div>
     </div>
 
     <div class="form-line">
         <div class="form-box">
-            <label>Website</label>
+            <label>الموقع الكتروني</label>
             <input type="text" name="website" />
         </div>
     </div>
@@ -70,20 +70,20 @@
 
     <div class="form-line">
         <div class="form-box">
-            <label>Trade License</label>
-            <div class="img-input" required data-friendly-name="Trade license">
+            <label>الرخصة التجارية</label>
+            <div class="img-input" required data-friendly-name="الرخصة التجارية">
                 <input type="file" name="trade_license"/>
             </div>
         </div>
         <div class="form-box">
-            <label>Trade License Number</label>
-            <input type="text" name="trade_license_number" required data-friendly-name="Trade license number" />
+            <label>رقم الرخصة التجارية</label>
+            <input type="text" name="trade_license_number" required data-friendly-name="رقم الرخصة التجارية" />
         </div>
     </div>
 
     <div class="form-line">
         <div class="form-box">
-            <label>Gallery</label>
+            <label>الصور</label>
             <div class="img-input multiple">
                 <input type="file" name="attachments" />
             </div>
@@ -92,5 +92,5 @@
 
     <hr />
 
-    <input type="submit" onclick="submitForm()">
+    <button onclick="submitForm()">حفظ</button>
 </form>

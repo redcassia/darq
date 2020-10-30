@@ -1,8 +1,8 @@
 <form id="event-form" novalidate>
     <div class="form-line">
         <div class="form-box">
-            <label>Event Picture</label>
-            <div class="img-input" required data-friendly-name="Event picture">
+            <label>الصورة</label>
+            <div class="img-input" required data-friendly-name="الصورة">
                 <input type="file" name="display_picture"/>
             </div>
         </div>
@@ -10,17 +10,17 @@
 
     <div class="form-line">
         <div class="form-box">
-            <label>Event name</label>
-            <input type="text" name="display_name" required data-friendly-name="Event name" />
+            <label>الإ سم</label>
+            <input type="text" name="display_name" required data-friendly-name="الإ سم" />
         </div>
     </div>
 
     <div class="form-line">
         <div class="form-box">
-            <label>Event Type</label>
-            <div class="select">
-                <select name="type" id="event-type" required data-friendly-name="Event type">
-                    <option value="" disabled selected>Choose event type</option>
+            <label>نوع الحدث</label>
+            <div class="select ar">
+                <select name="type" id="event-type" required data-friendly-name="نوع الحدث">
+                    <option value="" disabled selected>اختر نوع الحدث</option>
                 </select>
             </div>
         </div>
@@ -28,15 +28,15 @@
 
     <div class="form-line">
         <div class="form-box">
-            <label>Address</label>
+            <label>العنوان</label>
             <input type="text" name="street_address" />
         </div>
 
         <div class="form-box">
-            <label>City</label>
-            <div class="select">
+            <label>المدينة</label>
+            <div class="select ar">
                 <select name="city" id="event-city">
-                    <option value="" disabled selected>Choose</option>
+                    <option value="" disabled selected>أختر</option>
                 </select>
             </div>
         </div>
@@ -44,11 +44,11 @@
 
     <div class="form-line">
         <div class="form-box">
-            <label>Phone Number(s)</label>
+            <label>رقم الهاتف</label>
             <div class="multistring-input" data-name="phone_number">
                 <div class="data"></div>
                 <input type="tel" />
-                <button>Add</button>
+                <button>أضف</button>
             </div>
         </div>
     </div>
@@ -58,14 +58,14 @@
     <div class="form-object" data-name="description">
         <div class="form-line">
             <div class="form-box">
-                <label>Description (EN)</label>
-                <textarea name="en" required data-friendly-name="Description (EN)"></textarea>
+                <label>الوصف (English)</label>
+                <textarea name="en" required data-friendly-name="الوصف (English)"></textarea>
             </div>
         </div>
         <div class="form-line">
             <div class="form-box">
-                <label>Description (AR)</label>
-                <textarea name="ar" required data-friendly-name="Description (AR)"></textarea>
+                <label>الوصف (العربية)</label>
+                <textarea name="ar" required data-friendly-name="الوصف (العربية)"></textarea>
             </div>
         </div>
     </div>
@@ -73,25 +73,25 @@
     <div class="form-line">
         <div class="form-object" data-name="duration">
             <div class="form-box">
-                <label>Start</label>
-                <input type="datetime-local" name="start" required data-friendly-name="Start" />
+                <label>يبدأ</label>
+                <input type="datetime-local" name="start" required data-friendly-name="يبدأ" />
             </div>
             <div class="form-box">
-                <label>End</label>
-                <input type="datetime-local" name="end" required data-friendly-name="End" />
+                <label>ينتهي</label>
+                <input type="datetime-local" name="end" required data-friendly-name="ينتهي" />
             </div>
         </div>
     </div>
 
     <div class="form-line">
         <div class="form-box">
-            <label>Hours</label>
+            <label>الساعات</label>
             <div class="form-object" data-name="hours">
-                <span>Open</span>
+                <span>مفتوح</span>
                 <input type="time" name="open" />
-                <span>Close</span>
+                <span>مغلق</span>
                 <input type="time" name="close" />
-                <span>All day</span>
+                <span>طوال اليوم</span>
                 <input type="checkbox" name="all_day" />
             </div>
         </div>
@@ -99,7 +99,7 @@
 
     <div class="form-line">
         <div class="form-box">
-            <label>Ticket reservation website</label>
+            <label>موقع حجز التذاكر</label>
             <input type="text" name="ticket_website" />
         </div>
     </div>
@@ -107,14 +107,14 @@
     <div class="form-line">
         <div class="form-box">
             <div class="form-object" data-name="ticket_price">
-                <label>Ticket price</label>
-                <span>Starting from</span>
+                <label>سعر التذكرة</label>
+                <span>بدءا من</span>
                 <input type="text" data-special-type="float" style="width:105px" name="valueLower" />
-                <span>To</span>
+                <span>إلى</span>
                 <input type="text" data-special-type="float" style="width:105px" name="valueUpper" />
-                <div class="select">
+                <div class="select ar">
                     <select name="currency" id="event-ticket-price-currency" style="width:150px">
-                        <option value="" disabled selected>Choose</option>
+                        <option value="" disabled selected>أختر</option>
                     </select>
                 </div>
             </div>
@@ -123,8 +123,8 @@
 
     <div class="form-line">
         <div class="form-box">
-            <label>Organizer</label>
-            <input type="text" name="organizer" required data-friendly-name="Organizer" />
+            <label>المنظم</label>
+            <input type="text" name="organizer" required data-friendly-name="المنظم" />
         </div>
     </div>
 
@@ -132,7 +132,7 @@
 
     <div class="form-line">
         <div class="form-box">
-            <label>Gallery</label>
+            <label>الصور</label>
             <div class="img-input multiple">
                 <input type="file" name="attachments" />
             </div>
@@ -141,5 +141,5 @@
 
     <hr />
 
-    <input type="submit" onclick="submitForm()">
+    <button onclick="submitForm()">حفظ</button>
 </form>

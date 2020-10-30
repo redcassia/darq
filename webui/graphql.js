@@ -132,6 +132,8 @@ class GraphQL {
       "name": enumName
     });
 
+    const locale = CookieManager.get("locale");
+
     selectTagIds.forEach(id => {
       var select = document.getElementById(id);
       for (var v of res.data.__type.enumValues) {
@@ -139,9 +141,9 @@ class GraphQL {
         if (
           enums[enumName] !== undefined &&
           enums[enumName][v.name] !== undefined &&
-          enums[enumName][v.name]["en"] !== undefined
+          enums[enumName][v.name][locale] !== undefined
         ) {
-          display = enums[enumName][v.name]["en"];
+          display = enums[enumName][v.name][locale];
         }
         select.innerHTML += `<option value='${v.name}'>${display}</option>`;
       }

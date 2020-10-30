@@ -167,6 +167,156 @@ const strings = {
     en: " cannot be left empty",
     ar: " فارغا"
   },
+
+  EXPERIENCE: {
+    en: "Experience",
+    ar: "الخبرة",
+  },
+
+  PRESENT: {
+    en: "Present",
+    ar: "الحاضر",
+  },
+
+  NOT_RATED: {
+    en: "Not yet rated",
+    ar: "لم يتم تقييمه بعد",
+  },
+
+  _24_HRS: {
+    en: "24 hrs",
+    ar: "24 ساعة",
+  },
+
+  HOME_SERIVCE: {
+    en: "Home Service",
+    ar: "خدمات منزلية",
+  },
+
+  HOME_DELIVERY: {
+    en: "Home Delivery",
+    ar: "خدمة التوصيل للمنزل",
+  },
+
+  HOME_TRAINING: {
+    en: "Home Training",
+    ar: "التدريب المنزلي",
+  },
+
+  AVAILABLE: {
+    en: "Available",
+    ar: "متاح",
+  },
+
+  NOT_AVAILABLE: {
+    en: "Not available",
+    ar: "غير متاح",
+  },
+
+  SERVICES: {
+    en: "Services",
+    ar: "الخدمات",
+  },
+
+  PRODUCTS: {
+    en: "Products",
+    ar: "المنتجات",
+  },
+
+  CLASSES: {
+    en: "Classes",
+    ar: "الدروس الرياضية",
+  },
+
+  TEAMS: {
+    en: "Teams",
+    ar: "الفرق الرياضية",
+  },
+
+  ACTIVITIES: {
+    en: "Activities",
+    ar: "الأنشطة",
+  },
+
+  SKILLS: {
+    en: "Skills",
+    ar: "المهارات",
+  },
+
+  CHARGE: {
+    en: "Charge",
+    ar: "التكلفة",
+  },
+
+  FOUNDED: {
+    en: "Founded",
+    ar: "تأسست",
+  },
+
+  CURRICULUM: {
+    en: "Curriculum",
+    ar: "المناهج الدراسية",
+  },
+
+  GOVERNMENT_ISSUED_ID: {
+    en: "Government-issued ID",
+    ar: "بطاقة هوية صادرة عن جهة حكومية",
+  },
+
+  TRADE_LICENSE: {
+    en: "Trade license",
+    ar: "الرخصة التجارية",
+  },
+
+  TRADE_LICENSE_NUMBER: {
+    en: "Trade license number",
+    ar: "رقم الرخصة التجارية",
+  },
+
+  GENDER: {
+    en: "Gender",
+    ar: "الجنس",
+  },
+
+  WEBSITE: {
+    en: "Website",
+    ar: "الموقع الكتروني",
+  },
+
+  MENU: {
+    en: "Menu",
+    ar: "قائمة الطعام",
+  },
+
+  PHOTOS: {
+    en: "Photos",
+    ar: "الصور",
+  },
+
+  START: {
+    en: "Start",
+    ar: "يبدأ",
+  },
+
+  END: {
+    en: "End",
+    ar: "ينتهي",
+  },
+
+  TICKET_RESERVATION: {
+    en: "Ticket Reservation",
+    ar: "حجز التذاكر",
+  },
+
+  TICKET_PRICE: {
+    en: "Ticket Price",
+    ar: "سعر التذكرة",
+  },
+
+  ORGANIZER: {
+    en: "Organizer",
+    ar: "المنظم",
+  },
 }
 
 function getString(str) {
@@ -2252,3 +2402,17 @@ const enums = {
     },
   }
 };
+
+function getEnumString(name, value) {
+  const locale = CookieManager.get("locale");
+  if (
+    enums[name] !== undefined &&
+    enums[name][value] !== undefined &&
+    enums[name][value][locale] !== undefined
+  ) {
+    return enums[name][value][locale];
+  }
+  else {
+    return value;
+  }
+}

@@ -4,7 +4,6 @@ import 'package:darq/backend/chat.dart';
 import 'package:darq/backend/session.dart';
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/utilities/constants.dart';
-import 'package:darq/utilities/screen_info.dart';
 import 'package:darq/views/shared/app_bars/back_arrow.dart';
 import 'package:darq/views/shared/app_bars/default_appbar.dart';
 import 'package:flutter/cupertino.dart';

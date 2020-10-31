@@ -5,7 +5,6 @@ import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/presentation/custom_icons.dart';
 import 'package:darq/res/path_files.dart';
 import 'package:darq/utilities/constants.dart';
-import 'package:darq/utilities/screen_info.dart';
 import 'package:darq/views/shared/app_bars/default_appbar.dart';
 import 'package:darq/views/shared/button.dart';
 import 'package:darq/views/shared/default_card.dart';

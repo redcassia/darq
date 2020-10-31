@@ -1,0 +1,208 @@
+{
+  "list": {
+    "appbar": {
+      "filter": true,
+      "title": "child_education_centers",
+      "values_query" : " query { __type(name: \"ChildEducationSubType\") { enumValues { name } } }   "
+    },
+    "columns": {
+      "start": [
+        {
+          "widget": "picture",
+          "height": 69.0,
+          "width": 70.0,
+          "data": ["display_picture"]
+        },
+        {
+          "widget": "vertical_spacer",
+          "height": 7.0
+        },
+        {
+          "widget": "rating",
+          "data": ["rating"]
+        }
+      ],
+      "end": [
+        {
+          "widget": "text",
+          "textSize": "title9",
+          "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.7 },
+          "data": ["display_name"]
+        },
+        {
+          "widget": "vertical_spacer",
+          "height": 6.0
+        },
+        {
+          "widget": "text_with_title",
+          "titleText": "address",
+          "titleSize": "title11",
+          "titleColor": {"r": 0, "g": 0, "b": 0, "o": 0.7 },
+          "textSize": "text10",
+          "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.7 },
+          "data": ["street_address"]
+        },
+        {
+          "widget": "vertical_spacer",
+          "height": 2.0
+        },
+        {
+          "widget": "text_with_title",
+          "titleText": "founded",
+          "titleSize": "title11",
+          "titleColor": {"r": 0, "g": 0, "b": 0, "o": 0.7 },
+          "textSize": "text10",
+          "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.7 },
+          "data": ["year_founded"]
+        },
+        {
+          "widget": "vertical_spacer",
+          "height": 2.0
+        },
+        {
+          "widget": "text_with_title",
+          "titleText": "curriculum",
+          "titleSize": "title11",
+          "titleColor": {"r": 0, "g": 0, "b": 0, "o": 0.7 },
+          "textSize": "text10",
+          "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.7 },
+          "data": ["curriculum"]
+        },
+        {
+          "widget": "vertical_spacer",
+          "height": 9.0
+        },
+        {
+          "widget": "view_details_button",
+          "data": ["id"]
+        },
+        {
+          "widget": "vertical_spacer",
+          "height": 10.0
+        },
+        {
+          "widget": "contact_button",
+          "titleText": "contact_us",
+          "data": ["id"]
+        }
+      ]
+    },
+    "query": "query ($sub_types: [String]) { items: businesses(type: ChildEducationBusiness, sub_types: $sub_types) { id, display_name, display_picture, rating ... on ChildEducationBusiness { street_address year_founded curriculum } }  }"
+  },
+  "detailed": {
+    "appbar": {
+      "filter": false,
+      "text": "contact_us"
+    },
+    "columns": {
+      "header": {
+        "start": [
+          {
+            "widget": "picture",
+            "height": 79.0,
+            "width": 80.0,
+            "data": ["display_picture"]
+          },
+          {
+            "widget": "vertical_spacer",
+            "height": 6.0
+          },
+          {
+            "widget": "rating",
+            "data": ["rating"]
+          }
+        ],
+        "end": [
+          {
+            "widget": "text",
+            "textSize": "title9",
+            "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.7 },
+            "data": ["display_name"]
+          },
+          {
+            "widget": "text",
+            "textSize": "title11Odd",
+            "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.5 },
+            "data": ["sub_type_string"]
+          },
+          {
+            "widget": "vertical_spacer",
+            "height": 3.0
+          },
+          {
+            "widget": "text_with_icon",
+            "textSize": "title11Odd",
+            "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.5 },
+            "iconName": "address.png",
+            "joinedData": {
+              "separator": ", ",
+              "children": [
+                ["street_address"],
+                ["city"]
+              ]
+            }
+          },
+          {
+            "widget": "vertical_spacer",
+            "height": 2.0
+          },
+          {
+            "widget": "phone_number",
+            "textSize": "title10OddUnderlined",
+            "textColor": {"r": 66, "g": 102, "b": 119, "o": 1.0 },
+            "iconName": "telephone.png",
+            "maxElements": 2,
+            "data": ["phone_number"]
+          }
+        ]
+      },
+      "body": [
+        {
+          "widget": "vertical_spacer",
+          "height": 9.0
+        },
+        {
+          "widget": "text",
+          "textSize": "text8w500",
+          "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.69 },
+          "data": ["description"]
+        },
+        {
+          "widget": "divider"
+        },
+        {
+          "widget": "text_with_title",
+          "titleText": "founded",
+          "titleSize": "title9",
+          "titleColor": {"r": 0, "g": 0, "b": 0, "o": 0.67 },
+          "textSize": "text9odd",
+          "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.5 },
+          "data": ["year_founded"]
+        },
+        {
+          "widget": "divider"
+        },
+        {
+          "widget": "text_with_title",
+          "titleText": "curriculum",
+          "titleSize": "title9",
+          "titleColor": {"r": 0, "g": 0, "b": 0, "o": 0.67 },
+          "textSize": "text9odd",
+          "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.5 },
+          "data": ["curriculum"]
+        },
+        {
+          "widget": "divider"
+        },
+        {
+          "widget": "picture_gallery",
+          "titleText": "photos",
+          "titleSize": "title9",
+          "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
+          "data": ["attachments"]
+        }
+      ]
+    },
+    "query": "query ($id: ID!){ item: business(id: $id) { id, display_name, display_picture, rating ... on ChildEducationBusiness { city sub_type_string street_address phone_number description year_founded curriculum attachments } }  } "
+  }
+}

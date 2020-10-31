@@ -1,0 +1,145 @@
+<form id="event-form" novalidate>
+    <div class="form-line">
+        <div class="form-box">
+            <label>الصورة</label>
+            <div class="img-input" required data-friendly-name="الصورة">
+                <input type="file" name="display_picture"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>الإ سم</label>
+            <input type="text" name="display_name" required data-friendly-name="الإ سم" />
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>نوع الحدث</label>
+            <div class="select ar">
+                <select name="type" id="event-type" required data-friendly-name="نوع الحدث">
+                    <option value="" disabled selected>اختر نوع الحدث</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>العنوان</label>
+            <input type="text" name="street_address" />
+        </div>
+
+        <div class="form-box">
+            <label>المدينة</label>
+            <div class="select ar">
+                <select name="city" id="event-city">
+                    <option value="" disabled selected>أختر</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>رقم الهاتف</label>
+            <div class="multistring-input" data-name="phone_number">
+                <div class="data"></div>
+                <input type="tel" />
+                <button>أضف</button>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="form-object" data-name="description">
+        <div class="form-line">
+            <div class="form-box">
+                <label>الوصف (العربية)</label>
+                <textarea name="ar" required data-friendly-name="الوصف (العربية)"></textarea>
+            </div>
+        </div>
+        <div class="form-line">
+            <div class="form-box">
+                <label>الوصف (English)</label>
+                <textarea name="en" required data-friendly-name="الوصف (English)"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-object" data-name="duration">
+            <div class="form-box">
+                <label>يبدأ</label>
+                <input type="datetime-local" name="start" required data-friendly-name="يبدأ" />
+            </div>
+            <div class="form-box">
+                <label>ينتهي</label>
+                <input type="datetime-local" name="end" required data-friendly-name="ينتهي" />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>الساعات</label>
+            <div class="form-object" data-name="hours">
+                <span>مفتوح</span>
+                <input type="time" name="open" />
+                <span>مغلق</span>
+                <input type="time" name="close" />
+                <span>طوال اليوم</span>
+                <input type="checkbox" name="all_day" />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>موقع حجز التذاكر</label>
+            <input type="text" name="ticket_website" />
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <div class="form-object" data-name="ticket_price">
+                <label>سعر التذكرة</label>
+                <span>بدءا من</span>
+                <input type="text" data-special-type="float" style="width:105px" name="valueLower" />
+                <span>إلى</span>
+                <input type="text" data-special-type="float" style="width:105px" name="valueUpper" />
+                <div class="select ar">
+                    <select name="currency" id="event-ticket-price-currency" style="width:150px">
+                        <option value="" disabled selected>أختر</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>المنظم</label>
+            <input type="text" name="organizer" required data-friendly-name="المنظم" />
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>الصور</label>
+            <div class="img-input multiple">
+                <input type="file" name="attachments" />
+            </div>
+        </div>
+    </div>
+
+    <hr />
+
+    <button onclick="submitForm()">حفظ</button>
+</form>

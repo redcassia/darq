@@ -1,0 +1,144 @@
+<form id="transportation-form" novalidate>
+    <div class="form-line">
+        <div class="form-box">
+            <label>Profile picture</label>
+            <div class="img-input" required data-friendly-name="Profile picture">
+                <input type="file" name="display_picture"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Business sub-type</label>
+            <div class="select">
+                <select name="sub_type" id="transportation-sub-type" required data-friendly-name="Business sub-type">
+                    <option value="" disabled selected>Choose business sub-type</option>
+                </select>
+            </div>
+        </div>
+        <br>
+        <div class="form-object show-if-other hidden" data-name="sub_type_string">
+            <div class="form-box">
+                <label>Custom Business sub-type (English)</label>
+                <input type="text" name="en" required data-friendly-name="Custom Business sub-type (English)"/>
+            </div>
+            <div class="form-box">
+                <label>Custom Business sub-type (العربية)</label>
+                <input type="text" name="ar" required data-friendly-name="Custom Business sub-type (العربية)"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Display Name</label>
+            <input type="text" name="display_name" required data-friendly-name="Display name" />
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Address</label>
+            <input type="text" name="street_address" required data-friendly-name="Address" />
+        </div>
+
+        <div class="form-box">
+            <label>City</label>
+            <div class="select">
+                <select name="city" id="transportation-city" required data-friendly-name="City">
+                    <option value="" disabled selected>Choose city </option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Phone Number(s)</label>
+            <div class="multistring-input" data-name="phone_number" required data-friendly-name="Phone number">
+                <div class="data"></div>
+                <input type="tel" />
+                <button>Add</button>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="form-object" data-name="description">
+        <div class="form-line">
+            <div class="form-box">
+                <label>Description (English)</label>
+                <textarea name="en" required data-friendly-name="Description (English)"></textarea>
+            </div>
+        </div>
+        <div class="form-line">
+            <div class="form-box">
+                <label>Description (العربية)</label>
+                <textarea name="ar" required data-friendly-name="Description (العربية)"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Operating Hours</label>
+            <div class="form-object" data-name="operating_hours">
+                <span>Open</span>
+                <input type="time" name="open" />
+                <span>Close</span>
+                <input type="time" name="close" />
+                <span>All day</span>
+                <input type="checkbox" name="all_day" />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Services</label>
+            <div class="multistring-input" data-name="services" data-multi-lang required data-friendly-name="Services">
+                <div class="data"></div>
+                <input type="text" name="en" placeholder="English"/>
+                <input type="text" name="ar" placeholder="العربية"/>
+                <button>Add</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Website</label>
+            <input type="text" name="website" />
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Trade License</label>
+            <div class="img-input" required data-friendly-name="Trade license">
+                <input type="file" name="trade_license"/>
+            </div>
+        </div>
+        <div class="form-box">
+            <label>Trade License Number</label>
+            <input type="text" name="trade_license_number" required data-friendly-name="Trade license number" />
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>Gallery</label>
+            <div class="img-input multiple">
+                <input type="file" name="attachments" />
+            </div>
+        </div>
+    </div>
+
+    <hr />
+
+    <button onclick="submitForm()">Submit</button>
+</form>

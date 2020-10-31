@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Modify this file to customize your launch splash screen -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/background" />
+    <item>
+        <bitmap
+            android:adjustViewBounds="true"
+            android:gravity="fill_horizontal|fill_vertical"
+            android:src="@mipmap/tab" />
+    </item>
+</layer-list>

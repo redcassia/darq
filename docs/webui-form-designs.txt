@@ -1,0 +1,249 @@
+NOTES
+	fields are denoted by (field-name): (field-type)
+	{} denotes custom data type created from basic data types
+	[] denotes optional field
+	<> used with containers (such as list<date>, which denotes a list of dates)
+
+
+DATA FORMS
+
+	1. Register
+		email: text
+		password: text
+		confirm password: text
+
+	2. Login
+		email: text
+		password: text
+
+	3. Forgot password
+		email: text
+
+	4. Reset password (using secure password reset link only)
+		new password: text
+		confirm new password: text
+
+	5. Change password (when logged in only)
+		old password: text
+		new password: text
+		confirm new password: text
+
+	6. Add business
+		display name: text
+		display picture: picture
+		business type: enum
+		city: set<enum>
+
+		6.1 Add business (self-employed)
+			business sub-type: enum
+			gender: enum
+			nationality: enum
+			phone number: text
+			description: text
+			skills: set<text>
+			experience: list{country: enum, from: date, [to]: date, in position: bool}
+			charge: float
+			government-issued id: picture
+			photos: list<picture>
+
+		6.2 Add business (child education)
+			business sub-type: enum
+			insititution number: number
+			street address: text
+			phone numbers: list<text>
+			description: text
+			year founded: text
+			curriculum: set<text>
+			[photos]: list<picture>
+
+		6.3 Add business (domestic help)
+			business sub-type: enum
+			insititution number: number
+			street address: text
+			phone numbers: list<text>
+			description: text
+			personnel: set<personnel>
+
+			6.3.1 Add personnel (driver)
+				name: text
+				picture: picture
+				profession: text
+				gender: enum: enum
+				nationality: enum: enum
+				religion: text
+				salary: float
+				date of birth: date
+				marital status: enum
+				license expiry date: date
+				languages: list<text>
+				experience: list{country: enum, from: date, [to]: date, in position: bool}
+
+			6.3.2 Add personnel (nanny)
+				name: text
+				picture: picture
+				profession: text
+				gender: enum: enum
+				nationality: enum: enum
+				religion: text
+				salary: float
+				date of birth: date
+				marital status: enum
+				education: enum
+				height: text
+				weight: text
+				languages: list<text>
+				skills: set<text>
+				experience: list{country: enum, from: date, [to]: date, in position: bool}
+
+			6.3.3 Add personnel (maid)
+				name: text
+				picture: picture
+				profession: text
+				gender: enum: enum
+				nationality: enum: enum
+				religion: text
+				salary: float
+				date of birth: date
+				marital status: enum
+				education: enum
+				height: text
+				weight: text
+				languages: list<text>
+				skills: set<text>
+				experience: list{country: enum, from: date, [to]: date, in position: bool}
+
+			6.3.4 Add personnel (cook)
+				name: text
+				picture: picture
+				profession: text
+				gender: enum: enum
+				nationality: enum: enum
+				religion: text
+				salary: float
+				date of birth: date
+				marital status: enum
+				education: enum
+				height: text
+				weight: text
+				languages: list<text>
+				skills: set<text>
+				experience: list{country: enum, from: date, [to]: date, in position: bool}
+
+		6.4 Add business (beauty & spa)
+			business sub-type: enum
+			insititution number: number
+			street address: text
+			operating hours: {[open]: time, [close]: time, 24/7: bool}
+			phone numbers: list<text>
+			description: text
+			home service availability: bool
+			services: set<text>
+			[website]: text
+			[photos]: list<picture>
+
+		6.5 Add business (limousine)
+			business sub-type: enum
+			insititution number: number
+			street address: text
+			operating hours: {[open]: time, [close]: time, 24/7: bool}
+			phone numbers: list<text>
+			description: text
+			services: set<text>
+			[website]: text
+			[photos]: list<picture>
+
+		6.6 Add business (hospitality)
+			business sub-type: enum
+			insititution number: number
+			street address: text
+			phone numbers: list<text>
+			description: text
+			home service availability: bool
+			[charge: float]
+			services: set<text>
+			[website]: text
+			[photos]: list<picture>
+
+		6.7 Add business (stationary)
+			insititution number: number
+			street address: text
+			phone numbers: list<text>
+			description: text
+			[website]: text
+			[photos]: list<picture>
+
+		6.8 Add business (made in qatar)
+			business sub-type: enum
+			street address: text
+			phone numbers: list<text>
+			description: text
+			home delivery availability: bool
+			products: list<text>
+			[website]: text
+			[photos]: list<picture>
+
+		6.9 Add business (gym)
+			insititution number: number
+			street address: text
+			operating hours: {[open]: time, [close]: time, 24/7: bool}
+			phone numbers: list<text>
+			home training availability: bool
+			classes: list<text>
+			[website]: text
+			[photos]: list<picture>
+
+		6.10 Add business (club)
+			insititution number: number
+			street address: text
+			operating hours: {[open]: time, [close]: time, 24/7: bool}
+			phone numbers: list<text>
+			owner: text
+			teams: list<text>
+			[website]: text
+			[photos]: list<picture>
+
+		6.11 Add business (entertainment)
+			business sub-type: enum
+			insititution number: number
+			street address: text
+			operating hours: {[open]: time, [close]: time, 24/7: bool}
+			phone numbers: list<text>
+			description: text
+			[website]: text
+			[photos]: list<picture>
+
+		6.12 Add business (cuisine)
+			business sub-type: enum
+			insititution number: number
+			street address: text
+			operating hours: {[open]: time, [close]: time, 24/7: bool}
+			phone numbers: list<text>
+			description: text
+			[website]: text
+			[photos]: list<picture>
+
+		6.13 Add business (cleaning & maintenance)
+			business sub-type: enum
+			insititution number: number
+			street address: text
+			phone numbers: list<text>
+			description: text
+			home service availability: bool
+			[charge]: float
+			[website]: text
+			[photos]: list<picture>
+
+	7. Add event
+		display name: text
+		display picture: picture
+		type: enum
+		city: text
+		street address: text
+		[phone numbers]: list<text>
+		description: text
+		start: date & time
+		end: date & time
+		[ticket reservation website]: text
+		[ticket price]: float
+		organizer: text
+		[photos]: list<picture>

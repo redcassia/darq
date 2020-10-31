@@ -1,0 +1,172 @@
+{
+  "list": {
+    "appbar": {
+      "filter": false,
+      "title": "stationeries"
+    },
+    "columns": {
+      "start": [
+        {
+          "widget": "picture",
+          "height": 69.0,
+          "width": 70.0,
+          "data": ["display_picture"]
+        },
+        {
+          "widget": "vertical_spacer",
+          "height": 7.0
+        },
+        {
+          "widget": "rating",
+          "data": ["rating"]
+        }
+      ],
+      "end": [
+        {
+          "widget": "text",
+          "textSize": "title9",
+          "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.7 },
+          "data": ["display_name"]
+        },
+        {
+          "widget": "text",
+          "text": "Stationery",
+          "textSize": "title11Odd",
+          "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.5 }
+        },
+        {
+          "widget": "vertical_spacer",
+          "height": 3.0
+        },
+        {
+          "widget": "text_overflowed",
+          "textSize": "text10w500",
+          "textColor": { "r": 0, "g": 0, "b": 0, "o": 0.37 },
+          "data": ["description"]
+        },
+        {
+          "widget": "vertical_spacer",
+          "height": 2.0
+        },
+        {
+          "widget": "view_details_button",
+          "data": ["id"]
+        },
+        {
+          "widget": "vertical_spacer",
+          "height": 10.0
+        },
+        {
+          "widget": "contact_button",
+          "titleText": "contact_us",
+          "data": ["id"]
+        }
+      ]
+    },
+    "query": "query { items: businesses(type: StationeryBusiness) { id, display_name, display_picture, rating ... on StationeryBusiness { city description } }  } "
+  },
+  "detailed": {
+    "appbar": {
+      "filter": false,
+      "text": "contact_us"
+    },
+    "columns": {
+      "header": {
+        "start": [
+          {
+            "widget": "picture",
+            "height": 79.0,
+            "width": 80.0,
+            "data": ["display_picture"]
+          },
+          {
+            "widget": "vertical_spacer",
+            "height": 6.0
+          },
+          {
+            "widget": "rating",
+            "data": ["rating"]
+          }
+        ],
+        "end": [
+          {
+            "widget": "text",
+            "textSize": "title9",
+            "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.7 },
+            "data": ["display_name"]
+          },
+          {
+            "widget": "text",
+            "textSize": "title11Odd",
+            "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.5 },
+            "text": "Stationery"
+          },
+          {
+            "widget": "vertical_spacer",
+            "height": 3.0
+          },
+          {
+            "widget": "text_with_icon",
+            "textSize": "title11Odd",
+            "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.5 },
+            "iconName": "address.png",
+            "joinedData": {
+              "separator": ", ",
+              "children": [
+                ["street_address"],
+                ["city"]
+              ]
+            }
+          },
+          {
+            "widget": "vertical_spacer",
+            "height": 2.0
+          },
+          {
+            "widget": "phone_number",
+            "textSize": "title10OddUnderlined",
+            "textColor": {"r": 66, "g": 102, "b": 119, "o": 1.0 },
+            "iconName": "telephone.png",
+            "maxElements": 2,
+            "data": ["phone_number"]
+          }
+        ]
+      },
+      "body": [
+        {
+          "widget": "vertical_spacer",
+          "height": 9.0
+        },
+        {
+          "widget": "text",
+          "textSize": "text8w500",
+          "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.69 },
+          "data": ["description"]
+        },
+        {
+          "widget": "divider"
+        },
+        {
+          "widget": "website_with_title",
+          "titleText": "website",
+          "titleSize": "title9",
+          "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
+          "textSize": "text9odd",
+          "textColor": { "r": 66, "g": 102, "b": 118, "o": 1.0 },
+          "data": ["website"]
+        },
+        {
+          "widget": "divider"
+        },
+        {
+          "widget": "picture_gallery",
+          "titleText": "photos",
+          "titleSize": "title9",
+          "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
+          "data": ["attachments"]
+        }
+      ]
+    },
+    "query": "query($id: ID!) { item: business(id: $id) { display_name display_picture rating ... on StationeryBusiness { street_address city phone_number description website attachments } } }"
+  }
+}

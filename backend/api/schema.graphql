@@ -1,0 +1,2135 @@
+type Query {
+  user: User
+  business(id: ID!): Business
+  businesses(limit: Int! = 100, offset: Int! = 0, type: BusinessType!, sub_types: [String]): [Business!]!
+  event(id: ID!): Event
+  events(limit: Int! = 100, offset: Int! = 0, type: EventType): [Event!]!
+
+  # admin queries
+
+  admin: Admin!
+}
+
+type Mutation {
+  setLocale(locale: Locale!): String
+
+  createPublicUser(locale: Locale): String!
+  authenticatePublicUser(id: ID!, locale: Locale): String!
+
+  createBusinessUser(email: String!, password: String!): Void
+  verifyBusinessUser(email: String!, token: String!): String!
+  authenticateBusinessUser(email: String!, password: String!): String!
+  changeBusinessUserPassword(oldPassword: String!, newPassword: String!): Void
+  requestBusinessUserPasswordReset(email: String!): Void
+  resetBusinessUserPassword(email: String!, token: String!, newPassword: String!): String!
+
+  rateBusiness(id: ID!, stars: Int!): Void
+
+  sendMessage(msg: String!, threadId: ID, targetBusinessId: ID): MessageThread!
+  seeMessage(threadId: ID!, index: Int!): MessageThread!
+
+  addSelfEmployedBusiness(data: NewSelfEmployedBusinessInput!): Void
+  updateSelfEmployedBusiness(id: ID!, data: UpdateSelfEmployedBusinessInput!): Void
+
+  addChildEducationBusiness(data: NewChildEducationBusinessInput!): Void
+  updateChildEducationBusiness(id: ID!, data: UpdateChildEducationBusinessInput!): Void
+
+  addDomesticHelpBusiness(data: NewDomesticHelpBusinessInput!): Void
+  updateDomesticHelpBusiness(id: ID!, data: UpdateDomesticHelpBusinessInput!): Void
+
+  addBeautyBusiness(data: NewBeautyBusinessInput!): Void
+  updateBeautyBusiness(id: ID!, data: UpdateBeautyBusinessInput!): Void
+
+  addTransportationBusiness(data: NewTransportationBusinessInput!): Void
+  updateTransportationBusiness(id: ID!, data: UpdateTransportationBusinessInput!): Void
+
+  addHospitalityBusiness(data: NewHospitalityBusinessInput!): Void
+  updateHospitalityBusiness(id: ID!, data: UpdateHospitalityBusinessInput!): Void
+
+  addStationeryBusiness(data: NewStationeryBusinessInput!): Void
+  updateStationeryBusiness(id: ID!, data: UpdateStationeryBusinessInput!): Void
+
+  addMadeInQatarBusiness(data: NewMadeInQatarBusinessInput!): Void
+  updateMadeInQatarBusiness(id: ID!, data: UpdateMadeInQatarBusinessInput!): Void
+
+  addSportsBusiness(data: NewSportsBusinessInput!): Void
+  updateSportsBusiness(id: ID!, data: UpdateSportsBusinessInput!): Void
+
+  addEntertainmentBusiness(data: NewEntertainmentBusinessInput!): Void
+  updateEntertainmentBusiness(id: ID!, data: UpdateEntertainmentBusinessInput!): Void
+
+  addFoodBusiness(data: NewFoodBusinessInput!): Void
+  updateFoodBusiness(id: ID!, data: UpdateFoodBusinessInput!): Void
+
+  addCleaningAndMaintenanceBusiness(data: NewCleaningAndMaintenanceBusinessInput!): Void
+  updateCleaningAndMaintenanceBusiness(id: ID!, data: UpdateCleaningAndMaintenanceBusinessInput!): Void
+
+  addEvent(data: NewEventInput!): Void
+  updateEvent(id: ID!, data: UpdateEventInput!): Void
+
+  # admin mutations
+
+  authenticateAdmin(key: String!): String
+
+  reviewBusiness(id: ID!, approve: Boolean!): Void
+  reviewEvent(id: ID!, approve: Boolean!): Void
+}
+
+scalar Upload
+scalar Void
+
+type User {
+  id: ID!
+  type: UserType!
+  create_time: String!
+  last_login: String!
+  first_name: String
+  last_name: String
+  email: String
+  rating(businessId: ID!): Int
+  owned_businesses: [Business!]
+  owned_events: [Event_noLocale!]
+  threads(threadId: ID): [MessageThread!]!
+}
+
+type MessageThread {
+  id: ID!
+  sender: String
+  target: Business!
+  messages(minIndex: Int, maxIndex: Int, limit: Int! = 20): [Message!]!
+  targetLastSeenIndex: Int
+  senderLastSeenIndex: Int
+}
+
+type Message {
+  index: Int!
+  msg: String!
+  time: String!
+  sender: UserType!
+}
+
+type Admin {
+  tentativeNewBusinesses: [Business!]!
+  tentativeBusinessUpdates: [Business!]!
+  tentativeNewEvents: [Event_noLocale!]!
+}
+
+interface Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+}
+
+# self-employed
+
+type SelfEmployedBusiness implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: SelfEmployedSubType!
+  sub_type_string: String!
+  gender: Gender!
+  nationality: Nationality!
+  phone_number: [String!]!
+  description: String!
+  skills: [String!]!
+  experience: [PersonalExperience!]!
+  charge: Price!
+  government_id: String!
+  attachments: [String!]
+}
+
+type SelfEmployedBusiness_noLocale implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: SelfEmployedSubType!
+  sub_type_string: LocaleString!
+  gender: Gender!
+  nationality: Nationality!
+  phone_number: [String!]!
+  description: LocaleString!
+  skills: [LocaleString!]!
+  experience: [PersonalExperience!]!
+  charge: Price!
+  government_id: String!
+  attachments: [String!]
+}
+
+input NewSelfEmployedBusinessInput {
+  display_name: String!
+  display_picture: Upload!
+  city: City!
+  sub_type: SelfEmployedSubType!
+  sub_type_string: LocaleStringInput
+  gender: Gender!
+  nationality: Nationality!
+  phone_number: [String!]!
+  description: LocaleStringInput!
+  skills: [LocaleStringInput!]!
+  experience: [PersonalExperienceInput!]!
+  charge: PriceInput!
+  government_id: Upload!
+  attachments: [Upload!]
+}
+
+input UpdateSelfEmployedBusinessInput {
+  display_name: String
+  display_picture: Upload
+  city: City
+  sub_type: SelfEmployedSubType
+  sub_type_string: LocaleStringInput
+  gender: Gender
+  nationality: Nationality
+  phone_number: [String!]
+  description: LocaleStringInput
+  skills: [LocaleStringInput!]
+  experience: [PersonalExperienceInput!]
+  charge: PriceInput
+  government_id: Upload
+  old_attachments: [String!]
+  attachments: [Upload!]
+}
+
+# child education
+
+type ChildEducationBusiness implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: ChildEducationSubType!
+  sub_type_string: String!
+  trade_license: String!
+  trade_license_number: String!
+  street_address: String!
+  phone_number: [String!]!
+  description: String!
+  year_founded: String!
+  curriculum: [String!]!
+  attachments: [String!]
+}
+
+type ChildEducationBusiness_noLocale implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: ChildEducationSubType!
+  sub_type_string: LocaleString!
+  trade_license: String!
+  trade_license_number: String!
+  street_address: String!
+  phone_number: [String!]!
+  description: LocaleString!
+  year_founded: String!
+  curriculum: [LocaleString!]!
+  attachments: [String!]
+}
+
+input NewChildEducationBusinessInput {
+  display_name: String!
+  display_picture: Upload!
+  city: City!
+  sub_type: ChildEducationSubType!
+  sub_type_string: LocaleStringInput
+  trade_license: Upload!
+  trade_license_number: String!
+  street_address: String!
+  phone_number: [String!]!
+  description: LocaleStringInput!
+  year_founded: String!
+  curriculum: [LocaleStringInput!]!
+  attachments: [Upload!]
+}
+
+input UpdateChildEducationBusinessInput {
+  display_name: String
+  display_picture: Upload
+  city: City
+  sub_type: ChildEducationSubType
+  sub_type_string: LocaleStringInput
+  trade_license: Upload
+  trade_license_number: String
+  street_address: String
+  phone_number: [String!]
+  description: LocaleStringInput
+  year_founded: String
+  curriculum: [LocaleStringInput!]
+  old_attachments: [String!]
+  attachments: [Upload!]
+}
+
+# domestic help
+
+type DomesticHelpBusiness implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: DomesticHelpSubType!
+  sub_type_string: String!
+  trade_license: String!
+  trade_license_number: String!
+  street_address: String!
+  phone_number: [String!]!
+  description: String!
+  website: String
+  personnel: [DomesticHelpPersonnel!]!
+}
+
+type DomesticHelpBusiness_noLocale implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: DomesticHelpSubType!
+  sub_type_string: LocaleString!
+  trade_license: String!
+  trade_license_number: String!
+  street_address: String!
+  phone_number: [String!]!
+  description: LocaleString!
+  website: String
+  personnel: [DomesticHelpPersonnel_noLocale!]!
+}
+
+input NewDomesticHelpBusinessInput {
+  display_name: String!
+  display_picture: Upload!
+  city: City!
+  sub_type: DomesticHelpSubType!
+  sub_type_string: LocaleStringInput
+  trade_license: Upload!
+  trade_license_number: String!
+  street_address: String!
+  phone_number: [String!]!
+  description: LocaleStringInput!
+  website: String
+  personnel: [DomesticHelpPersonnelInput!]!
+}
+
+input UpdateDomesticHelpBusinessInput {
+  display_name: String
+  display_picture: Upload
+  city: City
+  sub_type: DomesticHelpSubType
+  sub_type_string: LocaleStringInput
+  trade_license: Upload
+  trade_license_number: String
+  street_address: String
+  phone_number: [String!]
+  description: LocaleStringInput
+  website: String
+  old_personnel: [String!]
+  personnel: [UpdateDomesticHelpPersonnelInput!]
+}
+
+# beauty
+
+type BeautyBusiness implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: BeautyBusinessSubType!
+  sub_type_string: String!
+  trade_license: String!
+  trade_license_number: String!
+  street_address: String!
+  operating_hours: Hours!
+  phone_number: [String!]!
+  description: String!
+  home_service_available: Boolean!
+  services: [String!]!
+  website: String
+  attachments: [String!]
+}
+
+type BeautyBusiness_noLocale implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: BeautyBusinessSubType!
+  sub_type_string: LocaleString!
+  trade_license: String!
+  trade_license_number: String!
+  street_address: String!
+  operating_hours: Hours!
+  phone_number: [String!]!
+  description: LocaleString!
+  home_service_available: Boolean!
+  services: [LocaleString!]!
+  website: String
+  attachments: [String!]
+}
+
+input NewBeautyBusinessInput {
+  display_name: String!
+  display_picture: Upload!
+  city: City!
+  sub_type: BeautyBusinessSubType!
+  sub_type_string: LocaleStringInput
+  trade_license: Upload!
+  trade_license_number: String!
+  street_address: String!
+  operating_hours: HoursInput!
+  phone_number: [String!]!
+  description: LocaleStringInput!
+  home_service_available: Boolean!
+  services: [LocaleStringInput!]!
+  website: String
+  attachments: [Upload!]
+}
+
+input UpdateBeautyBusinessInput {
+  display_name: String
+  display_picture: Upload
+  city: City
+  sub_type: BeautyBusinessSubType
+  sub_type_string: LocaleStringInput
+  trade_license: Upload
+  trade_license_number: String
+  street_address: String
+  operating_hours: HoursInput
+  phone_number: [String!]
+  description: LocaleStringInput
+  home_service_available: Boolean
+  services: [LocaleStringInput!]
+  website: String
+  old_attachments: [String!]
+  attachments: [Upload!]
+}
+
+# transportation
+
+type TransportationBusiness implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: TransportationBusinessSubType!
+  sub_type_string: String!
+  trade_license: String!
+  trade_license_number: String!
+  street_address: String!
+  operating_hours: Hours!
+  phone_number: [String!]!
+  description: String!
+  services: [String!]!
+  website: String
+  attachments: [String!]
+}
+
+type TransportationBusiness_noLocale implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: TransportationBusinessSubType!
+  sub_type_string: LocaleString!
+  trade_license: String!
+  trade_license_number: String!
+  street_address: String!
+  operating_hours: Hours!
+  phone_number: [String!]!
+  description: LocaleString!
+  services: [LocaleString!]!
+  website: String
+  attachments: [String!]
+}
+
+input NewTransportationBusinessInput {
+  display_name: String!
+  display_picture: Upload!
+  city: City!
+  sub_type: TransportationBusinessSubType!
+  sub_type_string: LocaleStringInput
+  trade_license: Upload!
+  trade_license_number: String!
+  street_address: String!
+  operating_hours: HoursInput!
+  phone_number: [String!]!
+  description: LocaleStringInput!
+  services: [LocaleStringInput!]!
+  website: String
+  attachments: [Upload!]
+}
+
+input UpdateTransportationBusinessInput {
+  display_name: String
+  display_picture: Upload
+  city: City
+  sub_type: TransportationBusinessSubType
+  sub_type_string: LocaleStringInput
+  trade_license: Upload
+  trade_license_number: String
+  street_address: String
+  operating_hours: HoursInput
+  phone_number: [String!]
+  description: LocaleStringInput
+  services: [LocaleStringInput!]
+  website: String
+  old_attachments: [String!]
+  attachments: [Upload!]
+}
+
+# hospitality
+
+type HospitalityBusiness implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: HospitalityBusinessSubType!
+  sub_type_string: String!
+  trade_license: String!
+  trade_license_number: String!
+  street_address: String!
+  phone_number: [String!]!
+  description: String!
+  home_service_available: Boolean!
+  charge: Price
+  services: [String!]!
+  website: String
+  attachments: [String!]
+}
+
+type HospitalityBusiness_noLocale implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: HospitalityBusinessSubType!
+  sub_type_string: LocaleString!
+  trade_license: String!
+  trade_license_number: String!
+  street_address: String!
+  phone_number: [String!]!
+  description: LocaleString!
+  home_service_available: Boolean!
+  charge: Price
+  services: [LocaleString!]!
+  website: String
+  attachments: [String!]
+}
+
+input NewHospitalityBusinessInput {
+  display_name: String!
+  display_picture: Upload!
+  city: City!
+  sub_type: HospitalityBusinessSubType!
+  sub_type_string: LocaleStringInput
+  trade_license: Upload!
+  trade_license_number: String!
+  street_address: String!
+  phone_number: [String!]!
+  description: LocaleStringInput!
+  home_service_available: Boolean!
+  charge: PriceInput
+  services: [LocaleStringInput!]!
+  website: String
+  attachments: [Upload!]
+}
+
+input UpdateHospitalityBusinessInput {
+  display_name: String
+  display_picture: Upload
+  city: City
+  sub_type: HospitalityBusinessSubType
+  sub_type_string: LocaleStringInput
+  trade_license: Upload
+  trade_license_number: String
+  street_address: String
+  phone_number: [String!]
+  description: LocaleStringInput
+  home_service_available: Boolean
+  charge: PriceInput
+  services: [LocaleStringInput!]
+  website: String
+  old_attachments: [String!]
+  attachments: [Upload!]
+}
+
+# stationery
+
+type StationeryBusiness implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  description: String!
+  trade_license: String!
+  trade_license_number: String!
+  street_address: String!
+  phone_number: [String!]!
+  website: String
+  attachments: [String!]
+}
+
+type StationeryBusiness_noLocale implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  description: LocaleString!
+  trade_license: String!
+  trade_license_number: String!
+  street_address: String!
+  phone_number: [String!]!
+  website: String
+  attachments: [String!]
+}
+
+input NewStationeryBusinessInput {
+  display_name: String!
+  display_picture: Upload!
+  city: City!
+  description: LocaleStringInput!
+  trade_license: Upload!
+  trade_license_number: String!
+  street_address: String!
+  phone_number: [String!]!
+  website: String
+  attachments: [Upload!]
+}
+
+input UpdateStationeryBusinessInput {
+  display_name: String
+  display_picture: Upload
+  city: City
+  description: LocaleStringInput
+  trade_license: Upload
+  trade_license_number: String
+  street_address: String
+  phone_number: [String!]
+  website: String
+  old_attachments: [String!]
+  attachments: [Upload!]
+}
+
+# made in qatar
+
+type MadeInQatarBusiness implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: MadeInQatarBusinessSubType!
+  sub_type_string: String!
+  street_address: String!
+  phone_number: [String!]!
+  description: String!
+  home_delivery_available: Boolean!
+  products: [String!]!
+  website: String
+  attachments: [String!]
+}
+
+type MadeInQatarBusiness_noLocale implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: MadeInQatarBusinessSubType!
+  sub_type_string: LocaleString!
+  street_address: String!
+  phone_number: [String!]!
+  description: LocaleString!
+  home_delivery_available: Boolean!
+  products: [LocaleString!]!
+  website: String
+  attachments: [String!]
+}
+
+input NewMadeInQatarBusinessInput {
+  display_name: String!
+  display_picture: Upload!
+  city: City!
+  sub_type: MadeInQatarBusinessSubType!
+  sub_type_string: LocaleStringInput
+  street_address: String!
+  phone_number: [String!]!
+  description: LocaleStringInput!
+  home_delivery_available: Boolean!
+  products: [LocaleStringInput!]!
+  website: String
+  attachments: [Upload!]
+}
+
+input UpdateMadeInQatarBusinessInput {
+  display_name: String
+  display_picture: Upload
+  city: City
+  sub_type: MadeInQatarBusinessSubType
+  sub_type_string: LocaleStringInput
+  street_address: String
+  phone_number: [String!]
+  description: LocaleStringInput
+  home_delivery_available: Boolean
+  products: [LocaleStringInput!]
+  website: String
+  old_attachments: [String!]
+  attachments: [Upload!]
+}
+
+# sports
+
+type SportsBusiness implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: SportsBusinessSubType!
+  sub_type_string: String!
+  trade_license: String!
+  trade_license_number: String!
+  street_address: String!
+  operating_hours: Hours!
+  phone_number: [String!]!
+  description: String!
+  website: String
+  attachments: [String!]
+  #gym
+  home_training_available: Boolean
+  classes: [String!]
+  genders: Genders
+  #club
+  teams: [String!]
+}
+
+type SportsBusiness_noLocale implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: SportsBusinessSubType!
+  sub_type_string: LocaleString!
+  trade_license: String!
+  trade_license_number: String!
+  street_address: String!
+  operating_hours: Hours!
+  phone_number: [String!]!
+  description: LocaleString!
+  website: String
+  attachments: [String!]
+  #gym
+  home_training_available: Boolean
+  classes: [LocaleString!]
+  genders: Genders
+  #club
+  teams: [String!]
+}
+
+input NewSportsBusinessInput {
+  display_name: String!
+  display_picture: Upload!
+  city: City!
+  sub_type: SportsBusinessSubType!
+  sub_type_string: LocaleStringInput
+  trade_license: Upload!
+  trade_license_number: String!
+  street_address: String!
+  operating_hours: HoursInput!
+  phone_number: [String!]!
+  description: LocaleStringInput!
+  website: String
+  attachments: [Upload!]
+  home_training_available: Boolean
+  classes: [LocaleStringInput!]
+  genders: Genders
+  teams: [String!]
+}
+
+input UpdateSportsBusinessInput {
+  display_name: String
+  display_picture: Upload
+  city: City
+  sub_type: SportsBusinessSubType
+  sub_type_string: LocaleStringInput
+  trade_license: Upload
+  trade_license_number: String
+  street_address: String
+  operating_hours: HoursInput
+  phone_number: [String!]
+  description: LocaleStringInput
+  website: String
+  old_attachments: [String!]
+  attachments: [Upload!]
+  home_training_available: Boolean
+  classes: [LocaleStringInput!]
+  genders: Genders
+  teams: [String!]
+}
+
+# entertainment
+
+type EntertainmentBusiness implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: EntertainmentBusinessSubType!
+  sub_type_string: String!
+  trade_license: String!
+  trade_license_number: String!
+  street_address: String!
+  operating_hours: Hours!
+  phone_number: [String!]!
+  description: String!
+  activities: [String!]!
+  website: String
+  attachments: [String!]
+}
+
+type EntertainmentBusiness_noLocale implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: EntertainmentBusinessSubType!
+  sub_type_string: LocaleString!
+  trade_license: String!
+  trade_license_number: String!
+  street_address: String!
+  operating_hours: Hours!
+  phone_number: [String!]!
+  description: LocaleString!
+  activities: [LocaleString!]!
+  website: String
+  attachments: [String!]
+}
+
+input NewEntertainmentBusinessInput {
+  display_name: String!
+  display_picture: Upload!
+  city: City!
+  sub_type: EntertainmentBusinessSubType!
+  sub_type_string: LocaleStringInput
+  trade_license: Upload!
+  trade_license_number: String!
+  street_address: String!
+  operating_hours: HoursInput!
+  phone_number: [String!]!
+  description: LocaleStringInput!
+  activities: [LocaleStringInput!]!
+  website: String
+  attachments: [Upload!]
+}
+
+input UpdateEntertainmentBusinessInput {
+  display_name: String
+  display_picture: Upload
+  city: City
+  sub_type: EntertainmentBusinessSubType
+  sub_type_string: LocaleStringInput
+  trade_license: Upload
+  trade_license_number: String
+  street_address: String
+  operating_hours: HoursInput
+  phone_number: [String!]
+  description: LocaleStringInput
+  activities: [LocaleStringInput!]
+  website: String
+  old_attachments: [String!]
+  attachments: [Upload!]
+}
+
+# food
+
+type FoodBusiness implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: FoodBusinessSubType!
+  sub_type_string: String!
+  trade_license: String!
+  trade_license_number: String!
+  street_address: String!
+  operating_hours: Hours!
+  phone_number: [String!]!
+  description: String!
+  website: String
+  menu: [String!]!
+  attachments: [String!]
+}
+
+type FoodBusiness_noLocale implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: FoodBusinessSubType!
+  sub_type_string: LocaleString!
+  trade_license: String!
+  trade_license_number: String!
+  street_address: String!
+  operating_hours: Hours!
+  phone_number: [String!]!
+  description: LocaleString!
+  website: String
+  menu: [String!]!
+  attachments: [String!]
+}
+
+input NewFoodBusinessInput {
+  display_name: String!
+  display_picture: Upload!
+  city: City!
+  sub_type: FoodBusinessSubType!
+  sub_type_string: LocaleStringInput
+  trade_license: Upload!
+  trade_license_number: String!
+  street_address: String!
+  operating_hours: HoursInput!
+  phone_number: [String!]!
+  description: LocaleStringInput!
+  website: String
+  menu: [Upload!]!
+  attachments: [Upload!]
+}
+
+input UpdateFoodBusinessInput {
+  display_name: String
+  display_picture: Upload
+  city: City
+  sub_type: FoodBusinessSubType
+  sub_type_string: LocaleStringInput
+  trade_license: Upload
+  trade_license_number: String
+  street_address: String
+  operating_hours: HoursInput
+  phone_number: [String!]
+  description: LocaleStringInput
+  website: String
+  old_menu: [String!]
+  menu: [Upload!]
+  old_attachments: [String!]
+  attachments: [Upload!]
+}
+
+# cleaning and maintenance
+
+type CleaningAndMaintenanceBusiness implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: CleaningAndMaintenanceBusinessSubType!
+  sub_type_string: String!
+  trade_license: String!
+  trade_license_number: String!
+  street_address: String!
+  operating_hours: Hours!
+  phone_number: [String!]!
+  description: String!
+  home_service_available: Boolean!
+  charge: Price
+  website: String
+  attachments: [String!]
+}
+
+type CleaningAndMaintenanceBusiness_noLocale implements Business {
+  id: ID!
+  update: Business
+  approved: ApproveStatus!
+  rating: Float
+  display_name: String!
+  display_picture: String!
+  city: City!
+  type: BusinessType!
+  # specialization
+  sub_type: CleaningAndMaintenanceBusinessSubType!
+  sub_type_string: LocaleString!
+  trade_license: String!
+  trade_license_number: String!
+  street_address: String!
+  operating_hours: Hours!
+  phone_number: [String!]!
+  description: LocaleString!
+  home_service_available: Boolean!
+  charge: Price
+  website: String
+  attachments: [String!]
+}
+
+input NewCleaningAndMaintenanceBusinessInput {
+  display_name: String!
+  display_picture: Upload!
+  city: City!
+  sub_type: CleaningAndMaintenanceBusinessSubType!
+  sub_type_string: LocaleStringInput
+  trade_license: Upload!
+  trade_license_number: String!
+  street_address: String!
+  operating_hours: HoursInput!
+  phone_number: [String!]!
+  description: LocaleStringInput!
+  home_service_available: Boolean!
+  charge: PriceInput
+  website: String
+  attachments: [Upload!]
+}
+
+input UpdateCleaningAndMaintenanceBusinessInput {
+  display_name: String
+  display_picture: Upload
+  city: City
+  sub_type: CleaningAndMaintenanceBusinessSubType
+  sub_type_string: LocaleStringInput
+  trade_license: Upload
+  trade_license_number: String
+  street_address: String
+  operating_hours: HoursInput
+  phone_number: [String!]
+  description: LocaleStringInput
+  home_service_available: Boolean
+  charge: PriceInput
+  website: String
+  old_attachments: [String!]
+  attachments: [Upload!]
+}
+
+# event
+
+type Event {
+  id: ID!
+  approved: ApproveStatus!
+  display_name: String!
+  display_picture: String!
+  type: EventType!
+  city: City
+  street_address: String
+  phone_number: [String!]
+  description: String!
+  duration: Duration!
+  hours: Hours!
+  ticket_website: String
+  ticket_price: Price
+  organizer: String!
+  attachments: [String!]
+}
+
+type Event_noLocale {
+  id: ID!
+  approved: ApproveStatus!
+  display_name: String!
+  display_picture: String!
+  type: EventType!
+  city: City
+  street_address: String
+  phone_number: [String!]
+  description: LocaleString!
+  duration: Duration!
+  hours: Hours!
+  ticket_website: String
+  ticket_price: Price
+  organizer: String!
+  attachments: [String!]
+}
+
+input NewEventInput {
+  display_name: String!
+  display_picture: Upload!
+  type: EventType!
+  city: City
+  street_address: String
+  phone_number: [String!]
+  description: LocaleStringInput!
+  duration: DurationInput!
+  hours: HoursInput!
+  ticket_website: String
+  ticket_price: PriceInput
+  organizer: String!
+  attachments: [Upload!]
+}
+
+input UpdateEventInput {
+  display_name: String
+  display_picture: Upload
+  type: EventType
+  city: City
+  street_address: String
+  phone_number: [String!]
+  description: LocaleStringInput
+  duration: DurationInput
+  hours: HoursInput
+  ticket_website: String
+  ticket_price: PriceInput
+  organizer: String
+  old_attachments: [String!]
+  attachments: [Upload!]
+}
+
+# helping types
+
+type LocaleString {
+  ar: String!
+  en: String!
+}
+
+input LocaleStringInput {
+  ar: String!
+  en: String!
+}
+
+type Price {
+  value: Float
+  valueLower: Float
+  valueUpper: Float
+  currency: Currency!
+}
+
+input PriceInput {
+  value: Float
+  valueLower: Float
+  valueUpper: Float
+  currency: Currency!
+}
+
+type Duration {
+  start: String!
+  end: String!
+}
+
+input DurationInput {
+  start: String!
+  end: String!
+}
+
+type Hours {
+  open: String
+  close: String
+  all_day: Boolean!
+}
+
+input HoursInput {
+  open: String
+  close: String
+  all_day: Boolean!
+}
+
+type PersonalExperience {
+  country: Country!
+  institution: String
+  from: String!
+  to: String
+  in_position: Boolean!
+}
+
+input PersonalExperienceInput {
+  country: Country!
+  institution: String
+  from: String!
+  to: String
+  in_position: Boolean!
+}
+
+interface DomesticHelpPersonnel {
+  name: String!
+  picture: String!
+  profession: Profession!
+  gender: Gender!
+  nationality: Nationality!
+  religion: String!
+  salary: Price!
+  date_of_birth: String!
+  marital_status: MaritalStatus!
+  languages: [String!]!
+  experience: [PersonalExperience!]!
+  phone_number: String!
+  attachments: [String!]
+}
+
+interface DomesticHelpPersonnel_noLocale {
+  name: String!
+  picture: String!
+  profession: Profession!
+  gender: Gender!
+  nationality: Nationality!
+  religion: String!
+  salary: Price!
+  date_of_birth: String!
+  marital_status: MaritalStatus!
+  languages: [LocaleString!]!
+  experience: [PersonalExperience!]!
+  phone_number: String!
+  attachments: [String!]
+}
+
+input DomesticHelpPersonnelInput {
+  name: String!
+  picture: Upload!
+  profession: Profession!
+  gender: Gender!
+  nationality: Nationality!
+  religion: String!
+  salary: PriceInput!
+  date_of_birth: String!
+  marital_status: MaritalStatus!
+  languages: [LocaleStringInput!]!
+  experience: [PersonalExperienceInput!]!
+  phone_number: String!
+  attachments: [Upload!]
+  # extras
+  license_expiry_date: String
+  education: Education
+  height: String
+  weight: String
+  skills: [LocaleStringInput!]
+  number_of_children: Int
+}
+
+input UpdateDomesticHelpPersonnelInput {
+  name: String!
+  picture: Upload
+  profession: Profession
+  gender: Gender
+  nationality: Nationality
+  religion: String
+  salary: PriceInput
+  date_of_birth: String
+  marital_status: MaritalStatus
+  languages: [LocaleStringInput!]
+  experience: [PersonalExperienceInput!]
+  phone_number: String
+  old_attachments: [String!]
+  attachments: [Upload!]
+  # extras
+  license_expiry_date: String
+  education: Education
+  height: String
+  weight: String
+  skills: [LocaleStringInput!]
+  number_of_children: Int
+}
+
+type Driver implements DomesticHelpPersonnel {
+  name: String!
+  picture: String!
+  profession: Profession!
+  gender: Gender!
+  nationality: Nationality!
+  religion: String!
+  salary: Price!
+  date_of_birth: String!
+  marital_status: MaritalStatus!
+  languages: [String!]!
+  experience: [PersonalExperience!]!
+  phone_number: String!
+  attachments: [String!]
+  # specialization
+  license_expiry_date: String!
+}
+
+type Driver_noLocale implements DomesticHelpPersonnel_noLocale {
+  name: String!
+  picture: String!
+  profession: Profession!
+  gender: Gender!
+  nationality: Nationality!
+  religion: String!
+  salary: Price!
+  date_of_birth: String!
+  marital_status: MaritalStatus!
+  languages: [LocaleString!]!
+  experience: [PersonalExperience!]!
+  phone_number: String!
+  attachments: [String!]
+  # specialization
+  license_expiry_date: String!
+}
+
+type Nanny implements DomesticHelpPersonnel {
+  name: String!
+  picture: String!
+  profession: Profession!
+  gender: Gender!
+  nationality: Nationality!
+  religion: String!
+  salary: Price!
+  date_of_birth: String!
+  marital_status: MaritalStatus!
+  languages: [String!]!
+  experience: [PersonalExperience!]!
+  phone_number: String!
+  attachments: [String!]
+  # specialization
+  education: Education!
+  height: String!
+  weight: String!
+  skills: [String!]!
+  number_of_children: Int!
+}
+
+type Nanny_noLocale implements DomesticHelpPersonnel_noLocale {
+  name: String!
+  picture: String!
+  profession: Profession!
+  gender: Gender!
+  nationality: Nationality!
+  religion: String!
+  salary: Price!
+  date_of_birth: String!
+  marital_status: MaritalStatus!
+  languages: [LocaleString!]!
+  experience: [PersonalExperience!]!
+  phone_number: String!
+  attachments: [String!]
+  # specialization
+  education: Education!
+  height: String!
+  weight: String!
+  skills: [LocaleString!]!
+  number_of_children: Int!
+}
+
+type Maid implements DomesticHelpPersonnel {
+  name: String!
+  picture: String!
+  profession: Profession!
+  gender: Gender!
+  nationality: Nationality!
+  religion: String!
+  salary: Price!
+  date_of_birth: String!
+  marital_status: MaritalStatus!
+  languages: [String!]!
+  experience: [PersonalExperience!]!
+  phone_number: String!
+  attachments: [String!]
+  # specialization
+  education: Education!
+  height: String!
+  weight: String!
+  skills: [String!]!
+  number_of_children: Int!
+}
+
+type Maid_noLocale implements DomesticHelpPersonnel_noLocale {
+  name: String!
+  picture: String!
+  profession: Profession!
+  gender: Gender!
+  nationality: Nationality!
+  religion: String!
+  salary: Price!
+  date_of_birth: String!
+  marital_status: MaritalStatus!
+  languages: [LocaleString!]!
+  experience: [PersonalExperience!]!
+  phone_number: String!
+  attachments: [String!]
+  # specialization
+  education: Education!
+  height: String!
+  weight: String!
+  skills: [LocaleString!]!
+  number_of_children: Int!
+}
+
+type Cook implements DomesticHelpPersonnel {
+  name: String!
+  picture: String!
+  profession: Profession!
+  gender: Gender!
+  nationality: Nationality!
+  religion: String!
+  salary: Price!
+  date_of_birth: String!
+  marital_status: MaritalStatus!
+  languages: [String!]!
+  experience: [PersonalExperience!]!
+  phone_number: String!
+  attachments: [String!]
+  # specialization
+  education: Education!
+  height: String!
+  weight: String!
+  skills: [String!]!
+  number_of_children: Int!
+}
+
+type Cook_noLocale implements DomesticHelpPersonnel_noLocale {
+  name: String!
+  picture: String!
+  profession: Profession!
+  gender: Gender!
+  nationality: Nationality!
+  religion: String!
+  salary: Price!
+  date_of_birth: String!
+  marital_status: MaritalStatus!
+  languages: [LocaleString!]!
+  experience: [PersonalExperience!]!
+  phone_number: String!
+  attachments: [String!]
+  # specialization
+  education: Education!
+  height: String!
+  weight: String!
+  skills: [LocaleString!]!
+  number_of_children: Int!
+}
+
+# enumerations
+
+enum Locale {
+  ar
+  en
+}
+
+enum UserType {
+  BUSINESS
+  PUBLIC
+}
+
+enum BusinessType {
+  SelfEmployedBusiness
+  ChildEducationBusiness
+  DomesticHelpBusiness
+  BeautyBusiness
+  TransportationBusiness
+  HospitalityBusiness
+  StationeryBusiness
+  MadeInQatarBusiness
+  SportsBusiness
+  EntertainmentBusiness
+  FoodBusiness
+  CleaningAndMaintenanceBusiness
+}
+
+enum SelfEmployedSubType {
+  SOCIAL_MEDIA_SPECIALIST
+  ACADEMIC_TUTOR
+  MUSIC_TUTOR
+  ENGLISH_TUTOR
+  ARABIC_TUTOR
+  SPANISH_TUTOR
+  FRENCH_TUTOR
+  GERMAN_TUTOR
+  ELDER_CARE
+  CONSULTANT
+  VIDEO_PRODUCTION
+  WRITER
+  WEB_DESIGNER
+  BLOGGER
+  CAREER_COACH
+  LIFE_COACH
+  VOICE_OVER_SPECIALIST
+  GRAPHIC_DESIGNER
+  VIRTUAL_ASSISTANT
+  PET_SITTER
+  PERSONAL_TRAINER
+  PHOTOGRAPHER
+  CARPENTER
+  PAINTER
+  REAL_ESTATE_BROKER
+  PROGRAMMER
+  DIGITAL_MARKETER
+  DATA_ENTRY
+  ENGLISH_CONTENT_WRITER
+  SALES_AGENT_ONLINE
+  VIDEOGRAPHER
+  GAME_DEVELOPER
+  MOBILE_DEVELOPER
+  MOTION_GRAPHIC_DESIGNER
+  TRANSLATOR
+  NANNY
+  COOK
+  DRIVER
+  NURSE
+  TEACHER
+  EVENT_PLANNER
+  STYLIST
+  HAIR_STYLIST
+  MAKEUP_ARTIST
+  SPECIAL_NEEDS_TEACHER
+  OTHER
+}
+
+enum ChildEducationSubType {
+  SKILLS_DEVELOPMENT_CENTER
+  EDUCATION_CENTER
+  NURSERY
+  SPECIAL_NEEDS_CENTER
+  OTHER
+}
+
+enum DomesticHelpSubType {
+  OTHER
+}
+
+enum BeautyBusinessSubType {
+  OTHER
+}
+
+enum TransportationBusinessSubType {
+  OTHER
+}
+
+enum HospitalityBusinessSubType {
+  OTHER
+}
+
+enum MadeInQatarBusinessSubType {
+  OTHER
+}
+
+enum SportsBusinessSubType {
+  GYM
+  CLUB
+}
+
+enum EntertainmentBusinessSubType {
+  PARK
+  SHOPPING_MALL
+  KIDS_PLAYING_AREA
+  BIRTHDAY_AREA
+  OTHER
+}
+
+enum FoodBusinessSubType {
+  AMERICAN_RESTAURANT
+  ARGENTINEAN_RESTAURANT
+  ARABIAN_RESTAURANT
+  ASIAN_RESTAURANT
+  AUSTRALIAN_RESTAURANT
+  CHINESE_RESTAURANT
+  EUROPEAN_RESTAURANT
+  FRENCH_RESTAURANT
+  LEBANESE_RESTAURANT
+  MEXICAN_RESTAURANT
+  ORIENTAL_RESTAURANT
+  OTHER
+}
+
+enum CleaningAndMaintenanceBusinessSubType {
+  OTHER
+}
+
+enum EventType {
+  OTHER
+}
+
+enum Profession {
+  Driver
+  Nanny
+  Maid
+  Cook
+}
+
+enum MaritalStatus {
+  SINGLE
+  MARRIED
+  DIVORCED
+  WIDOWED
+}
+
+enum Education {
+  NONE
+  SECONDARY
+  POST_SECONDARY
+  POST_GRADUATE
+}
+
+enum Currency {
+  QAR
+  USD
+}
+
+enum ApproveStatus {
+  TENTATIVE
+  APPROVED_AND_LISTED
+  APPROVED
+  REJECTED
+}
+
+enum City {
+  DOHA
+  ABU_AZ_ZULUF
+  ABU_THAYLAH
+  AL_ARISH
+  AL_GHUWARIYAH
+  AL_JUMALIYAH
+  AL_KA_BIYAH
+  AL_KHOR
+  KHOR_AL_UDAID	
+  AL_MAFJAR
+  AL_QA_ABIYAH
+  AL_WAKRAH
+  AR_RAKIYAT
+  AL_RAYYAN
+  AL_RUWAIS
+  ATH_THAQAB
+  DUKHAN
+  RAS_LAFFAN_INDUSTRIAL_CITY
+  MESAIEED
+  AL_ZUBARA
+  UMM_BAB
+  UMM_SALAL_ALI
+  UMM_SALAL_MOHAMMED
+  OTHER
+}
+
+enum Gender {
+  FEMALE
+  MALE
+}
+
+enum Genders {
+  FEMALE_ONLY
+  MALE_ONLY
+  MIXED
+}
+
+enum Country {
+  QATAR
+  AFGHANISTAN
+  ALBANIA
+  ALGERIA
+  ANDORRA
+  ANGOLA
+  ANTIGUA_AND_BARBUDA
+  ARGENTINA
+  ARMENIA
+  AUSTRALIA
+  AUSTRIA
+  AZERBAIJAN
+  THE_BAHAMAS
+  BAHRAIN
+  BANGLADESH
+  BARBADOS
+  BELARUS
+  BELGIUM
+  BELIZE
+  BENIN
+  BHUTAN
+  BOLIVIA
+  BOSNIA_AND_HERZEGOVINA
+  BOTSWANA
+  BRAZIL
+  BRUNEI
+  BULGARIA
+  BURKINA_FASO
+  BURUNDI
+  CABO_VERDE
+  CAMBODIA
+  CAMEROON
+  CANADA
+  CENTRAL_AFRICAN_REPUBLIC
+  CHAD
+  CHILE
+  CHINA
+  COLOMBIA
+  COMOROS
+  CONGO__DEMOCRATIC_REPUBLIC_OF_THE
+  CONGO__REPUBLIC_OF_THE
+  COSTA_RICA
+  COTE_D_IVOIRE
+  CROATIA
+  CUBA
+  CYPRUS
+  CZECH_REPUBLIC
+  DENMARK
+  DJIBOUTI
+  DOMINICA
+  DOMINICAN_REPUBLIC
+  EAST_TIMOR__TIMOR_LESTE_
+  ECUADOR
+  EGYPT
+  EL_SALVADOR
+  EQUATORIAL_GUINEA
+  ERITREA
+  ESTONIA
+  ESWATINI
+  ETHIOPIA
+  FIJI
+  FINLAND
+  FRANCE
+  GABON
+  THE_GAMBIA
+  GEORGIA
+  GERMANY
+  GHANA
+  GREECE
+  GRENADA
+  GUATEMALA
+  GUINEA
+  GUINEA_BISSAU
+  GUYANA
+  HAITI
+  HONDURAS
+  HUNGARY
+  ICELAND
+  INDIA
+  INDONESIA
+  IRAN
+  IRAQ
+  IRELAND
+  ISRAEL
+  ITALY
+  JAMAICA
+  JAPAN
+  JORDAN
+  KAZAKHSTAN
+  KENYA
+  KIRIBATI
+  KOREA__NORTH
+  KOREA__SOUTH
+  KOSOVO
+  KUWAIT
+  KYRGYZSTAN
+  LAOS
+  LATVIA
+  LEBANON
+  LESOTHO
+  LIBERIA
+  LIBYA
+  LIECHTENSTEIN
+  LITHUANIA
+  LUXEMBOURG
+  MADAGASCAR
+  MALAWI
+  MALAYSIA
+  MALDIVES
+  MALI
+  MALTA
+  MARSHALL_ISLANDS
+  MAURITANIA
+  MAURITIUS
+  MEXICO
+  MICRONESIA__FEDERATED_STATES_OF
+  MOLDOVA
+  MONACO
+  MONGOLIA
+  MONTENEGRO
+  MOROCCO
+  MOZAMBIQUE
+  MYANMAR__BURMA_
+  NAMIBIA
+  NAURU
+  NEPAL
+  NETHERLANDS
+  NEW_ZEALAND
+  NICARAGUA
+  NIGER
+  NIGERIA
+  NORTH_MACEDONIA
+  NORWAY
+  OMAN
+  PAKISTAN
+  PALAU
+  PANAMA
+  PAPUA_NEW_GUINEA
+  PARAGUAY
+  PERU
+  PHILIPPINES
+  POLAND
+  PORTUGAL
+  ROMANIA
+  RUSSIA
+  RWANDA
+  SAINT_KITTS_AND_NEVIS
+  SAINT_LUCIA
+  SAINT_VINCENT_AND_THE_GRENADINES
+  SAMOA
+  SAN_MARINO
+  SAO_TOME_AND_PRINCIPE
+  SAUDI_ARABIA
+  SENEGAL
+  SERBIA
+  SEYCHELLES
+  SIERRA_LEONE
+  SINGAPORE
+  SLOVAKIA
+  SLOVENIA
+  SOLOMON_ISLANDS
+  SOMALIA
+  SOUTH_AFRICA
+  SPAIN
+  SRI_LANKA
+  SUDAN
+  SUDAN__SOUTH
+  SURINAME
+  SWEDEN
+  SWITZERLAND
+  SYRIA
+  TAIWAN
+  TAJIKISTAN
+  TANZANIA
+  THAILAND
+  TOGO
+  TONGA
+  TRINIDAD_AND_TOBAGO
+  TUNISIA
+  TURKEY
+  TURKMENISTAN
+  TUVALU
+  UGANDA
+  UKRAINE
+  UNITED_ARAB_EMIRATES
+  UNITED_KINGDOM
+  UNITED_STATES
+  URUGUAY
+  UZBEKISTAN
+  VANUATU
+  VATICAN_CITY
+  VENEZUELA
+  VIETNAM
+  YEMEN
+  ZAMBIA
+  ZIMBABWE
+}
+
+enum Nationality {
+  QATARI
+  AFGHAN
+  ALBANIAN
+  ALGERIAN
+  AMERICAN
+  ANDORRAN
+  ANGOLAN
+  ANGUILLAN
+  ARGENTINE
+  ARMENIAN
+  AUSTRALIAN
+  AUSTRIAN
+  AZERBAIJANI
+  BAHAMIAN
+  BAHRAINI
+  BANGLADESHI
+  BARBADIAN
+  BELARUSIAN
+  BELGIAN
+  BELIZEAN
+  BENINESE
+  BERMUDIAN
+  BHUTANESE
+  BOLIVIAN
+  BOTSWANAN
+  BRAZILIAN
+  BRITISH
+  BRITISH_VIRGIN_ISLANDER
+  BRUNEIAN
+  BULGARIAN
+  BURKINAN
+  BURMESE
+  BURUNDIAN
+  CAMBODIAN
+  CAMEROONIAN
+  CANADIAN
+  CAPE_VERDEAN
+  CAYMAN_ISLANDER
+  CENTRAL_AFRICAN
+  CHADIAN
+  CHILEAN
+  CHINESE
+  CITIZEN_OF_ANTIGUA_AND_BARBUDA
+  CITIZEN_OF_BOSNIA_AND_HERZEGOVINA
+  CITIZEN_OF_GUINEA_BISSAU
+  CITIZEN_OF_KIRIBATI
+  CITIZEN_OF_SEYCHELLES
+  CITIZEN_OF_THE_DOMINICAN_REPUBLIC
+  CITIZEN_OF_VANUATU
+  COLOMBIAN
+  COMORAN
+  CONGOLESE__CONGO_
+  CONGOLESE__DRC_
+  COOK_ISLANDER
+  COSTA_RICAN
+  CROATIAN
+  CUBAN
+  CYMRAES
+  CYMRO
+  CYPRIOT
+  CZECH
+  DANISH
+  DJIBOUTIAN
+  DOMINICAN
+  DUTCH
+  EAST_TIMORESE
+  ECUADOREAN
+  EGYPTIAN
+  EMIRATI
+  ENGLISH
+  EQUATORIAL_GUINEAN
+  ERITREAN
+  ESTONIAN
+  ETHIOPIAN
+  FAROESE
+  FIJIAN
+  FILIPINO
+  FINNISH
+  FRENCH
+  GABONESE
+  GAMBIAN
+  GEORGIAN
+  GERMAN
+  GHANAIAN
+  GIBRALTARIAN
+  GREEK
+  GREENLANDIC
+  GRENADIAN
+  GUAMANIAN
+  GUATEMALAN
+  GUINEAN
+  GUYANESE
+  HAITIAN
+  HONDURAN
+  HONG_KONGER
+  HUNGARIAN
+  ICELANDIC
+  INDIAN
+  INDONESIAN
+  IRANIAN
+  IRAQI
+  IRISH
+  ISRAELI
+  ITALIAN
+  IVORIAN
+  JAMAICAN
+  JAPANESE
+  JORDANIAN
+  KAZAKH
+  KENYAN
+  KITTITIAN
+  KOSOVAN
+  KUWAITI
+  KYRGYZ
+  LAO
+  LATVIAN
+  LEBANESE
+  LIBERIAN
+  LIBYAN
+  LIECHTENSTEIN_CITIZEN
+  LITHUANIAN
+  LUXEMBOURGER
+  MACANESE
+  MACEDONIAN
+  MALAGASY
+  MALAWIAN
+  MALAYSIAN
+  MALDIVIAN
+  MALIAN
+  MALTESE
+  MARSHALLESE
+  MARTINIQUAIS
+  MAURITANIAN
+  MAURITIAN
+  MEXICAN
+  MICRONESIAN
+  MOLDOVAN
+  MONEGASQUE
+  MONGOLIAN
+  MONTENEGRIN
+  MONTSERRATIAN
+  MOROCCAN
+  MOSOTHO
+  MOZAMBICAN
+  NAMIBIAN
+  NAURUAN
+  NEPALESE
+  NEW_ZEALANDER
+  NICARAGUAN
+  NIGERIAN
+  NIGERIEN
+  NIUEAN
+  NORTH_KOREAN
+  NORTHERN_IRISH
+  NORWEGIAN
+  OMANI
+  PAKISTANI
+  PALAUAN
+  PALESTINIAN
+  PANAMANIAN
+  PAPUA_NEW_GUINEAN
+  PARAGUAYAN
+  PERUVIAN
+  PITCAIRN_ISLANDER
+  POLISH
+  PORTUGUESE
+  PRYDEINIG
+  PUERTO_RICAN
+  ROMANIAN
+  RUSSIAN
+  RWANDAN
+  SALVADOREAN
+  SAMMARINESE
+  SAMOAN
+  SAO_TOMEAN
+  SAUDI_ARABIAN
+  SCOTTISH
+  SENEGALESE
+  SERBIAN
+  SIERRA_LEONEAN
+  SINGAPOREAN
+  SLOVAK
+  SLOVENIAN
+  SOLOMON_ISLANDER
+  SOMALI
+  SOUTH_AFRICAN
+  SOUTH_KOREAN
+  SOUTH_SUDANESE
+  SPANISH
+  SRI_LANKAN
+  ST_HELENIAN
+  ST_LUCIAN
+  STATELESS
+  SUDANESE
+  SURINAMESE
+  SWAZI
+  SWEDISH
+  SWISS
+  SYRIAN
+  TAIWANESE
+  TAJIK
+  TANZANIAN
+  THAI
+  TOGOLESE
+  TONGAN
+  TRINIDADIAN
+  TRISTANIAN
+  TUNISIAN
+  TURKISH
+  TURKMEN
+  TURKS_AND_CAICOS_ISLANDER
+  TUVALUAN
+  UGANDAN
+  UKRAINIAN
+  URUGUAYAN
+  UZBEK
+  VATICAN_CITIZEN
+  VENEZUELAN
+  VIETNAMESE
+  VINCENTIAN
+  WALLISIAN
+  WELSH
+  YEMENI
+  ZAMBIAN
+  ZIMBABWEAN
+}

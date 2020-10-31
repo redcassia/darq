@@ -1,0 +1,106 @@
+.home-pane {
+    position: relative;
+    height: 100%;
+    float: left;
+}
+
+.active-home-pane {
+    z-index: 0;
+
+    width: 55%;
+    background-color: var(--white);
+}
+
+.inactive-home-pane {
+    z-index: 1;
+
+    width: 45%;
+    background-color: var(--main-color);
+
+    text-align: center;
+}
+
+.home-pane-content {
+    position: relative;
+    width: 50%;
+    min-width: 400px;
+    height: auto;
+    top: 150px;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+
+.home-pane-content > input {
+    width: 100%;
+    padding: 10px 0px;
+    margin: 20px 0px;
+
+    border: 0;
+    outline: 0;
+    background: transparent;
+    border-bottom: 1px solid var(--medium);
+
+    font-weight: normal;
+    font-size: 20px;
+    line-height: 23px;
+}
+
+.home-pane-content > button {
+    color: var(--white);
+}
+
+.active-home-pane > .home-pane-content > button {
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, 0);
+
+    background-color: var(--main-color);
+}
+
+.inactive-home-pane > .home-pane-content > button {
+    background-color: var(--accent);
+}
+
+.inactive-home-pane::after {
+    content: url('assets/logo.png') '\a' url('assets/logo-text.png');
+    white-space: pre;
+
+    pointer-events: none;
+    display: block;
+    position: absolute;
+    top: 150px;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 150px);
+
+    background: url('assets/home-bottom-bg-2.png') no-repeat, url('assets/home-bottom-bg-1.png') no-repeat;
+    background-size: 200px auto, 100% 170px;
+    background-position: left 30px bottom 70px, bottom;
+}
+
+.inactive-home-pane > .home-pane-content {
+    top: 250px;
+}
+
+#welcome-screen > .inactive-home-pane {
+    width: 100%;
+}
+
+#welcome-screen > .inactive-home-pane::after {
+    content: url('assets/logo.png');
+    background: none;
+}
+
+#locale-switcher {
+    z-index: 1000;
+    position: fixed;
+    top: 0;
+
+    background-color: transparent;
+    color: white;
+    padding: 20px;
+    font-size: 14px;
+}
+#locale-switcher:hover {
+    cursor: pointer;
+}

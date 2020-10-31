@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>DarQ</title>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="index.css">
+    </head>
+    <body>
+        <script src="https://kit.fontawesome.com/d3fa62ec11.js" crossorigin="anonymous"></script>
+
+        <script>
+            function switchToSignup() {
+                const slideDisplacement = $("#signin-screen > .inactive-home-pane").offset().left;
+
+                $(".inactive-home-pane > .home-pane-content").hide();
+                $("#signin-form").hide();
+                $("#forgot-password-form").hide();
+                $("#reset-password-form").hide();
+
+                $("#signup-form").css({
+                    left: '-100%'
+                }).animate({
+                    left: '50%'
+                }, slideSpeed);
+                $("#signin-screen > .inactive-home-pane").animate({
+                    left: '-=' + slideDisplacement + 'px'
+                }, slideSpeed, function() {
+                    $("#signup-screen").css('z-index', '1');
+                    $("#signin-screen").css('z-index', '0');
+                    $(".inactive-home-pane > .home-pane-content").show();
+                    $("#signin-form").show();
+                    $(this).css({
+                    left: '0px'
+                    })
+                });
+            }
+
+            function switchToSignin() {
+                const slideDisplacement = $("#signin-screen > .inactive-home-pane").offset().left;
+
+                $(".inactive-home-pane > .home-pane-content").hide();
+                $("#signup-form").hide();
+
+                $("#signin-form").css({
+                    left: '200%'
+                }).animate({
+                    left: '50%'
+                }, slideSpeed);
+                $("#signup-screen > .inactive-home-pane").animate({
+                    left: '+=' + slideDisplacement + 'px'
+                }, slideSpeed, function() {
+                    $("#signin-screen").css('z-index', '1');
+                    $("#signup-screen").css('z-index', '0');
+                    $(".inactive-home-pane > .home-pane-content").show();
+                    $("#signup-form").show();
+                    $(this).css({
+                    left: '0px'
+                    })
+                });
+            }
+
+            function welcomeToSignin(d) {
+                $("#welcome-screen > .inactive-home-pane").delay(d).animate({
+                    width: '45%',
+                    left: '55%'
+                }, welcomeSpeed, "easeInQuad", function() {
+                    $("#welcome-screen").hide();
+                });
+            }
+
+        </script>
+
+        <div id="locale-switcher" onclick="switchLocale('ar')" style="right: 0;">العربية</div>
+
+        <div class="hidden" id="loading-blanket">
+            <i class="fas fa-sync fa-spin"></i>
+        </div>
+
+        <div id="signup-screen" class="screen" style="z-index: 0;">
+            <div class="home-pane inactive-home-pane">
+                <div class="home-pane-content white">
+                    <h3>Welcome Back</h3>
+                    <button onclick="switchToSignin()">Sign in</button>
+                </div>
+            </div>
+
+            <div class="home-pane active-home-pane">
+                <div id="signup-form" class="home-pane-content dark">
+                    <h4>
+                        <span>Create an account to <br/> engage with customers on</span>
+                        <br/>
+                        <span class="accent h3">DarQ</span>
+                    </h4>
+                    <input type="email" id="signup-email" placeholder="Email" onkeydown="if (event.keyCode === 13 ) signup();" /> <br/>
+                    <input type="password" id="signup-password" placeholder="Password" onkeydown="if (event.keyCode === 13 ) signup();" /> <br/>
+                    <input type="password" id="signup-password-confirm" placeholder="Confirm Password" onkeydown="if (event.keyCode === 13 ) signup();" /> <br/>
+                    <button onclick="signup()">Create Account</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="signin-screen" class="screen" style="z-index: 1;">
+            <div class="home-pane active-home-pane">
+                <div id="signin-form" class="home-pane-content dark" style="display: none;">
+                    <h4>
+                        <span>Sign in to <br/> engage with customers on</span>
+                        <br/>
+                        <span class="accent h3">DarQ</span>
+                    </h4>
+                    <input type="email" id="signin-email" placeholder="Email" onkeydown="if (event.keyCode === 13 ) signin();"/> <br/>
+                    <input type="password" id="signin-password" placeholder="Password" onkeydown="if (event.keyCode === 13 ) signin();"/> <br/>
+                    <div style="text-align: right;">
+                        <span class="clickable" onclick="switchToForgotPassword()">Forgot password?</span>
+                    </div>
+                    <button onclick="signin()">Sign in</button>
+                </div>
+
+                <div id="forgot-password-form" class="home-pane-content dark" style="display: none;">
+                    <h4>Forgot password?</h4>
+                    <input type="email" id="reset-password-email" placeholder="Email" onkeydown="if (event.keyCode === 13 ) requestPasswordReset();"/> <br/>
+                    <button onclick="requestPasswordReset()">Reset Password</button>
+                </div>
+
+                <div id="reset-password-form" class="home-pane-content dark" style="display: none;">
+                    <input type="password" id="reset-password" placeholder="Password" onkeydown="if (event.keyCode === 13 ) resetPassword();" /> <br/>
+                    <input type="password" id="reset-password-conf" placeholder="Confirm Password" onkeydown="if (event.keyCode === 13 ) resetPassword();" /> <br/>
+                    <button onclick="resetPassword()">Reset Password</button>
+                </div>
+            </div>
+
+            <div class="home-pane inactive-home-pane">
+                <div class="home-pane-content white">
+                    <h3>Become a partner</h3>
+                    <button onclick="switchToSignup()">Create Account</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="welcome-screen" class="screen" style="z-index: 2;">
+            <div class="home-pane inactive-home-pane"></div>
+        </div>
+
+        <div id="main-screen" class="screen" style="display: none;">
+            <div class="screen-body">
+                <div class="side-bar">
+                    <div class="side-bar-btn" style="text-align: right;">
+                        <img id="hamburger-btn" class="clickable" onClick="toggleHamburger()" src="assets/hamburger-icon.png" data-icon-name="hamburger" class="clickable" />
+                    </div>
+
+                    <div id="messages-btn" class="side-bar-btn clickable" onclick="navigateTo('messages')">
+                        <img src="assets/msg-icon.png" data-icon-name="msg" class="clickable" />
+                        <span>Inbox</span>
+                    </div>
+
+                    <div id="business-btn" class="side-bar-btn clickable" onclick="navigateTo('business')">
+                        <img src="assets/briefcase-icon.png" data-icon-name="briefcase" class="clickable" />
+                        <span>Businesses</span>
+                    </div>
+
+                    <div id="events-btn" class="side-bar-btn clickable" onclick="navigateTo('event')">
+                        <img src="assets/calendar-icon.png" data-icon-name="calendar" class="clickable" />
+                        <span>Events</span>
+                    </div>
+
+                    <div id="settings-btn" class="side-bar-btn clickable" onclick="navigateTo('settings')">
+                        <img src="assets/gear-icon.png" data-icon-name="gear" class="clickable" />
+                        <span>Settings</span>
+                    </div>
+
+                    <div class="side-bar-btn">
+                        <img src="assets/gear-icon.png" data-icon-name="gear" class="invisible" />
+                        <span class="accent clickable underlined" onclick="signout()">Logout</span>
+                    </div>
+                </div>
+
+                <div id="content" class="screen-content"></div>
+            </div>
+        </div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+            integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+            crossorigin="anonymous">
+        </script>
+        <script src="shared_constants.js"></script>
+        <script src="dynamic_loader.js"></script>
+        <script src="cookie_manager.js"></script>
+        <script src="graphql.js"></script>
+        <script src="index.js"></script>
+    </body>
+</html>

@@ -1,0 +1,210 @@
+{
+  "list": {
+    "appbar": {
+      "filter": false,
+      "title": "events"
+    },
+    "columns": {
+      "start": [
+        {
+          "widget": "picture",
+          "height": 69.0,
+          "width": 70.0,
+          "data": ["display_picture"]
+        }
+      ],
+      "end": [
+        {
+          "widget": "text",
+          "textSize": "title9",
+          "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.7 },
+          "data": ["display_name"]
+        },
+        {
+          "widget": "vertical_spacer",
+          "height": 7.0
+        },
+        {
+          "widget": "text",
+          "textSize": "title11Odd",
+          "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.7 },
+          "data": ["street_address"]
+        },
+        {
+          "widget": "vertical_spacer",
+          "height": 3.0
+        },
+        {
+          "widget": "operating_hours_no_icon",
+          "data": ["hours"]
+        },
+        {
+          "widget": "vertical_spacer",
+          "height": 3.0
+        },
+        {
+          "widget": "text",
+          "textSize": "text10w500",
+          "textColor": { "r": 0, "g": 0, "b": 0, "o": 0.37 },
+          "data": ["type"]
+        },
+        {
+          "widget": "vertical_spacer",
+          "height": 5.56
+        },
+        {
+          "widget": "view_details_button",
+          "data": ["id"]
+        },
+        {
+          "widget": "vertical_spacer",
+          "height": 7.0
+        },
+        {
+          "widget": "contact_button",
+          "titleText": "contact_us",
+          "data": ["id"]
+        }
+      ]
+    },
+    "query": "query { items: events { id, display_name, display_picture, street_address type description  hours{ open close all_day }   }  }"
+  },
+  "detailed": {
+    "appbar": {
+      "filter": false,
+      "text": "contact_us"
+    },
+    "columns": {
+      "header": {
+        "start": [
+          {
+            "widget": "picture",
+            "height": 79.0,
+            "width": 80.0,
+            "data": ["display_picture"]
+          }
+        ],
+        "end": [
+          {
+            "widget": "text",
+            "textSize": "title9",
+            "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.7 },
+            "data": ["display_name"]
+          },
+          {
+            "widget": "text",
+            "textSize": "title11Odd",
+            "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.5 },
+            "data": ["type"]
+          },
+          {
+            "widget": "vertical_spacer",
+            "height": 3.0
+          },
+          {
+            "widget": "text_with_icon",
+            "textSize": "title11Odd",
+            "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.5 },
+            "iconName": "address.png",
+            "joinedData": {
+              "separator": ", ",
+              "children": [
+                ["street_address"],
+                ["city"]
+              ]
+            }
+          },
+          {
+            "widget": "vertical_spacer",
+            "height": 2.0
+          },
+          {
+            "widget": "operating_hours",
+            "data": ["hours"]
+          },
+          {
+            "widget": "vertical_spacer",
+            "height": 2.0
+          },
+          {
+            "widget": "phone_number",
+            "textSize": "title10OddUnderlined",
+            "textColor": {"r": 66, "g": 102, "b": 119, "o": 1.0 },
+            "iconName": "telephone.png",
+            "maxElements": 2,
+            "data": ["phone_number"]
+          }
+        ]
+      },
+      "body": [
+        {
+          "widget": "vertical_spacer",
+          "height": 2.0
+        },
+        {
+          "widget": "text",
+          "textSize": "text8w500",
+          "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.69 },
+          "data": ["description"]
+        },
+        {
+          "widget": "divider"
+        },
+        {
+          "widget": "duration",
+          "data": ["duration"]
+        },
+        {
+          "widget": "divider"
+        },
+        {
+          "widget": "text_with_title",
+          "titleText": "ticket_reservation",
+          "titleSize": "title9",
+          "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
+          "textSize": "text9odd",
+          "textColor": { "r": 0, "g": 0, "b": 0, "o": 0.5 },
+          "data": ["ticket_website"]
+        },
+        {
+          "widget": "divider"
+        },
+        {
+          "widget": "price",
+          "titleText": "ticket_price",
+          "titleSize": "title9",
+          "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
+          "textSize": "title10",
+          "textColor": { "r": 0, "g": 0, "b": 0, "o": 0.7 },
+          "trailingText": "",
+          "trailingTextSize": "title10",
+          "trailingTextColor": { "r": 0, "g": 0, "b": 0, "o": 0.5 },
+          "data": ["ticket_price"]
+        },
+        {
+          "widget": "divider"
+        },
+        {
+          "widget": "text_with_title",
+          "titleText": "organizer",
+          "titleSize": "title9",
+          "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
+          "textSize": "text9odd",
+          "textColor": { "r": 0, "g": 0, "b": 0, "o": 0.5 },
+          "data": ["organizer"]
+        },
+        {
+          "widget": "divider"
+        },
+        {
+          "widget": "picture_gallery",
+          "titleText": "photos",
+          "titleSize": "title9",
+          "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
+          "data": ["attachments"]
+        }
+      ]
+    },
+    "query": "query($id: ID!) { item: event(id: $id) { display_name display_picture type street_address hours{ open close all_day } city phone_number description duration{ start end } ticket_website ticket_price{ value valueLower valueUpper currency } organizer attachments } }"
+  }
+}

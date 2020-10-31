@@ -132,7 +132,6 @@ class _ChatListState extends State<ChatList> {
                                                                 0,
                                                                 0.5)))
                                               ]),
-                                          SizedBox(height: 1.h),
                                           Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment
@@ -149,7 +148,7 @@ class _ChatListState extends State<ChatList> {
                                                         overflow:
                                                             TextOverflow
                                                                 .ellipsis,
-                                                        style: AppFonts.text6w500(
+                                                        style: AppFonts.text8w500(
                                                             color: Color
                                                                 .fromRGBO(
                                                                     0,
@@ -162,7 +161,7 @@ class _ChatListState extends State<ChatList> {
                                                             Icon(
                                                                 Icons
                                                                     .notifications,
-                                                                size: 30.w),
+                                                                size: 25.w),
                                                             Positioned(
                                                                 // draw a red marble
                                                                 top: 0.0,
@@ -175,7 +174,7 @@ class _ChatListState extends State<ChatList> {
                                                                             .red),
                                                                     child: Padding(
                                                                         padding:
-                                                                            const EdgeInsets.all(5.0),
+                                                                             EdgeInsets.all(3.w),
                                                                         child: Text(numberOfUnseenMessages(_chats[index]).toString(), style: AppFonts.text10(color: Colors.white)))))
                                                           ])
                                                     : Container()

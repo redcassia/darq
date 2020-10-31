@@ -24,13 +24,8 @@ import 'package:flutter_translate/flutter_translate.dart';
 import 'package:link/link.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-Widget generateWidget(
-    BuildContext context,
-    dynamic layout,
-    dynamic allData,
-    { String id, String jsonFile }
-) {
-
+Widget generateWidget(BuildContext context, dynamic layout, dynamic allData,
+    {String id, String jsonFile}) {
   String widgetType = layout["widget"];
 
   dynamic data;
@@ -39,13 +34,18 @@ Widget generateWidget(
     if (dataPath != null) {
       data = allData;
       for (var x in dataPath) data = data[x];
-    }
-    else {
+    } else {
       dynamic joined = layout["joinedData"];
       if (joined != null) {
         data = joined["children"].map((dataPath) {
           var data = allData;
-          for (var x in dataPath) data = data[x];
+          for (var x in dataPath) {
+            try {
+              data = translate(data[x]);
+            } catch (e) {
+              data = data[x];
+            }
+          }
           return data;
         }).join(joined["separator"]);
       }
@@ -79,17 +79,20 @@ Widget generateWidget(
       try {
         data = translate(data);
       } catch (e) {}
-      return Text(data, style: AppFonts.makeStyle(layout["textSize"], layout["textColor"]));
+      return Text(data,
+          style: AppFonts.makeStyle(layout["textSize"], layout["textColor"]));
 
     case "website_with_title":
       if (data == null) return null;
       return TextLeadingRow(
           title: translate(layout["titleText"]),
-          titleStyle: AppFonts.makeStyle(layout["titleSize"], layout["titleColor"]),
+          titleStyle:
+              AppFonts.makeStyle(layout["titleSize"], layout["titleColor"]),
           widget: Link(
               url: data.toString(),
               child: Text(data.toString().split('/').last,
-                  style: AppFonts.makeStyle(layout["textSize"], layout["textColor"]))));
+                  style: AppFonts.makeStyle(
+                      layout["textSize"], layout["textColor"]))));
       break;
 
     case 'text_with_title':
@@ -99,31 +102,34 @@ Widget generateWidget(
         data = translate(data);
       } catch (e) {}
 
-      if (double.tryParse(data) != null &&
-          Localizations.localeOf(context).languageCode == 'ar') {
+      if (double.tryParse(data) != null) {
         data = Session.formatInt(int.parse(data));
       }
 
       if (layout["trailingText"] == null) {
         return TextLeadingRow(
             title: translate(layout["titleText"]),
-            titleStyle: AppFonts.makeStyle(layout["titleSize"], layout["titleColor"]),
+            titleStyle:
+                AppFonts.makeStyle(layout["titleSize"], layout["titleColor"]),
             txt: data.toString(),
-            txtStyle: AppFonts.makeStyle(layout["textSize"], layout["textColor"]));
+            txtStyle:
+                AppFonts.makeStyle(layout["textSize"], layout["textColor"]));
       } else {
         return TextLeadingRow(
             title: translate(layout["titleText"]),
-            titleStyle: AppFonts.makeStyle(layout["titleSize"], layout["titleColor"]),
+            titleStyle:
+                AppFonts.makeStyle(layout["titleSize"], layout["titleColor"]),
             widget: RichText(
                 textAlign: TextAlign.start,
                 text: TextSpan(
-                    style: AppFonts.makeStyle(layout["textSize"], layout["textColor"]),
+                    style: AppFonts.makeStyle(
+                        layout["textSize"], layout["textColor"]),
                     children: <TextSpan>[
                       TextSpan(text: data.toString()),
                       TextSpan(
                           text: layout["trailingText"],
-                          style: AppFonts.makeStyle(
-                              layout["trailingTextSize"], layout["trailingTextColor"]))
+                          style: AppFonts.makeStyle(layout["trailingTextSize"],
+                              layout["trailingTextColor"]))
                     ])));
       }
       break;
@@ -132,23 +138,27 @@ Widget generateWidget(
       if (data == null) return null;
       return TextLeadingRow(
           title: translate(layout["titleText"]),
-          titleStyle: AppFonts.makeStyle(layout["titleSize"], layout["titleColor"]),
-          txt: data ? translate(layout["textIfTrue"]) : translate(layout["textIfFalse"]),
-          txtStyle: AppFonts.makeStyle(layout["textSize"], layout["textColor"]));
+          titleStyle:
+              AppFonts.makeStyle(layout["titleSize"], layout["titleColor"]),
+          txt: data
+              ? translate(layout["textIfTrue"])
+              : translate(layout["textIfFalse"]),
+          txtStyle:
+              AppFonts.makeStyle(layout["textSize"], layout["textColor"]));
 
     case 'text_with_icon':
       if (data == null) return null;
       try {
         data = translate(data);
       } catch (e) {}
-      if (double.tryParse(data) != null &&
-          Localizations.localeOf(context).languageCode == 'ar') {
+      if (double.tryParse(data) != null) {
         data = Session.formatInt(int.parse(data));
       }
       return IconLeadingRow(
           iconName: layout["iconName"],
           txt: data,
-          textStyle: AppFonts.makeStyle(layout["textSize"], layout["textColor"]));
+          textStyle:
+              AppFonts.makeStyle(layout["textSize"], layout["textColor"]));
 
     case 'itemized_text_with_title':
       if (data == null || data.length == 0) return null;
@@ -156,7 +166,8 @@ Widget generateWidget(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(translate(layout["titleText"]),
-                style: AppFonts.makeStyle(layout["titleSize"], layout["titleColor"])),
+                style: AppFonts.makeStyle(
+                    layout["titleSize"], layout["titleColor"])),
             SizedBox(height: 5.h),
             ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
@@ -168,7 +179,8 @@ Widget generateWidget(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text("- ${data[index]}",
-                            style: AppFonts.makeStyle(layout["textSize"], layout["textColor"])),
+                            style: AppFonts.makeStyle(
+                                layout["textSize"], layout["textColor"])),
                         SizedBox(height: 3.h)
                       ]);
                 })
@@ -187,7 +199,8 @@ Widget generateWidget(
         spacing: 6.w,
         children: <Widget>[
           Text(translate(layout["titleText"]),
-              style: AppFonts.makeStyle(layout["titleSize"], layout["titleColor"])),
+              style: AppFonts.makeStyle(
+                  layout["titleSize"], layout["titleColor"])),
           SizedBox(height: 17.h),
           for (int i = 0; i < min(data.length, layout["maxElements"]); i++)
             CustomChip(text: data[i]),
@@ -199,9 +212,9 @@ Widget generateWidget(
 
       return Wrap(
           spacing: 6.w,
-          children: List.generate(min(data.length, layout["maxElements"]), (index) {
-            if (double.tryParse(data[index]) != null &&
-                Localizations.localeOf(context).languageCode == 'ar') {
+          children:
+              List.generate(min(data.length, layout["maxElements"]), (index) {
+            if (double.tryParse(data[index]) != null) {
               data[index] = Session.formatInt(int.parse(data[index]));
             }
             return IconLeadingRow(
@@ -218,10 +231,11 @@ Widget generateWidget(
           spacing: 6.w,
           children:
               List.generate(min(data.length, layout["maxElements"]), (index) {
-            if (double.tryParse(data[index]) != null &&
-                Localizations.localeOf(context).languageCode == 'ar') {
+            data[index] = data[index].replaceAll(new RegExp(r"\s+"), "");
+            if (double.tryParse(data[index]) != null) {
               data[index] = Session.formatInt(int.parse(data[index]));
             }
+
             return InkWell(
               onTap: () async {
                 if (await canLaunch("tel:${data[index]}")) {

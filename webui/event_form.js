@@ -25,19 +25,19 @@ function submitForm() {
     Form.unlock();
 
     if (! res.hasError) {
-      alert("Your event has been added. The data will be reviewed and we will contact you shortly.");
+      alert(getString('EVENT_ADD_SUCCESS_ALERT'));
       queryOwnedEvents();
     }
     else {
       console.log(res.errors[0]["message"]);
-      alert("Failed to add event");
+      alert(getString('EVENT_ADD_FAIL_ALERT'));
     }
   }).catch(e => {
     $("#loading-blanket").hide();
     Form.unlock();
 
     console.log(e);
-    alert("Failed to add event");
+    alert(getString('EVENT_ADD_FAIL_ALERT'));
   });
 }
 

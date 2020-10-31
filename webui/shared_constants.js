@@ -68,6 +68,26 @@ const strings = {
     ar: "فشل تحديث العمل",
   },
 
+  EVENT_ADD_SUCCESS_ALERT: {
+    en: "Your event has been added. The data will be reviewed and we will contact you shortly.",
+    ar: "تمت إضافة الحدث الخاص بك. ستتم مراجعة البيانات وسنتصل بك قريبًا.",
+  },
+
+  EVENT_ADD_FAIL_ALERT: {
+    en: "Failed to add event.",
+    ar: "فشل إضافة الحدث.",
+  },
+
+  EVENT_UPDATE_SUCCESS_ALERT: {
+    en: "Your event has been updated.",
+    ar: "تم تحديث الحدث الخاص بك.",
+  },
+
+  EVENT_UPDATE_FAIL_ALERT: {
+    en: "Failed to update event.",
+    ar: "فشل تحديث الحدث.",
+  },
+
   REJECTED: {
     en: "REJECTED",
     ar: "مرفوض",

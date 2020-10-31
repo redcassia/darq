@@ -1813,7 +1813,7 @@ const resolvers = {
     // admin mutations
 
     async authenticateAdmin(_, { key }) {
-      if (key == "admin") {
+      if (key == process.env.ADMIN_KEY) {
         // return json web token
         return jsonwebtoken.sign(
           { type: 'ADMIN' },

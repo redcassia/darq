@@ -1,5 +1,5 @@
 import 'package:darq/res/path_files.dart';
-import 'package:darq/views/shared/capsule/right_rounded_capsule.dart';
+import 'package:darq/views/shared/rounded_capsule.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -11,6 +11,7 @@ class DefaultAppBar extends StatelessWidget {
       this.leading,
       this.trailing,
       this.allowHorizontalPadding,
+      this.bgColor,
       Key key})
       : super(key: key);
 
@@ -26,6 +27,8 @@ class DefaultAppBar extends StatelessWidget {
   ///left icon of type [Widget]
   final Widget leading;
 
+  final Color bgColor;
+
   ///on left icon clicked [Function]
   final Function onLeadingClicked;
 
@@ -36,11 +39,12 @@ class DefaultAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
+            color: bgColor ?? Colors.transparent,
             image: DecorationImage(
                 image: AssetImage(PathFiles.ImgPath + bgImage),
                 fit: BoxFit.fill)),
         child: Padding(
-            padding: EdgeInsets.only(bottom: 7.h, top: 35.h),
+            padding: EdgeInsets.only(bottom: 6.h, top: 35.h),
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,8 +52,8 @@ class DefaultAppBar extends StatelessWidget {
                 children: <Widget>[
                   Padding(
                       padding: EdgeInsets.only(
-                          left: allowHorizontalPadding ? 22.w : 0,
-                          right: allowHorizontalPadding ? 18.w : 0,
+                          left: allowHorizontalPadding ? 20.w : 0,
+                          right: allowHorizontalPadding ? 20.w : 0,
                           bottom: 17.h),
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -60,7 +64,10 @@ class DefaultAppBar extends StatelessWidget {
                             trailing ?? Container(height: 0),
                           ])),
                   title != null
-                      ? RightRoundedCapsule(
+                      ? RoundedCapsule(
+                          Localizations.localeOf(context).languageCode == 'en'
+                              ? "right"
+                              : "left",
                           iconBgColor: Color.fromRGBO(134, 194, 194, 0.69),
                           horizontalPadding: 19.w,
                           verticalPadding: 4.h,

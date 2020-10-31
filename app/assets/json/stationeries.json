@@ -2,7 +2,7 @@
   "list": {
     "appbar": {
       "filter": false,
-      "title": "Stationeries"
+      "title": "stationeries"
     },
     "columns": {
       "start": [
@@ -58,17 +58,17 @@
         },
         {
           "widget": "contact_button",
-          "titleText": "Contact Us",
+          "titleText": "contact_us",
           "data": ["id"]
         }
       ]
     },
-    "query": "query {\n  items: businesses(type: StationeryBusiness) {\n    id,\n    display_name,\n    display_picture,\n    rating\n    ... on StationeryBusiness {\n      city\n      description\n    }\n  } \n}\n"
+    "query": "query { items: businesses(type: StationeryBusiness) { id, display_name, display_picture, rating ... on StationeryBusiness { city description } }  } "
   },
   "detailed": {
     "appbar": {
       "filter": false,
-      "text": "Contact Us"
+      "text": "contact_us"
     },
     "columns": {
       "header": {
@@ -103,21 +103,27 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 4.0
+            "height": 3.0
           },
           {
             "widget": "text_with_icon",
             "textSize": "title11Odd",
             "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.5 },
             "iconName": "address.png",
-            "data": ["street_address"]
+            "joinedData": {
+              "separator": ", ",
+              "children": [
+                ["street_address"],
+                ["city"]
+              ]
+            }
           },
           {
             "widget": "vertical_spacer",
-            "height": 5.0
+            "height": 2.0
           },
           {
-            "widget": "wrapped_text_with_icon",
+            "widget": "phone_number",
             "textSize": "title10OddUnderlined",
             "textColor": {"r": 66, "g": 102, "b": 119, "o": 1.0 },
             "iconName": "telephone.png",
@@ -133,7 +139,7 @@
         },
         {
           "widget": "text",
-          "textSize": "text6w500",
+          "textSize": "text8w500",
           "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.69 },
           "data": ["description"]
         },
@@ -141,8 +147,8 @@
           "widget": "divider"
         },
         {
-          "widget": "text_with_title",
-          "titleText": "Website:",
+          "widget": "website_with_title",
+          "titleText": "website",
           "titleSize": "title9",
           "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
           "textSize": "text9odd",
@@ -154,13 +160,13 @@
         },
         {
           "widget": "picture_gallery",
-          "titleText": "Photos",
+          "titleText": "photos",
           "titleSize": "title9",
           "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
           "data": ["attachments"]
         }
       ]
     },
-    "query": "query($id: ID!) {\n  item: business(id: $id) {\n    display_name\n    display_picture\n    rating\n    ... on StationeryBusiness {\n      street_address\n      phone_number\n      description\n      website\n      attachments\n    }\n  }\n}"
+    "query": "query($id: ID!) { item: business(id: $id) { display_name display_picture rating ... on StationeryBusiness { street_address city phone_number description website attachments } } }"
   }
 }

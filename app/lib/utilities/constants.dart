@@ -19,7 +19,7 @@ class ConsDimensions {
   static const ButtonHorizontalShadow = 2;
 
   /// AppBar Heights
-  static const LargeAppBarHeight = 124.0;
+  static const LargeAppBarHeight = 130.0;
   static const SmallAppBarHeight = 75.0;
 
   ///Image constants

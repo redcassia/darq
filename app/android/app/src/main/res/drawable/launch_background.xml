@@ -2,16 +2,10 @@
 <!-- Modify this file to customize your launch splash screen -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@color/background" />
-  <item>
-        <bitmap
-            android:gravity="center"
-            android:src="@mipmap/splash_screen_top" />
-    </item>
     <item>
         <bitmap
             android:adjustViewBounds="true"
-            android:layout_width="match_parent"
-            android:gravity="fill_horizontal|bottom"
-            android:src="@mipmap/splash_screen_bottom" />
+            android:gravity="fill_horizontal|fill_vertical"
+            android:src="@mipmap/tab" />
     </item>
 </layer-list>

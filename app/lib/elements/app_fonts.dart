@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppFonts {
-
   static TextStyle makeStyle(String textSize, Map<String, dynamic> color) {
     var clr = Color.fromRGBO(color["r"], color["g"], color["b"], color["o"]);
 
@@ -33,113 +32,118 @@ class AppFonts {
       case "text6w500":             return text6w500(color: clr);
       case "text7":                 return text7(color: clr);
       case "text8":                 return text8(color: clr);
+      case "text8w500":             return text8w500(color: clr);
       case "text9odd":              return text9odd(color: clr);
       case "text10":                return text10(color: clr);
       case "text10w500":            return text10w500(color: clr);
     }
   }
 
+  // use TextStyle in the first screen because it takes time to load GoogleFonts so the user
+  // will see the resizing
+
   static TextStyle superTitle({Color color}) {
-    return GoogleFonts.roboto(
-        fontSize: ScreenUtil().setSp(40, allowFontScalingSelf: true),
-        fontWeight: FontWeight.bold,
-        color: color);
+    return TextStyle(
+      fontFamily: 'Roboto',
+        fontSize: 40.ssp, fontWeight: FontWeight.bold, color: color);
   }
 
   static TextStyle title1({Color color}) {
     return GoogleFonts.roboto(
-        fontSize: ScreenUtil().setSp(30, allowFontScalingSelf: true),
+        fontSize: 30.ssp,
         fontWeight: FontWeight.bold,
         color: color);
   }
 
   static TextStyle title2({Color color}) {
     return GoogleFonts.roboto(
-        fontSize: ScreenUtil().setSp(28, allowFontScalingSelf: true),
+        fontSize: 28.ssp,
         fontWeight: FontWeight.bold,
         color: color);
   }
 
   static TextStyle title3({Color color}) {
     return GoogleFonts.roboto(
-        fontSize: ScreenUtil().setSp(26, allowFontScalingSelf: true),
+        fontSize: 26.ssp,
         fontWeight: FontWeight.bold,
         color: color);
   }
 
   static TextStyle title4({Color color}) {
-    return GoogleFonts.roboto(
-        fontSize: ScreenUtil().setSp(24, allowFontScalingSelf: true),
+    return TextStyle(
+        fontFamily: 'Roboto',
+        fontSize: 24.ssp,
         fontWeight: FontWeight.bold,
         color: color);
   }
 
   static TextStyle title5({Color color}) {
     return GoogleFonts.roboto(
-        fontSize: ScreenUtil().setSp(22, allowFontScalingSelf: true),
+        fontSize: 22.ssp,
         fontWeight: FontWeight.bold,
         color: color);
   }
 
   static TextStyle title6({Color color}) {
     return GoogleFonts.roboto(
-        fontSize: ScreenUtil().setSp(20, allowFontScalingSelf: true),
+        fontSize: 20.ssp,
         fontWeight: FontWeight.bold,
         color: color);
   }
 
   static TextStyle title7Odd({Color color}) {
-    return GoogleFonts.roboto(
-        fontSize: ScreenUtil().setSp(17, allowFontScalingSelf: true),
+    return TextStyle(
+        fontFamily: 'Roboto',
+        fontSize: 17.ssp,
         fontWeight: FontWeight.bold,
         color: color);
   }
 
   static TextStyle title7({Color color}) {
     return GoogleFonts.roboto(
-        fontSize: ScreenUtil().setSp(18, allowFontScalingSelf: true),
+        fontSize: 18.ssp,
         fontWeight: FontWeight.bold,
         color: color);
   }
 
   static TextStyle title8({Color color}) {
     return GoogleFonts.roboto(
-        fontSize: ScreenUtil().setSp(16, allowFontScalingSelf: true),
+        fontSize: 16.ssp,
         fontWeight: FontWeight.bold,
         color: color);
   }
 
   static TextStyle title9({Color color}) {
     return GoogleFonts.roboto(
-        fontSize: ScreenUtil().setSp(14, allowFontScalingSelf: true),
+        fontSize: 14.ssp,
         fontWeight: FontWeight.bold,
         color: color);
   }
 
   static TextStyle title10({Color color}) {
     return GoogleFonts.roboto(
-        fontSize: ScreenUtil().setSp(12, allowFontScalingSelf: true),
+        fontSize: 12.ssp,
         fontWeight: FontWeight.bold,
         color: color);
   }
 
   static TextStyle title11({Color color}) {
     return GoogleFonts.roboto(
-        fontSize: ScreenUtil().setSp(10, allowFontScalingSelf: true),
+        fontSize: 10.ssp,
         fontWeight: FontWeight.bold,
         color: color);
   }
 
   static TextStyle title11Odd({Color color}) {
     return GoogleFonts.roboto(
-        fontSize: ScreenUtil().setSp(11, allowFontScalingSelf: true),
+        fontSize: 11.ssp,
         fontWeight: FontWeight.bold,
         color: color);
   }
 
   static TextStyle title10OddUnderlined({Color color}) {
     return GoogleFonts.roboto(
-        fontSize: ScreenUtil().setSp(11, allowFontScalingSelf: true),
+        fontSize: 11.ssp,
         fontWeight: FontWeight.bold,
         decoration: TextDecoration.underline,
         decorationThickness: 2,
@@ -149,92 +153,126 @@ class AppFonts {
 
   static TextStyle tinyTitle({Color color}) {
     return GoogleFonts.roboto(
-        fontSize: ScreenUtil().setSp(8, allowFontScalingSelf: true),
+        fontSize: 8.ssp,
         fontWeight: FontWeight.bold,
         color: color);
   }
 
   static TextStyle text1({Color color}) {
     return GoogleFonts.roboto(
-        fontSize: ScreenUtil().setSp(26, allowFontScalingSelf: true),
+        fontSize: 26.ssp,
         fontWeight: FontWeight.normal,
         color: color);
   }
 
   static TextStyle text2({Color color}) {
     return GoogleFonts.roboto(
-        fontSize: ScreenUtil().setSp(24, allowFontScalingSelf: true),
+        fontSize: 24.ssp,
         fontWeight: FontWeight.normal,
         color: color);
   }
 
   static TextStyle text3({Color color}) {
     return GoogleFonts.roboto(
-        fontSize: ScreenUtil().setSp(22, allowFontScalingSelf: true),
+        fontSize: 22.ssp,
         fontWeight: FontWeight.normal,
         color: color);
   }
 
   static TextStyle text4({Color color}) {
     return GoogleFonts.roboto(
-        fontSize: ScreenUtil().setSp(20, allowFontScalingSelf: true),
+        fontSize: 20.ssp,
         fontWeight: FontWeight.normal,
+        color: color);
+  }
+
+  static TextStyle text4w700({Color color}) {
+    return GoogleFonts.roboto(
+        fontSize:20.ssp,
+        fontWeight: FontWeight.w700,
         color: color);
   }
 
   static TextStyle text5({Color color}) {
     return GoogleFonts.roboto(
-        fontSize: ScreenUtil().setSp(18, allowFontScalingSelf: true),
+        fontSize: 18.ssp,
         fontWeight: FontWeight.normal,
+        color: color);
+  }
+
+  static TextStyle text5w500({Color color}) {
+    return GoogleFonts.roboto(
+        fontSize: 18.ssp,
+        fontWeight: FontWeight.w500,
         color: color);
   }
 
   static TextStyle text6({Color color}) {
     return GoogleFonts.roboto(
-        fontSize: ScreenUtil().setSp(16, allowFontScalingSelf: true),
-        fontWeight: FontWeight.normal,
-        color: color);
-  }
-
-  static TextStyle text7({Color color}) {
-    return GoogleFonts.roboto(
-        fontSize: ScreenUtil().setSp(14, allowFontScalingSelf: true),
-        fontWeight: FontWeight.normal,
-        color: color);
-  }
-
-  static TextStyle text8({Color color}) {
-    return GoogleFonts.roboto(
-        fontSize: ScreenUtil().setSp(12, allowFontScalingSelf: true),
+        fontSize: 16.ssp,
         fontWeight: FontWeight.normal,
         color: color);
   }
 
   static TextStyle text6w500({Color color}) {
     return GoogleFonts.roboto(
-        fontSize: ScreenUtil().setSp(12, allowFontScalingSelf: true),
+        fontSize: 16.ssp,
+        fontWeight: FontWeight.w500,
+        color: color);
+  }
+
+  static TextStyle text7({Color color}) {
+    return GoogleFonts.roboto(
+        fontSize: 14.ssp,
+        fontWeight: FontWeight.normal,
+        color: color);
+  }
+
+  static TextStyle text7w500({Color color}) {
+    return GoogleFonts.roboto(
+        fontSize: 14.ssp,
+        fontWeight: FontWeight.w500,
+        color: color);
+  }
+
+  static TextStyle text8({Color color}) {
+    return GoogleFonts.roboto(
+        fontSize: 12.ssp,
+        fontWeight: FontWeight.normal,
+        color: color);
+  }
+
+  static TextStyle text8w500({Color color}) {
+    return GoogleFonts.roboto(
+        fontSize: 12.ssp,
         fontWeight: FontWeight.w500,
         color: color);
   }
 
   static TextStyle text9odd({Color color}) {
     return GoogleFonts.roboto(
-        fontSize: ScreenUtil().setSp(11, allowFontScalingSelf: true),
+        fontSize: 11.ssp,
         fontWeight: FontWeight.w500,
         color: color);
   }
 
   static TextStyle text10({Color color}) {
     return GoogleFonts.roboto(
-        fontSize: ScreenUtil().setSp(10, allowFontScalingSelf: true),
+        fontSize: 10.ssp,
         fontWeight: FontWeight.normal,
         color: color);
   }
 
   static TextStyle text10w500({Color color}) {
     return GoogleFonts.roboto(
-        fontSize: ScreenUtil().setSp(10, allowFontScalingSelf: true),
+        fontSize: 10.ssp,
         fontWeight: FontWeight.w500,
+        color: color);
+  }
+  static TextStyle text11({Color color}) {
+    return GoogleFonts.roboto(
+        fontSize: 8.ssp,
+        fontWeight: FontWeight.normal,
         color: color);
   }
 }

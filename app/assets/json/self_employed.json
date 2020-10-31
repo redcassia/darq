@@ -2,8 +2,8 @@
   "list": {
     "appbar": {
       "filter": true,
-      "title": "Self Employed",
-      "values_query": "query {\n    __type(name: \"SelfEmployedSubType\") {\n      enumValues {\n        name\n      }\n    }\n}  "
+      "title": "self_employed",
+      "values_query": "query { __type(name: \"SelfEmployedSubType\") { enumValues { name } } }  "
     },
     "columns": {
       "start": [
@@ -59,17 +59,17 @@
         },
         {
           "widget": "contact_button",
-          "titleText": "Contact Me",
+          "titleText": "contact_me",
           "data": ["id"]
         }
       ]
     },
-    "query": "query ($sub_types: [String]) {\n  items: businesses(type: SelfEmployedBusiness, sub_types: $sub_types) {\n    id,\n    display_name,\n    display_picture,\n    rating\n    ... on SelfEmployedBusiness {\n      sub_type_string\n      description\n    }\n  } \n}"
+    "query": "query ($sub_types: [String]) { items: businesses(type: SelfEmployedBusiness, sub_types: $sub_types) { id, display_name, display_picture, rating ... on SelfEmployedBusiness { sub_type_string description } }  }"
   },
   "detailed": {
     "appbar": {
       "filter": false,
-      "text": "Contact Me"
+      "text": "contact_me"
     },
     "columns": {
       "header": {
@@ -104,7 +104,7 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 4.0
+            "height": 3.0
           },
           {
             "widget": "text",
@@ -114,31 +114,21 @@
           },
           {
             "widget": "vertical_spacer",
-            "height": 5.0
-          },
-          {
-            "widget": "text",
-            "textSize": "title11Odd",
-            "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.5 },
-            "data": ["nationality"]
-          },
-          {
-            "widget": "vertical_spacer",
-            "height": 5.86
+            "height": 2.0
           },
           {
             "widget": "text_with_icon",
             "textSize": "title11Odd",
             "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.5 },
             "iconName": "address.png",
-            "data": ["cities"]
+            "data": ["city"]
           },
           {
             "widget": "vertical_spacer",
-            "height": 5.0
+            "height": 2.0
           },
           {
-            "widget": "wrapped_text_with_icon",
+            "widget": "phone_number",
             "textSize": "title10OddUnderlined",
             "textColor": {"r": 66, "g": 102, "b": 118, "o": 1.0 },
             "iconName": "telephone.png",
@@ -154,7 +144,7 @@
         },
         {
           "widget": "text",
-          "textSize": "text6w500",
+          "textSize": "text8w500",
           "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.69 },
           "data": ["description"]
         },
@@ -162,8 +152,20 @@
           "widget": "divider"
         },
         {
+          "widget": "text_with_title",
+          "titleText": "nationality",
+          "titleSize": "title9",
+          "titleColor": {"r": 0, "g": 0, "b": 0, "o": 0.67 },
+          "textSize": "text9odd",
+          "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.5 },
+          "data": ["nationality"]
+        },
+        {
+          "widget": "divider"
+        },
+        {
           "widget": "wrapped_text_with_title",
-          "titleText": "Skills:",
+          "titleText": "skills",
           "titleSize": "title9",
           "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
           "maxElements": 10,
@@ -181,12 +183,12 @@
         },
         {
           "widget": "price",
-          "titleText": "Charge:",
+          "titleText": "charge",
           "titleSize": "title9",
           "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
           "textSize": "title10",
           "textColor": { "r": 0, "g": 0, "b": 0, "o": 0.7 },
-          "trailingText": "/hr",
+          "trailingText": "per_hr",
           "trailingTextSize": "title10",
           "trailingTextColor": { "r": 0, "g": 0, "b": 0, "o": 0.5 },
           "data": ["charge"]
@@ -196,13 +198,13 @@
         },
         {
           "widget": "picture_gallery",
-          "titleText": "Photos",
+          "titleText": "photos",
           "titleSize": "title9",
           "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
           "data": ["attachments"]
         }
       ]
     },
-    "query": "query($id: ID!) {\n  item: business(id: $id) {\n    display_name\n    display_picture\n    rating\n    ... on SelfEmployedBusiness {\n      sub_type_string\n      gender\n      nationality\n      phone_number\n      description\n      skills\n      experience {\n        country\n        from\n        to\n        in_position\n      }\n      charge{\n        value\n        valueLower\n        valueUpper\n        currency\n      }\n      attachments\n    }\n  }\n}"
+    "query": "query($id: ID!) { item: business(id: $id) { display_name display_picture rating ... on SelfEmployedBusiness { sub_type_string gender nationality phone_number description skills city experience { institution country from to in_position } charge{ value valueLower valueUpper currency } attachments } } }"
   }
 }

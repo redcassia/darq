@@ -1,3 +1,4 @@
+import 'package:darq/backend/session.dart';
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/res/path_files.dart';
 import 'package:darq/views/home/screens/home.dart';
@@ -5,13 +6,13 @@ import 'package:darq/views/shared/button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 
 class SelectLanguage extends StatelessWidget {
   final ImageProvider bg =
       AssetImage(PathFiles.ImgPath + "select_language_bg.png");
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, width: 375, height: 667, allowFontScaling: true);
     return Scaffold(
         body: Container(
             decoration: BoxDecoration(
@@ -31,10 +32,12 @@ class SelectLanguage extends StatelessWidget {
                   width: 109.w,
                   buttonName: "English",
                   color: Color(0xFF426676),
-                  onButtonPressed: () => Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return Home();
-                      }))),
+                  onButtonPressed: () {
+                    changeLocale(context, 'en_US');
+                    Session.setLocale("en");
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Home()));
+                  }),
               SizedBox(height: 11.h),
               CustomButton(
                   borderRadius: 34.1,
@@ -43,7 +46,12 @@ class SelectLanguage extends StatelessWidget {
                   width: 109.w,
                   buttonName: "العربية",
                   color: Color(0xFFE1A854),
-                  onButtonPressed: () => print("pressd")),
+                  onButtonPressed: () {
+                    changeLocale(context, 'ar');
+                    Session.setLocale("ar");
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Home()));
+                  }),
             ]))));
   }
 }

@@ -37,7 +37,15 @@ class CustomButton extends StatelessWidget {
             widget: Padding(
                 padding: leading == null
                     ? EdgeInsets.symmetric(horizontal: 15.w)
-                    : EdgeInsets.only(left: 34.w),
+                    : EdgeInsets.only(
+                        left:
+                            Localizations.localeOf(context).languageCode == 'en'
+                                ? 34.w
+                                : 0,
+                        right:
+                            Localizations.localeOf(context).languageCode == 'en'
+                                ? 0
+                                : 34.w),
                 child: leading == null
                     ? Center(
                         child: Text(buttonName,
@@ -76,10 +84,14 @@ class CustomClipRRect extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(borderRadius),
-          bottomRight: Radius.circular(borderRadius),
-        ),
+        borderRadius: Localizations.localeOf(context).languageCode == 'en'
+            ? BorderRadius.only(
+                topLeft: Radius.circular(borderRadius.w),
+                bottomRight: Radius.circular(borderRadius.w),
+              )
+            : BorderRadius.only(
+                topRight: Radius.circular(borderRadius.w),
+                bottomLeft: Radius.circular(borderRadius.w)),
         child: Container(
             height: height,
             width: width,
@@ -94,10 +106,14 @@ class CustomClipRRect extends StatelessWidget {
                       offset: Offset(0.0, 0.5))
                 ],
                 color: color,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(borderRadius),
-                  bottomRight: Radius.circular(borderRadius),
-                )),
+                borderRadius:
+                    Localizations.localeOf(context).languageCode == 'en'
+                        ? BorderRadius.only(
+                            topLeft: Radius.circular(borderRadius.w),
+                            bottomRight: Radius.circular(borderRadius.w))
+                        : BorderRadius.only(
+                            topRight: Radius.circular(borderRadius.w),
+                            bottomLeft: Radius.circular(borderRadius.w))),
             child: widget));
   }
 }

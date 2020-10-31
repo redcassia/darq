@@ -22,10 +22,13 @@ class Picture extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(17.5),
-          bottomRight: Radius.circular(17.5),
-        ),
+        borderRadius: Localizations.localeOf(context).languageCode == 'en'
+            ? BorderRadius.only(
+                topLeft: Radius.circular(17.5),
+                bottomRight: Radius.circular(17.5))
+            : BorderRadius.only(
+                topRight: Radius.circular(17.5),
+                bottomLeft: Radius.circular(17.5)),
         child: Container(
             height: height,
             width: width,
@@ -39,10 +42,14 @@ class Picture extends StatelessWidget {
                       blurRadius: 10.0,
                       offset: Offset(1, 1))
                 ],
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(17.5),
-                  bottomRight: Radius.circular(17.5),
-                )),
+                borderRadius:
+                    Localizations.localeOf(context).languageCode == 'en'
+                        ? BorderRadius.only(
+                            topLeft: Radius.circular(17.5),
+                            bottomRight: Radius.circular(17.5))
+                        : BorderRadius.only(
+                            topRight: Radius.circular(17.5),
+                            bottomLeft: Radius.circular(17.5))),
             child: FittedBox(
                 fit: BoxFit.cover,
                 child: CachedNetworkImage(

@@ -1,20 +1,20 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:darq/backend/session.dart';
 import 'package:darq/res/path_files.dart';
 import 'package:darq/utilities/constants.dart';
 import 'package:darq/views/home/screens/filter_page.dart';
 import 'package:darq/views/home/widget_generator.dart';
 import 'package:darq/views/shared/app_bars/profile_appbar.dart';
-import 'package:darq/views/shared/custom_card.dart';
+import 'package:darq/views/shared/default_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 import 'package:graphql/client.dart';
-
-import '../../../backend.dart';
 
 class DetailsPage extends StatefulWidget {
   final String id;
@@ -47,7 +47,7 @@ class _DetailsPageState extends State<DetailsPage> {
   }
 
   loadData() {
-    Backend.getClient().then((client) => client
+    Session.getClient().then((client) => client
             .query(QueryOptions(
                 documentNode: gql(_layout["query"]),
                 variables: {'id': widget.id}))
@@ -81,6 +81,7 @@ class _DetailsPageState extends State<DetailsPage> {
         appBar: PreferredSize(
             preferredSize: Size.fromHeight(ConsDimensions.SmallAppBarHeight.h),
             child: ProfileAppBar(
+                backArrowBgColor: Color(0xFF426676),
                 id: widget.id,
                 filterFunction: () => Navigator.push(
                     context,
@@ -100,21 +101,23 @@ class _DetailsPageState extends State<DetailsPage> {
                     : _layout["appbar"]["filter"],
                 buttonName: _layout == null
                     ? ""
-                    : _layout["appbar"]["text"])),
+                    : translate(_layout["appbar"]["text"]))),
         body: DefaultCard(
             margin: EdgeInsets.only(
-                bottom: 33.h, right: 19.w, left: 20.w, top: 6.h),
-            padding: EdgeInsets.only(
-                left: 21.w, right: 19.w, top: 12.h, bottom: 17.h),
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
+                bottom: 33.h, right: 20.w, left: 20.w, top: 6.h),
+            padding: Localizations.localeOf(context).languageCode == 'en'
+                ? EdgeInsets.only(
+                    left: 21.w, right: 19.w, top: 12.h, bottom: 17.h)
+                : EdgeInsets.only(
+                    left: 19.w, right: 21.w, top: 12.h, bottom: 17.h),
+            child: ListView(
+                physics: AlwaysScrollableScrollPhysics(),
+                padding: EdgeInsets.zero,
                 children: <Widget>[
-                  Flexible(
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
                         SizedBox(
                             width: 80.w,
                             height: 110.h,
@@ -122,32 +125,22 @@ class _DetailsPageState extends State<DetailsPage> {
                                 context,
                                 _layout == null
                                     ? null
-                                    : _layout["columns"]["header"]
-                                        ["start"],
+                                    : _layout["columns"]["header"]["start"],
                                 false)),
                         SizedBox(width: 17.w),
-                        Flexible(
-                            flex: 2,
-                            child: buildCardColumn(
-                                context,
-                                _layout == null
-                                    ? null
-                                    : _layout["columns"]["header"]
-                                        ["end"],
-                                false))
-                      ])),
-                  Flexible(
-                      flex: 4,
-                      child: buildCardColumn(
-                          context,
-                          _layout == null
-                              ? null
-                              : _layout["columns"]["body"],
-                          true))
+                        buildCardColumn(
+                            context,
+                            _layout == null
+                                ? null
+                                : _layout["columns"]["header"]["end"],
+                            false)
+                      ]),
+                  buildCardColumn(context,
+                      _layout == null ? null : _layout["columns"]["body"], true)
                 ])));
   }
 
-  ListView buildCardColumn(
+  Widget buildCardColumn(
       BuildContext context, List<dynamic> columnLayout, bool scroll) {
     bool divisionEmpty = false;
     List<Widget> children = new List();
@@ -156,39 +149,10 @@ class _DetailsPageState extends State<DetailsPage> {
       for (var widgetIndex = 0;
           widgetIndex < columnLayout.length;
           ++widgetIndex) {
-        String widgetType = columnLayout[widgetIndex]["widget"];
+        Widget child = generateWidget(context, columnLayout[widgetIndex], _data,
+            id: widget.id, jsonFile: widget.jsonFile);
 
-        var dataPath = columnLayout[widgetIndex]["data"];
-        var widgetData = _data;
-        if (dataPath != null && _data != null) {
-          for (var x in dataPath) widgetData = widgetData[x];
-        }
-
-        Widget child = generateWidget(
-          widgetType,
-          context: context,
-          jsonFile: widget.jsonFile,
-          data: widgetData,
-          id: widget.id,
-          detailedPage: true,
-          height: columnLayout[widgetIndex]["height"],
-          width: columnLayout[widgetIndex]["width"],
-          titleText: columnLayout[widgetIndex]["titleText"],
-          titleSize: columnLayout[widgetIndex]["titleSize"],
-          titleColor: columnLayout[widgetIndex]["titleColor"],
-          trailingText: columnLayout[widgetIndex]["trailingText"],
-          trailingTextSize: columnLayout[widgetIndex]["trailingTextSize"],
-          trailingTextColor: columnLayout[widgetIndex]["trailingTextColor"],
-          text: columnLayout[widgetIndex]["text"],
-          textSize: columnLayout[widgetIndex]["textSize"],
-          textColor: columnLayout[widgetIndex]["textColor"],
-          iconName: columnLayout[widgetIndex]["iconName"],
-          textIfTrue: columnLayout[widgetIndex]["textIfTrue"],
-          textIfFalse: columnLayout[widgetIndex]["textIfFalse"],
-          maxElements: columnLayout[widgetIndex]["maxElements"],
-        );
-
-        if (widgetType == "divider") {
+        if (columnLayout[widgetIndex]["widget"] == "divider") {
           if (divisionEmpty) child = null;
           divisionEmpty = true;
         } else {
@@ -202,11 +166,9 @@ class _DetailsPageState extends State<DetailsPage> {
       }
     }
 
-    return ListView(
-        physics: scroll
-            ? AlwaysScrollableScrollPhysics()
-            : NeverScrollableScrollPhysics(),
-        padding: EdgeInsets.zero,
-        children: children);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: children,
+    );
   }
 }

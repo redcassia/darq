@@ -28,7 +28,6 @@ function submitAddBusinessForm(mutationName, inputName, getData) {
     if (! res.hasError) {
       alert(getString('BUSINESS_ADD_SUCCESS_ALERT'));
       queryOwnedBusinesses();
-      DynamicLoader.unloadFrom('business-content');
     }
     else {
       console.log(res.errors[0]["message"]);
@@ -72,7 +71,6 @@ function submitUpdateBusinessForm(mutationName, inputName, id, getData) {
     if (! res.hasError) {
       alert(getString('BUSINESS_UPDATE_SUCCESS_ALERT'));
       queryOwnedBusinesses();
-      DynamicLoader.unloadFrom('business-content');
     }
     else {
       console.log(res.errors[0]["message"]);
@@ -179,6 +177,9 @@ function loadBusiness(id) {
 }
 
 function queryOwnedBusinesses() {
+
+  DynamicLoader.unloadFrom('business-content');
+  window.location.hash = window.location.hash.split('&')[0];
 
   loadingScreen(async () => {
     var res = await GraphQL.query(`

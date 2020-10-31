@@ -59,9 +59,10 @@ function loadEvent(id) {
 
 function queryOwnedEvents() {
 
-  loadingScreen(async () => {
-    DynamicLoader.unloadFrom('event-content');
+  DynamicLoader.unloadFrom('event-content');
+  window.location.hash = window.location.hash.split('&')[0];
 
+  loadingScreen(async () => {
     var res = await GraphQL.query(`
       query {
         user {

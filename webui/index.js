@@ -213,7 +213,7 @@ function signin() {
       switchToWelcome();
     }
     else {
-      alert('SIGNIN_REJECTED_ALERT');
+      alert(getString('SIGNIN_REJECTED_ALERT'));
     }
   });
 }

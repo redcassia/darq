@@ -27,7 +27,11 @@ class ImgInput {
     }
 
     if (this.element.attributes['required'] && data.length == 0) {
-      alert(`${this.element.attributes['data-friendly-name'].value} cannot be left empty`);
+      alert(
+        getString('REQUIRED_FIELD_ALERT_1') + 
+        this.element.attributes['data-friendly-name'].value +
+        getString('REQUIRED_FIELD_ALERT_2')
+      );
       throw new Error("Form validation failed");
     }
 
@@ -163,7 +167,11 @@ class MultiStringInput {
     }
 
     if (this.element.attributes['required'] && data.length == 0) {
-      alert(`${this.element.attributes['data-friendly-name'].value} cannot be left empty`);
+      alert(
+        getString('REQUIRED_FIELD_ALERT_1') + 
+        this.element.attributes['data-friendly-name'].value +
+        getString('REQUIRED_FIELD_ALERT_2')
+      );
       throw new Error("Form validation failed");
     }
 
@@ -303,7 +311,11 @@ class MultiFormInput {
     }
 
     if (this.element.attributes['required'] && data.length == 0) {
-      alert(`${this.element.attributes['data-friendly-name'].value} cannot be left empty`);
+      alert(
+        getString('REQUIRED_FIELD_ALERT_1') + 
+        this.element.attributes['data-friendly-name'].value +
+        getString('REQUIRED_FIELD_ALERT_2')
+      );
       throw new Error("Form validation failed");
     }
 
@@ -412,7 +424,11 @@ class Form {
       data === null ||
       (data instanceof String && data.length == 0)
     )) {
-      alert(`${input.attributes['data-friendly-name'].value} cannot be left empty`);
+      alert(
+        getString('REQUIRED_FIELD_ALERT_1') + 
+        input.attributes['data-friendly-name'].value +
+        getString('REQUIRED_FIELD_ALERT_2')
+      );
       throw new Error("Form validation failed");
     }
 

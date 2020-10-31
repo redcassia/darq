@@ -10,6 +10,70 @@
     <body>
         <script src="https://kit.fontawesome.com/d3fa62ec11.js" crossorigin="anonymous"></script>
 
+        <script>
+            function switchToSignup() {
+                const slideDisplacement = $("#signin-screen > .inactive-home-pane").offset().left;
+
+                $(".inactive-home-pane > .home-pane-content").hide();
+                $("#signin-form").hide();
+                $("#forgot-password-form").hide();
+                $("#reset-password-form").hide();
+
+                $("#signup-form").css({
+                    left: '-100%'
+                }).animate({
+                    left: '50%'
+                }, slideSpeed);
+                $("#signin-screen > .inactive-home-pane").animate({
+                    left: '-=' + slideDisplacement + 'px'
+                }, slideSpeed, function() {
+                    $("#signup-screen").css('z-index', '1');
+                    $("#signin-screen").css('z-index', '0');
+                    $(".inactive-home-pane > .home-pane-content").show();
+                    $("#signin-form").show();
+                    $(this).css({
+                    left: '0px'
+                    })
+                });
+            }
+
+            function switchToSignin() {
+                const slideDisplacement = $("#signin-screen > .inactive-home-pane").offset().left;
+
+                $(".inactive-home-pane > .home-pane-content").hide();
+                $("#signup-form").hide();
+
+                $("#signin-form").css({
+                    left: '200%'
+                }).animate({
+                    left: '50%'
+                }, slideSpeed);
+                $("#signup-screen > .inactive-home-pane").animate({
+                    left: '+=' + slideDisplacement + 'px'
+                }, slideSpeed, function() {
+                    $("#signin-screen").css('z-index', '1');
+                    $("#signup-screen").css('z-index', '0');
+                    $(".inactive-home-pane > .home-pane-content").show();
+                    $("#signup-form").show();
+                    $(this).css({
+                    left: '0px'
+                    })
+                });
+            }
+
+            function welcomeToSignin(d) {
+                $("#welcome-screen > .inactive-home-pane").delay(d).animate({
+                    width: '45%',
+                    left: '55%'
+                }, welcomeSpeed, "easeInQuad", function() {
+                    $("#welcome-screen").hide();
+                });
+            }
+
+        </script>
+
+        <div id="locale-switcher" onclick="switchLocale('ar')" style="right: 0;">العربية</div>
+
         <div class="hidden" id="loading-blanket">
             <i class="fas fa-sync fa-spin"></i>
         </div>

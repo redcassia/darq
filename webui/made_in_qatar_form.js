@@ -19,5 +19,7 @@ $(document).ready(function () {
     await GraphQL.fillOptionsFromEnum("City", [
       "made-in-qatar-city"
     ]);
+
+    if (formLoadOnComplete) formLoadOnComplete();
   });
 });

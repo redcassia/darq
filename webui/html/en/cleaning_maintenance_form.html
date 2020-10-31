@@ -1,4 +1,4 @@
-<form id="beauty-form" novalidate>
+<form id="cleaning-maintenance-form" novalidate>
     <div class="form-line">
         <div class="form-box">
             <label>Profile picture</label>
@@ -12,7 +12,7 @@
         <div class="form-box">
             <label>Business sub-type</label>
             <div class="select">
-                <select name="sub_type" id="beauty-sub-type" required data-friendly-name="Business sub-type">
+                <select name="sub_type" id="cleaning-maintenance-sub-type">
                     <option value="" disabled selected>Choose business sub-type</option>
                 </select>
             </div>
@@ -20,12 +20,12 @@
         <br>
         <div class="form-object show-if-other hidden" data-name="sub_type_string">
             <div class="form-box">
-                <label>Custom Business sub-type (EN)</label>
-                <input type="text" name="en" required data-friendly-name="Custom Business sub-type (EN)"/>
+                <label>Custom Business sub-type (English)</label>
+                <input type="text" name="en" required data-friendly-name="Custom Business sub-type (English)"/>
             </div>
             <div class="form-box">
-                <label>Custom Business sub-type (AR)</label>
-                <input type="text" name="ar" required data-friendly-name="Custom Business sub-type (AR)"/>
+                <label>Custom Business sub-type (العربية)</label>
+                <input type="text" name="ar" required data-friendly-name="Custom Business sub-type (العربية)"/>
             </div>
         </div>
     </div>
@@ -46,7 +46,7 @@
         <div class="form-box">
             <label>City</label>
             <div class="select">
-                <select name="city" id="beauty-city" required data-friendly-name="City">
+                <select name="city" id="cleaning-maintenance-city" required data-friendly-name="City">
                     <option value="" disabled selected>Choose city </option>
                 </select>
             </div>
@@ -69,14 +69,14 @@
     <div class="form-object" data-name="description">
         <div class="form-line">
             <div class="form-box">
-                <label>Description (EN)</label>
-                <textarea name="en" required data-friendly-name="Description (EN)"></textarea>
+                <label>Description (English)</label>
+                <textarea name="en" required data-friendly-name="Description (English)"></textarea>
             </div>
         </div>
         <div class="form-line">
             <div class="form-box">
-                <label>Description (AR)</label>
-                <textarea name="ar" required data-friendly-name="Description (AR)"></textarea>
+                <label>Description (العربية)</label>
+                <textarea name="ar" required data-friendly-name="Description (العربية)"></textarea>
             </div>
         </div>
     </div>
@@ -97,12 +97,14 @@
 
     <div class="form-line">
         <div class="form-box">
-            <label>Services</label>
-            <div class="multistring-input" data-name="services" data-multi-lang required data-friendly-name="Services">
-                <div class="data"></div>
-                <input type="text" name="en" placeholder="EN"/>
-                <input type="text" name="ar" placeholder="AR"/>
-                <button>Add</button>
+            <div class="form-object" data-name="charge">
+                <label>Fees</label>
+                <input type="text" data-special-type="float" style="width:105px" name="value" required data-friendly-name="Charge" />
+                <div class="select">
+                    <select name="currency" id="cleaning-maintenance-fees-currency" style="width:150px">
+                    </select>
+                </div>
+                <span>/hr</span>
             </div>
         </div>
     </div>
@@ -148,5 +150,5 @@
 
     <hr />
 
-    <input type="submit" onclick="submitForm()">
+    <button onclick="submitForm()">Submit</button>
 </form>

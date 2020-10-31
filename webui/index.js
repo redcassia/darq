@@ -1,53 +1,16 @@
 const slideSpeed = 150;
-const welcomeSpeed = 200;
+const welcomeSpeed = 150;
 
-function switchToSignup() {
-  const slideDisplacement = $("#signin-screen > .inactive-home-pane").offset().left;
-
-  $(".inactive-home-pane > .home-pane-content").hide();
-  $("#signin-form").hide();
-  $("#forgot-password-form").hide();
-  $("#reset-password-form").hide();
-
-  $("#signup-form").css({
-    left: '-100%'
-  }).animate({
-    left: '50%'
-  }, slideSpeed);
-  $("#signin-screen > .inactive-home-pane").animate({
-    left: '-=' + slideDisplacement + 'px'
-  }, slideSpeed, function() {
-    $("#signup-screen").css('z-index', '1');
-    $("#signin-screen").css('z-index', '0');
-    $(".inactive-home-pane > .home-pane-content").show();
-    $("#signin-form").show();
-    $(this).css({
-      left: '0px'
-    })
-  });
-}
-
-function switchToSignin() {
-  const slideDisplacement = $("#signin-screen > .inactive-home-pane").offset().left;
-
-  $(".inactive-home-pane > .home-pane-content").hide();
-  $("#signup-form").hide();
-
-  $("#signin-form").css({
-    left: '200%'
-  }).animate({
-    left: '50%'
-  }, slideSpeed);
-  $("#signup-screen > .inactive-home-pane").animate({
-    left: '+=' + slideDisplacement + 'px'
-  }, slideSpeed, function() {
-    $("#signin-screen").css('z-index', '1');
-    $("#signup-screen").css('z-index', '0');
-    $(".inactive-home-pane > .home-pane-content").show();
-    $("#signup-form").show();
-    $(this).css({
-      left: '0px'
-    })
+function switchLocale(locale) {
+  CookieManager.set("locale", locale, 1000);
+  $("#welcome-screen").show();
+  $("#main-screen").hide();
+  $("#welcome-screen > .inactive-home-pane").animate({
+    height: '100%',
+    width: '100%',
+    left: '0'
+  }, welcomeSpeed, "easeInQuad", function() {
+    location.reload();
   });
 }
 
@@ -71,7 +34,9 @@ function switchToWelcome() {
   welcomeToDarQ(0);
 }
 
+var inWelcome = true;
 function welcomeToDarQ(d) {
+  inWelcome = true;
   $("#welcome-screen > .inactive-home-pane").delay(d).animate({
     height: '64px',
     width: '100%',
@@ -79,15 +44,7 @@ function welcomeToDarQ(d) {
   }, welcomeSpeed, "easeInQuad", function() {
     $("#welcome-screen").hide();
     $("#main-screen").show();
-  });
-}
-
-function welcomeToSignin(d) {
-  $("#welcome-screen > .inactive-home-pane").delay(d).animate({
-    width: '45%',
-    left: '55%'
-  }, welcomeSpeed, "easeInQuad", function() {
-    $("#welcome-screen").hide();
+    inWelcome = false;
   });
 }
 
@@ -104,26 +61,31 @@ function setGlobalEventHandlers() {
   });
 }
 
-function loadFirstPage() {
-  GraphQL.query(`
-    query {
-      user {
-        owned_businesses {
-          id
+function loadFirstPage(path) {
+  if (path !== undefined && path.length > 0) {
+    navigateTo(path, () => { welcomeToDarQ(200); });
+  }
+  else {
+    GraphQL.query(`
+      query {
+        user {
+          owned_businesses {
+            id
+          }
         }
       }
-    }
-  `).then(res => {
-    if (! res.hasError) {
-      businesses = res.data["owned_businesses"];
-      if (res.data["user"]["owned_businesses"].length > 0) {
-        navigateTo('messages');
+    `).then(res => {
+      if (! res.hasError) {
+        businesses = res.data["owned_businesses"];
+        if (res.data["user"]["owned_businesses"].length > 0) {
+          navigateTo('messages', () => { welcomeToDarQ(200); });
+        }
+        else {
+          navigateTo('welcome', () => { welcomeToDarQ(200); });
+        }
       }
-      else {
-        navigateTo('welcome');
-      }
-    }
-  });
+    });
+  }
 }
 
 var resetPwdEmail;
@@ -150,8 +112,11 @@ $(document).ready(function() {
       if (! res.hasError) {
         $("#signin-screen").hide();
         $("#signup-screen").hide();
-        loadFirstPage();
-        welcomeToDarQ(400);
+        var path = hash[0].length > 0 ? hash : undefined;
+        if (path !== undefined && path.length > 0) {
+          path[0] = path[0].substr(1);
+        }
+        loadFirstPage(path);
       }
       else {
         $("#signin-form").show();
@@ -173,32 +138,32 @@ function signup() {
   var pass_conf = document.getElementById("signup-password-confirm").value;
 
   if (! email) {
-    alert("Please enter your email");
+    alert(getString('MISSING_EMAIL_ALERT'));
     return;
   }
 
   if (! isValidEmail(email)) {
-    alert("Please enter a valid email address");
+    alert(getString('INVALID_EMAIL_ALERT'));
     return;
   }
 
   if (! pass) {
-    alert("Please enter your password");
+    alert(getString('MISSING_PASSWORD_ALERT'));
     return;
   }
 
   if (pass.length < 8) {
-    alert("Your password must be 8 characters or more");
+    alert(getString('SHORT_PASSWORD_ALERT'));
     return;
   }
 
   if (! pass_conf) {
-    alert("Please confirm your password");
+    alert(getString('MISSING_PASSWORD_CONFIRM_ALERT'));
     return;
   }
 
   if (pass != pass_conf) {
-    alert("Passwords do not match");
+    alert(getString('MISMATCHING_PASSWORDS_ALERT'));
     return;
   }
 
@@ -211,7 +176,7 @@ function signup() {
     "password": pass
   }).then(res => {
     if (! res.hasError) {
-      alert("Your account has been created. Please check your inbox to activate your account.");
+      alert('SINGUP_SUCCESS_ALERT');
       switchToSignin();
     }
     else {
@@ -225,12 +190,12 @@ function signin() {
   var pass = document.getElementById("signin-password").value;
 
   if (! email) {
-    alert("Please enter your email");
+    alert(getString('MISSING_EMAIL_ALERT'));
     return;
   }
 
   if (! pass) {
-    alert("Please enter your password");
+    alert(getString('MISSING_PASSWORD_ALERT'));
     return;
   }
 
@@ -248,12 +213,12 @@ function signin() {
       switchToWelcome();
     }
     else {
-      alert(res.errors[0]["message"]);
+      alert(getString('SIGNIN_REJECTED_ALERT'));
     }
   });
 }
 function signout() {
-  if (confirm("Are you sure you want to Logout?")) {
+  if (confirm(getString('CONFIRM_LOGOUT'))) {
     CookieManager.clear('token');
     location.reload();
   }
@@ -264,12 +229,12 @@ function requestPasswordReset() {
   var email = document.getElementById("reset-password-email").value;
 
   if (! email) {
-    alert("Please enter your email");
+    alert(getString('MISSING_EMAIL_ALERT'));
     return;
   }
 
   if (! isValidEmail(email)) {
-    alert("Please enter a valid email address");
+    alert(getString('INVALID_EMAIL_ALERT'));
     return;
   }
 
@@ -281,10 +246,10 @@ function requestPasswordReset() {
     email: email
   }).then(res => {
     if (! res.hasError) {
-      alert("Please check your email.");
+      alert(getString('RESET_PASSWORD_REQUEST_SUCCESS_ALERT'));
     }
     else {
-      alert(res.errors[0]["message"]);
+      alert(getString('RESET_PASSWORD_REQUEST_FAIL_ALERT'));
     }
   });
 }
@@ -295,22 +260,22 @@ function resetPassword() {
   var pass_conf = document.getElementById("reset-password-conf").value;
 
   if (! pass) {
-    alert("Please enter your password");
+    alert(getString('MISSING_PASSWORD_ALERT'));
     return;
   }
 
   if (pass.length < 8) {
-    alert("Your password must be 8 characters or more");
+    alert(getString('SHORT_PASSWORD_ALERT'));
     return;
   }
 
   if (! pass_conf) {
-    alert("Please confirm your password");
+    alert(getString('MISSING_PASSWORD_CONFIRM_ALERT'));
     return;
   }
 
   if (pass != pass_conf) {
-    alert("Passwords do not match");
+    alert(getString('MISMATCHING_PASSWORDS_ALERT'));
     return;
   }
 
@@ -330,7 +295,7 @@ function resetPassword() {
       switchToWelcome();
     }
     else {
-      alert(res.errors[0]["message"]);
+      alert(getString('RESET_PASSWORD_FAIL_ALERT'));
     }
   });
 }
@@ -339,24 +304,36 @@ function toggleHamburger() {
   $(".side-bar").toggleClass('open');
 }
 
-function navigateTo(content) {
+function navigateTo(path, onComplete) {
+
+  if (typeof path == 'string') {
+    path = [ path ];
+  }
+
   $(".side-bar").children().removeClass("active");
 
   DynamicLoader.unloadFrom('content');
 
-  switch(content) {
+  switch(path[0]) {
     case 'welcome':
       DynamicLoader.loadTo('content',
-        'welcome.html'
+        'welcome.html',
+        '',
+        [],
+        onComplete
       );
+      window.location.hash = '#welcome';
       break;
 
     case 'messages':
       DynamicLoader.loadTo('content',
         'messages.html',
-        'messages.js'
+        'messages.js',
+        [],
+        onComplete
       );
       $('#messages-btn').addClass("active");
+      window.location.hash = '#messages';
       break;
 
     case 'business':
@@ -372,9 +349,14 @@ function navigateTo(content) {
             src: 'profile_view.js',
             singleLoad: true
           }
-        ]
+        ],
+        () => {
+          if (path.length > 1) loadForm(path[1], onComplete);
+          else if (onComplete) onComplete();
+        }
       );
       $('#business-btn').addClass("active");
+      window.location.hash = '#business';
       break;
 
     case 'event':
@@ -390,9 +372,14 @@ function navigateTo(content) {
             src: 'profile_view.js',
             singleLoad: true
           }
-        ]
+        ],
+        () => {
+          if (path.length > 1 && path[1] == 'event_form') showCreateForm(onComplete);
+          else if (onComplete) onComplete();
+        }
       );
       $('#events-btn').addClass("active");
+      window.location.hash = '#event';
       break;
 
     case 'settings':
@@ -404,9 +391,11 @@ function navigateTo(content) {
             src: 'form.js',
             singleLoad: true
           }
-        ]
+        ],
+        onComplete
       );
       $('#settings-btn').addClass("active");
+      window.location.hash = '#settings';
       break;
 
     default: break;

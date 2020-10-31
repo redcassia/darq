@@ -1,0 +1,21 @@
+<div class="content-submenu medium-light-bg">
+    <div class="content-submenu-box">
+        <h5>رسائل جديدة</h5>
+    </div>
+
+    <hr style="margin-bottom: 0;"/>
+
+    <div id="threads"></div>
+
+</div><div class="right-aligned-content with-submenu full-height">
+    <div class="hidden" id="thread-view" style="height: 100%;">
+        <div id="messages"></div>
+        <textarea 
+            id="msg-box"
+            onkeydown="if (event.keyCode === 13) {
+                event.preventDefault(); sendMessage(this.value); this.value = ''; 
+            }"
+            onfocus="see()"
+        ></textarea>
+    </div>
+</div>

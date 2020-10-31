@@ -17,5 +17,7 @@ $(document).ready(function () {
     await GraphQL.fillOptionsFromEnum("City", [
       "club-city"
     ]);
+
+    if (formLoadOnComplete) formLoadOnComplete();
   })
 });

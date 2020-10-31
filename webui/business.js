@@ -26,20 +26,19 @@ function submitAddBusinessForm(mutationName, inputName, getData) {
     Form.unlock();
 
     if (! res.hasError) {
-      alert("Your business has been added. The data will be reviewed and we will contact you shortly.");
+      alert(getString('BUSINESS_ADD_SUCCESS_ALERT'));
       queryOwnedBusinesses();
-      DynamicLoader.unloadFrom('business-content');
     }
     else {
       console.log(res.errors[0]["message"]);
-      alert("Failed to add business");
+      alert(getString('BUSINESS_ADD_FAIL_ALERT'));
     }
   }).catch(e => {
     $("#loading-blanket").hide();
     Form.unlock();
 
     console.log(e);
-    alert("Failed to add business");
+    alert(getString('BUSINESS_ADD_FAIL_ALERT'));
   });
 }
 
@@ -70,20 +69,19 @@ function submitUpdateBusinessForm(mutationName, inputName, id, getData) {
     Form.unlock();
 
     if (! res.hasError) {
-      alert("Your business has been updated. The data will be reviewed and we will contact you shortly.");
+      alert(getString('BUSINESS_UPDATE_SUCCESS_ALERT'));
       queryOwnedBusinesses();
-      DynamicLoader.unloadFrom('business-content');
     }
     else {
       console.log(res.errors[0]["message"]);
-      alert("Failed to update business");
+      alert(getString('BUSINESS_UPDATE_FAIL_ALERT'));
     }
   }).catch(e => {
     $("#loading-blanket").hide();
     Form.unlock();
 
     console.log(e);
-    alert("Failed to update business");
+    alert(getString('BUSINESS_UPDATE_FAIL_ALERT'));
   });
 }
 
@@ -99,7 +97,7 @@ function updateBusinessesMenu() {
       <div
         class="content-submenu-clickable-box"
         onclick="loadBusiness(${id})"
-      >${b["approved"] == 'REJECTED' ? "[REJECTED] - " : ""}${b["display_name"]}</div>
+      >${b["approved"] == 'REJECTED' ? `[${getString('REJECTED')}] - ` : ""}${b["display_name"]}</div>
     `);
   }
 }
@@ -149,7 +147,7 @@ function loadBusiness(id) {
     var html = `
       <div class"h6">
         <span class="accent">Status: </span>
-        ${_businessApproveStatus[b["approved"]]}
+        ${getString('BUSINESS_APPROVE_STATUS')[b["approved"]]}
       </div>
     `;
 
@@ -157,7 +155,7 @@ function loadBusiness(id) {
       html += `
         <div class"h6">
           <span class="accent">Update status: </span>
-          ${_businessUpdateApproveStatus[b["update"]["approved"]]}
+          ${getString('BUSINESS_UPDATE_APPROVE_STATUS')[b["update"]["approved"]]}
         </div>
       `;
     }
@@ -165,7 +163,7 @@ function loadBusiness(id) {
     html +=`
       <br />
       <div class="h6 clickable underlined" onclick="editBusiness(${id})">
-        <i class="fas fa-pencil-alt"></i> Edit
+        <i class="fas fa-pencil-alt"></i> ${getString('EDIT')}
       </div>
       <br />
       <br />
@@ -179,6 +177,9 @@ function loadBusiness(id) {
 }
 
 function queryOwnedBusinesses() {
+
+  DynamicLoader.unloadFrom('business-content');
+  window.location.hash = window.location.hash.split('&')[0];
 
   loadingScreen(async () => {
     var res = await GraphQL.query(`
@@ -211,9 +212,14 @@ function queryOwnedBusinesses() {
 }
 
 var currentForm;
-function loadForm(formName) {
-  if (currentForm != formName) {
+var formLoadOnComplete;
+function loadForm(formName, onComplete) {
+
+  $("#business-type-select").val(formName);
+
+  if (formName.length > 0 && currentForm != formName) {
     currentForm = formName;
+    formLoadOnComplete = onComplete;
 
     DynamicLoader.unloadFrom('business-content');
     DynamicLoader.loadTo(
@@ -221,7 +227,12 @@ function loadForm(formName) {
       formName + '.html',
       formName + '.js',
       [],
-      Form.applyEventHandlers
+      () => {
+        var hash = window.location.hash.split('&');
+        hash[1] = formName;
+        window.location.hash = hash.join('&');
+        Form.applyEventHandlers();
+      }
     );
   }
 }

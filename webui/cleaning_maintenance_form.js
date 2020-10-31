@@ -23,5 +23,7 @@ $(document).ready(function () {
     await GraphQL.fillOptionsFromEnum("Currency", [
       "cleaning-maintenance-fees-currency"
     ]);
+
+    if (formLoadOnComplete) formLoadOnComplete();
   });
 });

@@ -19,5 +19,7 @@ $(document).ready(function () {
     await GraphQL.fillOptionsFromEnum("City", [
       "cuisine-city"
     ]);
+
+    if (formLoadOnComplete) formLoadOnComplete();
   });
 });

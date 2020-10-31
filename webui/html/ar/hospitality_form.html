@@ -1,0 +1,152 @@
+<form id="hospitality-form" novalidate>
+    <div class="form-line">
+        <div class="form-box">
+            <label>صورة العرض</label>
+            <div class="img-input" required data-friendly-name="صورة العرض">
+                <input type="file" name="display_picture"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>نوع العمل</label>
+            <div class="select ar">
+                <select name="sub_type" id="hospitality-sub-type" required data-friendly-name="نوع العمل">
+                    <option value="" disabled selected>اختر نوع العمل</option>
+                </select>
+            </div>
+        </div>
+        <br>
+        <div class="form-object show-if-other hidden" data-name="sub_type_string">
+            <div class="form-box">
+                <label>نوع العمل (العربية)</label>
+                <input type="text" name="ar" required data-friendly-name="نوع العمل (العربية)"/>
+            </div>
+            <div class="form-box">
+                <label>نوع العمل (English)</label>
+                <input type="text" name="en" required data-friendly-name="نوع العمل (English)"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>الإ سم</label>
+            <input type="text" name="display_name" required data-friendly-name="الإ سم" />
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>العنوان</label>
+            <input type="text" name="street_address" required data-friendly-name="العنوان" />
+        </div>
+
+        <div class="form-box">
+            <label>المدينة</label>
+            <div class="select ar">
+                <select name="city" id="hospitality-city">
+                    <option value="" disabled selected>اختر المدينة </option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>رقم الهاتف</label>
+            <div class="multistring-input" data-name="phone_number" required data-friendly-name="رقم الهاتف">
+                <div class="data"></div>
+                <input type="tel" />
+                <button>أضف</button>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="form-object" data-name="description">
+        <div class="form-line">
+            <div class="form-box">
+                <label>الوصف (العربية)</label>
+                <textarea name="ar" required data-friendly-name="الوصف (العربية)"></textarea>
+            </div>
+        </div>
+        <div class="form-line">
+            <div class="form-box">
+                <label>الوصف (English)</label>
+                <textarea name="en" required data-friendly-name="الوصف (English)"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <div class="form-object" data-name="charge">
+                <label>التكلفة</label>
+                <input type="text" data-special-type="float" style="width:105px" name="value" required data-friendly-name="التكلفة" />
+                <div class="select ar">
+                    <select name="currency" id="hospitality-fees-currency" style="width:150px">
+                    </select>
+                </div>
+                <span>/ساعة</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>الخدمات</label>
+            <div class="multistring-input" data-name="services" data-multi-lang required data-friendly-name="الخدمات">
+                <div class="data"></div>
+                <input type="text" name="ar" placeholder="العربية"/>
+                <input type="text" name="en" placeholder="English"/>
+                <button>أضف</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>خدمات منزلية</label>
+            <input type="checkbox" name="home_service_available" />
+            <span>متاح</span>
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>الموقع الكتروني</label>
+            <input type="text" name="website" />
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>الرخصة التجارية</label>
+            <div class="img-input" required data-friendly-name="الرخصة التجارية">
+                <input type="file" name="trade_license"/>
+            </div>
+        </div>
+        <div class="form-box">
+            <label>رقم الرخصة التجارية</label>
+            <input type="text" name="trade_license_number" required data-friendly-name="رقم الرخصة التجارية" />
+        </div>
+    </div>
+
+    <div class="form-line">
+        <div class="form-box">
+            <label>الصور</label>
+            <div class="img-input multiple">
+                <input type="file" name="attachments" />
+            </div>
+        </div>
+    </div>
+
+    <hr />
+
+    <button onclick="submitForm()">حفظ</button>
+</form>

@@ -35,5 +35,7 @@ $(document).ready(function () {
     await GraphQL.fillOptionsFromEnum("Country", [
       "self-employed-experience-country"
     ]);
+
+    if (formLoadOnComplete) formLoadOnComplete();
   });
 });

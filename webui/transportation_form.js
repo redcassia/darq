@@ -19,5 +19,7 @@ $(document).ready(function () {
     await GraphQL.fillOptionsFromEnum("City", [
       "transportation-city"
     ]);
+
+    if (formLoadOnComplete) formLoadOnComplete();
   });
 });

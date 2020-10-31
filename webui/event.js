@@ -12,7 +12,7 @@ function updateEventsMenu() {
       <div
         class="content-submenu-clickable-box"
         onclick="loadEvent(${e["id"]})"
-      >${e["approved"] == 'REJECTED' ? "[REJECTED] - " : ""}${e["display_name"]}</div>
+      >${e["approved"] == 'REJECTED' ? `[${getString('REJECTED')}] - ` : ""}${e["display_name"]}</div>
     `);
   }
 }
@@ -40,11 +40,11 @@ function loadEvent(id) {
     var html = `
       <div class"h6">
         <span class="accent">Status: </span>
-        ${_eventApproveStatus[e["approved"]]}
+        ${getString('EVENT_APPROVE_STATUS')[e["approved"]]}
       </div>
       <br />
       <div class="h6 clickable underlined" onclick="editEvent(${id})">
-        <i class="fas fa-pencil-alt"></i> Edit
+        <i class="fas fa-pencil-alt"></i> ${getString('EDIT')}
       </div>
       <br />
       <br />
@@ -59,9 +59,10 @@ function loadEvent(id) {
 
 function queryOwnedEvents() {
 
-  loadingScreen(async () => {
-    DynamicLoader.unloadFrom('event-content');
+  DynamicLoader.unloadFrom('event-content');
+  window.location.hash = window.location.hash.split('&')[0];
 
+  loadingScreen(async () => {
     var res = await GraphQL.query(`
       query {
         user {
@@ -91,15 +92,23 @@ function queryOwnedEvents() {
   });
 }
 
-function showCreateForm() {
+var formLoadOnComplete;
+function showCreateForm(onComplete) {
+  formLoadOnComplete = onComplete;
+
   DynamicLoader.unloadFrom('event-content');
   DynamicLoader.loadTo(
     'event-content',
     'event_form.html',
     'event_form.js',
     [],
-    Form.applyEventHandlers
-  );
+    () => {
+      var hash = window.location.hash.split('&');
+      hash[1] = 'event_form';
+      window.location.hash = hash.join('&');
+      Form.applyEventHandlers();
+    }
+);
 }
 
 $(document).ready(queryOwnedEvents);

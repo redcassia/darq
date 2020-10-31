@@ -119,6 +119,13 @@ class GraphQL {
     });
   }
 
+  static _assignEnums(enumName, id, values) {
+    var select = document.getElementById(id);
+    if (select == null) setTimeout(() => { this._assignEnums(enumName, id, values) }, 50);
+    for (var v of values) {
+      select.innerHTML += `<option value='${v.name}'>${getEnumString(enumName, v.name)}</option>`;
+    }
+  }
   static async fillOptionsFromEnum(enumName, selectTagIds) {
     const res = await this.query(`
       query ($name: String!){
@@ -133,14 +140,7 @@ class GraphQL {
     });
 
     selectTagIds.forEach(id => {
-      var select = document.getElementById(id);
-      for (var v of res.data.__type.enumValues) {
-        var display = v.name;
-        if (enums[enumName] && enums[enumName][v.name]) {
-          display = enums[enumName][v.name];
-        }
-        select.innerHTML += `<option value='${v.name}'>${display}</option>`;
-      }
+      this._assignEnums(enumName, id, res.data.__type.enumValues);
     });
   }
 }

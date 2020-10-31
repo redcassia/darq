@@ -29,19 +29,19 @@ function submitForm() {
     Form.unlock();
 
     if (! res.hasError) {
-      alert("Your event has been updated.");
+      alert(getString('EVENT_UPDATE_SUCCESS_ALERT'));
       queryOwnedEvents();
     }
     else {
       console.log(res.errors[0]["message"]);
-      alert("Failed to update event");
+      alert(getString('EVENT_UPDATE_FAIL_ALERT'));
     }
   }).catch(e => {
     $("#loading-blanket").hide();
     Form.unlock();
 
     console.log(e);
-    alert("Failed to update event");
+    alert(getString('EVENT_UPDATE_FAIL_ALERT'));
   });
 }
 

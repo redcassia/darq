@@ -68,14 +68,14 @@ class ProfileView {
     var html = "";
 
     html += `<div class="profile-experience">
-      <div class="profile-experience-left profile-big-text">Experience:</div>
+      <div class="profile-experience-left profile-big-text">${getString('EXPERIENCE')}:</div>
       <div class="profile-experience-right">
     `;
 
     for (var e of data) {
       html += `
         <div class="profile-medium-text">${e["country"]}${e["institution"] ? ` - ${e["institution"]}` : ""}</div>
-        <div class="profile-small-text-light">${e["from"]} - ${e["in_position"] ? "Present" : `${e["to"]}`}</div>
+        <div class="profile-small-text-light">${e["from"]} - ${e["in_position"] ? getString('PRESENT') : `${e["to"]}`}</div>
         <br />
       `;
     }
@@ -194,7 +194,7 @@ class ProfileView {
       }
     }
     else {
-      html += 'Not yet rated';
+      html += getString('NOT_RATED');
     }
 
     html += `
@@ -209,11 +209,11 @@ class ProfileView {
     }
 
     if (b["gender"]) {
-      html += `<div class="profile-small-text">${enums["Gender"][b["gender"]] || b["gender"]}</div>`
+      html += `<div class="profile-small-text">${getEnumString("Gender", b["gender"])}</div>`
     }
 
     if (b["nationality"]) {
-      html += `<div class="profile-small-text">${enums["Nationality"][b["nationality"]] || b["nationality"]}</div>`
+      html += `<div class="profile-small-text">${getEnumString("Nationality", b["nationality"])}</div>`
     }
 
     html += `
@@ -223,7 +223,7 @@ class ProfileView {
     if (b["street_address"]) {
       html += `${b["street_address"]} - `
     }
-    html += `${enums["City"][b["city"]] || b["city"]}, Qatar</div>`
+    html += `${getEnumString("City", b["city"])}, Qatar</div>`
 
     if (b["operating_hours"]) {
       html += `
@@ -231,7 +231,7 @@ class ProfileView {
           <i class="far fa-clock"></i>
           ${
             b["operating_hours"]["all_day"] ?
-            "24 hrs" :
+            getString('_24_HRS') :
             `${b["operating_hours"]["open"]} - ${b["operating_hours"]["close"]}`
           }
         </div>
@@ -261,39 +261,48 @@ class ProfileView {
     }
 
     if (b["home_service_available"] != null) {
-      html += '<hr />' + this._text("Home Service", b["home_service_available"] ? "Available" : "Not available");
+      html += '<hr />' + this._text(
+        getString('HOME_SERIVCE'),
+        b["home_service_available"] ? getString('AVAILABLE') : getString('NOT_AVAILABLE')
+      );
     }
 
     if (b["home_delivery_available"] != null) {
-      html += '<hr />' + this._text("Home Delivery", b["home_delivery_available"] ? "Available" : "Not available");
+      html += '<hr />' + this._text(
+        getString('HOME_DELIVERY'),
+        b["home_delivery_available"] ? getString('AVAILABLE') : getString('NOT_AVAILABLE')
+      );
     }
 
     if (b["home_training_available"] != null) {
-      html += '<hr />' + this._text("Home Training", b["home_training_available"] ? "Available" : "Not available");
+      html += '<hr />' + this._text(
+        getString('HOME_TRAINING'),
+        b["home_training_available"] ? getString('AVAILABLE') : getString('NOT_AVAILABLE')
+      );
     }
 
     if (b["services"] && b["services"].length > 0) {
-      html += '<hr />' + this._itemizedText("Services", b["services"]);
+      html += '<hr />' + this._itemizedText(getString('SERVICES'), b["services"]);
     }
 
     if (b["products"] && b["products"].length > 0) {
-      html += '<hr />' + this._itemizedText("Products", b["products"]);
+      html += '<hr />' + this._itemizedText(getString('PRODUCTS'), b["products"]);
     }
 
     if (b["classes"] && b["classes"].length > 0) {
-      html += '<hr />' + this._itemizedText("Classes", b["classes"]);
+      html += '<hr />' + this._itemizedText(getString('CLASSES'), b["classes"]);
     }
 
     if (b["teams"] && b["teams"].length > 0) {
-      html += '<hr />' + this._itemizedText("Teams", b["teams"]);
+      html += '<hr />' + this._itemizedText(getString('TEAMS'), b["teams"]);
     }
 
     if (b["activities"] && b["activities"].length > 0) {
-      html += '<hr />' + this._itemizedText("Activities", b["activities"]);
+      html += '<hr />' + this._itemizedText(getString('ACTIVITIES'), b["activities"]);
     }
 
     if (b["skills"] && b["skills"].length > 0) {
-      html += '<hr />' + this._chippedText("Skills", b["skills"]);
+      html += '<hr />' + this._chippedText(getString('SKILLS'), b["skills"]);
     }
 
     if (b["experience"] && b["experience"].length > 0) {
@@ -301,45 +310,45 @@ class ProfileView {
     }
 
     if (b["charge"]) {
-      html += '<hr />' + this._price("Charge", b["charge"], "/ hr");
+      html += '<hr />' + this._price(getString('CHARGE'), b["charge"], "/ hr");
     }
     if (b["optional_charge"]) {
-      html += '<hr />' + this._price("Charge", b["optional_charge"], "/ hr");
+      html += '<hr />' + this._price(getString('CHARGE'), b["optional_charge"], "/ hr");
     }
 
     if (b["year_founded"]) {
-      html += '<hr />' + this._text("Founded", b["year_founded"]);
+      html += '<hr />' + this._text(getString('FOUNDED'), b["year_founded"]);
     }
 
     if (b["curriculum"]) {
-      html += '<hr />' + this._itemizedText("Curriculum", b["curriculum"]);
+      html += '<hr />' + this._itemizedText(getString('CURRICULUM'), b["curriculum"]);
     }
 
     if (b["government_id"]) {
-      html += '<hr />' + this._picture("Government-issued ID", b["government_id"]);
+      html += '<hr />' + this._picture(getString('GOVERNMENT_ISSUED_ID'), b["government_id"]);
     }
 
     if (b["trade_license"]) {
-      html += '<hr />' + this._picture("Trade license", b["trade_license"]);
+      html += '<hr />' + this._picture(getString('TRADE_LICENSE'), b["trade_license"]);
     }
     if (b["trade_license_number"]) {
-      html += this._text("Trade license number", b["trade_license_number"]);
+      html += this._text(getString('TRADE_LICENSE_NUMBER'), b["trade_license_number"]);
     }
 
     if (b["genders"]) {
-      html += '<hr />' + this._text("Gender", enums["Genders"][b["genders"]]);
+      html += '<hr />' + this._text(getString('GENDER'), getEnumString("Genders", b["genders"]));
     }
 
     if (b["website"]) {
-      html += '<hr />' + this._link("Website", b["website"]);
+      html += '<hr />' + this._link(getString('WEBSITE'), b["website"]);
     }
 
     if (b["menu"] && b["menu"].length > 0) {
-      html += '<hr />' + this._attachments("Menu", b["menu"]);
+      html += '<hr />' + this._attachments(getString('MENU'), b["menu"]);
     }
 
     if (b["attachments"] && b["attachments"].length > 0) {
-      html += '<hr />' + this._attachments("Photos", b["attachments"]);
+      html += '<hr />' + this._attachments(getString('PHOTOS'), b["attachments"]);
     }
 
     if (b["personnel"] && b["personnel"].length > 0) {
@@ -392,7 +401,7 @@ class ProfileView {
     `;
 
     if (e["type"]) {
-        html += `<div class="profile-small-text">${enums["EventType"][e["type"]] || e["type"]}</div>`;
+        html += `<div class="profile-small-text">${getEnumString("EventType", e["type"])}</div>`;
     }
 
     if (e["street_address"] || e["city"]) {
@@ -404,7 +413,7 @@ class ProfileView {
         html += `${e["street_address"]} - `
       }
       if (e["city"]) {
-        html += `${enums["City"][e["city"]] || e["city"]}, Qatar`
+        html += `${getEnumString("City", e["city"])}, Qatar`
       }
 
       html += `</div>`
@@ -416,7 +425,7 @@ class ProfileView {
           <i class="far fa-clock"></i>
           ${
             e["hours"]["all_day"] ?
-            "24 hrs" :
+            getString('_24_HRS') :
             `${e["hours"]["open"]} - ${e["hours"]["close"]}`
           }
         </div>
@@ -440,27 +449,27 @@ class ProfileView {
       <div class="profile-medium-text">${e["description"].ar}</div>
       <hr />
       <div class="profile-left" style="height: auto; min-height: 0">
-        ${this._text("Start", e["duration"]["start"])}
+        ${this._text(getString('START'), e["duration"]["start"])}
       </div>
       <div class="profile-right">
-        ${this._text("End", e["duration"]["end"])}
+        ${this._text(getString('END'), e["duration"]["end"])}
       </div>
     `;
 
     if (e["ticket_website"]) {
-      html += '<hr />' + this._link("Ticket Reservation", e["ticket_website"]);
+      html += '<hr />' + this._link(getString('TICKET_RESERVATION'), e["ticket_website"]);
     }
 
     if (e["ticket_price"]) {
-      html += '<hr />' + this._price("Ticket Price", e["ticket_price"]);
+      html += '<hr />' + this._price(getString('TICKET_PRICE'), e["ticket_price"]);
     }
 
     if (e["organizer"]) {
-      html += '<hr />' + this._text("Organizer", e["organizer"]);
+      html += '<hr />' + this._text(getString('ORGANIZER'), e["organizer"]);
     }
 
     if (e["attachments"] && e["attachments"].length > 0) {
-      html += '<hr />' + this._attachments("Photos", e["attachments"]);
+      html += '<hr />' + this._attachments(getString('PHOTOS'), e["attachments"]);
     }
 
     return html;

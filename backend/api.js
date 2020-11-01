@@ -105,4 +105,6 @@ app.get('/verifyuser', async (req, res) => {
   res.end();
 });
 
+app.use('/privacy', express.static(path.join(webui_dir, 'privacy_policy.html')))
+
 module.exports = app

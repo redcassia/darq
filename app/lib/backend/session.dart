@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Session {
   static final HttpLink _backendLink =
-      HttpLink(uri: 'http://redcassia.com:3001/api');
+      HttpLink(uri: 'http://darq.qa:8080/api');
   static GraphQLClient _client;
   static String _locale;
 

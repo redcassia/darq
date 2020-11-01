@@ -587,6 +587,13 @@ hr {
     padding: 32px 0 0 32px;
 }
 
+.limit-content-width {
+    min-width: 200px;
+    max-width: 800px;
+    margin: auto;
+    padding: 0 20%;
+}
+
 .left-aligned-content, .right-aligned-content {
     position: relative;
     display: inline-block;

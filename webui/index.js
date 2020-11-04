@@ -176,7 +176,7 @@ function signup() {
     "password": pass
   }).then(res => {
     if (! res.hasError) {
-      alert('SINGUP_SUCCESS_ALERT');
+      alert(getString('SINGUP_SUCCESS_ALERT'));
       switchToSignin();
     }
     else {

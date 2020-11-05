@@ -1,442 +1,24 @@
-require('dotenv').config()
-var mysql = require('mysql');
-const DataLoader = require('dataloader')
-const bcrypt = require('bcrypt')
+require('dotenv').config();
+const bcrypt = require('bcrypt');
 const cryptoRandomString = require('crypto-random-string');
 const jsonwebtoken = require('jsonwebtoken');
 const { ApolloError, GraphQLUpload } = require('apollo-server-express');
 const { GraphQLScalarType } = require('graphql');
-var fs = require('fs');
-var path = require('path')
 
-const strings = require('./locale')
+const Locale = require('./locale');
+const Model = require('./model');
 const Mailer = require('./mailer');
-const Mail = require('nodemailer/lib/mailer');
-const { verify } = require('crypto');
 
-class Database {
-  constructor(config) {
-    this.config = config;
-    this.pool = mysql.createPool(this.config);
-  }
-
-  query(sql, args) {
-    return new Promise((resolve, reject) => {
-      this.pool.getConnection(function(err, connection) {
-        if (err) {
-          console.log("Error getting a MySQL connection from pool. ", err);
-          reject(err);
-        }
-
-        connection.query(sql, args, (err, rows) => {
-          if (err) reject(err);
-          else resolve(rows);
-
-          connection.release();
-        });
-      });
-    });
-  }
-
-  connection() {
-    return this.pool.getConnection();
-  }
-
-  close() {
-    this.pool.end();
-  }
-}
-
-var db = new Database({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  connectionLimit: process.env.DB_CONNECTION_LIMIT
-});
-
-const businessUserLoader = new DataLoader(
-  async (ids) => {
-    return ids.map(async (id) => {
-      const rows = await db.query(
-        "SELECT * FROM business_user WHERE id = ?",
-        [id]
-      );
-
-      return rows[0];
-    });
-  }
-);
-
-const publicUserLoader = new DataLoader(
-  async (ids) => {
-    return ids.map(async (id) => {
-      const rows = await db.query(
-        `
-        SELECT
-          CAST(id AS CHAR(18)) AS id,
-          create_time,
-          last_login,
-          first_name,
-          last_name
-        FROM
-          public_user
-        WHERE
-          id = ?
-        `,
-        [ id ]
-      );
-
-      return rows[0];
-    });
-  }
-);
-
-const businessLoader = new DataLoader(
-  async (ids) => {
-    return ids.map(async (id) => {
-      const rows = await db.query(
-        `
-        SELECT
-          JSON_INSERT(
-            props,
-            '$.id', id,
-            '$.owner', owner,
-            '$.approved', approved,
-            '$.rating', calculated_rating,
-            '$.display_name', display_name,
-            '$.display_picture', display_picture,
-            '$.type', \`type\`,
-            '$.sub_type', sub_type
-          ) AS data
-        FROM
-          business
-        WHERE
-          id = ?
-        `,
-        [id]
-      );
-      return rows[0] ? JSON.parse(rows[0].data) : null;
-    });
-  }
-);
-
-const orderedBusinessLoader = new Map(
-  [
-    'SelfEmployedBusiness',
-    'ChildEducationBusiness',
-    'DomesticHelpBusiness',
-    'BeautyBusiness',
-    'TransportationBusiness',
-    'HospitalityBusiness',
-    'StationeryBusiness',
-    'MadeInQatarBusiness',
-    'SportsBusiness',
-    'EntertainmentBusiness',
-    'FoodBusiness',
-    'CleaningAndMaintenanceBusiness'
-  ].map(type =>
-  [
-    type,
-    new DataLoader(
-      async (keys) => {
-        const offset = keys[0];
-        const limit = keys[keys.length - 1] - offset + 1;
-
-        const rows = await db.query(
-          `
-          SELECT
-            id
-          FROM
-            business
-          WHERE
-            \`type\` = ?
-            AND listing_index >= 0
-          ORDER BY listing_index
-          LIMIT ?
-          OFFSET ?
-          `,
-          [ type, limit, offset ]
-        );
-
-        return keys.map(key => {
-          if (rows[key - offset]) return rows[key - offset].id;
-          else return null;
-        });
-      }
-    )
-  ]
-));
-
-const eventLoader = new DataLoader(
-  async (ids) => {
-    return ids.map(async (id) => {
-      const rows = await db.query(
-        `
-        SELECT
-          JSON_INSERT(
-            props,
-            '$.id', id,
-            '$.owner', owner,
-            '$.approved', approved,
-            '$.display_name', display_name,
-            '$.display_picture', display_picture,
-            '$.type', \`type\`
-          ) AS data
-        FROM
-          event
-        WHERE
-          id = ?
-        `,
-        [id]
-      );
-      return rows[0] ? JSON.parse(rows[0].data) : null;
-    });
-  }
-);
-
-const orderedEventLoader = new DataLoader(
-  async (keys) => {
-    const offset = keys[0];
-    const limit = keys[keys.length - 1] - offset + 1;
-
-    const rows = await db.query(
-      `
-      SELECT
-        id
-      FROM
-        event
-      WHERE
-        listing_index >= 0
-      ORDER BY listing_index
-      LIMIT ?
-      OFFSET ?
-      `,
-      [ limit, offset ]
-    );
-
-    return keys.map(key => {
-      if (rows[key - offset]) return rows[key - offset].id;
-      else return null;
-    });
-  }
-);
-
-const msgThreadLoader = new DataLoader(
-  async (ids) => {
-    return ids.map(async (id) => {
-      const rows = await db.query(
-        `
-        SELECT
-          id,
-          business_id,
-          CAST(public_user_id AS CHAR(18)) AS public_user_id,
-          business_user_id,
-          targetLastSeenIndex,
-          senderLastSeenIndex
-        FROM
-          message_thread
-        WHERE
-          id = ?
-        `,
-        [ id ]
-      );
-
-      return rows[0];
-    });
-  }
-);
-
-const msgLoader = new DataLoader(
-  async (ids) => {
-    return ids.map(async (id) => {
-      const rows = await db.query(
-        `
-        SELECT
-          data AS msg,
-          sender,
-          create_time
-        FROM
-          message
-        WHERE
-          message_thread_id = ?
-        ORDER BY create_time
-        `,
-        [ id ]
-      );
-
-      var messages = new Array(rows.length);
-      for (var i = 0; i < rows.length; ++i) {
-        messages[i] = {
-          index: i,
-          msg: rows[i].msg,
-          time: rows[i].create_time,
-          sender: rows[i].sender
-        }
-      }
-      return messages;
-    });
-  }
-);
-
-function _localize(data, locale) {
-
-  if (data[locale] !== undefined) {
-    return data[locale];
-  }
-  else {
-    for (var key in data) {
-      if (data[key] instanceof Object) {
-        data[key] = _localize(data[key], locale);
-      }
-      else if (data[key] instanceof Array) {
-        data[key] = data[key].map(_ => _localize(_, locale));
-      }
-    }
-    return data;
-  }
-}
-
-// regular backend maintenance
-async function maintenance() {
-
-  // TODO: uncomment when deploying
-  // console.log("Starting scheduled maintenance");
-
-  var db = new Database({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    connectionLimit: 1,
-    multipleStatements: true
+function scheduleMaintenance() {
+  Model.startMaintenance().then(() => {
+    // schedule next maintenance
+    // TODO: change when deploying; run every 60 seconds, for development
+    setTimeout(scheduleMaintenance, 60000);
   });
-
-  // list all approved businesses /////////////////////////////////////////////
-  await db.query(
-    `
-    SET SQL_SAFE_UPDATES = 0;
-
-    UPDATE
-      business
-    SET
-      approved = 'APPROVED_AND_LISTED'
-    WHERE
-      approved = 'APPROVED'
-    ;
-
-    SET SQL_SAFE_UPDATES = 1;
-    `
-  );
-
-  // list all approved events /////////////////////////////////////////////////
-  await db.query(
-    `
-    SET SQL_SAFE_UPDATES = 0;
-
-    UPDATE
-      event
-    SET
-      approved = 'APPROVED_AND_LISTED'
-    WHERE
-      approved = 'APPROVED'
-    ;
-
-    SET SQL_SAFE_UPDATES = 1;
-    `
-  );
-
-  // calculate business ratings ///////////////////////////////////////////////
-  await db.query(
-    `
-    SET SQL_SAFE_UPDATES = 0;
-
-    UPDATE
-      business
-    SET
-      calculated_rating = (
-        SELECT
-          AVG(stars)
-        FROM
-          rating
-        WHERE
-          rating.business_id = business.id
-      )
-    WHERE
-      approved = 'APPROVED_AND_LISTED'
-    ;
-
-    SET SQL_SAFE_UPDATES = 1;
-    `
-  );
-
-  businessLoader.clearAll();
-  eventLoader.clearAll();
-
-  // update the listing index of businesses ///////////////////////////////////
-  await db.query(
-    `
-    SET SQL_SAFE_UPDATES = 0;
-
-    SET @curRow := 0;
-
-    UPDATE
-      business
-    SET
-      listing_index = (@curRow := @curRow + 1)
-    WHERE
-      approved = 'APPROVED_AND_LISTED'
-    ORDER BY calculated_rating DESC
-    ;
-
-    SET SQL_SAFE_UPDATES = 1;
-    `
-  );
-  orderedBusinessLoader.forEach(l => l.clearAll());
-
-  // update the listing index of events ///////////////////////////////////////
-  await db.query(
-    `
-    SET SQL_SAFE_UPDATES = 0;
-
-    SET @curRow := 0;
-
-    UPDATE
-      event
-    SET
-      listing_index = (@curRow := @curRow + 1)
-    WHERE
-      end > CURRENT_TIMESTAMP
-      AND approved = 'APPROVED_AND_LISTED'
-    ORDER BY start
-    ;
-
-    UPDATE
-      event
-    SET
-      listing_index = -1
-    WHERE
-      listing_index >= 0
-      AND end <= CURRENT_TIMESTAMP
-    ;
-
-    SET SQL_SAFE_UPDATES = 1;
-    `
-  );
-
-  orderedEventLoader.clearAll();
-
-  db.close();
-
-  // schedule next maintenance ////////////////////////////////////////////////
-  // TODO: change when deploying
-  setTimeout(maintenance, 10000);
 }
 
-// run every 10 seconds, for development
-// deployed server should run maintenance() at a certain time every day
-// TODO: change when deploying
-setTimeout(maintenance, 1000);
+// cold-start maintenance starts 60 seconds after server startup
+setTimeout(scheduleMaintenance, 60000);
 
 function _validateAuthenticatedBusinessUser(user) {
   if (! user || user.type != 'BUSINESS') {
@@ -466,7 +48,7 @@ function _validateAuthenticatedPublicUser(user) {
 }
 
 async function _validateBusinessOwner(user, businessId) {
-  var business = await businessLoader.load(businessId);
+  var business = await Model.businessLoader.load(businessId);
   if (business.owner != user.id) {
     throw new ApolloError(
       "You're not the owner of this business! This incident will be reported.",
@@ -476,7 +58,7 @@ async function _validateBusinessOwner(user, businessId) {
 }
 
 async function _validateBusinessOwnerAndType(user, businessId, type) {
-  var business = await businessLoader.load(businessId);
+  var business = await Model.businessLoader.load(businessId);
   if (business.owner != user.id) {
     throw new ApolloError(
       "You're not the owner of this business! This incident will be reported.",
@@ -492,390 +74,13 @@ async function _validateBusinessOwnerAndType(user, businessId, type) {
 }
 
 async function _validateEventOwner(user, eventId) {
-  var event = await eventLoader.load(eventId);
+  var event = await Model.eventLoader.load(eventId);
   if (event.owner != user.id) {
     throw new ApolloError(
       "You're not the owner of this event! This incident will be reported.",
       'NOT_EVENT_OWNER'
     );
   }
-}
-
-function _generateAttachmentName() {
-  return cryptoRandomString({length: 55, type: 'url-safe'});
-}
-
-function _writeAttachmentToFile(file) {
-  return new Promise(async (resolve, reject) => {
-    const { createReadStream, filename, mimetype, encoding } = await file;
-    var uniqueName = _generateAttachmentName() + path.extname(filename);
-    var ws = fs.createWriteStream(path.join(process.env.ATTACHMENTS_DIR, uniqueName));
-    var rs = createReadStream();
-    rs.on('end', () => resolve(uniqueName));
-    rs.on('error', () => reject());
-    rs.pipe(ws);
-  });
-}
-
-async function _storeAttachments(data) {
-  if (data.display_picture) {
-    data.display_picture = await _writeAttachmentToFile(data.display_picture);
-  }
-
-  if (data.picture) {
-    data.picture = await _writeAttachmentToFile(data.picture);
-  }
-
-  if (data.government_id) {
-    data.government_id = await _writeAttachmentToFile(data.government_id);
-  }
-
-  if (data.trade_license) {
-    data.trade_license = await _writeAttachmentToFile(data.trade_license);
-  }
-
-  if (data.personnel) {
-    for (var i = 0; i < data.personnel.length; ++i) {
-      if (data.personnel[i].picture) {
-        data.personnel[i].picture = 
-          await _writeAttachmentToFile(data.personnel[i].picture);
-      }
-
-      if (data.personnel[i].attachments) {
-        for (var j = 0; j < data.personnel[i].attachments.length; ++j) {
-          data.personnel[i].attachments[j] =
-            await _writeAttachmentToFile(data.personnel[i].attachments[j]);
-        }
-      }
-    }
-  }
-
-  if (data.attachments) {
-    for (var i = 0; i < data.attachments.length; ++i) {
-      data.attachments[i] = await _writeAttachmentToFile(data.attachments[i]);
-    }
-  }
-
-  if (data.menu) {
-    for (var i = 0; i < data.menu.length; ++i) {
-      data.menu[i] = await _writeAttachmentToFile(data.menu[i]);
-    }
-  }
-
-  return data;
-}
-
-function _removeAttachment(attachment) {
-  fs.unlink(path.join(process.env.ATTACHMENTS_DIR, attachment), () => {});
-}
-
-function _updateAttachments(original, kept, added) {
-  original.forEach(_ => {
-    if (kept.indexOf(_) == -1) _removeAttachment(_);
-  });
-
-  added.forEach(_ => kept.push(_));
-
-  return kept;
-}
-
-async function _addBusiness(data, owner) {
-  try {
-    var props = await _storeAttachments(data);
-
-    var display_name = data.display_name; delete props.display_name;
-    var display_picture = data.display_picture; delete props.display_picture;
-    if (data.sub_type && ! data.sub_type_string) {
-      data.sub_type_string = strings.sub_type_string[data.type][data.sub_type];
-    }
-    var type = data.type; delete props.type;
-    var sub_type = data.sub_type; delete props.sub_type;
-
-    const result = await db.query(
-      `
-        INSERT INTO business
-          (display_name, display_picture, type, sub_type, props, owner)
-        VALUES
-          (?, ?, ?, ?, ?, ?)
-      `,
-      [
-        display_name,
-        display_picture,
-        type,
-        sub_type,
-        JSON.stringify(props),
-        owner
-      ]
-    );
-    id = result.insertId;
-
-    businessUserLoader.clear(owner);
-
-    return id;
-  }
-  catch(e) {
-    console.log(e);
-    throw new ApolloError("Failed to add business.", 'ADD_BUSINESS_FAILED');
-  }
-}
-
-async function _updateBusiness(id, data) {
-  try {
-    var stringifiedData = JSON.stringify(await _storeAttachments(data));
-    await db.query(
-      `
-        INSERT INTO business_tentative_update
-          (business_id, updated_data)
-        VALUES
-          (?, ?)
-        ON DUPLICATE KEY UPDATE
-          updated_data = JSON_MERGE_PRESERVE(updated_data, ?),
-          approved = 'TENTATIVE'
-      `,
-      [
-        id,
-        stringifiedData,
-        stringifiedData
-      ]
-    );
-  }
-  catch(e) {
-    console.log(e);
-    throw new ApolloError("Failed to update business.", 'UPDATE_BUSINESS_FAILED');
-  }
-}
-
-async function _processUpdatedPersonnel(id, data) {
-  var business = await businessLoader.load(id);
-
-  var updated = false;
-
-  var personnel = business["personnel"];
-  if (! personnel) personnel = [];
-
-  // remove personnel not found in 'old_personnel' and not in 'personnel'
-  if (data["old_personnel"]) {
-    for (var i = 0; i < personnel.length; ++i) {
-      if (
-        data["old_personnel"].indexOf(personnel[i]["name"]) == -1
-        && (
-          data["personnel"] === undefined ||
-          data["personnel"].findIndex(_ => _["name"] == personnel[i]["name"]) == -1
-        )
-      ) {
-        personnel.splice(i, 1); --i;
-        updated = true;
-      }
-    }
-
-    // no longer needed
-    delete data["old_personnel"];
-  }
-
-  // update or add
-  if (data["personnel"]) {
-    for (var i = 0; i < data["personnel"].length; ++i) {
-      var p = data["personnel"][i];
-
-      p = await _storeAttachments(p);
-
-      const index = personnel.findIndex(_ => _["name"] == p["name"]);
-      if (index == -1) {    // add
-        personnel.push(p);
-      }
-      else {                // update
-        if (p.attachments || p.old_attachments) {
-          if (personnel[index].attachments) {
-            p.attachments = _updateAttachments(
-              personnel[index].attachments,
-              p.old_attachments || [],
-              p.attachments || []
-            );
-          }
-
-          if (p.old_attachments) delete p.old_attachments;
-        }
-
-        personnel[index] = { ...personnel[index], ...p };
-      }
-
-      updated = true;
-    }
-
-    delete data["personnel"];
-  }
-
-  if (updated) {
-    await db.query(
-      `
-      UPDATE
-        business
-      SET
-        props = JSON_MERGE_PATCH(props, ?)
-      WHERE
-        id = ?
-      `,
-      [ JSON.stringify({ personnel: personnel }), id ]
-    );
-
-    businessLoader.clear(id);
-  }
-
-  return data;
-}
-
-async function _addEvent(data, owner) {
-  try {
-    var props = await _storeAttachments(data);
-
-    var display_name = data.display_name; delete props.display_name;
-    var display_picture = data.display_picture; delete props.display_picture;
-    var type = data.type; delete props.type;
-    var start = data.duration.start;
-    var end = data.duration.end;
-
-    const result = await db.query(
-      `
-        INSERT INTO event
-          (
-            owner,
-            display_name,
-            display_picture,
-            type,
-            start,
-            end,
-            props
-          )
-        VALUES
-          (?, ?, ?, ?, ?, ?, ?)
-      `,
-      [
-        owner,
-        display_name,
-        display_picture,
-        type,
-        start,
-        end,
-        JSON.stringify(props),
-      ]
-    );
-    id = result.insertId;
-
-    businessUserLoader.clear(owner);
-
-    return id;
-  }
-  catch(e) {
-    console.log(e);
-    throw new ApolloError("Failed to add event.", 'ADD_EVENT_FAILED');
-  }
-}
-
-async function _updateEvent(id, data) {
-  try {
-    data = await _storeAttachments(data);
-
-    if (data.attachments || data.old_attachments) {
-      var oldEvent = await eventLoader.load(id);
-
-      if (oldEvent.attachments) {
-        data.attachments = _updateAttachments(
-          oldEvent.attachments,
-          data.old_attachments || [],
-          data.attachments || []
-        );
-      }
-
-      if (data.old_attachments) delete data.old_attachments;
-    }
-
-    var fields = [];
-    var args = []
-
-    if (data.display_name) {
-      fields.push("display_name = ?");
-      args.push(data.display_name);
-      delete data.display_name;
-    }
-
-    if (data.display_picture) {
-      fields.push("display_picture = ?");
-      args.push(data.display_picture);
-      delete data.display_picture;
-    }
-
-    if (data.type) {
-      fields.push("type = ?");
-      args.push(data.type);
-      delete data.type;
-    }
-
-    if (data.duration) {
-      fields.push("start = ?");
-      args.push(data.duration.start);
-      fields.push("end = ?");
-      args.push(data.duration.end);
-    }
-
-    if (Object.keys(data).length > 0) {
-      fields.push("props = JSON_MERGE_PATCH(props, ?)");
-      args.push(JSON.stringify(data));
-    }
-
-    args.push(id);
-
-    await db.query("UPDATE event SET " + fields.join(', ') + " WHERE id = ?;", args);
-
-    eventLoader.clear(id);
-  }
-  catch(e) {
-    console.log(e);
-    throw new ApolloError("Failed to update event.", 'UPDATE_EVENT_FAILED');
-  }
-}
-
-function _targetSeeMessage(thread, index) {
-  db.query(
-    `
-    UPDATE
-      message_thread
-    SET
-      targetLastSeenIndex = ?
-    WHERE
-      id = ?
-    `,
-    [ index, thread.id ]
-  );
-
-  thread.targetLastSeenIndex = index;
-
-  msgThreadLoader
-    .clear(thread.id)
-    .prime(thread.id, thread);
-
-  return thread;
-}
-
-function _senderSeeMessage(thread, index) {
-  db.query(
-    `
-    UPDATE
-      message_thread
-    SET
-      senderLastSeenIndex = ?
-    WHERE
-      id = ?
-    `,
-    [ index, thread.id ]
-  );
-
-  thread.senderLastSeenIndex = index;
-
-  msgThreadLoader
-    .clear(thread.id)
-    .prime(thread.id, thread);
-
-  return thread;
 }
 
 const resolvers = {
@@ -886,12 +91,12 @@ const resolvers = {
       }
 
       if (user.type == 'BUSINESS') {
-        var businessUser = await businessUserLoader.load(user.id);
+        var businessUser = await Model.businessUserLoader.load(user.id);
         businessUser.type = user.type;
         return businessUser;
       }
       else if (user.type == 'PUBLIC') {
-        var publicUser = await publicUserLoader.load(user.id);
+        var publicUser = await Model.publicUserLoader.load(user.id);
         publicUser.type = user.type;
         return publicUser;
       }
@@ -906,7 +111,7 @@ const resolvers = {
     async business(_, { id }, { user }) {
       _validateAuthenticatedPublicUser(user);
 
-      return _localize(await businessLoader.load(id), user.locale);
+      return Locale.apply(await Model.businessLoader.load(id), user.locale);
     },
 
     async businesses(_, { limit, offset, type, sub_types }, { user }) {
@@ -920,13 +125,13 @@ const resolvers = {
 
         // find the real offset according to this filter
         while (count < offset) {
-          var arr = await orderedBusinessLoader.get(type).loadMany(
+          var arr = await Model.orderedBusinessLoader.get(type).loadMany(
             Array.from(Array(offset - count), (_, i) => i + realOffset)
           );
 
           for (var id of arr) {
             if (id) {
-              var b = await businessLoader.load(id);
+              var b = await Model.businessLoader.load(id);
               if (sub_types.includes(b.sub_type)) ++count;
               ++realOffset;
             }
@@ -939,13 +144,13 @@ const resolvers = {
         // collect the result
         count = 0;
         while (count < limit) {
-          var arr = await orderedBusinessLoader.get(type).loadMany(
+          var arr = await Model.orderedBusinessLoader.get(type).loadMany(
             Array.from(Array(limit - count), (_, i) => i + realOffset)
           );
 
           for (var id of arr) {
             if (id) {
-              var b = await businessLoader.load(id);
+              var b = await Model.businessLoader.load(id);
               if (sub_types.includes(b.sub_type)) {
                 res.push(b);
                 ++count;
@@ -959,15 +164,15 @@ const resolvers = {
         }
       }
       else {
-        res = (await orderedBusinessLoader.get(type).loadMany(
+        res = (await Model.orderedBusinessLoader.get(type).loadMany(
           Array.from(Array(limit), (_, i) => i + offset)
-        )).map(_ => _ ? businessLoader.load(_) : null);
+        )).map(_ => _ ? Model.businessLoader.load(_) : null);
       }
 
       res = res.filter(_ => _ != null);
 
       for (var i = 0; i < res.length; ++i) {
-        res[i] = _localize(await res[i], user.locale);
+        res[i] = Locale.apply(await res[i], user.locale);
       }
 
       return res;
@@ -976,7 +181,7 @@ const resolvers = {
     async event(_, { id }, { user }) {
       _validateAuthenticatedPublicUser(user);
 
-      return _localize(await eventLoader.load(id), user.locale);
+      return Locale.apply(await Model.eventLoader.load(id), user.locale);
     },
 
     async events(_, { limit, offset, type }, { user }) {
@@ -990,13 +195,13 @@ const resolvers = {
 
         // find the real offset according to this filter
         while (count < offset) {
-          var arr= await orderedEventLoader.loadMany(
+          var arr= await Model.orderedEventLoader.loadMany(
             Array.from(Array(offset - count), (_, i) => i + realOffset)
           );
-          
+
           for (var id of arr) {
             if (id) {
-              var e = await eventLoader.load(id);
+              var e = await Model.eventLoader.load(id);
               if (e.type == type) ++count;
               ++realOffset;
             }
@@ -1009,13 +214,13 @@ const resolvers = {
         // collect the result
         count = 0;
         while (count < limit) {
-          var arr = await orderedEventLoader.loadMany(
+          var arr = await Model.orderedEventLoader.loadMany(
             Array.from(Array(limit - count), (_, i) => i + realOffset)
           );
 
           for (var id of arr) {
             if (id) {
-              var e = await eventLoader.load(id);
+              var e = await Model.eventLoader.load(id);
               if (e.type == type) {
                 res.push(e);
                 ++count;
@@ -1029,15 +234,15 @@ const resolvers = {
         }
       }
       else {
-        res = (await orderedEventLoader.loadMany(
+        res = (await Model.orderedEventLoader.loadMany(
           Array.from(Array(limit), (_, i) => i + offset)
-        )).map(_ => _ ? eventLoader.load(_) : null);
+        )).map(_ => _ ? Model.eventLoader.load(_) : null);
       }
 
       res = res.filter(_ => _ != null);
 
       for (var i = 0; i < res.length; ++i) {
-        res[i] = _localize(await res[i], user.locale);
+        res[i] = Locale.apply(await res[i], user.locale);
       }
 
       return res;
@@ -1056,7 +261,7 @@ const resolvers = {
     async rateBusiness(_, { id, stars }, { user }) {
       _validateAuthenticatedPublicUser(user);
 
-      await db.query(
+      await Model.db.query(
         `
         INSERT INTO
           rating (business_id, public_user_id, stars)
@@ -1080,9 +285,9 @@ const resolvers = {
           );
         }
 
-        var business = await businessLoader.load(targetBusinessId);
+        var business = await Model.businessLoader.load(targetBusinessId);
 
-        const result = await db.query(
+        const result = await Model.db.query(
           `
           INSERT INTO
             message_thread(business_id, public_user_id, business_user_id)
@@ -1098,7 +303,7 @@ const resolvers = {
         throw new ApolloError("Sorry... You're not authenticated! :c", 'USER_NOT_AUTHENTICATED');
       }
 
-      var thread = await msgThreadLoader.load(threadId);
+      var thread = await Model.msgThreadLoader.load(threadId);
 
       if (user.type == 'BUSINESS') {
         if (thread.business_user_id != user.id) {
@@ -1123,7 +328,7 @@ const resolvers = {
         );
       }
 
-      var messages = await msgLoader.load(thread.id);
+      var messages = await Model.msgLoader.load(thread.id);
       var m = {
         index: messages.length > 0 ? messages[messages.length - 1].index + 1 : 0,
         msg: msg,
@@ -1132,11 +337,11 @@ const resolvers = {
       };
 
       messages.push(m);
-      msgLoader
+      Model.msgLoader
         .clear(thread.id)
         .prime(thread.id, messages);
 
-      db.query(
+      Model.db.query(
         `
         INSERT INTO
           message(message_thread_id, create_time, sender, data)
@@ -1146,8 +351,8 @@ const resolvers = {
         [ thread.id, m.time, m.sender, m.msg ]
       );
 
-      if (user.type == 'BUSINESS') return _targetSeeMessage(thread, m.index);
-      else return _senderSeeMessage(thread, m.index);
+      if (user.type == 'BUSINESS') return Model.targetSeeMessage(thread, m.index);
+      else return Model.senderSeeMessage(thread, m.index);
     },
 
     async seeMessage(_, { threadId, index }, { user }) {
@@ -1158,7 +363,7 @@ const resolvers = {
         );
       }
 
-      var thread = await msgThreadLoader.load(threadId);
+      var thread = await Model.msgThreadLoader.load(threadId);
 
       if (user.type == 'BUSINESS') {
 
@@ -1176,7 +381,7 @@ const resolvers = {
           );
         }
 
-        return _targetSeeMessage(thread, index);
+        return Model.targetSeeMessage(thread, index);
       }
       else if (user.type == 'PUBLIC') {
         if (thread.public_user_id != user.id) {
@@ -1193,7 +398,7 @@ const resolvers = {
           );
         }
 
-        return _senderSeeMessage(thread, index);
+        return Model.senderSeeMessage(thread, index);
       }
       else {
         throw new ApolloError(
@@ -1218,7 +423,7 @@ const resolvers = {
       while (id.charAt(0) == '0') cryptoRandomString({length: 18, type: 'numeric'})
 
       try {
-        await db.query(
+        await Model.db.query(
           "INSERT INTO public_user (id) VALUES (?)",
           [ id ]
         );
@@ -1239,7 +444,7 @@ const resolvers = {
     async authenticatePublicUser(_, { id, locale }) {
       var valid = false;
       try {
-        const result = await db.query(
+        const result = await Model.db.query(
           "UPDATE public_user SET last_login=CURRENT_TIMESTAMP WHERE id=?",
           [ id ]
         );
@@ -1256,7 +461,7 @@ const resolvers = {
 
       if (valid) {
         // clear cached data
-        publicUserLoader.clear(id);
+        Model.publicUserLoader.clear(id);
 
         // return json web token
         return jsonwebtoken.sign(
@@ -1277,7 +482,7 @@ const resolvers = {
       const token = cryptoRandomString({length: 128, type: 'url-safe'});
 
       try {
-        const result = await db.query(
+        const result = await Model.db.query(
           "INSERT INTO business_user (email, password, token) VALUES (?, ?, ?)",
           [ email, await bcrypt.hash(password, 10), token ]
         );
@@ -1293,7 +498,7 @@ const resolvers = {
     async verifyBusinessUser(_, { email, token }) {
       var result;
       try {
-        result = await db.query(
+        result = await Model.db.query(
           "SELECT id, verified, token FROM business_user WHERE email=?",
           [ email ]
         );
@@ -1316,7 +521,7 @@ const resolvers = {
       const id = result[0].id;
 
       try {
-        await db.query(
+        await Model.db.query(
           `
           UPDATE
             business_user
@@ -1337,7 +542,7 @@ const resolvers = {
       }
 
       // delete cached information
-      businessUserLoader.clear(id);
+      Model.businessUserLoader.clear(id);
 
       // return json web token
       return jsonwebtoken.sign(
@@ -1350,7 +555,7 @@ const resolvers = {
     async authenticateBusinessUser(_, { email, password }) {
       var result;
       try {
-        result = await db.query(
+        result = await Model.db.query(
           "SELECT id, verified, password FROM business_user WHERE email=?",
           [ email ]
         );
@@ -1380,7 +585,7 @@ const resolvers = {
       const id = result[0].id;
 
       try {
-        db.query(
+        Model.db.query(
           "UPDATE business_user SET last_login=CURRENT_TIMESTAMP WHERE id=?",
           [ id ]
         );
@@ -1390,7 +595,7 @@ const resolvers = {
       }
 
       // delete cached information
-      businessUserLoader.clear(id);
+      Model.businessUserLoader.clear(id);
 
       // return json web token
       return jsonwebtoken.sign(
@@ -1405,7 +610,7 @@ const resolvers = {
 
       var result;
       try {
-        result = await db.query(
+        result = await Model.db.query(
           "SELECT password FROM business_user WHERE id=?",
           [ user.id ]
         );
@@ -1422,7 +627,7 @@ const resolvers = {
         const id = result[0].id;
 
         try {
-          await db.query(
+          await Model.db.query(
             "UPDATE business_user SET password=? WHERE id=?",
             [ await bcrypt.hash(newPassword, 10), user.id ]
           );
@@ -1442,7 +647,7 @@ const resolvers = {
     async requestBusinessUserPasswordReset(_, { email }) {
       var result;
       try {
-        result = await db.query(
+        result = await Model.db.query(
           "SELECT id, verified FROM business_user WHERE email=?",
           [ email ]
         );
@@ -1460,7 +665,7 @@ const resolvers = {
       const token = cryptoRandomString({length: 128, type: 'url-safe'});
 
       try {
-        await db.query(
+        await Model.db.query(
           `
           UPDATE
             business_user
@@ -1477,7 +682,7 @@ const resolvers = {
       }
 
       // delete cached information
-      businessUserLoader.clear(id);
+      Model.businessUserLoader.clear(id);
 
       Mailer.resetPassword(email, token);
     },
@@ -1485,7 +690,7 @@ const resolvers = {
     async resetBusinessUserPassword(_, { email, token, newPassword }) {
       var result;
       try {
-        result = await db.query(
+        result = await Model.db.query(
           "SELECT id, verified, token FROM business_user WHERE email=?",
           [ email ]
         );
@@ -1515,7 +720,7 @@ const resolvers = {
       const id = result[0].id;
 
       try {
-        await db.query(
+        await Model.db.query(
           `UPDATE
             business_user
           SET
@@ -1535,7 +740,7 @@ const resolvers = {
       }
 
       // delete cached information
-      businessUserLoader.clear(id);
+      Model.businessUserLoader.clear(id);
 
       // return json web token
       return jsonwebtoken.sign(
@@ -1550,14 +755,14 @@ const resolvers = {
 
       data.type = 'SelfEmployedBusiness';
 
-      await _addBusiness(data, user.id);
+      await Model.addBusiness(data, user.id);
     },
 
     async updateSelfEmployedBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
       await _validateBusinessOwnerAndType(user, id, 'SelfEmployedBusiness');
 
-      await _updateBusiness(id, data);
+      await Model.updateBusiness(id, data);
     },
 
     async addChildEducationBusiness(_, { data }, { user }) {
@@ -1565,14 +770,14 @@ const resolvers = {
 
       data.type = 'ChildEducationBusiness';
 
-      await _addBusiness(data, user.id);
+      await Model.addBusiness(data, user.id);
     },
 
     async updateChildEducationBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
       await _validateBusinessOwnerAndType(user, id, 'ChildEducationBusiness');
 
-      await _updateBusiness(id, data);
+      await Model.updateBusiness(id, data);
     },
 
     async addDomesticHelpBusiness(_, { data }, { user }) {
@@ -1629,7 +834,7 @@ const resolvers = {
 
       data.type = 'DomesticHelpBusiness';
 
-      await _addBusiness(data, user.id);
+      await Model.addBusiness(data, user.id);
     },
 
     async updateDomesticHelpBusiness(_, { id, data }, { user }) {
@@ -1638,7 +843,7 @@ const resolvers = {
 
       if (data["personnel"] || data["old_personnel"]) {
         try {
-          data = await _processUpdatedPersonnel(id, data);
+          data = await Model.updateDomesticHelpPersonnel(id, data);
         }
         catch(e) {
           console.log(e);
@@ -1650,12 +855,12 @@ const resolvers = {
       }
 
       if (Object.keys(data).length > 0) {
-        await _updateBusiness(id, data);
+        await Model.updateBusiness(id, data);
       }
       else {
         Mailer.businessUpdate(
-          (await businessUserLoader.load(user.id)).email,
-          (await businessLoader.load(id)).display_name,
+          (await Model.businessUserLoader.load(user.id)).email,
+          (await Model.businessLoader.load(id)).display_name,
           true
         );
       }
@@ -1666,14 +871,14 @@ const resolvers = {
 
       data.type = 'BeautyBusiness';
 
-      await _addBusiness(data, user.id);
+      await Model.addBusiness(data, user.id);
     },
 
     async updateBeautyBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
       await _validateBusinessOwnerAndType(user, id, 'BeautyBusiness');
 
-      await _updateBusiness(id, data);
+      await Model.updateBusiness(id, data);
     },
 
     async addTransportationBusiness(_, { data }, { user }) {
@@ -1681,14 +886,14 @@ const resolvers = {
 
       data.type = 'TransportationBusiness';
 
-      await _addBusiness(data, user.id);
+      await Model.addBusiness(data, user.id);
     },
 
     async updateTransportationBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
       await _validateBusinessOwnerAndType(user, id, 'TransportationBusiness');
 
-      await _updateBusiness(id, data);
+      await Model.updateBusiness(id, data);
     },
 
     async addHospitalityBusiness(_, { data }, { user }) {
@@ -1696,14 +901,14 @@ const resolvers = {
 
       data.type = 'HospitalityBusiness';
 
-      await _addBusiness(data, user.id);
+      await Model.addBusiness(data, user.id);
     },
 
     async updateHospitalityBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
       await _validateBusinessOwnerAndType(user, id, 'HospitalityBusiness');
 
-      await _updateBusiness(id, data);
+      await Model.updateBusiness(id, data);
     },
 
     async addStationeryBusiness(_, { data }, { user }) {
@@ -1712,14 +917,14 @@ const resolvers = {
       data.type = 'StationeryBusiness';
       data.sub_type = 'Stationery';
 
-      await _addBusiness(data, user.id);
+      await Model.addBusiness(data, user.id);
     },
 
     async updateStationeryBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
       await _validateBusinessOwnerAndType(user, id, 'StationeryBusiness');
 
-      await _updateBusiness(id, data);
+      await Model.updateBusiness(id, data);
     },
 
     async addMadeInQatarBusiness(_, { data }, { user }) {
@@ -1727,14 +932,14 @@ const resolvers = {
 
       data.type = 'MadeInQatarBusiness';
 
-      await _addBusiness(data, user.id);
+      await Model.addBusiness(data, user.id);
     },
 
     async updateMadeInQatarBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
       await _validateBusinessOwnerAndType(user, id, 'MadeInQatarBusiness');
 
-      await _updateBusiness(id, data);
+      await Model.updateBusiness(id, data);
     },
 
     async addSportsBusiness(_, { data }, { user }) {
@@ -1742,14 +947,14 @@ const resolvers = {
 
       data.type = 'SportsBusiness';
 
-      await _addBusiness(data, user.id);
+      await Model.addBusiness(data, user.id);
     },
 
     async updateSportsBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
       await _validateBusinessOwnerAndType(user, id, 'SportsBusiness');
 
-      await _updateBusiness(id, data);
+      await Model.updateBusiness(id, data);
     },
 
     async addEntertainmentBusiness(_, { data }, { user }) {
@@ -1757,14 +962,14 @@ const resolvers = {
 
       data.type = 'EntertainmentBusiness';
 
-      await _addBusiness(data, user.id);
+      await Model.addBusiness(data, user.id);
     },
 
     async updateEntertainmentBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
       await _validateBusinessOwnerAndType(user, id, 'EntertainmentBusiness');
 
-      await _updateBusiness(id, data);
+      await Model.updateBusiness(id, data);
     },
 
     async addFoodBusiness(_, { data }, { user }) {
@@ -1772,14 +977,14 @@ const resolvers = {
 
       data.type = 'FoodBusiness';
 
-      await _addBusiness(data, user.id);
+      await Model.addBusiness(data, user.id);
     },
 
     async updateFoodBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
       await _validateBusinessOwnerAndType(user, id, 'FoodBusiness');
 
-      await _updateBusiness(id, data);
+      await Model.updateBusiness(id, data);
     },
 
     async addCleaningAndMaintenanceBusiness(_, { data }, { user }) {
@@ -1787,27 +992,27 @@ const resolvers = {
 
       data.type = 'CleaningAndMaintenanceBusiness';
 
-      await _addBusiness(data, user.id);
+      await Model.addBusiness(data, user.id);
     },
 
     async updateCleaningAndMaintenanceBusiness(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
       await _validateBusinessOwnerAndType(user, id, 'CleaningAndMaintenanceBusiness');
 
-      await _updateBusiness(id, data);
+      await Model.updateBusiness(id, data);
     },
 
     async addEvent(_, { data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
 
-      await _addEvent(data, user.id);
+      await Model.addEvent(data, user.id);
     },
 
     async updateEvent(_, { id, data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
       await _validateEventOwner(user, id);
 
-      await _updateEvent(id, data);
+      await Model.updateEvent(id, data);
     },
 
     // admin mutations
@@ -1832,11 +1037,11 @@ const resolvers = {
     async reviewBusiness(_, { id, approve }, { user }) {
       _validateAuthenticatedAdmin(user);
 
-      var business = await businessLoader.load(id);
+      var business = await Model.businessLoader.load(id);
 
       if (business.approved == 'TENTATIVE' || business.approved == 'REJECTED') {
         try {
-          await db.query(
+          await Model.db.query(
             `
             UPDATE
               business
@@ -1848,10 +1053,10 @@ const resolvers = {
             [ approve ? 'APPROVED' : 'REJECTED', id ]
           );
 
-          businessLoader.clear(id);
+          Model.businessLoader.clear(id);
 
           Mailer.businessAdd(
-            (await businessUserLoader.load(business.owner)).email,
+            (await Model.businessUserLoader.load(business.owner)).email,
             business.display_name,
             approve
           );
@@ -1866,7 +1071,7 @@ const resolvers = {
       }
 
       try {
-        const result = await db.query(
+        const result = await Model.db.query(
           `
           UPDATE
             business_tentative_update
@@ -1881,7 +1086,7 @@ const resolvers = {
         if (result.affectedRows == 1) {
           if (approve) {
 
-            var data = await db.query(
+            var data = await Model.db.query(
               `
               SELECT
                 updated_data
@@ -1895,8 +1100,8 @@ const resolvers = {
             data = JSON.parse(data[0].updated_data);
             if (data) {
               if (data.attachments || data.old_attachments) {
-                var oldBusiness = await businessLoader.load(id);
-          
+                var oldBusiness = await Model.businessLoader.load(id);
+
                 if (oldBusiness.attachments) {
                   data.attachments = _updateAttachments(
                     oldBusiness.attachments,
@@ -1904,11 +1109,11 @@ const resolvers = {
                     data.attachments || []
                   );
                 }
-          
+
                 if (data.old_attachments) delete data.old_attachments;
               }
 
-              await db.query(
+              await Model.db.query(
                 `
                 UPDATE
                   business_tentative_update
@@ -1921,7 +1126,7 @@ const resolvers = {
               );
             }
 
-            await db.query(
+            await Model.db.query(
               `
               UPDATE
                 business
@@ -1944,7 +1149,7 @@ const resolvers = {
               [ id ]
             );
 
-            await db.query(
+            await Model.db.query(
               `
               DELETE FROM
                 business_tentative_update
@@ -1954,10 +1159,10 @@ const resolvers = {
               [ id ]
             );
 
-            businessLoader.clear(id);
+            Model.businessLoader.clear(id);
 
             Mailer.businessUpdate(
-              (await businessUserLoader.load(business.owner)).email,
+              (await Model.businessUserLoader.load(business.owner)).email,
               business.display_name,
               approve
             );
@@ -1976,11 +1181,11 @@ const resolvers = {
     async reviewEvent(_, { id, approve }, { user }) {
       _validateAuthenticatedAdmin(user);
 
-      var event = await eventLoader.load(id);
+      var event = await Model.eventLoader.load(id);
 
       if (event.approved == 'TENTATIVE' || event.approved == 'REJECTED') {
         try {
-          await db.query(
+          await Model.db.query(
             `
             UPDATE
               event
@@ -1992,10 +1197,10 @@ const resolvers = {
             [ approve ? 'APPROVED' : 'REJECTED', id ]
           );
 
-          eventLoader.clear(id);
+          Model.eventLoader.clear(id);
 
           Mailer.eventAdd(
-            (await businessUserLoader.load(event.owner)).email,
+            (await Model.businessUserLoader.load(event.owner)).email,
             event.display_name,
             approve
           );
@@ -2041,7 +1246,7 @@ const resolvers = {
     async rating(_, { businessId }, { user }) {
       _validateAuthenticatedPublicUser(user);
 
-      const rows = await db.query(
+      const rows = await Model.db.query(
         `
         SELECT
           stars
@@ -2062,9 +1267,9 @@ const resolvers = {
     async owned_businesses(_, args, { user }) {
       _validateAuthenticatedBusinessUser(user);
 
-      var businessUser = await businessUserLoader.load(user.id);
+      var businessUser = await Model.businessUserLoader.load(user.id);
       if (! businessUser.owned_businesses) {
-        const rows = await db.query(
+        const rows = await Model.db.query(
           `
           SELECT
             id
@@ -2077,18 +1282,18 @@ const resolvers = {
         );
 
         businessUser.owned_businesses = rows.map (_ => _.id);
-        businessUserLoader.clear(user.id).prime(user.id, businessUser);
+        Model.businessUserLoader.clear(user.id).prime(user.id, businessUser);
       }
 
-      return businessUser.owned_businesses.map(_ => businessLoader.load(_));
+      return businessUser.owned_businesses.map(_ => Model.businessLoader.load(_));
     },
 
     async owned_events(_, args, { user }) {
       _validateAuthenticatedBusinessUser(user);
 
-      var businessUser = await businessUserLoader.load(user.id);
+      var businessUser = await Model.businessUserLoader.load(user.id);
       if (! businessUser.owned_events) {
-        const rows = await db.query(
+        const rows = await Model.db.query(
           `
           SELECT
             id
@@ -2101,10 +1306,10 @@ const resolvers = {
         );
 
         businessUser.owned_events = rows.map (_ => _.id);
-        businessUserLoader.clear(user.id).prime(user.id, businessUser);
+        Model.businessUserLoader.clear(user.id).prime(user.id, businessUser);
       }
 
-      return businessUser.owned_events.map(_ => eventLoader.load(_));
+      return businessUser.owned_events.map(_ => Model.eventLoader.load(_));
     },
 
     async threads(_, { threadId }, { user }) {
@@ -2114,7 +1319,7 @@ const resolvers = {
 
       if (user.type == 'BUSINESS') {
         if (threadId) {
-          var thread = await msgThreadLoader.load(threadId);
+          var thread = await Model.msgThreadLoader.load(threadId);
           if (thread.business_user_id == user.id) {
             return [ thread ];
           }
@@ -2126,7 +1331,7 @@ const resolvers = {
           }
         }
         else {
-          const rows = await db.query(
+          const rows = await Model.db.query(
             `
             SELECT
               id
@@ -2138,12 +1343,12 @@ const resolvers = {
             [ user.id ]
           );
 
-          return msgThreadLoader.loadMany(rows.map(_ => _.id));
+          return Model.msgThreadLoader.loadMany(rows.map(_ => _.id));
         }
       }
       else {
         if (threadId) {
-          var thread = await msgThreadLoader.load(threadId);
+          var thread = await Model.msgThreadLoader.load(threadId);
           if (thread.public_user_id == user.id) {
             return [ thread ];
           }
@@ -2155,7 +1360,7 @@ const resolvers = {
           }
         }
         else {
-          const rows = await db.query(
+          const rows = await Model.db.query(
             `
             SELECT
               id
@@ -2167,7 +1372,7 @@ const resolvers = {
             [ user.id ]
           );
 
-          return msgThreadLoader.loadMany(rows.map(_ => _.id));
+          return Model.msgThreadLoader.loadMany(rows.map(_ => _.id));
         }
       }
     }
@@ -2175,7 +1380,7 @@ const resolvers = {
 
   MessageThread: {
     sender: async(parent, args, ctx) => {
-      user = await publicUserLoader.load(parent.public_user_id)
+      user = await Model.publicUserLoader.load(parent.public_user_id)
       if (user.first_name && user.last_name) {
         return user.first_name + ' ' + user.last_name
       }
@@ -2183,9 +1388,9 @@ const resolvers = {
         return "DarQ User";
       }
     },
-    target: async(parent, args, ctx) => await businessLoader.load(parent.business_id),
+    target: async(parent, args, ctx) => await Model.businessLoader.load(parent.business_id),
     messages: async(parent, { minIndex, maxIndex, limit }, ctx) => {
-      var messages = await msgLoader.load(parent.id);
+      var messages = await Model.msgLoader.load(parent.id);
 
       var low;
       if (minIndex != null) low = minIndex + 1;
@@ -2201,7 +1406,7 @@ const resolvers = {
 
   Admin: {
     async tentativeNewBusinesses() {
-      const rows = await db.query(
+      const rows = await Model.db.query(
         `
         SELECT
           JSON_INSERT(
@@ -2227,7 +1432,7 @@ const resolvers = {
     },
 
     async tentativeBusinessUpdates() {
-      const rows = await db.query(
+      const rows = await Model.db.query(
         `
         SELECT
           business_id
@@ -2239,11 +1444,11 @@ const resolvers = {
         `
       );
 
-      return rows.map(row => businessLoader.load(row.business_id));
+      return rows.map(row => Model.businessLoader.load(row.business_id));
     },
 
     async tentativeNewEvents() {
-      const rows = await db.query(
+      const rows = await Model.db.query(
         `
         SELECT
           JSON_INSERT(
@@ -2276,7 +1481,7 @@ const resolvers = {
     async update(parent, args, { user }) {
       _validateAuthenticatedBusinessUserOrAdmin(user);
 
-      const rows = await db.query(
+      const rows = await Model.db.query(
         `
         SELECT
           JSON_INSERT(

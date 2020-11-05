@@ -1,4 +1,4 @@
-require('dotenv').config()
+require('dotenv').config();
 const nodemailer = require("nodemailer");
 
 const sender = `"DarQ" <noreply@${process.env.DOMAIN}>`
@@ -40,7 +40,7 @@ class Mailer {
       `Please use the following link to activate your account.\n` +
       `${process.env.VERIFY_USER_URL}?email=${email}&token=${token} \n\n` +
       `You are a few steps away from reaching our platform users.\n` +
-      `We appreciate your choice and your trust in us!\n` + 
+      `We appreciate your choice and your trust in us!\n` +
       `From all of us at DarQ, we would like to deeply thank you.`
     );
   }

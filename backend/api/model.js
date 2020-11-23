@@ -3,7 +3,9 @@ var fs = require('fs');
 var path = require('path');
 const cryptoRandomString = require('crypto-random-string');
 const DataLoader = require('dataloader');
+const { ApolloError } = require('apollo-server-express');
 
+const Locale = require('./locale');
 const Database = require('./database');
 
 class Model {
@@ -246,11 +248,10 @@ class Model {
           owner
         ]
       );
-      id = result.insertId;
 
       this.businessUserLoader.clear(owner);
 
-      return id;
+      return result.insertId;
     }
     catch(e) {
       console.log(e);
@@ -398,11 +399,10 @@ class Model {
           JSON.stringify(props),
         ]
       );
-      id = result.insertId;
 
       this.businessUserLoader.clear(owner);
 
-      return id;
+      return result.insertId;
     }
     catch(e) {
       console.log(e);

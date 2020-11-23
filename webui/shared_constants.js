@@ -133,7 +133,7 @@ const strings = {
     ar: "لقد تم إنشاء حسابك. يرجى التحقق من البريد الوارد الخاص بك لتفعيل حسابك.",
   },
 
-  SINGIN_REJECTED_ALERT: {
+  SIGNIN_REJECTED_ALERT: {
     en: "Invalid email or password.",
     ar: "البريد الإلكتروني أو كلمة السر خاطئة.",
   },

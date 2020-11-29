@@ -657,6 +657,7 @@ Model.orderedBusinessLoader = new Map(
           `
           SELECT
             id,
+            sub_type,
             listing_index
           FROM
             business
@@ -674,7 +675,7 @@ Model.orderedBusinessLoader = new Map(
         var j = 0;
         while (i < keys.length && j < rows.length) {
           res[i] = rows[j].listing_index == keys[i]
-            ? rows[j++].id
+            ? rows[j++]
             : null;
           ++i;
         }
@@ -732,6 +733,7 @@ Model.orderedEventLoader = new DataLoader(
       `
       SELECT
         id,
+        type,
         listing_index
       FROM
         event
@@ -748,7 +750,7 @@ Model.orderedEventLoader = new DataLoader(
     var j = 0;
     while (i < keys.length && j < rows.length) {
       res[i] = rows[j].listing_index == keys[i]
-        ? rows[j++].id
+        ? rows[j++]
         : null;
       ++i;
     }

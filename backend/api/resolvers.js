@@ -117,7 +117,7 @@ const resolvers = {
     async businesses(_, { limit, offset, type, sub_types }, { user }) {
       _validateAuthenticatedPublicUser(user);
 
-      var res = [];
+      var ids = [];
 
       if (sub_types) {
         var count = 0;
@@ -129,9 +129,8 @@ const resolvers = {
             Array.from(Array(offset - count), (_, i) => i + realOffset)
           );
 
-          for (var id of arr) {
-            if (id) {
-              var b = await Model.businessLoader.load(id);
+          for (var b of arr) {
+            if (b) {
               if (sub_types.includes(b.sub_type)) ++count;
               ++realOffset;
             }
@@ -148,11 +147,10 @@ const resolvers = {
             Array.from(Array(limit - count), (_, i) => i + realOffset)
           );
 
-          for (var id of arr) {
-            if (id) {
-              var b = await Model.businessLoader.load(id);
+          for (var b of arr) {
+            if (b) {
               if (sub_types.includes(b.sub_type)) {
-                res.push(b);
+                ids.push(b.id);
                 ++count;
               }
               ++realOffset;
@@ -164,13 +162,15 @@ const resolvers = {
         }
       }
       else {
-        res = await Model.businessLoader.loadMany(
-          (await Model.orderedBusinessLoader.get(type).loadMany(
+        ids = (
+          await Model.orderedBusinessLoader.get(type).loadMany(
             Array.from(Array(limit), (_, i) => i + offset)
-          ))
-          .filter(_ => _ != null)
-        );
+          )
+        ).filter(_ => _ != null)
+        .map(_ => _.id);
       }
+
+      var res = await Model.businessLoader.loadMany(ids);
 
       for (var i = 0; i < res.length; ++i) {
         res[i] = Locale.apply(res[i], user.locale);
@@ -188,7 +188,7 @@ const resolvers = {
     async events(_, { limit, offset, type }, { user }) {
       _validateAuthenticatedPublicUser(user);
 
-      var res = [];
+      var ids = [];
 
       if (type) {
         var count = 0;
@@ -200,9 +200,8 @@ const resolvers = {
             Array.from(Array(offset - count), (_, i) => i + realOffset)
           );
 
-          for (var id of arr) {
-            if (id) {
-              var e = await Model.eventLoader.load(id);
+          for (var e of arr) {
+            if (e) {
               if (e.type == type) ++count;
               ++realOffset;
             }
@@ -219,11 +218,10 @@ const resolvers = {
             Array.from(Array(limit - count), (_, i) => i + realOffset)
           );
 
-          for (var id of arr) {
-            if (id) {
-              var e = await Model.eventLoader.load(id);
+          for (var e of arr) {
+            if (e) {
               if (e.type == type) {
-                res.push(e);
+                ids.push(e.id);
                 ++count;
               }
               ++realOffset;
@@ -235,13 +233,15 @@ const resolvers = {
         }
       }
       else {
-        res = await Model.eventLoader.loadMany(
-          (await Model.orderedEventLoader.get(type).loadMany(
+        ids = (
+          await Model.orderedEventLoader.get(type).loadMany(
             Array.from(Array(limit), (_, i) => i + offset)
-          ))
-          .filter(_ => _ != null)
-        );
+          )
+        ).filter(_ => _ != null)
+        .map(_ => _.id);
       }
+
+      var res = await Model.eventLoader.loadMany(ids);
 
       for (var i = 0; i < res.length; ++i) {
         res[i] = Locale.apply(res[i], user.locale);

@@ -9,10 +9,10 @@ class Locale {
     else {
       for (var key in data) {
         if (data[key] instanceof Object) {
-          data[key] = _localize(data[key], locale);
+          data[key] = this.apply(data[key], locale);
         }
         else if (data[key] instanceof Array) {
-          data[key] = data[key].map(_ => _localize(_, locale));
+          data[key] = data[key].map(_ => this.apply(_, locale));
         }
       }
       return data;

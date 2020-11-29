@@ -164,15 +164,16 @@ const resolvers = {
         }
       }
       else {
-        res = (await Model.orderedBusinessLoader.get(type).loadMany(
-          Array.from(Array(limit), (_, i) => i + offset)
-        )).map(_ => _ ? Model.businessLoader.load(_) : null);
+        res = await Model.businessLoader.loadMany(
+          (await Model.orderedBusinessLoader.get(type).loadMany(
+            Array.from(Array(limit), (_, i) => i + offset)
+          ))
+          .filter(_ => _ != null)
+        );
       }
 
-      res = res.filter(_ => _ != null);
-
       for (var i = 0; i < res.length; ++i) {
-        res[i] = Locale.apply(await res[i], user.locale);
+        res[i] = Locale.apply(res[i], user.locale);
       }
 
       return res;
@@ -234,15 +235,16 @@ const resolvers = {
         }
       }
       else {
-        res = (await Model.orderedEventLoader.loadMany(
-          Array.from(Array(limit), (_, i) => i + offset)
-        )).map(_ => _ ? Model.eventLoader.load(_) : null);
+        res = await Model.eventLoader.loadMany(
+          (await Model.orderedEventLoader.get(type).loadMany(
+            Array.from(Array(limit), (_, i) => i + offset)
+          ))
+          .filter(_ => _ != null)
+        );
       }
 
-      res = res.filter(_ => _ != null);
-
       for (var i = 0; i < res.length; ++i) {
-        res[i] = Locale.apply(await res[i], user.locale);
+        res[i] = Locale.apply(res[i], user.locale);
       }
 
       return res;

@@ -527,39 +527,69 @@ Model.db = new Database({
 });
 
 Model.businessUserLoader = new DataLoader(
-  async (ids) => await Model.db.query(
-    `
-    SELECT
-      *
-    FROM
-      business_user
-    WHERE
-      id IN (?)
-    ORDER BY
-      FIELD(id, ?)
-    `,
-    [ ids, ids ]
-  )
+  async (ids) => {
+    const rows = await Model.db.query(
+      `
+      SELECT
+        *
+      FROM
+        business_user
+      WHERE
+        id IN (?)
+      ORDER BY
+        FIELD(id, ?)
+      `,
+      [ ids, ids ]
+    );
+
+    var res = new Array(ids.length);
+    var i = 0;
+    var j = 0;
+    while (i < ids.length && j < rows.length) {
+      res[i] = rows[j].id == ids[i]
+        ? rows[j++]
+        : null;
+      ++i;
+    }
+    while (i < ids.length) res[i++] = null;
+
+    return res;
+  }
 );
 
 Model.publicUserLoader = new DataLoader(
-  async (ids) => await Model.db.query(
-    `
-    SELECT
-      CAST(id AS CHAR(18)) AS id,
-      create_time,
-      last_login,
-      first_name,
-      last_name
-    FROM
-      public_user
-    WHERE
-      id IN (?)
-    ORDER BY
-      FIELD(id, ?)
-    `,
-    [ ids, ids ]
-  )
+  async (ids) => {
+    const rows = await Model.db.query(
+      `
+      SELECT
+        CAST(id AS CHAR(18)) AS id,
+        create_time,
+        last_login,
+        first_name,
+        last_name
+      FROM
+        public_user
+      WHERE
+        id IN (?)
+      ORDER BY
+        FIELD(id, ?)
+      `,
+      [ ids, ids ]
+    );
+
+    var res = new Array(ids.length);
+    var i = 0;
+    var j = 0;
+    while (i < ids.length && j < rows.length) {
+      res[i] = rows[j].id == ids[i]
+        ? rows[j++]
+        : null;
+      ++i;
+    }
+    while (i < ids.length) res[i++] = null;
+
+    return res;
+  }
 );
 
 Model.businessLoader = new DataLoader(
@@ -567,6 +597,7 @@ Model.businessLoader = new DataLoader(
     const rows = await Model.db.query(
       `
       SELECT
+        id,
         JSON_INSERT(
           props,
           '$.id', id,
@@ -588,7 +619,18 @@ Model.businessLoader = new DataLoader(
       [ ids, ids ]
     );
 
-    return rows.map(_ => _ ? JSON.parse(_.data) : null);
+    var res = new Array(ids.length);
+    var i = 0;
+    var j = 0;
+    while (i < ids.length && j < rows.length) {
+      res[i] = rows[j].id == ids[i]
+        ? JSON.parse(rows[j++].data)
+        : null;
+      ++i;
+    }
+    while (i < ids.length) res[i++] = null;
+
+    return res;
   }
 );
 
@@ -614,7 +656,8 @@ Model.orderedBusinessLoader = new Map(
         const rows = await Model.db.query(
           `
           SELECT
-            id
+            id,
+            listing_index
           FROM
             business
           WHERE
@@ -626,7 +669,18 @@ Model.orderedBusinessLoader = new Map(
           [ type, keys, keys ]
         );
 
-        return rows.map(_ => _ ? _.id : null);
+        var res = new Array(keys.length);
+        var i = 0;
+        var j = 0;
+        while (i < keys.length && j < rows.length) {
+          res[i] = rows[j].listing_index == keys[i]
+            ? rows[j++].id
+            : null;
+          ++i;
+        }
+        while (i < keys.length) res[i++] = null;
+
+        return res;
       }
     )
   ]
@@ -637,6 +691,7 @@ Model.eventLoader = new DataLoader(
     const rows = await Model.db.query(
       `
       SELECT
+        id,
         JSON_INSERT(
           props,
           '$.id', id,
@@ -656,7 +711,18 @@ Model.eventLoader = new DataLoader(
       [ ids, ids ]
     );
 
-    return rows.map(_ => _ ? JSON.parse(_.data) : null);
+    var res = new Array(ids.length);
+    var i = 0;
+    var j = 0;
+    while (i < ids.length && j < rows.length) {
+      res[i] = rows[j].id == ids[i]
+        ? JSON.parse(rows[j++].data)
+        : null;
+      ++i;
+    }
+    while (i < ids.length) res[i++] = null;
+
+    return res;
   }
 );
 
@@ -665,7 +731,8 @@ Model.orderedEventLoader = new DataLoader(
     const rows = await Model.db.query(
       `
       SELECT
-        id
+        id,
+        listing_index
       FROM
         event
       WHERE
@@ -676,29 +743,55 @@ Model.orderedEventLoader = new DataLoader(
       [ keys, keys ]
     );
 
-    return rows.map(_ => _ ? _.id : null);
+    var res = new Array(keys.length);
+    var i = 0;
+    var j = 0;
+    while (i < keys.length && j < rows.length) {
+      res[i] = rows[j].listing_index == keys[i]
+        ? rows[j++].id
+        : null;
+      ++i;
+    }
+    while (i < keys.length) res[i++] = null;
+
+    return res;
   }
 );
 
 Model.msgThreadLoader = new DataLoader(
-  async (ids) => await Model.db.query(
-    `
-    SELECT
-      id,
-      business_id,
-      CAST(public_user_id AS CHAR(18)) AS public_user_id,
-      business_user_id,
-      targetLastSeenIndex,
-      senderLastSeenIndex
-    FROM
-      message_thread
-    WHERE
-      id IN (?)
-    ORDER BY
-      FIELD(id, ?)
-    `,
-    [ ids, ids ]
-  )
+  async (ids) => {
+    const rows = await Model.db.query(
+      `
+      SELECT
+        id,
+        business_id,
+        CAST(public_user_id AS CHAR(18)) AS public_user_id,
+        business_user_id,
+        targetLastSeenIndex,
+        senderLastSeenIndex
+      FROM
+        message_thread
+      WHERE
+        id IN (?)
+      ORDER BY
+        FIELD(id, ?)
+      `,
+      [ ids, ids ]
+    );
+
+    var res = new Array(ids.length);
+    var i = 0;
+    var j = 0;
+    while (i < ids.length && j < rows.length) {
+      res[i] = rows[j].id == ids[i]
+        ? rows[j++]
+        : null;
+      ++i;
+    }
+    while (i < ids.length) res[i++] = null;
+
+    return res;
+  }
 );
 
 Model.msgLoader = new DataLoader(

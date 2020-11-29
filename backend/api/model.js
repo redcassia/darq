@@ -527,75 +527,68 @@ Model.db = new Database({
 });
 
 Model.businessUserLoader = new DataLoader(
-  async (ids) => {
-    var res = new Array(ids.length);
-    for (var i = 0; i < ids.length; ++i) {
-      const rows = await Model.db.query(
-        "SELECT * FROM business_user WHERE id = ?",
-        [ ids[i] ]
-      );
-
-      res[i] = rows[0];
-    }
-    return res;
-  }
+  async (ids) => await Model.db.query(
+    `
+    SELECT
+      *
+    FROM
+      business_user
+    WHERE
+      id IN (?)
+    ORDER BY
+      FIELD(id, ?)
+    `,
+    [ ids, ids ]
+  )
 );
 
 Model.publicUserLoader = new DataLoader(
-  async (ids) => {
-    var res = new Array(ids.length);
-    for (var i = 0; i < ids.length; ++i) {
-      const rows = await Model.db.query(
-        `
-        SELECT
-          CAST(id AS CHAR(18)) AS id,
-          create_time,
-          last_login,
-          first_name,
-          last_name
-        FROM
-          public_user
-        WHERE
-          id = ?
-        `,
-        [ ids[i] ]
-      );
-
-      res[i] = rows[0];
-    }
-    return res;
-  }
+  async (ids) => await Model.db.query(
+    `
+    SELECT
+      CAST(id AS CHAR(18)) AS id,
+      create_time,
+      last_login,
+      first_name,
+      last_name
+    FROM
+      public_user
+    WHERE
+      id IN (?)
+    ORDER BY
+      FIELD(id, ?)
+    `,
+    [ ids, ids ]
+  )
 );
 
 Model.businessLoader = new DataLoader(
   async (ids) => {
-    var res = new Array(ids.length);
-    for (var i = 0; i < ids.length; ++i) {
-      const rows = await Model.db.query(
-        `
-        SELECT
-          JSON_INSERT(
-            props,
-            '$.id', id,
-            '$.owner', owner,
-            '$.approved', approved,
-            '$.rating', calculated_rating,
-            '$.display_name', display_name,
-            '$.display_picture', display_picture,
-            '$.type', \`type\`,
-            '$.sub_type', sub_type
-          ) AS data
-        FROM
-          business
-        WHERE
-          id = ?
-        `,
-        [ ids[i] ]
-      );
+    const rows = await Model.db.query(
+      `
+      SELECT
+        JSON_INSERT(
+          props,
+          '$.id', id,
+          '$.owner', owner,
+          '$.approved', approved,
+          '$.rating', calculated_rating,
+          '$.display_name', display_name,
+          '$.display_picture', display_picture,
+          '$.type', \`type\`,
+          '$.sub_type', sub_type
+        ) AS data
+      FROM
+        business
+      WHERE
+        id IN (?)
+      ORDER BY
+        FIELD(id, ?)
+      `,
+      [ ids, ids ]
+    );
 
-      res[i] = rows[0] ? JSON.parse(rows[0].data) : null;
-    }
-    return res;
+    return rows.map(_ => _ ? JSON.parse(_.data) : null);
   }
 );
 
@@ -618,9 +611,6 @@ Model.orderedBusinessLoader = new Map(
     type,
     new DataLoader(
       async (keys) => {
-        const offset = keys[0];
-        const limit = keys[keys.length - 1] - offset + 1;
-
         const rows = await Model.db.query(
           `
           SELECT
@@ -629,18 +619,14 @@ Model.orderedBusinessLoader = new Map(
             business
           WHERE
             \`type\` = ?
-            AND listing_index >= 0
-          ORDER BY listing_index
-          LIMIT ?
-          OFFSET ?
+            AND listing_index IN (?)
+          ORDER BY
+            FIELD(listing_index, ?)
           `,
-          [ type, limit, offset ]
+          [ type, keys, keys ]
         );
 
-        return keys.map(key => {
-          if (rows[key - offset]) return rows[key - offset].id;
-          else return null;
-        });
+        return rows.map(_ => _ ? _.id : null);
       }
     )
   ]
@@ -648,38 +634,34 @@ Model.orderedBusinessLoader = new Map(
 
 Model.eventLoader = new DataLoader(
   async (ids) => {
-    var res = new Array(ids.length);
-    for (var i = 0; i < ids.length; ++i) {
-      const rows = await Model.db.query(
-        `
-        SELECT
-          JSON_INSERT(
-            props,
-            '$.id', id,
-            '$.owner', owner,
-            '$.approved', approved,
-            '$.display_name', display_name,
-            '$.display_picture', display_picture,
-            '$.type', \`type\`
-          ) AS data
-        FROM
-          event
-        WHERE
-          id = ?
-        `,
-        [ ids[i] ]
-      );
-      res[i] = rows[0] ? JSON.parse(rows[0].data) : null;
-    }
-    return res;
+    const rows = await Model.db.query(
+      `
+      SELECT
+        JSON_INSERT(
+          props,
+          '$.id', id,
+          '$.owner', owner,
+          '$.approved', approved,
+          '$.display_name', display_name,
+          '$.display_picture', display_picture,
+          '$.type', \`type\`
+        ) AS data
+      FROM
+        event
+      WHERE
+        id IN (?)
+      ORDER BY
+        FIELD(id, ?)
+      `,
+      [ ids, ids ]
+    );
+
+    return rows.map(_ => _ ? JSON.parse(_.data) : null);
   }
 );
 
 Model.orderedEventLoader = new DataLoader(
   async (keys) => {
-    const offset = keys[0];
-    const limit = keys[keys.length - 1] - offset + 1;
-
     const rows = await Model.db.query(
       `
       SELECT
@@ -687,46 +669,36 @@ Model.orderedEventLoader = new DataLoader(
       FROM
         event
       WHERE
-        listing_index >= 0
-      ORDER BY listing_index
-      LIMIT ?
-      OFFSET ?
+        listing_index IN (?)
+      ORDER BY
+        FIELD(listing_index, ?)
       `,
-      [ limit, offset ]
+      [ keys, keys ]
     );
 
-    return keys.map(key => {
-      if (rows[key - offset]) return rows[key - offset].id;
-      else return null;
-    });
+    return rows.map(_ => _ ? _.id : null);
   }
 );
 
 Model.msgThreadLoader = new DataLoader(
-  async (ids) => {
-    var res = new Array(ids.length);
-    for (var i = 0; i < ids.length; ++i) {
-      const rows = await Model.db.query(
-        `
-        SELECT
-          id,
-          business_id,
-          CAST(public_user_id AS CHAR(18)) AS public_user_id,
-          business_user_id,
-          targetLastSeenIndex,
-          senderLastSeenIndex
-        FROM
-          message_thread
-        WHERE
-          id = ?
-        `,
-        [ ids[i] ]
-      );
-
-      res[i] = rows[0];
-    }
-    return res;
-  }
+  async (ids) => await Model.db.query(
+    `
+    SELECT
+      id,
+      business_id,
+      CAST(public_user_id AS CHAR(18)) AS public_user_id,
+      business_user_id,
+      targetLastSeenIndex,
+      senderLastSeenIndex
+    FROM
+      message_thread
+    WHERE
+      id IN (?)
+    ORDER BY
+      FIELD(id, ?)
+    `,
+    [ ids, ids ]
+  )
 );
 
 Model.msgLoader = new DataLoader(

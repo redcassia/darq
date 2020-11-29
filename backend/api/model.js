@@ -528,20 +528,23 @@ Model.db = new Database({
 
 Model.businessUserLoader = new DataLoader(
   async (ids) => {
-    return ids.map(async (id) => {
+    var res = new Array(ids.length);
+    for (var i = 0; i < ids.length; ++i) {
       const rows = await Model.db.query(
         "SELECT * FROM business_user WHERE id = ?",
-        [id]
+        [ ids[i] ]
       );
 
-      return rows[0];
-    });
+      res[i] = rows[0];
+    }
+    return res;
   }
 );
 
 Model.publicUserLoader = new DataLoader(
   async (ids) => {
-    return ids.map(async (id) => {
+    var res = new Array(ids.length);
+    for (var i = 0; i < ids.length; ++i) {
       const rows = await Model.db.query(
         `
         SELECT
@@ -555,17 +558,19 @@ Model.publicUserLoader = new DataLoader(
         WHERE
           id = ?
         `,
-        [ id ]
+        [ ids[i] ]
       );
 
-      return rows[0];
-    });
+      res[i] = rows[0];
+    }
+    return res;
   }
 );
 
 Model.businessLoader = new DataLoader(
   async (ids) => {
-    return ids.map(async (id) => {
+    var res = new Array(ids.length);
+    for (var i = 0; i < ids.length; ++i) {
       const rows = await Model.db.query(
         `
         SELECT
@@ -585,10 +590,12 @@ Model.businessLoader = new DataLoader(
         WHERE
           id = ?
         `,
-        [id]
+        [ ids[i] ]
       );
-      return rows[0] ? JSON.parse(rows[0].data) : null;
-    });
+
+      res[i] = rows[0] ? JSON.parse(rows[0].data) : null;
+    }
+    return res;
   }
 );
 
@@ -641,7 +648,8 @@ Model.orderedBusinessLoader = new Map(
 
 Model.eventLoader = new DataLoader(
   async (ids) => {
-    return ids.map(async (id) => {
+    var res = new Array(ids.length);
+    for (var i = 0; i < ids.length; ++i) {
       const rows = await Model.db.query(
         `
         SELECT
@@ -659,10 +667,11 @@ Model.eventLoader = new DataLoader(
         WHERE
           id = ?
         `,
-        [id]
+        [ ids[i] ]
       );
-      return rows[0] ? JSON.parse(rows[0].data) : null;
-    });
+      res[i] = rows[0] ? JSON.parse(rows[0].data) : null;
+    }
+    return res;
   }
 );
 
@@ -695,7 +704,8 @@ Model.orderedEventLoader = new DataLoader(
 
 Model.msgThreadLoader = new DataLoader(
   async (ids) => {
-    return ids.map(async (id) => {
+    var res = new Array(ids.length);
+    for (var i = 0; i < ids.length; ++i) {
       const rows = await Model.db.query(
         `
         SELECT
@@ -710,17 +720,19 @@ Model.msgThreadLoader = new DataLoader(
         WHERE
           id = ?
         `,
-        [ id ]
+        [ ids[i] ]
       );
 
-      return rows[0];
-    });
+      res[i] = rows[0];
+    }
+    return res;
   }
 );
 
 Model.msgLoader = new DataLoader(
   async (ids) => {
-    return ids.map(async (id) => {
+    var res = new Array(ids.length);
+    for (var i = 0; i < ids.length; ++i) {
       const rows = await Model.db.query(
         `
         SELECT
@@ -733,20 +745,21 @@ Model.msgLoader = new DataLoader(
           message_thread_id = ?
         ORDER BY create_time
         `,
-        [ id ]
+        [ ids[i] ]
       );
 
       var messages = new Array(rows.length);
-      for (var i = 0; i < rows.length; ++i) {
-        messages[i] = {
-          index: i,
-          msg: rows[i].msg,
-          time: rows[i].create_time,
-          sender: rows[i].sender
+      for (var j = 0; j < rows.length; ++j) {
+        messages[j] = {
+          index: j,
+          msg: rows[j].msg,
+          time: rows[j].create_time,
+          sender: rows[j].sender
         }
       }
-      return messages;
-    });
+      res[i] = messages;
+    }
+    return res;
   }
 );
 

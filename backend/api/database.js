@@ -15,10 +15,10 @@ class Database {
         }
 
         connection.query(sql, args, (err, rows) => {
+          connection.release();
+
           if (err) reject(err);
           else resolve(rows);
-
-          connection.release();
         });
       });
     });

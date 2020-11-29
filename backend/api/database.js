@@ -17,7 +17,10 @@ class Database {
         connection.query(sql, args, (err, rows) => {
           connection.release();
 
-          if (err) reject(err);
+          if (err) {
+            console.log(err);
+            reject(err);
+          }
           else resolve(rows);
         });
       });

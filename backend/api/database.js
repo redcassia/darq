@@ -13,16 +13,19 @@ class Database {
           console.log("Error getting a MySQL connection from pool. ", err);
           reject(err);
         }
-
-        connection.query(sql, args, (err, rows) => {
-          connection.release();
-
-          if (err) {
-            console.log(err);
-            reject(err);
-          }
-          else resolve(rows);
-        });
+        else {
+          connection.query(sql, args, (err, rows) => {
+            connection.release();
+  
+            if (err) {
+              console.log(err);
+              reject(err);
+            }
+            else {
+              resolve(rows);
+            }
+          });
+        }
       });
     });
   }

@@ -562,7 +562,7 @@ Model.publicUserLoader = new DataLoader(
     const rows = await Model.db.query(
       `
       SELECT
-        CAST(id AS CHAR(18)) AS id,
+        id,
         create_time,
         last_login,
         first_name,
@@ -767,7 +767,7 @@ Model.msgThreadLoader = new DataLoader(
       SELECT
         id,
         business_id,
-        CAST(public_user_id AS CHAR(18)) AS public_user_id,
+        public_user_id,
         business_user_id,
         targetLastSeenIndex,
         senderLastSeenIndex

@@ -421,8 +421,7 @@ const resolvers = {
     },
 
     async createPublicUser(_, { locale }) {
-      var id = cryptoRandomString({length: 18, type: 'numeric'});
-      while (id.charAt(0) == '0') cryptoRandomString({length: 18, type: 'numeric'})
+      var id = cryptoRandomString({length: 16});
 
       try {
         await Model.db.query(

@@ -1,6 +1,7 @@
 require('dotenv').config();
 var fs = require('fs');
 var path = require('path');
+const bcrypt = require('bcrypt');
 const cryptoRandomString = require('crypto-random-string');
 const DataLoader = require('dataloader');
 const { ApolloError } = require('apollo-server-express');
@@ -142,6 +143,8 @@ class Model {
     db.close();
   }
 
+  // Businesses/Events ////////////////////////////////////////////////////////
+
   static _generateAttachmentName() {
     return cryptoRandomString({length: 55, type: 'url-safe'});
   }
@@ -232,7 +235,7 @@ class Model {
       var type = data.type; delete props.type;
       var sub_type = data.sub_type; delete props.sub_type;
 
-      const result = await Model.db.query(
+      const result = await this.db.query(
         `
           INSERT INTO business
             (display_name, display_picture, type, sub_type, props, owner)
@@ -269,7 +272,7 @@ class Model {
           VALUES
             (?, ?)
           ON DUPLICATE KEY UPDATE
-            updated_data = JSON_MERGE_PRESERVE(updated_data, ?),
+            updated_data = JSON_MERGE_PATCH(updated_data, ?),
             approved = 'TENTATIVE'
         `,
         [
@@ -278,6 +281,8 @@ class Model {
           stringifiedData
         ]
       );
+
+      this.businessLoader.clear(id);
     }
     catch(e) {
       console.log(e);
@@ -473,7 +478,511 @@ class Model {
     }
   }
 
-  static targetSeeMessage(thread, index) {
+  static async getBusinessesOwnedBy(userId) {
+    var businessUser = await this.businessUserLoader.load(userId);
+
+    if (! businessUser.owned_businesses) {
+      const rows = await this.db.query(
+        `
+        SELECT
+          id
+        FROM
+          business
+        WHERE
+          owner = ?
+        `,
+        [ userId ]
+      );
+
+      businessUser.owned_businesses = rows.map (_ => _.id);
+
+      this.businessUserLoader
+        .clear(userId)
+        .prime(userId, businessUser);
+    }
+
+    var res = new Array(businessUser.owned_businesses.length);
+    for (var i = 0; i < businessUser.owned_businesses.length; ++i) {
+      res[i] = await this.businessLoader.load(businessUser.owned_businesses[i]);
+    }
+
+    return res;
+  }
+
+  static async getEventsOwnedBy(userId) {
+    var businessUser = await this.businessUserLoader.load(userId);
+
+    if (! businessUser.owned_events) {
+      const rows = await this.db.query(
+        `
+        SELECT
+          id
+        FROM
+          event
+        WHERE
+          owner = ?
+        `,
+        [ userId ]
+      );
+
+      businessUser.owned_events = rows.map (_ => _.id);
+
+      this.businessUserLoader
+        .clear(userId)
+        .prime(userId, businessUser);
+    }
+
+    var res = new Array(businessUser.owned_events.length);
+    for (var i = 0; i < businessUser.owned_events.length; ++i) {
+      res[i] = await this.eventLoader.load(businessUser.owned_events[i]);
+    }
+
+    return res;
+  }
+
+  static async getBusinessUpdate(id) {
+
+    var business = await this.businessLoader.load(id);
+
+    if (business.update === undefined) {
+      const rows = await this.db.query(
+        `
+        SELECT
+          JSON_INSERT(
+            updated_data,
+            '$.approved', approved
+          ) AS data
+        FROM
+          business_tentative_update
+        WHERE
+          business_id = ?
+        `,
+        [ id ]
+      );
+
+      if (rows.length == 1) {
+        business.update = { ...business, ...JSON.parse(rows[0].data) };
+      }
+      else {
+        business.update = null;
+      }
+
+      this.businessLoader
+        .clear(id)
+        .prime(id, business);
+    }
+
+    return business.update;
+  }
+
+  // Business/Event approval //////////////////////////////////////////////////
+
+  static async setBusinessApproveStatus(id, approve) {
+    try {
+      await this.db.query(
+        `
+        UPDATE
+          business
+        SET
+          approved = ?
+        WHERE
+          id = ?
+        `,
+        [ approve ? 'APPROVED' : 'REJECTED', id ]
+      );
+
+      this.businessLoader.clear(id);
+    }
+    catch (e) {
+      console.log(e);
+      throw new ApolloError(
+        "Failed to approve business.",
+        "BUSINESS_APPROVE_FAILED"
+      );
+    }
+  }
+
+  static async setBusinessUpdateApproveStatusIfExists(id, approve) {
+    try {
+      const result = await this.db.query(
+        `
+        UPDATE
+          business_tentative_update
+        SET
+          approved = ?
+        WHERE
+          business_id = ?
+        `,
+        [ approve ? 'APPROVED' : 'REJECTED', id ]
+      );
+
+      if (result.affectedRows != 1) return false;
+
+      if (approve) {
+        var data = await this.db.query(
+          `
+          SELECT
+            updated_data
+          FROM
+            business_tentative_update
+          WHERE
+            business_id = ?
+          `,
+          [ id ]
+        );
+        data = JSON.parse(data[0].updated_data);
+        if (data) {
+          if (data.attachments || data.old_attachments) {
+            var oldBusiness = await this.businessLoader.load(id);
+
+            if (oldBusiness.attachments) {
+              data.attachments = _updateAttachments(
+                oldBusiness.attachments,
+                data.old_attachments || [],
+                data.attachments || []
+              );
+            }
+
+            if (data.old_attachments) delete data.old_attachments;
+          }
+
+          await this.db.query(
+            `
+            UPDATE
+              business_tentative_update
+            SET
+              updated_data = ?
+            WHERE
+              business_id = ?
+            `,
+            [ JSON.stringify(data), id ]
+          );
+        }
+
+        await this.db.query(
+          `
+          UPDATE
+            business
+          SET
+            display_name = IFNULL((
+              SELECT JSON_UNQUOTE(JSON_EXTRACT(updated_data, '$.display_name'))
+              FROM business_tentative_update WHERE business_id = id
+            ), display_name),
+            display_picture = IFNULL((
+              SELECT JSON_UNQUOTE(JSON_EXTRACT(updated_data, '$.display_picture'))
+              FROM business_tentative_update WHERE business_id = id
+            ), display_picture),
+            props = JSON_MERGE_PATCH(props, (
+              SELECT JSON_REMOVE(updated_data, '$.display_name', '$.display_picture')
+              FROM business_tentative_update WHERE business_id = id
+            ))
+          WHERE
+            id = ?
+          `,
+          [ id ]
+        );
+
+        await this.db.query(
+          `
+          DELETE FROM
+            business_tentative_update
+          WHERE
+            business_id = ?
+          `,
+          [ id ]
+        );
+      }
+
+      this.businessLoader.clear(id);
+    }
+    catch (e) {
+      console.log(e);
+      throw new ApolloError(
+        "Failed to approve business update.",
+        "BUSINESS_UPDATE_APPROVE_FAILED"
+      );
+    }
+
+    return true;
+  }
+
+  static async setEventApproveStatus(id, approve) {
+    try {
+      await this.db.query(
+        `
+        UPDATE
+          event
+        SET
+          approved = ?
+        WHERE
+          id = ?
+        `,
+        [ approve ? 'APPROVED' : 'REJECTED', id ]
+      );
+
+      this.eventLoader.clear(id);
+    }
+    catch (e) {
+      console.log(e);
+      throw new ApolloError(
+        "Failed to approve event.",
+        "EVENT_APPROVE_FAILED"
+      );
+    }
+  }
+
+  static async getTentativeBusinesses() {
+    try {
+      const rows = await this.db.query(
+        `
+        SELECT
+          JSON_INSERT(
+            props,
+            '$.id', id,
+            '$.owner', owner,
+            '$.approved', approved,
+            '$.rating', calculated_rating,
+            '$.display_name', display_name,
+            '$.display_picture', display_picture,
+            '$.type', \`type\`,
+            '$.sub_type', sub_type
+          ) AS data
+        FROM
+          business
+        WHERE
+          approved = 'TENTATIVE' OR
+          approved = 'REJECTED'
+        `
+      );
+
+      return rows.map(row => JSON.parse(row.data));
+    }
+    catch (e) {
+      console.log(e);
+      throw new ApolloError(
+        "Failed to retrieve tentative businesses",
+        'RETRIEVE_TENTATIVE_BUSINESS_DB_FAILURE'
+      );
+    }
+  }
+
+  static async getTentativeUpdatedBusinesses() {
+    try {
+      const rows = await this.db.query(
+        `
+        SELECT
+          business_id
+        FROM
+          business_tentative_update
+        WHERE
+          approved = 'TENTATIVE' OR
+          approved = 'REJECTED'
+        `
+      );
+
+      return rows.map(row => this.businessLoader.load(row.business_id));
+    }
+    catch (e) {
+      console.log(e);
+      throw new ApolloError(
+        "Failed to retrieve tentative business updates",
+        'RETRIEVE_TENTATIVE_BUSINESS_UPDATE_DB_FAILURE'
+      );
+    }
+  }
+
+  static async getTentativeEvents() {
+    try {
+      const rows = await this.db.query(
+        `
+        SELECT
+          JSON_INSERT(
+            props,
+            '$.id', id,
+            '$.owner', owner,
+            '$.approved', approved,
+            '$.display_name', display_name,
+            '$.display_picture', display_picture,
+            '$.type', \`type\`
+          ) AS data
+        FROM
+          event
+        WHERE
+          approved = 'TENTATIVE' OR
+          approved = 'REJECTED'
+        `
+      );
+
+      return rows.map(row => JSON.parse(row.data));
+    }
+    catch (e) {
+      console.log(e);
+      throw new ApolloError(
+        "Failed to retrieve tentative events",
+        'RETRIEVE_TENTATIVE_EVENTS_DB_FAILURE'
+      );
+    }
+  }
+
+  // Rating ///////////////////////////////////////////////////////............
+
+  static async setBusinessRating(userId, businessId, stars) {
+    try {
+      await this.db.query(
+        `
+        INSERT INTO
+          rating (business_id, public_user_id, stars)
+        VALUES
+          (?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+          stars = ?
+        `,
+        [businessId, userId, stars, stars]
+      );
+    }
+    catch (e) {
+      console.log(e);
+      throw new ApolloError(
+        "Failed to rate business",
+        'FAILED_TO_INSERT_RATING'
+      );
+    }
+  }
+
+  static async getBusinessRating(userId, businessId) {
+    const rows = await this.db.query(
+      `
+      SELECT
+        stars
+      FROM
+        rating
+      WHERE
+        business_id = ?
+        AND public_user_id = ?
+      `,
+      [businessId, userId]
+    );
+
+    if (rows.length == 1) {
+      return rows[0].stars;
+    }
+  }
+
+  // Messaging ////////////////////////////////////////////////////////////////
+
+  static async createMessageThread(targetId, senderId) {
+    try {
+      var business = await this.businessLoader.load(targetId);
+
+      const result = await this.db.query(
+        `
+        INSERT INTO
+          message_thread(business_id, public_user_id, business_user_id)
+        VALUES
+          (?, ?, ?)
+        `,
+        [ business.id, senderId, business.owner ]
+      );
+
+      return result.insertId;
+    }
+    catch (e) {
+      console.log(e);
+      throw new ApolloError(
+        "Failed to create new message thread",
+        'FAILED_TO_CREATE_THREAD'
+      );
+    }
+  }
+
+  static async addMessageToThread(threadId, msg, userType) {
+    try {
+      var messages = await this.msgLoader.load(threadId);
+
+      var m = {
+        index: messages.length > 0 ? messages[messages.length - 1].index + 1 : 0,
+        msg: msg,
+        time: new Date(),
+        sender: userType
+      };
+
+      messages.push(m);
+      this.msgLoader
+        .clear(threadId)
+        .prime(threadId, messages);
+
+      this.db.query(
+        `
+        INSERT INTO
+          message(message_thread_id, create_time, sender, data)
+        VALUES
+          (?, ?, ?, ?)
+        `,
+        [ threadId, m.time, m.sender, m.msg ]
+      );
+
+      return m.index;
+    }
+    catch (e) {
+      console.log(e);
+      throw new ApolloError(
+        "Failed to send message",
+        'FAILED_TO_ADD_THREAD_MESSAGE'
+      );
+    }
+  }
+
+  static async getMessageThreadIDsOwnedByBusinessUser(userId) {
+    try {
+      const rows = await this.db.query(
+        `
+        SELECT
+          id
+        FROM
+          message_thread
+        WHERE
+          business_user_id = ?
+        `,
+        [ userId ]
+      );
+
+      return rows.map(_ => _.id);
+    }
+    catch (e) {
+      console.log(e);
+      throw new ApolloError(
+        "Failed to retrieve message threads",
+        'FAILED_TO_RETRIEVE_BUSINESS_USER_THREADS'
+      );
+    }
+  }
+
+  static async getMessageThreadIDsOwnedByPublicUser(userId) {
+    try {
+      const rows = await this.db.query(
+        `
+        SELECT
+          id
+        FROM
+          message_thread
+        WHERE
+          public_user_id = ?
+        `,
+        [ userId ]
+      );
+
+      return rows.map(_ => _.id);
+    }
+    catch (e) {
+      console.log(e);
+      throw new ApolloError(
+        "Failed to retrieve message threads",
+        'FAILED_TO_RETRIEVE_PUBLIC_USER_THREADS'
+      );
+    }
+  }
+
+  static setThreadSeeIndexForTarget(thread, index) {
     this.db.query(
       `
       UPDATE
@@ -495,7 +1004,7 @@ class Model {
     return thread;
   }
 
-  static senderSeeMessage(thread, index) {
+  static setThreadSeeIndexForSender(thread, index) {
     this.db.query(
       `
       UPDATE
@@ -515,6 +1024,392 @@ class Model {
       .prime(thread.id, thread);
 
     return thread;
+  }
+
+  // Account management ///////////////////////////////////////////////////////
+
+  static async publicUserSignup() {
+    var id = cryptoRandomString({length: 16});
+
+    try {
+      await this.db.query(
+        `
+        INSERT INTO
+          public_user (id)
+        VALUES
+          (?)
+        `,
+        [ id ]
+      );
+
+      return id;
+    }
+    catch(e) {
+      console.log(e);
+      throw new ApolloError(
+        "Failed to signup.",
+        'PUBLIC_USER_SIGNUP_FAILED'
+      );
+    }
+  }
+
+  static async publicUserLogin(id) {
+    var valid = false;
+    try {
+      const result = await this.db.query(
+        `
+        UPDATE
+          public_user
+        SET
+          last_login=CURRENT_TIMESTAMP
+        WHERE
+          id=?
+        `,
+        [ id ]
+      );
+
+      valid = result.affectedRows == 1;
+    }
+    catch(e) {
+      console.log(e);
+      throw new ApolloError(
+        "Failed to login.",
+        'PUBLIC_USER_LOGIN_FAILED'
+      );
+    }
+
+    if (valid) {
+      // clear cached data
+      this.publicUserLoader.clear(id);
+    }
+
+    return valid;
+  }
+
+  static async businessUserSignup(email, password) {
+    const token = cryptoRandomString({length: 128, type: 'url-safe'});
+
+    try {
+      await this.db.query(
+        `
+        INSERT INTO
+          business_user (email, password, token)
+        VALUES
+          (?, ?, ?)
+        `,
+        [ email, await bcrypt.hash(password, 10), token ]
+      );
+
+      return token;
+    }
+    catch(e) {
+      console.log(e);
+      throw new ApolloError(
+        "Failed to signup.",
+        'BUSINESS_USER_SIGNUP_FAILED'
+      );
+    }
+  }
+
+  static async businessUserVerify(email, token) {
+    var result;
+    try {
+      result = await this.db.query(
+        `
+        SELECT
+          id,
+          verified,
+          token
+        FROM
+          business_user
+        WHERE
+          email=?
+        `,
+        [ email ]
+      );
+    }
+    catch(e) {
+      console.log(e);
+      throw new ApolloError(
+        "Failed to verify user.",
+        'BUSINESS_USER_VERIFY_FAILED'
+      );
+    }
+
+    if (result.length != 1 || result[0].verified != 0 || result[0].token != token) {
+      throw new ApolloError(
+        "Invalid email or token.",
+        'BUSINESS_USER_VERIFY_REJECTED'
+      );
+    }
+
+    const id = result[0].id;
+
+    try {
+      await this.db.query(
+        `
+        UPDATE
+          business_user
+        SET
+          last_login=CURRENT_TIMESTAMP,
+          token=NULL,
+          verified=1
+        WHERE id=?
+        `,
+        [ id ]
+      );
+    }
+    catch(e) {
+      console.log(e);
+      throw new ApolloError(
+        "Failed to verify user.",
+        'BUSINESS_USER_VERIFY_FAILED'
+      );
+    }
+
+    // delete cached information
+    this.businessUserLoader.clear(id);
+
+    return id;
+  }
+
+  static async businessUserLogin(email, password) {
+    var result;
+      try {
+        result = await this.db.query(
+          `
+          SELECT
+            id,
+            verified,
+            password
+          FROM
+            business_user
+          WHERE
+            email=?
+          `,
+          [ email ]
+        );
+      }
+      catch(e) {
+        console.log(e);
+        throw new ApolloError(
+          "Failed to login.",
+          'BUSINESS_USER_LOGIN_FAILED'
+        );
+      }
+
+      if (result.length != 1 || ! (await bcrypt.compare(password, result[0].password))) {
+        throw new ApolloError(
+          "Invalid email or password.",
+          'BUSINESS_USER_LOGIN_REJECTED'
+        );
+      }
+
+      if (result[0].verified == 0) {
+        throw new ApolloError(
+          "Your account is not activated yet. Please check your email inbox.",
+          'UNVERIFIED_BUSINESS_USER_LOGIN'
+        );
+      }
+
+      const id = result[0].id;
+
+      try {
+        this.db.query(
+          `
+          UPDATE
+            business_user
+          SET
+            last_login=CURRENT_TIMESTAMP
+          WHERE
+            id=?
+          `,
+          [ id ]
+        );
+      }
+      catch(e) {
+        console.log(e);
+      }
+
+      // delete cached information
+      this.businessUserLoader.clear(id);
+
+      return id;
+  }
+
+  static async businessUserChangePassword(userId, oldPassword, newPassword) {
+
+    var result;
+    try {
+      result = await this.db.query(
+        `
+        SELECT
+          password
+        FROM
+          business_user
+        WHERE
+          id=?
+        `,
+        [ userId ]
+      );
+    }
+    catch(e) {
+      console.log(e);
+      throw new ApolloError(
+        "Failed to verify password.",
+        'BUSINESS_USER_PASSWORD_RETRIEVE_FAILURE'
+      );
+    }
+
+    if (result.length == 1 && await bcrypt.compare(oldPassword, result[0].password)) {
+      try {
+        await this.db.query(
+          `
+          UPDATE
+            business_user
+          SET
+            password=?
+          WHERE
+            id=?
+          `,
+          [ await bcrypt.hash(newPassword, 10), userId ]
+        );
+      }
+      catch(e) {
+        console.log(e);
+        throw new ApolloError(
+          "Failed to change password",
+          'FAILED_TO_UPDATE_BUSINESS_USER_PASSWORD'
+        );
+      }
+    }
+    else {
+      throw new ApolloError(
+        "Invalid password.",
+        'BUSINESS_USER_PASSWORD_CHANGE_REJECTED'
+      );
+    }
+  }
+
+  static async businessUserRequestResetPassword(email) {
+    var result;
+    try {
+      result = await this.db.query(
+        `
+        SELECT
+          id,
+          verified
+        FROM
+          business_user
+        WHERE
+          email=?
+        `,
+        [ email ]
+      );
+    }
+    catch(e) {
+      console.log(e);
+      return;
+    }
+
+    if (result.length != 1 || result[0].verified == 0) {
+      return;
+    }
+
+    const id = result[0].id;
+    const token = cryptoRandomString({length: 128, type: 'url-safe'});
+
+    try {
+      await this.db.query(
+        `
+        UPDATE
+          business_user
+        SET
+          token=?
+        WHERE
+          id=?
+        `,
+        [ token, id ]
+      );
+    }
+    catch(e) {
+      console.log(e);
+      return;
+    }
+
+    // delete cached information
+    this.businessUserLoader.clear(id);
+
+    return token;
+  }
+
+  static async businessUserResetPassword(email, token, newPassword) {
+
+    var result;
+    try {
+      result = await this.db.query(
+        `
+        SELECT
+          id,
+          verified,
+          token
+        FROM
+          business_user
+        WHERE
+          email=?
+        `,
+        [ email ]
+      );
+    }
+    catch(e) {
+      console.log(e);
+      throw new ApolloError(
+        "Failed to verify token.",
+        'BUSINESS_USER_TOKEN_RETRIEVE_FAILURE'
+      );
+    }
+
+    if (result.length != 1 || result[0].token != token) {
+      throw new ApolloError(
+        "Invalid email or token.",
+        'BUSINESS_USER_PASSWORD_RESET_REJECTED'
+      );
+    }
+
+    if (result[0].verified == 0) {
+      throw new ApolloError(
+        "Your account is not activated yet. Please check your email inbox.",
+        'UNVERIFIED_BUSINESS_USER_PASSWORD_RESET'
+      );
+    }
+
+    const id = result[0].id;
+
+    try {
+      await this.db.query(
+        `UPDATE
+          business_user
+        SET
+          password=?,
+          token=NULL
+        WHERE
+          id=?
+        `,
+        [ await bcrypt.hash(newPassword, 10), id ]
+      );
+    }
+    catch(e) {
+      console.log(e);
+      throw new ApolloError(
+        "Failed to reset password.",
+        'BUSINESS_USER_PASSWORD_REST_FAILURE'
+      );
+    }
+
+    // delete cached information
+    this.businessUserLoader.clear(id);
+
+    return id;
   }
 }
 

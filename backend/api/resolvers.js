@@ -1,6 +1,4 @@
 require('dotenv').config();
-const bcrypt = require('bcrypt');
-const cryptoRandomString = require('crypto-random-string');
 const jsonwebtoken = require('jsonwebtoken');
 const { ApolloError, GraphQLUpload } = require('apollo-server-express');
 const { GraphQLScalarType } = require('graphql');
@@ -87,7 +85,10 @@ const resolvers = {
   Query: {
     async user(_, args, { user }) {
       if (! user) {
-        throw new ApolloError("Sorry... You're not authenticated! :c", 'USER_NOT_AUTHENTICATED');
+        throw new ApolloError(
+          "Sorry... You're not authenticated! :c",
+          'USER_NOT_AUTHENTICATED'
+        );
       }
 
       if (user.type == 'BUSINESS') {
@@ -263,20 +264,11 @@ const resolvers = {
     async rateBusiness(_, { id, stars }, { user }) {
       _validateAuthenticatedPublicUser(user);
 
-      await Model.db.query(
-        `
-        INSERT INTO
-          rating (business_id, public_user_id, stars)
-        VALUES
-          (?, ?, ?)
-        ON DUPLICATE KEY UPDATE
-          stars = ?
-        `,
-        [id, user.id, stars, stars]
-      );
+      await Model.setBusinessRating(user.id, id, stars);
     },
 
     async sendMessage(_, { msg, threadId, targetBusinessId }, { user }) {
+
       if (! threadId) {
         _validateAuthenticatedPublicUser(user);
 
@@ -287,22 +279,13 @@ const resolvers = {
           );
         }
 
-        var business = await Model.businessLoader.load(targetBusinessId);
-
-        const result = await Model.db.query(
-          `
-          INSERT INTO
-            message_thread(business_id, public_user_id, business_user_id)
-          VALUES
-            (?, ?, ?)
-          `,
-          [ business.id, user.id, business.owner ]
-        );
-
-        threadId = result.insertId;
+        threadId = await Model.createMessageThread(targetBusinessId, user.id);
       }
       else if (! user) {
-        throw new ApolloError("Sorry... You're not authenticated! :c", 'USER_NOT_AUTHENTICATED');
+        throw new ApolloError(
+          "Sorry... You're not authenticated! :c",
+          'USER_NOT_AUTHENTICATED'
+        );
       }
 
       var thread = await Model.msgThreadLoader.load(threadId);
@@ -330,31 +313,14 @@ const resolvers = {
         );
       }
 
-      var messages = await Model.msgLoader.load(thread.id);
-      var m = {
-        index: messages.length > 0 ? messages[messages.length - 1].index + 1 : 0,
-        msg: msg,
-        time: new Date(),
-        sender: user.type
-      };
+      const index = await Model.addMessageToThread(thread.id, msg, user.type);
 
-      messages.push(m);
-      Model.msgLoader
-        .clear(thread.id)
-        .prime(thread.id, messages);
-
-      Model.db.query(
-        `
-        INSERT INTO
-          message(message_thread_id, create_time, sender, data)
-        VALUES
-          (?, ?, ?, ?)
-        `,
-        [ thread.id, m.time, m.sender, m.msg ]
-      );
-
-      if (user.type == 'BUSINESS') return Model.targetSeeMessage(thread, m.index);
-      else return Model.senderSeeMessage(thread, m.index);
+      if (user.type == 'BUSINESS') {
+        return Model.setThreadSeeIndexForTarget(thread, index);
+      }
+      else {
+        return Model.setThreadSeeIndexForSender(thread, index);
+      }
     },
 
     async seeMessage(_, { threadId, index }, { user }) {
@@ -383,7 +349,7 @@ const resolvers = {
           );
         }
 
-        return Model.targetSeeMessage(thread, index);
+        return Model.setThreadSeeIndexForTarget(thread, index);
       }
       else if (user.type == 'PUBLIC') {
         if (thread.public_user_id != user.id) {
@@ -400,7 +366,7 @@ const resolvers = {
           );
         }
 
-        return Model.senderSeeMessage(thread, index);
+        return Model.setThreadSeeIndexForSender(thread, index);
       }
       else {
         throw new ApolloError(
@@ -421,55 +387,30 @@ const resolvers = {
     },
 
     async createPublicUser(_, { locale }) {
-      var id = cryptoRandomString({length: 16});
 
-      try {
-        await Model.db.query(
-          "INSERT INTO public_user (id) VALUES (?)",
-          [ id ]
-        );
-      }
-      catch(e) {
-        console.log(e);
-        throw new ApolloError("Failed to signup.", 'PUBLIC_USER_SIGNUP_FAILED');
-      }
-
-      // return json web token
       return jsonwebtoken.sign(
-        { id: id, type: 'PUBLIC', locale: locale || 'en' },
+        {
+          id: await Model.publicUserSignup(),
+          type: 'PUBLIC',
+          locale: locale || 'en'
+        },
         process.env.JWT_SECRET,
         { expiresIn: '1d' }
       );
     },
 
     async authenticatePublicUser(_, { id, locale }) {
-      var valid = false;
-      try {
-        const result = await Model.db.query(
-          "UPDATE public_user SET last_login=CURRENT_TIMESTAMP WHERE id=?",
-          [ id ]
-        );
 
-        valid = result.affectedRows == 1;
-      }
-      catch(e) {
-        console.log(e);
-        throw new ApolloError(
-          "Failed to login.",
-          'PUBLIC_USER_LOGIN_FAILED'
-        );
-      }
-
-      if (valid) {
-        // clear cached data
-        Model.publicUserLoader.clear(id);
-
-        // return json web token
-        return jsonwebtoken.sign(
-          { id: id, type: 'PUBLIC', locale: locale || 'en' },
-          process.env.JWT_SECRET,
-          { expiresIn: '1d' }
-        );
+      if (await Model.publicUserLogin(id)) {
+          return jsonwebtoken.sign(
+            {
+              id: id,
+              type: 'PUBLIC',
+              locale: locale || 'en'
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: '1d' }
+          );
       }
       else {
         throw new ApolloError(
@@ -480,127 +421,32 @@ const resolvers = {
     },
 
     async createBusinessUser(_, { email, password }) {
-      const token = cryptoRandomString({length: 128, type: 'url-safe'});
 
-      try {
-        const result = await Model.db.query(
-          "INSERT INTO business_user (email, password, token) VALUES (?, ?, ?)",
-          [ email, await bcrypt.hash(password, 10), token ]
-        );
-
-        Mailer.newUser(email, token);
-      }
-      catch(e) {
-        console.log(e);
-        throw new ApolloError("Failed to signup.", 'BUSINESS_USER_SIGNUP_FAILED');
-      }
+      Mailer.newUser(
+        email,
+        await Model.businessUserSignup(email, password)
+      );
     },
 
     async verifyBusinessUser(_, { email, token }) {
-      var result;
-      try {
-        result = await Model.db.query(
-          "SELECT id, verified, token FROM business_user WHERE email=?",
-          [ email ]
-        );
-      }
-      catch(e) {
-        console.log(e);
-        throw new ApolloError(
-          "Failed to verify user.",
-          'BUSINESS_USER_VERIFY_FAILED'
-        );
-      }
 
-      if (result.length != 1 || result[0].verified != 0 || result[0].token != token) {
-        throw new ApolloError(
-          "Invalid email or token.",
-          'BUSINESS_USER_VERIFY_REJECTED'
-        );
-      }
-
-      const id = result[0].id;
-
-      try {
-        await Model.db.query(
-          `
-          UPDATE
-            business_user
-          SET
-            last_login=CURRENT_TIMESTAMP,
-            token=NULL,
-            verified=1
-          WHERE id=?
-          `, [ id ]
-        );
-      }
-      catch(e) {
-        console.log(e);
-        throw new ApolloError(
-          "Failed to verify user.",
-          'BUSINESS_USER_VERIFY_FAILED'
-        );
-      }
-
-      // delete cached information
-      Model.businessUserLoader.clear(id);
-
-      // return json web token
       return jsonwebtoken.sign(
-        { id: id, type: 'BUSINESS' },
+        {
+          id: await Model.businessUserVerify(email, token),
+          type: 'BUSINESS'
+        },
         process.env.JWT_SECRET,
         { expiresIn: '1d' }
       );
     },
 
     async authenticateBusinessUser(_, { email, password }) {
-      var result;
-      try {
-        result = await Model.db.query(
-          "SELECT id, verified, password FROM business_user WHERE email=?",
-          [ email ]
-        );
-      }
-      catch(e) {
-        console.log(e);
-        throw new ApolloError(
-          "Failed to login.",
-          'BUSINESS_USER_LOGIN_FAILED'
-        );
-      }
 
-      if (result.length != 1 || ! (await bcrypt.compare(password, result[0].password))) {
-        throw new ApolloError(
-          "Invalid email or password.",
-          'BUSINESS_USER_LOGIN_REJECTED'
-        );
-      }
-
-      if (result[0].verified == 0) {
-        throw new ApolloError(
-          "Your account is not activated yet. Please check your email inbox.",
-          'UNVERIFIED_BUSINESS_USER_LOGIN'
-        );
-      }
-
-      const id = result[0].id;
-
-      try {
-        Model.db.query(
-          "UPDATE business_user SET last_login=CURRENT_TIMESTAMP WHERE id=?",
-          [ id ]
-        );
-      }
-      catch(e) {
-        console.log(e);
-      }
-
-      // delete cached information
-      Model.businessUserLoader.clear(id);
-
-      // return json web token
       return jsonwebtoken.sign(
-        { id: id, type: 'BUSINESS' },
+        {
+          id: await Model.businessUserLogin(email, password),
+          type: 'BUSINESS'
+        },
         process.env.JWT_SECRET,
         { expiresIn: '1d' }
       );
@@ -609,143 +455,23 @@ const resolvers = {
     async changeBusinessUserPassword(_, { oldPassword, newPassword }, { user }) {
       _validateAuthenticatedBusinessUser(user);
 
-      var result;
-      try {
-        result = await Model.db.query(
-          "SELECT password FROM business_user WHERE id=?",
-          [ user.id ]
-        );
-      }
-      catch(e) {
-        console.log(e);
-        throw new ApolloError(
-          "Failed to verify password.",
-          'BUSINESS_USER_PASSWORD_RETRIEVE_FAILURE'
-        );
-      }
-
-      if (result.length == 1 && await bcrypt.compare(oldPassword, result[0].password)) {
-        const id = result[0].id;
-
-        try {
-          await Model.db.query(
-            "UPDATE business_user SET password=? WHERE id=?",
-            [ await bcrypt.hash(newPassword, 10), user.id ]
-          );
-        }
-        catch(e) {
-          console.log(e);
-        }
-      }
-      else {
-        throw new ApolloError(
-          "Invalid password.",
-          'BUSINESS_USER_PASSWORD_CHANGE_REJECTED'
-        );
-      }
+      await Model.businessUserChangePassword(user.id, oldPassword, newPassword);
     },
 
     async requestBusinessUserPasswordReset(_, { email }) {
-      var result;
-      try {
-        result = await Model.db.query(
-          "SELECT id, verified FROM business_user WHERE email=?",
-          [ email ]
-        );
-      }
-      catch(e) {
-        console.log(e);
-        return;
-      }
 
-      if (result.length != 1 || result[0].verified == 0) {
-        return;
-      }
+      var token = await Model.businessUserRequestResetPassword(email);
 
-      const id = result[0].id;
-      const token = cryptoRandomString({length: 128, type: 'url-safe'});
-
-      try {
-        await Model.db.query(
-          `
-          UPDATE
-            business_user
-          SET
-            token=?
-          WHERE id=?
-          `,
-          [ token, id ]
-        );
-      }
-      catch(e) {
-        console.log(e);
-        return;
-      }
-
-      // delete cached information
-      Model.businessUserLoader.clear(id);
-
-      Mailer.resetPassword(email, token);
+      if (token) Mailer.resetPassword(email, token);
     },
 
     async resetBusinessUserPassword(_, { email, token, newPassword }) {
-      var result;
-      try {
-        result = await Model.db.query(
-          "SELECT id, verified, token FROM business_user WHERE email=?",
-          [ email ]
-        );
-      }
-      catch(e) {
-        console.log(e);
-        throw new ApolloError(
-          "Failed to verify token.",
-          'BUSINESS_USER_TOKEN_RETRIEVE_FAILURE'
-        );
-      }
-
-      if (result.length != 1 || result[0].token != token) {
-        throw new ApolloError(
-          "Invalid email or token.",
-          'BUSINESS_USER_PASSWORD_RESET_REJECTED'
-        );
-      }
-
-      if (result[0].verified == 0) {
-        throw new ApolloError(
-          "Your account is not activated yet. Please check your email inbox.",
-          'UNVERIFIED_BUSINESS_USER_PASSWORD_RESET'
-        );
-      }
-
-      const id = result[0].id;
-
-      try {
-        await Model.db.query(
-          `UPDATE
-            business_user
-          SET
-            password=?,
-            token=NULL
-          WHERE id=?
-          `,
-          [ await bcrypt.hash(newPassword, 10), id ]
-        );
-      }
-      catch(e) {
-        console.log(e);
-        throw new ApolloError(
-          "Failed to reset password.",
-          'BUSINESS_USER_PASSWORD_REST_FAILURE'
-        );
-      }
-
-      // delete cached information
-      Model.businessUserLoader.clear(id);
-
       // return json web token
       return jsonwebtoken.sign(
-        { id: id, type: 'BUSINESS' },
+        {
+          id: await Model.businessUserResetPassword(email, token, newPassword),
+          type: 'BUSINESS'
+        },
         process.env.JWT_SECRET,
         { expiresIn: '1d' }
       );
@@ -1019,8 +745,8 @@ const resolvers = {
     // admin mutations
 
     async authenticateAdmin(_, { key }) {
+
       if (key == process.env.ADMIN_KEY) {
-        // return json web token
         return jsonwebtoken.sign(
           { type: 'ADMIN' },
           process.env.JWT_SECRET,
@@ -1038,143 +764,37 @@ const resolvers = {
     async reviewBusiness(_, { id, approve }, { user }) {
       _validateAuthenticatedAdmin(user);
 
-      var business = await Model.businessLoader.load(id);
+      const business = await Model.businessLoader.load(id);
+      const owner = await Model.businessUserLoader.load(business.owner);
+
+      var reviewed = false;
 
       if (business.approved == 'TENTATIVE' || business.approved == 'REJECTED') {
-        try {
-          await Model.db.query(
-            `
-            UPDATE
-              business
-            SET
-              approved = ?
-            WHERE
-              id = ?
-            `,
-            [ approve ? 'APPROVED' : 'REJECTED', id ]
-          );
+        await Model.setBusinessApproveStatus(id, approve);
 
-          Model.businessLoader.clear(id);
-
-          Mailer.businessAdd(
-            (await Model.businessUserLoader.load(business.owner)).email,
-            business.display_name,
-            approve
-          );
-        }
-        catch (e) {
-          console.log(e);
-          throw new ApolloError(
-            "Failed to approve business.",
-            "BUSINESS_APPROVE_FAILED"
-          );
-        }
-      }
-
-      try {
-        const result = await Model.db.query(
-          `
-          UPDATE
-            business_tentative_update
-          SET
-            approved = ?
-          WHERE
-            business_id = ?
-          `,
-          [ approve ? 'APPROVED' : 'REJECTED', id ]
+        Mailer.businessAdd(
+          owner.email,
+          business.display_name,
+          approve
         );
 
-        if (result.affectedRows == 1) {
-          if (approve) {
-
-            var data = await Model.db.query(
-              `
-              SELECT
-                updated_data
-              FROM
-                business_tentative_update
-              WHERE
-                business_id = ?
-              `,
-              [ id ]
-            );
-            data = JSON.parse(data[0].updated_data);
-            if (data) {
-              if (data.attachments || data.old_attachments) {
-                var oldBusiness = await Model.businessLoader.load(id);
-
-                if (oldBusiness.attachments) {
-                  data.attachments = _updateAttachments(
-                    oldBusiness.attachments,
-                    data.old_attachments || [],
-                    data.attachments || []
-                  );
-                }
-
-                if (data.old_attachments) delete data.old_attachments;
-              }
-
-              await Model.db.query(
-                `
-                UPDATE
-                  business_tentative_update
-                SET
-                  updated_data = ?
-                WHERE
-                  business_id = ?
-                `,
-                [ JSON.stringify(data), id ]
-              );
-            }
-
-            await Model.db.query(
-              `
-              UPDATE
-                business
-              SET
-                display_name = IFNULL((
-                  SELECT JSON_UNQUOTE(JSON_EXTRACT(updated_data, '$.display_name'))
-                  FROM business_tentative_update WHERE business_id = id
-                ), display_name),
-                display_picture = IFNULL((
-                  SELECT JSON_UNQUOTE(JSON_EXTRACT(updated_data, '$.display_picture'))
-                  FROM business_tentative_update WHERE business_id = id
-                ), display_picture),
-                props = JSON_MERGE_PATCH(props, (
-                  SELECT JSON_REMOVE(updated_data, '$.display_name', '$.display_picture')
-                  FROM business_tentative_update WHERE business_id = id
-                ))
-              WHERE
-                id = ?
-              `,
-              [ id ]
-            );
-
-            await Model.db.query(
-              `
-              DELETE FROM
-                business_tentative_update
-              WHERE
-                business_id = ?
-              `,
-              [ id ]
-            );
-
-            Model.businessLoader.clear(id);
-
-            Mailer.businessUpdate(
-              (await Model.businessUserLoader.load(business.owner)).email,
-              business.display_name,
-              approve
-            );
-          }
-        }
+        reviewed = true;
       }
-      catch (e) {
-        console.log(e);
+
+      if (await Model.setBusinessUpdateApproveStatusIfExists(id, approve)) {
+        Mailer.businessUpdate(
+          owner.email,
+          business.display_name,
+          approve
+        );
+
+        reviewed = true;
+      }
+
+      if (! reviewed) {
         throw new ApolloError(
-          "Failed to approve business update.",
-          "BUSINESS_UPDATE_APPROVE_FAILED"
+          "Business already approved",
+          'DUPLICATE_BUSINESS_APPROVE'
         );
       }
     },
@@ -1182,37 +802,18 @@ const resolvers = {
     async reviewEvent(_, { id, approve }, { user }) {
       _validateAuthenticatedAdmin(user);
 
-      var event = await Model.eventLoader.load(id);
+      const event = await Model.eventLoader.load(id);
+      const owner = await Model.businessUserLoader.load(event.owner)
 
       if (event.approved == 'TENTATIVE' || event.approved == 'REJECTED') {
-        try {
-          await Model.db.query(
-            `
-            UPDATE
-              event
-            SET
-              approved = ?
-            WHERE
-              id = ?
-            `,
-            [ approve ? 'APPROVED' : 'REJECTED', id ]
-          );
 
-          Model.eventLoader.clear(id);
+        await Model.setEventApproveStatus(id, approve);
 
-          Mailer.eventAdd(
-            (await Model.businessUserLoader.load(event.owner)).email,
-            event.display_name,
-            approve
-          );
-        }
-        catch (e) {
-          console.log(e);
-          throw new ApolloError(
-            "Failed to approve event.",
-            "EVENT_APPROVE_FAILED"
-          );
-        }
+        Mailer.eventAdd(
+          owner.email,
+          event.display_name,
+          approve
+        );
       }
       else {
         throw new ApolloError(
@@ -1247,70 +848,19 @@ const resolvers = {
     async rating(_, { businessId }, { user }) {
       _validateAuthenticatedPublicUser(user);
 
-      const rows = await Model.db.query(
-        `
-        SELECT
-          stars
-        FROM
-          rating
-        WHERE
-          business_id = ?
-          AND public_user_id = ?
-        `,
-        [businessId, user.id]
-      );
-
-      if (rows.length == 1) {
-        return rows[0].stars;
-      }
+      return await Model.getBusinessRating(user.id, businessId);
     },
 
     async owned_businesses(_, args, { user }) {
       _validateAuthenticatedBusinessUser(user);
 
-      var businessUser = await Model.businessUserLoader.load(user.id);
-      if (! businessUser.owned_businesses) {
-        const rows = await Model.db.query(
-          `
-          SELECT
-            id
-          FROM
-            business
-          WHERE
-            owner = ?
-          `,
-          [ user.id ]
-        );
-
-        businessUser.owned_businesses = rows.map (_ => _.id);
-        Model.businessUserLoader.clear(user.id).prime(user.id, businessUser);
-      }
-
-      return businessUser.owned_businesses.map(_ => Model.businessLoader.load(_));
+      return await Model.getBusinessesOwnedBy(user.id);
     },
 
     async owned_events(_, args, { user }) {
       _validateAuthenticatedBusinessUser(user);
 
-      var businessUser = await Model.businessUserLoader.load(user.id);
-      if (! businessUser.owned_events) {
-        const rows = await Model.db.query(
-          `
-          SELECT
-            id
-          FROM
-            event
-          WHERE
-            owner = ?
-          `,
-          [ user.id ]
-        );
-
-        businessUser.owned_events = rows.map (_ => _.id);
-        Model.businessUserLoader.clear(user.id).prime(user.id, businessUser);
-      }
-
-      return businessUser.owned_events.map(_ => Model.eventLoader.load(_));
+      return await Model.getEventsOwnedBy(user.id);
     },
 
     async threads(_, { threadId }, { user }) {
@@ -1332,19 +882,9 @@ const resolvers = {
           }
         }
         else {
-          const rows = await Model.db.query(
-            `
-            SELECT
-              id
-            FROM
-              message_thread
-            WHERE
-              business_user_id = ?
-            `,
-            [ user.id ]
+          return await Model.msgThreadLoader.loadMany(
+            await Model.getMessageThreadIDsOwnedByBusinessUser(user.id)
           );
-
-          return Model.msgThreadLoader.loadMany(rows.map(_ => _.id));
         }
       }
       else {
@@ -1361,19 +901,9 @@ const resolvers = {
           }
         }
         else {
-          const rows = await Model.db.query(
-            `
-            SELECT
-              id
-            FROM
-              message_thread
-            WHERE
-              public_user_id = ?
-            `,
-            [ user.id ]
+          return await Model.msgThreadLoader.loadMany(
+            await Model.getMessageThreadIDsOwnedByPublicUser(user.id)
           );
-
-          return Model.msgThreadLoader.loadMany(rows.map(_ => _.id));
         }
       }
     }
@@ -1407,69 +937,15 @@ const resolvers = {
 
   Admin: {
     async tentativeNewBusinesses() {
-      const rows = await Model.db.query(
-        `
-        SELECT
-          JSON_INSERT(
-            props,
-            '$.id', id,
-            '$.owner', owner,
-            '$.approved', approved,
-            '$.rating', calculated_rating,
-            '$.display_name', display_name,
-            '$.display_picture', display_picture,
-            '$.type', \`type\`,
-            '$.sub_type', sub_type
-          ) AS data
-        FROM
-          business
-        WHERE
-          approved = 'TENTATIVE' OR
-          approved = 'REJECTED'
-        `
-      );
-
-      return rows.map(row => JSON.parse(row.data));
+      return await Model.getTentativeBusinesses();
     },
 
     async tentativeBusinessUpdates() {
-      const rows = await Model.db.query(
-        `
-        SELECT
-          business_id
-        FROM
-          business_tentative_update
-        WHERE
-          approved = 'TENTATIVE' OR
-          approved = 'REJECTED'
-        `
-      );
-
-      return rows.map(row => Model.businessLoader.load(row.business_id));
+      return await Model.getTentativeUpdatedBusinesses();
     },
 
     async tentativeNewEvents() {
-      const rows = await Model.db.query(
-        `
-        SELECT
-          JSON_INSERT(
-            props,
-            '$.id', id,
-            '$.owner', owner,
-            '$.approved', approved,
-            '$.display_name', display_name,
-            '$.display_picture', display_picture,
-            '$.type', \`type\`
-          ) AS data
-        FROM
-          event
-        WHERE
-          approved = 'TENTATIVE' OR
-          approved = 'REJECTED'
-        `
-      );
-
-      return rows.map(row => JSON.parse(row.data));
+      return await Model.getTentativeEvents();
     }
   },
 
@@ -1482,24 +958,7 @@ const resolvers = {
     async update(parent, args, { user }) {
       _validateAuthenticatedBusinessUserOrAdmin(user);
 
-      const rows = await Model.db.query(
-        `
-        SELECT
-          JSON_INSERT(
-            updated_data,
-            '$.approved', approved
-          ) AS data
-        FROM
-          business_tentative_update
-        WHERE
-          business_id = ?
-        `,
-        [ parent.id ]
-      );
-
-      if (rows.length == 1) {
-        return { ...parent, ...JSON.parse(rows[0].data) };
-      }
+      return await Model.getBusinessUpdate(parent.id);
     }
   },
 

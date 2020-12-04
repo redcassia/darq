@@ -32,7 +32,8 @@ class Mailer {
     });
   }
 
-  static async newUser(email, token) {
+  static newUser(email, token) {
+
     this._sendMail(
       email,
       "Welcome to DarQ",
@@ -45,7 +46,8 @@ class Mailer {
     );
   }
 
-  static async resetPassword(email, token) {
+  static resetPassword(email, token) {
+
     this._sendMail(
       email,
       "DarQ Password Reset",
@@ -54,7 +56,8 @@ class Mailer {
     );
   }
 
-  static async businessAdd(email, business, approve) {
+  static businessAdd(email, business, approve) {
+
     if (approve) {
       this._sendMail(
         email,
@@ -78,7 +81,7 @@ class Mailer {
     }
   }
 
-  static async businessUpdate(email, business, approve) {
+  static businessUpdate(email, business, approve) {
 
     if (approve) {
       this._sendMail(
@@ -101,7 +104,8 @@ class Mailer {
     }
   }
 
-  static async eventAdd(email, event, approve) {
+  static eventAdd(email, event, approve) {
+
     if (approve) {
       this._sendMail(
         email,

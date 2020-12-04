@@ -60,11 +60,11 @@ function reviewBusiness(id, approve) {
     else {
       if (approve) {
         if (newBusinesses[id]) delete newBusinesses[id];
-        else if (updatedBusinesses[id]) delete updatedBusinesses[id];
+        if (updatedBusinesses[id]) delete updatedBusinesses[id];
       }
       else {
         if (newBusinesses[id]) newBusinesses[id]["approved"] = 'REJECTED';
-        else if (updatedBusinesses[id]) updatedBusinesses[id]["approved"] = 'REJECTED';
+        if (updatedBusinesses[id]) updatedBusinesses[id]["approved"] = 'REJECTED';
       }
 
       updateBusinessesMenu();

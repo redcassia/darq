@@ -446,3 +446,6 @@ fabric.properties
 
 # MySQL workbench backup file
 *.mwb.bak
+
+# Root txt files
+/*.txt

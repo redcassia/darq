@@ -33,7 +33,7 @@ class Mailer {
       });
     }
     catch (e) {
-      console.trace(e);
+      console.error(e);
     }
   }
 

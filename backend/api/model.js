@@ -257,7 +257,7 @@ class Model {
       return result.insertId;
     }
     catch(e) {
-      console.log(e);
+      console.error(e);
       throw new ApolloError("Failed to add business.", 'ADD_BUSINESS_FAILED');
     }
   }
@@ -285,7 +285,7 @@ class Model {
       this.businessLoader.clear(id);
     }
     catch(e) {
-      console.log(e);
+      console.error(e);
       throw new ApolloError("Failed to update business.", 'UPDATE_BUSINESS_FAILED');
     }
   }
@@ -410,7 +410,7 @@ class Model {
       return result.insertId;
     }
     catch(e) {
-      console.log(e);
+      console.error(e);
       throw new ApolloError("Failed to add event.", 'ADD_EVENT_FAILED');
     }
   }
@@ -473,7 +473,7 @@ class Model {
       this.eventLoader.clear(id);
     }
     catch(e) {
-      console.log(e);
+      console.error(e);
       throw new ApolloError("Failed to update event.", 'UPDATE_EVENT_FAILED');
     }
   }
@@ -594,7 +594,7 @@ class Model {
       this.businessLoader.clear(id);
     }
     catch (e) {
-      console.log(e);
+      console.error(e);
       throw new ApolloError(
         "Failed to approve business.",
         "BUSINESS_APPROVE_FAILED"
@@ -696,7 +696,7 @@ class Model {
       this.businessLoader.clear(id);
     }
     catch (e) {
-      console.log(e);
+      console.error(e);
       throw new ApolloError(
         "Failed to approve business update.",
         "BUSINESS_UPDATE_APPROVE_FAILED"
@@ -723,7 +723,7 @@ class Model {
       this.eventLoader.clear(id);
     }
     catch (e) {
-      console.log(e);
+      console.error(e);
       throw new ApolloError(
         "Failed to approve event.",
         "EVENT_APPROVE_FAILED"
@@ -758,7 +758,7 @@ class Model {
       return rows.map(row => JSON.parse(row.data));
     }
     catch (e) {
-      console.log(e);
+      console.error(e);
       throw new ApolloError(
         "Failed to retrieve tentative businesses",
         'RETRIEVE_TENTATIVE_BUSINESS_DB_FAILURE'
@@ -783,7 +783,7 @@ class Model {
       return rows.map(row => this.businessLoader.load(row.business_id));
     }
     catch (e) {
-      console.log(e);
+      console.error(e);
       throw new ApolloError(
         "Failed to retrieve tentative business updates",
         'RETRIEVE_TENTATIVE_BUSINESS_UPDATE_DB_FAILURE'
@@ -816,7 +816,7 @@ class Model {
       return rows.map(row => JSON.parse(row.data));
     }
     catch (e) {
-      console.log(e);
+      console.error(e);
       throw new ApolloError(
         "Failed to retrieve tentative events",
         'RETRIEVE_TENTATIVE_EVENTS_DB_FAILURE'
@@ -841,7 +841,7 @@ class Model {
       );
     }
     catch (e) {
-      console.log(e);
+      console.error(e);
       throw new ApolloError(
         "Failed to rate business",
         'FAILED_TO_INSERT_RATING'
@@ -887,7 +887,7 @@ class Model {
       return result.insertId;
     }
     catch (e) {
-      console.log(e);
+      console.error(e);
       throw new ApolloError(
         "Failed to create new message thread",
         'FAILED_TO_CREATE_THREAD'
@@ -924,7 +924,7 @@ class Model {
       return m.index;
     }
     catch (e) {
-      console.log(e);
+      console.error(e);
       throw new ApolloError(
         "Failed to send message",
         'FAILED_TO_ADD_THREAD_MESSAGE'
@@ -949,7 +949,7 @@ class Model {
       return rows.map(_ => _.id);
     }
     catch (e) {
-      console.log(e);
+      console.error(e);
       throw new ApolloError(
         "Failed to retrieve message threads",
         'FAILED_TO_RETRIEVE_BUSINESS_USER_THREADS'
@@ -974,7 +974,7 @@ class Model {
       return rows.map(_ => _.id);
     }
     catch (e) {
-      console.log(e);
+      console.error(e);
       throw new ApolloError(
         "Failed to retrieve message threads",
         'FAILED_TO_RETRIEVE_PUBLIC_USER_THREADS'
@@ -1045,7 +1045,7 @@ class Model {
       return id;
     }
     catch(e) {
-      console.log(e);
+      console.error(e);
       throw new ApolloError(
         "Failed to signup.",
         'PUBLIC_USER_SIGNUP_FAILED'
@@ -1071,7 +1071,7 @@ class Model {
       valid = result.affectedRows == 1;
     }
     catch(e) {
-      console.log(e);
+      console.error(e);
       throw new ApolloError(
         "Failed to login.",
         'PUBLIC_USER_LOGIN_FAILED'
@@ -1103,11 +1103,19 @@ class Model {
       return token;
     }
     catch(e) {
-      console.log(e);
-      throw new ApolloError(
-        "Failed to signup.",
-        'BUSINESS_USER_SIGNUP_FAILED'
-      );
+      if (e.code == 'ER_DUP_ENTRY') {
+        throw new ApolloError(
+          "User already signed up. Please try logging in or resetting your password.",
+          'BUSINESS_USER_ALREADY_EXISTS'
+        );
+      }
+      else {
+        console.error(e);
+        throw new ApolloError(
+          "Failed to signup.",
+          'BUSINESS_USER_SIGNUP_FAILED'
+        );
+      }
     }
   }
 
@@ -1129,7 +1137,7 @@ class Model {
       );
     }
     catch(e) {
-      console.log(e);
+      console.error(e);
       throw new ApolloError(
         "Failed to verify user.",
         'BUSINESS_USER_VERIFY_FAILED'
@@ -1160,7 +1168,7 @@ class Model {
       );
     }
     catch(e) {
-      console.log(e);
+      console.error(e);
       throw new ApolloError(
         "Failed to verify user.",
         'BUSINESS_USER_VERIFY_FAILED'
@@ -1191,7 +1199,7 @@ class Model {
         );
       }
       catch(e) {
-        console.log(e);
+        console.error(e);
         throw new ApolloError(
           "Failed to login.",
           'BUSINESS_USER_LOGIN_FAILED'
@@ -1228,7 +1236,7 @@ class Model {
         );
       }
       catch(e) {
-        console.log(e);
+        console.error(e);
       }
 
       // delete cached information
@@ -1254,7 +1262,7 @@ class Model {
       );
     }
     catch(e) {
-      console.log(e);
+      console.error(e);
       throw new ApolloError(
         "Failed to verify password.",
         'BUSINESS_USER_PASSWORD_RETRIEVE_FAILURE'
@@ -1276,7 +1284,7 @@ class Model {
         );
       }
       catch(e) {
-        console.log(e);
+        console.error(e);
         throw new ApolloError(
           "Failed to change password",
           'FAILED_TO_UPDATE_BUSINESS_USER_PASSWORD'
@@ -1308,7 +1316,7 @@ class Model {
       );
     }
     catch(e) {
-      console.log(e);
+      console.error(e);
       return;
     }
 
@@ -1333,7 +1341,7 @@ class Model {
       );
     }
     catch(e) {
-      console.log(e);
+      console.error(e);
       return;
     }
 
@@ -1362,7 +1370,7 @@ class Model {
       );
     }
     catch(e) {
-      console.log(e);
+      console.error(e);
       throw new ApolloError(
         "Failed to verify token.",
         'BUSINESS_USER_TOKEN_RETRIEVE_FAILURE'
@@ -1399,7 +1407,7 @@ class Model {
       );
     }
     catch(e) {
-      console.log(e);
+      console.error(e);
       throw new ApolloError(
         "Failed to reset password.",
         'BUSINESS_USER_PASSWORD_REST_FAILURE'

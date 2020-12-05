@@ -573,7 +573,7 @@ const resolvers = {
           data = await Model.updateDomesticHelpPersonnel(id, data);
         }
         catch(e) {
-          console.log(e);
+          console.error(e);
           throw new ApolloError(
             "Failed to update business",
             'PERSONNEL_UPDATE_ERROR'

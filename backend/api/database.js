@@ -10,7 +10,7 @@ class Database {
     return new Promise((resolve, reject) => {
       this.pool.getConnection(function(err, connection) {
         if (err) {
-          console.log("Error getting a MySQL connection from pool. ", err);
+          console.error("Error getting a MySQL connection from pool. ", err);
           reject(err);
         }
         else {
@@ -18,7 +18,6 @@ class Database {
             connection.release();
   
             if (err) {
-              console.log(err);
               reject(err);
             }
             else {

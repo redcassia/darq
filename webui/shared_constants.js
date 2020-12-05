@@ -1,6 +1,6 @@
 
-const graphqlEndpoint = 'https://darq.qa/api'
-const attachmentsEndpoint = "https://darq.qa/attachment/";
+const graphqlEndpoint = 'api'
+const attachmentsEndpoint = "attachment/";
 
 const strings = {
   BUSINESS_APPROVE_STATUS: {

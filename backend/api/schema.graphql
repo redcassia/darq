@@ -1633,6 +1633,12 @@ enum CleaningAndMaintenanceBusinessSubType {
 }
 
 enum EventType {
+  SEMINAR
+  CONFERENCE
+  WORKSHOP
+  CEREMONY
+  JOB_FAIR
+  CONCERT
   OTHER
 }
 

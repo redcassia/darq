@@ -1014,6 +1014,30 @@ const enums = {
     }
   },
   EventType: {
+    SEMINAR: {
+      en: "Seminar",
+      ar: "ندوة",
+    },
+    CONFERENCE:{
+      en: "Conference",
+      ar: "مؤتمر",
+    },
+    WORKSHOP: {
+      en: "Workshop",
+      ar: "ورشة عمل",
+    },
+    CEREMONY: {
+      en: "Ceremony",
+      ar: "مراسم",
+    },
+    JOB_FAIR: {
+      en: "Job Fair",
+      ar: "معرض وظائف",
+    },
+    CONCERT: {
+      en: "Concert",
+      ar: "حفلة موسيقية"
+    },
     OTHER: {
       en: "Other",
       ar: "آخر"

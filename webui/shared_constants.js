@@ -1,6 +1,6 @@
 
-const graphqlEndpoint = 'api'
-const attachmentsEndpoint = "attachment/";
+const graphqlEndpoint = "api";
+const attachmentsEndpoint = "attachment";
 
 const strings = {
   BUSINESS_APPROVE_STATUS: {
@@ -344,7 +344,6 @@ function getString(str) {
 }
 
 function openInNewTab(url) {
-  if (! url.startsWith("http")) url = 'https://' + url;
   console.log(`Opening ${url}`);
   var win = window.open(url, '_blank');
   win.focus();

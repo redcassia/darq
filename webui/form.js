@@ -58,7 +58,7 @@ class ImgInput {
       div.setAttribute('class', 'img-upload-obj');
 
       var img = document.createElement("img");
-      img.setAttribute('src', attachmentsEndpoint + val);
+      img.setAttribute('src', attachmentsEndpoint + '/thumb/' + val);
       img.setAttribute('data-val', val);
 
       var btn = document.createElement("button");

@@ -115,12 +115,12 @@ class ProfileView {
     html += `<div class="profile-big-text">${title}:<br /><br />`;
 
     for (var picture of data) {
-      var url = attachmentsEndpoint + picture;
+      var url = attachmentsEndpoint  + picture;
       html += `
         <img
           class="profile-attachment clickable"
-          src="${url}"
-          onclick="openInNewTab('${url}')"
+          src="${attachmentsEndpoint}/thumb/${picture}"
+          onclick="openInNewTab('${attachmentsEndpoint}/${picture}')"
         ></img>
       `;
     }
@@ -137,8 +137,8 @@ class ProfileView {
         <br /><br />
         <img
           class="profile-attachment clickable"
-          src="${attachmentsEndpoint}${data}"
-          onclick="openInNewTab('${attachmentsEndpoint}${data}')"
+          src="${attachmentsEndpoint}/thumb/${data}"
+          onclick="openInNewTab('${attachmentsEndpoint}/${data}')"
         ></img>
       </div>
     `;
@@ -153,7 +153,7 @@ class ProfileView {
           <br />
           <img
             class="profile-personnel-picture"
-            src="${attachmentsEndpoint}${p["picture"]}"
+            src="${attachmentsEndpoint}/thumb/${p["picture"]}"
           ></img>
           <br />
           <div class="profile-small-text">${p["name"]}</div>
@@ -173,8 +173,8 @@ class ProfileView {
       <div class="profile-left">
         <img
           class="profile-display_picture clickable"
-          src="${attachmentsEndpoint}${b["display_picture"]}"
-          onclick="openInNewTab('${attachmentsEndpoint}${b["display_picture"]}')"
+          src="${attachmentsEndpoint}/thumb/${b["display_picture"]}"
+          onclick="openInNewTab('${attachmentsEndpoint}/${b["display_picture"]}')"
         ></img>
         <br />
         <br />
@@ -392,8 +392,8 @@ class ProfileView {
       <div class="profile-left">
         <img
           class="profile-display_picture clickable"
-          src="${attachmentsEndpoint}${e["display_picture"]}"
-          onclick="openInNewTab('${attachmentsEndpoint}${e["display_picture"]}')"
+          src="${attachmentsEndpoint}/thumb/${e["display_picture"]}"
+          onclick="openInNewTab('${attachmentsEndpoint}/${e["display_picture"]}')"
         ></img>
       </div>
       <div class="profile-right">

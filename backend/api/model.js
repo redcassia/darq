@@ -1029,28 +1029,35 @@ class Model {
   // Account management ///////////////////////////////////////////////////////
 
   static async publicUserSignup() {
-    var id = cryptoRandomString({length: 16});
+    // try for a maximum of 5 rounds
+    for (var trials = 0; trials < 5; ++trials) {
+      var id = cryptoRandomString({length: 16});
 
-    try {
-      await this.db.query(
-        `
-        INSERT INTO
-          public_user (id)
-        VALUES
-          (?)
-        `,
-        [ id ]
-      );
+      try {
+        await this.db.query(
+          `
+          INSERT INTO
+            public_user (id)
+          VALUES
+            (?)
+          `,
+          [ id ]
+        );
 
-      return id;
+        return id;
+      }
+      catch(e) {
+        if (e.code != 'ER_DUP_ENTRY') {
+          console.error(e);
+          break;
+        }
+      }
     }
-    catch(e) {
-      console.error(e);
-      throw new ApolloError(
-        "Failed to signup.",
-        'PUBLIC_USER_SIGNUP_FAILED'
-      );
-    }
+
+    throw new ApolloError(
+      "Failed to signup.",
+      'PUBLIC_USER_SIGNUP_FAILED'
+    );
   }
 
   static async publicUserLogin(id) {

@@ -1,0 +1,17 @@
+ip: 68.183.81.49
+
+root password: 7eL&ma%Ss-RY19EMmaSs%RY852s
+
+DNS records:
+    MX      @                       darq.qa
+    TXT     _dmarc                  v=DMARC1; p=none
+    TXT     default._domainkey      v=DKIM1; h=sha256; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArY0Ft/WmjLfhIGiJUU8Hu93ufHDimprOaCctwtbYOzVat3CtJTK+h7HgpWK+wh/ZbEe8KXk9Rgh6MxTSd1oIMEcF6KniSb/SSvvzG/0J4KQAL5sDq+/A28A9U82E9YLYef5Y6Q9DAuEgMg9LvxjmmTqriMzgrUIC65rYO3H9LzUA4ROzYbXY8f6feCVCrjMxTEqAfmtO8O8rAZFaReOzr+NWJAmJbxcO/C7md3R62vJqJbecacTf0jWP/31+JWCAPJdKeC9IwysB5/oZue1YBFizjDy5mMi0ZROdP3ab6EpQFkIIrw3vL3/IIxGUiR4nLAF9w1xKzpUeGlr0tiRA/QIDAQAB
+    TXT     @                       v=spf1 ip4:68.183.81.49 ip6:2400:6180:100:d0::4d7:d001 -all
+
+Ports:
+    443     main HTTPS server
+    80      HTTP to HTTPS redirect
+    8080    backup HTTP server
+
+
+website admin key: 57YVZ+yu^&H&QE%s9!-gAnt2

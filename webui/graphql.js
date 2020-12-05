@@ -126,21 +126,28 @@ class GraphQL {
       select.innerHTML += `<option value='${v.name}'>${getEnumString(enumName, v.name)}</option>`;
     }
   }
-  static async fillOptionsFromEnum(enumName, selectTagIds) {
-    const res = await this.query(`
-      query ($name: String!){
-        __type(name: $name) {
+  static async fillOptionsFromEnum(opts) {
+
+    var q = "query { ";
+
+    for (var opt of opts) {
+      q += `
+        __${opt.name}: __type(name: "${opt.name}") {
           enumValues {
             name
           }
         }
-      }
-    `, {
-      "name": enumName
-    });
+      `;
+    }
 
-    selectTagIds.forEach(id => {
-      this._assignEnums(enumName, id, res.data.__type.enumValues);
-    });
+    q += " }";
+
+    const res = await this.query(q);
+
+    for (var opt of opts) {
+      opt.ids.forEach(id => {
+        this._assignEnums(opt.name, id, res.data['__' + opt.name].enumValues);
+      });
+    }
   }
 }

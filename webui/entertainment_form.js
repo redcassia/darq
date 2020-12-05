@@ -12,12 +12,19 @@ function submitForm() {
 $(document).ready(function () {
 
   loadingScreen(async () => {
-    await GraphQL.fillOptionsFromEnum("EntertainmentBusinessSubType", [
-      "entertainment-sub-type"
-    ]);
-
-    await GraphQL.fillOptionsFromEnum("City", [
-      "entertainment-city"
+    await GraphQL.fillOptionsFromEnum([
+      {
+        name: "EntertainmentBusinessSubType",
+        ids: [
+          "entertainment-sub-type"
+        ]
+      },
+      {
+        name: "City",
+        ids: [
+          "entertainment-city"
+        ]
+      }
     ]);
 
     if (formLoadOnComplete) formLoadOnComplete();

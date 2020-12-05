@@ -10,10 +10,10 @@ function splitAndRemoveRedundantPersonnel(initialData, data) {
       if (initialData["personnel"].findIndex(p => {
         if (p["name"] != _["name"]) return false;
         for (var key in p) {
-          if (! equals(p[key], _[key])) return false;
+          if (!equals(p[key], _[key])) return false;
         }
         for (var key in _) {
-          if (! equals(_[key], p[key])) return false;
+          if (!equals(_[key], p[key])) return false;
         }
         return true;
       }) != -1) {
@@ -96,40 +96,61 @@ function updateProfessionRelevantFields(val, node) {
 function initializeForm(data) {
 
   loadingScreen(async () => {
-    await GraphQL.fillOptionsFromEnum("DomesticHelpSubType", [
-      "domestic-help-sub-type"
-    ]);
-
-    await GraphQL.fillOptionsFromEnum("City", [
-      "domestic-help-city"
-    ]);
-
-    await GraphQL.fillOptionsFromEnum("Profession", [
-      "domestic-help-personnel-profession"
-    ]);
-
-    await GraphQL.fillOptionsFromEnum("Gender", [
-      "domestic-help-personnel-gender"
-    ]);
-
-    await GraphQL.fillOptionsFromEnum("Nationality", [
-      "domestic-help-personnel-nationality"
-    ]);
-
-    await GraphQL.fillOptionsFromEnum("MaritalStatus", [
-      "domestic-help-personnel-marital-status"
-    ]);
-
-    await GraphQL.fillOptionsFromEnum("Education", [
-      "domestic-help-personnel-education"
-    ]);
-
-    await GraphQL.fillOptionsFromEnum("Country", [
-      "domestic-help-personnel-experience-country"
-    ]);
-
-    await GraphQL.fillOptionsFromEnum("Currency", [
-      "domestic-help-personnel-salary-currency"
+    await GraphQL.fillOptionsFromEnum([
+      {
+        name: "DomesticHelpSubType",
+        ids: [
+          "domestic-help-sub-type"
+        ]
+      },
+      {
+        name: "City",
+        ids: [
+          "domestic-help-city"
+        ]
+      },
+      {
+        name: "Profession",
+        ids: [
+          "domestic-help-personnel-profession"
+        ]
+      },
+      {
+        name: "Gender",
+        ids: [
+          "domestic-help-personnel-gender"
+        ]
+      },
+      {
+        name: "Nationality",
+        ids: [
+          "domestic-help-personnel-nationality"
+        ]
+      },
+      {
+        name: "MaritalStatus",
+        ids: [
+          "domestic-help-personnel-marital-status"
+        ]
+      },
+      {
+        name: "Education",
+        ids: [
+          "domestic-help-personnel-education"
+        ]
+      },
+      {
+        name: "Country",
+        ids: [
+          "domestic-help-personnel-experience-country"
+        ]
+      },
+      {
+        name: "Currency",
+        ids: [
+          "domestic-help-personnel-salary-currency"
+        ]
+      }
     ]);
 
     if (data["update"]) data = data["update"];

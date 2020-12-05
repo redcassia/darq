@@ -18,12 +18,19 @@ function submitForm() {
 function initializeForm(data) {
 
   loadingScreen(async () => {
-    await GraphQL.fillOptionsFromEnum("MadeInQatarBusinessSubType", [
-      "made-in-qatar-sub-type"
-    ]);
-
-    await GraphQL.fillOptionsFromEnum("City", [
-      "made-in-qatar-city"
+    await GraphQL.fillOptionsFromEnum([
+      {
+        name: "MadeInQatarBusinessSubType",
+        ids: [
+        "made-in-qatar-sub-type"
+        ]
+      },
+      {
+        name: "City",
+        ids: [
+          "made-in-qatar-city"
+        ]
+      }
     ]);
 
     if (data["update"]) data = data["update"];

@@ -44,16 +44,25 @@ function submitForm() {
 $(document).ready(function() {
 
   loadingScreen(async () => {
-    await GraphQL.fillOptionsFromEnum("EventType", [
-      "event-type"
-    ]);
-
-    await GraphQL.fillOptionsFromEnum("City", [
-      "event-city"
-    ]);
-
-    await GraphQL.fillOptionsFromEnum("Currency", [
-      "event-ticket-price-currency"
+    await GraphQL.fillOptionsFromEnum([
+      {
+        name: "EventType",
+        ids: [
+          "event-type"
+        ]
+      },
+      {
+        name: "City",
+        ids: [
+          "event-city"
+        ]
+      },
+      {
+        name: "Currency",
+        ids: [
+          "event-ticket-price-currency"
+        ]
+      }
     ]);
 
     if (formLoadOnComplete) formLoadOnComplete();

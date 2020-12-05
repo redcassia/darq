@@ -18,16 +18,25 @@ function submitForm() {
 function initializeForm(data) {
 
   loadingScreen(async () => {
-    await GraphQL.fillOptionsFromEnum("CleaningAndMaintenanceBusinessSubType", [
-      "cleaning-maintenance-sub-type"
-    ]);
-
-    await GraphQL.fillOptionsFromEnum("City", [
-      "cleaning-maintenance-city"
-    ]);
-
-    await GraphQL.fillOptionsFromEnum("Currency", [
-      "cleaning-maintenance-fees-currency"
+    await GraphQL.fillOptionsFromEnum([
+      {
+        name: "CleaningAndMaintenanceBusinessSubType",
+        ids: [
+          "cleaning-maintenance-sub-type"
+        ]
+      },
+      {
+        name: "City",
+        ids: [
+          "cleaning-maintenance-city"
+        ]
+      },
+      {
+        name: "Currency",
+        ids: [
+          "cleaning-maintenance-fees-currency"
+        ]
+      }
     ]);
 
     if (data["update"]) data = data["update"];

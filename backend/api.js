@@ -76,7 +76,10 @@ app.get('/*.html', (req, res) => {
   res.sendFile(path.join(webui_dir, 'html', locale, req.url));
 });
 
-app.use('/attachment', express.static(process.env.ATTACHMENTS_DIR, { dotfiles:'allow' }));
+app.use('/attachment', express.static(
+  process.env.ATTACHMENTS_DIR,
+  { dotfiles:'allow' }
+));
 
 app.use('/admin', express.static(path.join(webui_dir, 'admin.html')));
 

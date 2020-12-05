@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 const cryptoRandomString = require('crypto-random-string');
 const DataLoader = require('dataloader');
 const { ApolloError } = require('apollo-server-express');
+var thumb = require('node-thumbnail').thumb;
 
 const Locale = require('./locale');
 const Database = require('./database');
@@ -152,10 +153,20 @@ class Model {
   static _writeAttachmentToFile(file) {
     return new Promise(async (resolve, reject) => {
       const { createReadStream, filename, mimetype, encoding } = await file;
-      var uniqueName = this._generateAttachmentName() + path.extname(filename);
-      var ws = fs.createWriteStream(path.join(process.env.ATTACHMENTS_DIR, uniqueName));
+      var attachment = this._generateAttachmentName() + path.extname(filename);
+      var ws = fs.createWriteStream(path.join(process.env.ATTACHMENTS_DIR, attachment));
       var rs = createReadStream();
-      rs.on('end', () => resolve(uniqueName));
+      rs.on('end', () => {
+        resolve(attachment);
+        thumb({
+          source: path.join(process.env.ATTACHMENTS_DIR, attachment),
+          destination: path.join(process.env.ATTACHMENTS_DIR, 'thumb'),
+          prefix: '',
+          suffix: '',
+          width: 200,
+          logger: (_) => {}
+        }).catch((e) => console.error(e));
+      });
       rs.on('error', () => reject());
       rs.pipe(ws);
     });
@@ -211,6 +222,7 @@ class Model {
 
   static _removeAttachment(attachment) {
     fs.unlink(path.join(process.env.ATTACHMENTS_DIR, attachment), () => {});
+    fs.unlink(path.join(process.env.ATTACHMENTS_DIR, 'thumb', attachment), () => {});
   }
 
   static _updateAttachments(original, kept, added) {

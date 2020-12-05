@@ -6,6 +6,7 @@ const sender = `"DarQ" <noreply@${process.env.DOMAIN}>`
 class Mailer {
   static async _sendMail(email, subject, message) {
 
+    try {
     // const mailTransporter = nodemailer.createTransport({
     //   host: "smtp.ethereal.email",
     //   port: 587,
@@ -16,20 +17,24 @@ class Mailer {
     //   },
     // });
 
-    const mailTransporter = nodemailer.createTransport({
-      host: "localhost",
-      port: 25,
-      tls: {
-        rejectUnauthorized: false
-      },
-    });
-
-    mailTransporter.sendMail({
-      from: sender,
-      to: email,
-      subject: subject,
-      text: message
-    });
+      const mailTransporter = nodemailer.createTransport({
+        host: "localhost",
+        port: 25,
+        tls: {
+          rejectUnauthorized: false
+        },
+      });
+  
+      mailTransporter.sendMail({
+        from: sender,
+        to: email,
+        subject: subject,
+        text: message
+      });
+    }
+    catch (e) {
+      console.trace(e);
+    }
   }
 
   static newUser(email, token) {

@@ -254,6 +254,12 @@ Locale.strings = {
         ar: "آخر",
       }
     },
+    StationeryBusiness: {
+      STATIONERY: {
+        en: "Stationery",
+        ar: "ادوات مكتبيه"
+      }
+    },
     MadeInQatarBusiness: {
       OTHER: {
         en: "Other",

@@ -642,7 +642,7 @@ const resolvers = {
       _validateAuthenticatedBusinessUser(user);
 
       data.type = 'StationeryBusiness';
-      data.sub_type = 'Stationery';
+      data.sub_type = 'STATIONERY';
 
       await Model.addBusiness(data, user.id);
     },

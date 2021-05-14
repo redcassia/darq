@@ -235,7 +235,7 @@ const resolvers = {
       }
       else {
         ids = (
-          await Model.orderedEventLoader.get(type).loadMany(
+          await Model.orderedEventLoader.loadMany(
             Array.from(Array(limit), (_, i) => i + offset)
           )
         ).filter(_ => _ != null)

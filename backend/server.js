@@ -1,6 +1,7 @@
 require('dotenv').config()
 const https = require('https')
 const fs = require('fs')
+require('log-timestamp')
 var express = require('express')
 var app = require('./api')
 
@@ -16,28 +17,28 @@ if (process.env.CERT_FILE && process.env.KEY_FILE && process.env.HTTPS_PORT) {
   https_server.listen(
     process.env.HTTPS_PORT, 
     () => {
-      console.log(`HTTPS: WebUI server listening on ${process.env.DOMAIN}:${process.env.HTTPS_PORT}`);
-      console.log(`HTTPS: Attachments server listening on ${process.env.DOMAIN}:${process.env.HTTPS_PORT}/attachment`);
-      console.log(`HTTPS: GraphQL API server listening on ${process.env.DOMAIN}:${process.env.HTTPS_PORT}/api`);
+      console.info(`HTTPS: WebUI server listening on ${process.env.DOMAIN}:${process.env.HTTPS_PORT}`);
+      console.info(`HTTPS: Attachments server listening on ${process.env.DOMAIN}:${process.env.HTTPS_PORT}/attachment`);
+      console.info(`HTTPS: GraphQL API server listening on ${process.env.DOMAIN}:${process.env.HTTPS_PORT}/api`);
     }
   );
 }
 else {
-  console.log('WARNING: Unable to start HTTPS server.')
+  console.warn('Unable to start HTTPS server.')
 }
 
 if (process.env.HTTP_PORT) {
   app.listen(
     process.env.HTTP_PORT, 
     () => {
-      console.log(`HTTP: WebUI server listening on ${process.env.DOMAIN}:${process.env.HTTP_PORT}`);
-      console.log(`HTTP: Attachments server listening on ${process.env.DOMAIN}:${process.env.HTTP_PORT}/attachment`);
-      console.log(`HTTP: GraphQL API server listening on ${process.env.DOMAIN}:${process.env.HTTP_PORT}/api`);
+      console.info(`HTTP: WebUI server listening on ${process.env.DOMAIN}:${process.env.HTTP_PORT}`);
+      console.info(`HTTP: Attachments server listening on ${process.env.DOMAIN}:${process.env.HTTP_PORT}/attachment`);
+      console.info(`HTTP: GraphQL API server listening on ${process.env.DOMAIN}:${process.env.HTTP_PORT}/api`);
     }
   );
 }
 else {
-  console.log('WARNING: Unable to start HTTP server.')
+  console.warn('Unable to start HTTP server.')
 }
 
 if (process.env.HTTPS_REDIRECT_DOMAIN && process.env.HTTP_TO_HTTPS_PORT) {
@@ -48,5 +49,13 @@ if (process.env.HTTPS_REDIRECT_DOMAIN && process.env.HTTP_TO_HTTPS_PORT) {
     res.redirect('https://' + process.env.HTTPS_REDIRECT_DOMAIN + req.url);
   });
 
-  http_to_https.listen(process.env.HTTP_TO_HTTPS_PORT);
+  http_to_https.listen(
+    process.env.HTTP_TO_HTTPS_PORT,
+    () => {
+      console.info(`HTTP-to-HTTPS: Redirect server listening on ${process.env.DOMAIN}:${process.env.HTTP_TO_HTTPS_PORT}`);
+    }
+  );
+}
+else {
+  console.warn('Unable to start HTTP-to-HTTPS redirect server');
 }

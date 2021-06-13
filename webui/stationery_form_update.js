@@ -18,8 +18,13 @@ function submitForm() {
 function initializeForm(data) {
 
   loadingScreen(async () => {
-    await GraphQL.fillOptionsFromEnum("City", [
-      "stationery-city"
+    await GraphQL.fillOptionsFromEnum([
+      {
+        name: "City",
+        ids: [
+          "stationery-city"
+        ]
+      }
     ]);
 
     if (data["update"]) data = data["update"];

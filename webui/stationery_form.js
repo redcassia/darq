@@ -12,8 +12,13 @@ function submitForm() {
 $(document).ready(function () {
 
   loadingScreen(async () => {
-    await GraphQL.fillOptionsFromEnum("City", [
-      "stationery-city"
+    await GraphQL.fillOptionsFromEnum([
+      {
+        name: "City",
+        ids: [
+          "stationery-city"
+        ]
+      }
     ]);
 
     if (formLoadOnComplete) formLoadOnComplete();

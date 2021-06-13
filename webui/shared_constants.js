@@ -1,6 +1,6 @@
 
-const graphqlEndpoint = 'https://darq.qa/api'
-const attachmentsEndpoint = "https://darq.qa/attachment/";
+const graphqlEndpoint = "api";
+const attachmentsEndpoint = "attachment";
 
 const strings = {
   BUSINESS_APPROVE_STATUS: {
@@ -133,7 +133,17 @@ const strings = {
     ar: "لقد تم إنشاء حسابك. يرجى التحقق من البريد الوارد الخاص بك لتفعيل حسابك.",
   },
 
-  SINGIN_REJECTED_ALERT: {
+  BUSINESS_USER_ALREADY_EXISTS: {
+    en: "A user with this email address already exists. Please try logging in or resetting your password.",
+    ar: "يوجد مستخدم مسجل بعنوان البريد الإلكتروني هذا. يرجى محاولة تسجيل الدخول أو إعادة تعيين كلمة المرور الخاصة بك."
+  },
+
+  BUSINESS_USER_SIGNUP_FAILED: {
+    en: "Failed to signup.",
+    ar: "فشل في التسجيل."
+  },
+
+  SIGNIN_REJECTED_ALERT: {
     en: "Invalid email or password.",
     ar: "البريد الإلكتروني أو كلمة السر خاطئة.",
   },
@@ -340,11 +350,12 @@ const strings = {
 }
 
 function getString(str) {
-  return strings[str][CookieManager.get("locale")];
+  var s = strings[str]
+  if (s !== undefined) return s[CookieManager.get("locale")];
+  else return str;
 }
 
 function openInNewTab(url) {
-  if (! url.startsWith("http")) url = 'https://' + url;
   console.log(`Opening ${url}`);
   var win = window.open(url, '_blank');
   win.focus();
@@ -1015,6 +1026,30 @@ const enums = {
     }
   },
   EventType: {
+    SEMINAR: {
+      en: "Seminar",
+      ar: "ندوة",
+    },
+    CONFERENCE:{
+      en: "Conference",
+      ar: "مؤتمر",
+    },
+    WORKSHOP: {
+      en: "Workshop",
+      ar: "ورشة عمل",
+    },
+    CEREMONY: {
+      en: "Ceremony",
+      ar: "مراسم",
+    },
+    JOB_FAIR: {
+      en: "Job Fair",
+      ar: "معرض وظائف",
+    },
+    CONCERT: {
+      en: "Concert",
+      ar: "حفلة موسيقية"
+    },
     OTHER: {
       en: "Other",
       ar: "آخر"

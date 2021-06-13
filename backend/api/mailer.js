@@ -1,4 +1,4 @@
-require('dotenv').config()
+require('dotenv').config();
 const nodemailer = require("nodemailer");
 
 const sender = `"DarQ" <noreply@${process.env.DOMAIN}>`
@@ -6,6 +6,7 @@ const sender = `"DarQ" <noreply@${process.env.DOMAIN}>`
 class Mailer {
   static async _sendMail(email, subject, message) {
 
+    try {
     // const mailTransporter = nodemailer.createTransport({
     //   host: "smtp.ethereal.email",
     //   port: 587,
@@ -16,23 +17,28 @@ class Mailer {
     //   },
     // });
 
-    const mailTransporter = nodemailer.createTransport({
-      host: "localhost",
-      port: 25,
-      tls: {
-        rejectUnauthorized: false
-      },
-    });
-
-    mailTransporter.sendMail({
-      from: sender,
-      to: email,
-      subject: subject,
-      text: message
-    });
+      const mailTransporter = nodemailer.createTransport({
+        host: "localhost",
+        port: 25,
+        tls: {
+          rejectUnauthorized: false
+        },
+      });
+  
+      mailTransporter.sendMail({
+        from: sender,
+        to: email,
+        subject: subject,
+        text: message
+      });
+    }
+    catch (e) {
+      console.error(e);
+    }
   }
 
-  static async newUser(email, token) {
+  static newUser(email, token) {
+
     this._sendMail(
       email,
       "Welcome to DarQ",
@@ -40,12 +46,13 @@ class Mailer {
       `Please use the following link to activate your account.\n` +
       `${process.env.VERIFY_USER_URL}?email=${email}&token=${token} \n\n` +
       `You are a few steps away from reaching our platform users.\n` +
-      `We appreciate your choice and your trust in us!\n` + 
+      `We appreciate your choice and your trust in us!\n` +
       `From all of us at DarQ, we would like to deeply thank you.`
     );
   }
 
-  static async resetPassword(email, token) {
+  static resetPassword(email, token) {
+
     this._sendMail(
       email,
       "DarQ Password Reset",
@@ -54,7 +61,8 @@ class Mailer {
     );
   }
 
-  static async businessAdd(email, business, approve) {
+  static businessAdd(email, business, approve) {
+
     if (approve) {
       this._sendMail(
         email,
@@ -78,7 +86,7 @@ class Mailer {
     }
   }
 
-  static async businessUpdate(email, business, approve) {
+  static businessUpdate(email, business, approve) {
 
     if (approve) {
       this._sendMail(
@@ -101,7 +109,8 @@ class Mailer {
     }
   }
 
-  static async eventAdd(email, event, approve) {
+  static eventAdd(email, event, approve) {
+
     if (approve) {
       this._sendMail(
         email,

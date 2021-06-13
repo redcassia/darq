@@ -18,28 +18,43 @@ function submitForm() {
 function initializeForm(data) {
 
   loadingScreen(async () => {
-    await GraphQL.fillOptionsFromEnum("SelfEmployedSubType", [
-      "self-employed-sub-type"
-    ]);
-
-    await GraphQL.fillOptionsFromEnum("Gender", [
-      "self-employed-gender"
-    ]);
-
-    await GraphQL.fillOptionsFromEnum("Nationality", [
-      "self-employed-nationality"
-    ]);
-
-    await GraphQL.fillOptionsFromEnum("City", [
-      "self-employed-city",
-    ]);
-
-    await GraphQL.fillOptionsFromEnum("Currency", [
-      "self-employed-charge-currency",
-    ]);
-
-    await GraphQL.fillOptionsFromEnum("Country", [
-      "self-employed-experience-country"
+    await GraphQL.fillOptionsFromEnum([
+      {
+        name: "SelfEmployedSubType",
+        ids: [
+          "self-employed-sub-type"
+        ]
+      },
+      {
+        name: "Gender",
+        ids: [
+          "self-employed-gender"
+        ]
+      },
+      {
+        name: "Nationality",
+        ids: [
+          "self-employed-nationality"
+        ]
+      },
+      {
+        name: "City",
+        ids: [
+          "self-employed-city",
+        ]
+      },
+      {
+        name: "Currency",
+        ids: [
+          "self-employed-charge-currency",
+        ]
+      },
+      {
+        name: "Country",
+        ids: [
+          "self-employed-experience-country"
+        ]
+      }
     ]);
 
     if (data["update"]) data = data["update"];

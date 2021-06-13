@@ -1,5 +1,26 @@
 
-const strings = {
+class Locale {
+
+  static apply(data, locale) {
+
+    if (data[locale] !== undefined) {
+      return data[locale];
+    }
+    else {
+      for (var key in data) {
+        if (data[key] instanceof Object) {
+          data[key] = this.apply(data[key], locale);
+        }
+        else if (data[key] instanceof Array) {
+          data[key] = data[key].map(_ => this.apply(_, locale));
+        }
+      }
+      return data;
+    }
+  }
+}
+
+Locale.strings = {
   sub_type_string: {
     SelfEmployedBusiness: {
       SOCIAL_MEDIA_SPECIALIST: {
@@ -233,6 +254,12 @@ const strings = {
         ar: "آخر",
       }
     },
+    StationeryBusiness: {
+      STATIONERY: {
+        en: "Stationery",
+        ar: "ادوات مكتبيه"
+      }
+    },
     MadeInQatarBusiness: {
       OTHER: {
         en: "Other",
@@ -330,4 +357,4 @@ const strings = {
   }
 }
 
-module.exports = strings;
+module.exports = Locale;

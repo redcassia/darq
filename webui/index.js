@@ -180,7 +180,7 @@ function signup() {
       switchToSignin();
     }
     else {
-      alert(res.errors[0]["message"]);
+      alert(getString(res.errors[0]["extensions"]["code"]));
     }
   });
 }

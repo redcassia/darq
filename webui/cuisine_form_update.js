@@ -19,12 +19,19 @@ function submitForm() {
 function initializeForm(data) {
 
   loadingScreen(async () => {
-    await GraphQL.fillOptionsFromEnum("FoodBusinessSubType", [
-      "cuisine-sub-type"
-    ]);
-
-    await GraphQL.fillOptionsFromEnum("City", [
-      "cuisine-city"
+    await GraphQL.fillOptionsFromEnum([
+      {
+        name: "FoodBusinessSubType",
+        ids: [
+          "cuisine-sub-type"
+        ]
+      },
+      {
+        name: "City",
+        ids: [
+          "cuisine-city"
+        ]
+      }
     ]);
 
     if (data["update"]) data = data["update"];

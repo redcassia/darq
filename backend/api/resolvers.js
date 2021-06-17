@@ -789,7 +789,7 @@ const resolvers = {
 
       var reviewed = false;
 
-      if (business.approved == 'TENTATIVE' || business.approved == 'REJECTED') {
+      if (business.status == 'TENTATIVE' || business.status == 'REJECTED') {
         await Model.setBusinessApproveStatus(id, approve);
 
         Mailer.businessAdd(
@@ -825,7 +825,7 @@ const resolvers = {
       const event = await Model.eventLoader.load(id);
       const owner = await Model.businessUserLoader.load(event.owner)
 
-      if (event.approved == 'TENTATIVE' || event.approved == 'REJECTED') {
+      if (event.status == 'TENTATIVE' || event.status == 'REJECTED') {
 
         await Model.setEventApproveStatus(id, approve);
 

@@ -478,7 +478,7 @@ function hideBlanket() {
 }
 
 function showLoadingBlanket() {
-  showBlanket('<i class="fas fa-sync fa-spin" style="{color: var(--dark); font-size: 100px;}"></i>', false);
+  showBlanket('<i class="fas fa-sync fa-spin accent" style="font-size: 40px;"></i>', false);
 }
 
 var hideLoadingBlanket = hideBlanket;

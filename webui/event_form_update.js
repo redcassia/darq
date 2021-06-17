@@ -15,7 +15,7 @@ function submitForm() {
     return;
   }
 
-  $("#loading-blanket").show();
+  showLoadingBlanket();
 
   GraphQL.mutation(`
     mutation ($id: ID!, $data: UpdateEventInput!) {
@@ -25,7 +25,7 @@ function submitForm() {
     id: initialData["id"],
     data: data
   }).then(res => {
-    $("#loading-blanket").hide();
+    hideLoadingBlanket();
     Form.unlock();
 
     if (!res.hasError) {
@@ -37,7 +37,7 @@ function submitForm() {
       alert(getString('EVENT_UPDATE_FAIL_ALERT'));
     }
   }).catch(e => {
-    $("#loading-blanket").hide();
+    hideLoadingBlanket();
     Form.unlock();
 
     console.log(e);

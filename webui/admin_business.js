@@ -13,7 +13,7 @@ function updateBusinessesMenu() {
       <div
         class="content-submenu-clickable-box"
         onclick="loadBusiness(${id})"
-      >${b["approved"] == 'REJECTED' ? "[REJECTED] - " : ""}${b["display_name"]}</div>
+      >${b["status"] == 'REJECTED' ? "[REJECTED] - " : ""}${b["display_name"]}</div>
     `);
   }
 
@@ -25,7 +25,7 @@ function updateBusinessesMenu() {
       <div
         class="content-submenu-clickable-box"
         onclick="loadBusiness(${id})"
-      >${b["approved"] == 'REJECTED' ? "[REJECTED] - " : ""}${b["display_name"]}</div>
+      >${b["status"] == 'REJECTED' ? "[REJECTED] - " : ""}${b["display_name"]}</div>
     `);
   }
 }
@@ -41,7 +41,7 @@ function reviewBusiness(id, approve) {
   `);
   if (! conf) return;
 
-  $("#loading-blanket").show();
+  showLoadingBlanket();
 
   GraphQL.mutation(`
     mutation ($id: ID!, $approve: Boolean!) {
@@ -51,7 +51,7 @@ function reviewBusiness(id, approve) {
     id: id,
     approve: approve
   }).then((res) => {
-    $("#loading-blanket").hide();
+    hideLoadingBlanket();
 
     if (res.hasError) {
       console.log(res.errors[0]["message"]);
@@ -63,15 +63,15 @@ function reviewBusiness(id, approve) {
         if (updatedBusinesses[id]) delete updatedBusinesses[id];
       }
       else {
-        if (newBusinesses[id]) newBusinesses[id]["approved"] = 'REJECTED';
-        if (updatedBusinesses[id]) updatedBusinesses[id]["approved"] = 'REJECTED';
+        if (newBusinesses[id]) newBusinesses[id]["status"] = 'REJECTED';
+        if (updatedBusinesses[id]) updatedBusinesses[id]["status"] = 'REJECTED';
       }
 
       updateBusinessesMenu();
       document.getElementById("business-content").innerHTML = '';
     }
   }).catch(e => {
-    $("#loading-blanket").hide();
+    hideLoadingBlanket();
 
     console.log(e);
     alert("Failed to approve business");

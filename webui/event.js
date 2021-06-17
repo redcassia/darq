@@ -68,8 +68,7 @@ function showDeleteEventConfirmation(id) {
   showBlanket(`
     <div class="window">
       <div class="h5 dark">
-        <span class="red">WARNING</span> This action is irreversible and will permanently remove your
-        event from our system. To confirm please type your event's display name
+        <span class="red">${getString('WARNING')}</span> ${getString('EVENT_DELETE_WARNING')}
         <span class="red">'${events[id]["display_name"]}'</span>
       </div>
       <br />
@@ -83,7 +82,7 @@ function showDeleteEventConfirmation(id) {
           deleteEvent(${id});
         else
           $('#invalid-event-name-confirm').show();
-      ">Delete</button>
+      ">${getString('DELETE')}</button>
     </div>
   `);
 }

@@ -112,6 +112,21 @@ const strings = {
     ar: "فشل حذف الحدث.",
   },
 
+  BUSINESS_DELETE_WARNING: {
+    en: "This action is irreversible and will permanently remove your business from our system. To confirm please type your business's display name",
+    ar: "لا يمكن التراجع عن هذا الإجراء وسيؤدي إلى إزالة نشاطك التجاري بشكل دائم من نظامنا. للتأكيد ، يرجى كتابة اسم نشاطك التجاري",
+  },
+
+  EVENT_DELETE_WARNING: {
+    en: "This action is irreversible and will permanently remove your event from our system. To confirm please type your event's display name",
+    ar: "لا يمكن التراجع عن هذا الإجراء وسيؤدي إلى إزالة الحدث الخاص بك نهائيًا من نظامنا. للتأكيد ، يرجى كتابة اسم الحدث الخاص بك",
+  },
+
+  WARNING: {
+    en: "Warning:",
+    ar: "تحذير:",
+  },
+
   REJECTED: {
     en: "REJECTED",
     ar: "مرفوض",
@@ -120,6 +135,11 @@ const strings = {
   EDIT: {
     en: "Edit",
     ar: "تعديل",
+  },
+
+  DELETE: {
+    en: "Delete",
+    ar: "حذف",
   },
 
   MISSING_EMAIL_ALERT: {

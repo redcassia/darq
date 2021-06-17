@@ -176,8 +176,7 @@ function showDeleteBusinessConfirmation(id) {
   showBlanket(`
     <div class="window">
       <div class="h5 dark">
-        <span class="red">WARNING</span> This action is irreversible and will permanently remove your
-        business from our system. To confirm please type your business's display name
+        <span class="red">${getString('WARNING')}</span> ${getString('BUSINESS_DELETE_WARNING')}
         <span class="red">'${businesses[id]["display_name"]}'</span>
       </div>
       <br />
@@ -191,7 +190,7 @@ function showDeleteBusinessConfirmation(id) {
           deleteBusiness(${id});
         else
           $('#invalid-business-name-confirm').show();
-      ">Delete</button>
+      ">${getString('DELETE')}</button>
     </div>
   `);
 }

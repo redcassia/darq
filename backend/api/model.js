@@ -13,10 +13,7 @@ const Database = require('./database');
 class Model {
 
   // regular backend maintenance
-  static async startMaintenance() {
-
-    // TODO: uncomment when deploying
-    // console.log("Starting scheduled maintenance");
+  static async doMaintenance() {
 
     var db = new Database({
       host: process.env.DB_HOST,

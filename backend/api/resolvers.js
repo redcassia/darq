@@ -6,16 +6,20 @@ const { GraphQLScalarType } = require('graphql');
 const Locale = require('./locale');
 const Model = require('./model');
 const Mailer = require('./mailer');
+const ServerManager = require('../server_manager');
 
-function scheduleMaintenance() {
-  Model.startMaintenance().then(() => {
-    // schedule next maintenance
-    // TODO: change when deploying; run every 120 seconds, for development
-    setTimeout(scheduleMaintenance, 120000);
-  });
+async function scheduleMaintenance() {
+  await ServerManager.doMaintenanceNow(
+    () => Model.doMaintenance
+  );
+
+  ServerManager.scheduleMaintenance(
+    process.env.MAINTENANCE_SCHEDULE,
+    () => Model.doMaintenance
+  );
 }
 
-// cold-start maintenance starts 10 seconds after server startup
+// schedule initial and regular maintenance events 10 seconds after server startup
 setTimeout(scheduleMaintenance, 10000);
 
 function _validateAuthenticatedBusinessUser(user) {

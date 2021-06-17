@@ -6,6 +6,8 @@ var cookie = require('cookie');
 var fs = require('fs')
 var path = require('path')
 
+const ServerManager = require('./server_manager');
+
 const typeDefs = gql(fs.readFileSync(path.join(__dirname, "api/schema.graphql"), "utf-8"));
 const resolvers = require('./api/resolvers');
 
@@ -28,6 +30,12 @@ const server = new ApolloServer({
 });
 
 const app = express();
+
+app.use(function(req, res, next){
+  if (ServerManager.inMaintenance) ServerManager.deferRequest(next);
+  else next();
+});
+
 app.use('/api', auth, function (err, req, res, next) {
   if (err) return next();
   return next(err);

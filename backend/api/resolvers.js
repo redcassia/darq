@@ -10,17 +10,17 @@ const ServerManager = require('../server_manager');
 
 async function scheduleMaintenance() {
   await ServerManager.doMaintenanceNow(
-    () => Model.doMaintenance
+    () => Model.doMaintenance()
   );
 
   ServerManager.scheduleMaintenance(
     process.env.MAINTENANCE_SCHEDULE,
-    () => Model.doMaintenance
+    () => Model.doMaintenance()
   );
 }
 
-// schedule initial and regular maintenance events 10 seconds after server startup
-setTimeout(scheduleMaintenance, 10000);
+// schedule initial and regular maintenance events 5 seconds after server startup
+setTimeout(scheduleMaintenance, 5000);
 
 function _validateAuthenticatedBusinessUser(user) {
   if (! user || user.type != 'BUSINESS') {
@@ -982,7 +982,7 @@ const resolvers = {
     async update(parent, args, { user }) {
       _validateAuthenticatedBusinessUserOrAdmin(user);
 
-      return await Model.getBusinessUpdate(parent.id);
+      return await Model.getBusinessWithUpdate(parent.id).update;
     }
   },
 

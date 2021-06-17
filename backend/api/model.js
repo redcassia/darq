@@ -27,6 +27,38 @@ class Model {
       multipleStatements: true
     });
 
+    // delete all "deleted" businesses ////////////////////////////////////////
+    await db.query(
+      `
+      SET SQL_SAFE_UPDATES = 0;
+
+      DELETE FROM
+        business
+      WHERE
+        status = 'DELETED'
+      ;
+
+      SET SQL_SAFE_UPDATES = 1;
+      `
+    );
+
+    // delete all "deleted" events ////////////////////////////////////////////
+    await db.query(
+      `
+      SET SQL_SAFE_UPDATES = 0;
+
+      DELETE FROM
+        event
+      WHERE
+        status = 'DELETED'
+      ;
+
+      SET SQL_SAFE_UPDATES = 1;
+      `
+    );
+
+    this.businessUserLoader.clearAll();
+
     // list all approved businesses /////////////////////////////////////////////
     await db.query(
       `
@@ -35,9 +67,9 @@ class Model {
       UPDATE
         business
       SET
-        approved = 'APPROVED_AND_LISTED'
+        status = 'LISTED'
       WHERE
-        approved = 'APPROVED'
+        status = 'APPROVED'
       ;
 
       SET SQL_SAFE_UPDATES = 1;
@@ -52,9 +84,9 @@ class Model {
       UPDATE
         event
       SET
-        approved = 'APPROVED_AND_LISTED'
+        status = 'LISTED'
       WHERE
-        approved = 'APPROVED'
+        status = 'APPROVED'
       ;
 
       SET SQL_SAFE_UPDATES = 1;
@@ -78,7 +110,7 @@ class Model {
             rating.business_id = business.id
         )
       WHERE
-        approved = 'APPROVED_AND_LISTED'
+        status = 'LISTED'
       ;
 
       SET SQL_SAFE_UPDATES = 1;
@@ -100,7 +132,7 @@ class Model {
       SET
         listing_index = (@curRow := @curRow + 1)
       WHERE
-        approved = 'APPROVED_AND_LISTED'
+        status = 'LISTED'
       ORDER BY calculated_rating DESC
       ;
 
@@ -122,7 +154,7 @@ class Model {
         listing_index = (@curRow := @curRow + 1)
       WHERE
         end > CURRENT_TIMESTAMP
-        AND approved = 'APPROVED_AND_LISTED'
+        AND status = 'LISTED'
       ORDER BY start
       ;
 
@@ -285,7 +317,7 @@ class Model {
             (?, ?)
           ON DUPLICATE KEY UPDATE
             updated_data = JSON_MERGE_PATCH(updated_data, ?),
-            approved = 'TENTATIVE'
+            status = 'TENTATIVE'
         `,
         [
           id,
@@ -379,6 +411,28 @@ class Model {
     }
 
     return data;
+  }
+
+  static async deleteBusiness(id) {
+    try {
+      await this.db.query(
+        `
+        UPDATE
+          business
+        SET
+          status = 'DELETED'
+        WHERE
+          id = ?
+        `,
+        [ id ]
+      );
+
+      this.businessLoader.clear(id);
+    }
+    catch(e) {
+      console.error(e);
+      throw new ApolloError("Failed to delete business.", 'DELETE_BUSINESS_FAILED');
+    }
   }
 
   static async addEvent(data, owner) {
@@ -490,10 +544,32 @@ class Model {
     }
   }
 
+  static async deleteEvent(id) {
+    try {
+      await this.db.query(
+        `
+        UPDATE
+          event
+        SET
+          status = 'DELETED'
+        WHERE
+          id = ?
+        `,
+        [ id ]
+      );
+
+      this.eventLoader.clear(id);
+    }
+    catch(e) {
+      console.error(e);
+      throw new ApolloError("Failed to delete event.", 'DELETE_EVENT_FAILED');
+    }
+  }
+
   static async getBusinessesOwnedBy(userId) {
     var businessUser = await this.businessUserLoader.load(userId);
 
-    if (! businessUser.owned_businesses) {
+    if (! businessUser.owned_business_ids) {
       const rows = await this.db.query(
         `
         SELECT
@@ -506,25 +582,20 @@ class Model {
         [ userId ]
       );
 
-      businessUser.owned_businesses = rows.map (_ => _.id);
+      businessUser.owned_business_ids = rows.map (_ => _.id);
 
       this.businessUserLoader
         .clear(userId)
         .prime(userId, businessUser);
     }
 
-    var res = new Array(businessUser.owned_businesses.length);
-    for (var i = 0; i < businessUser.owned_businesses.length; ++i) {
-      res[i] = await this.businessLoader.load(businessUser.owned_businesses[i]);
-    }
-
-    return res;
+    return await this.businessLoader.loadMany(businessUser.owned_business_ids);
   }
 
   static async getEventsOwnedBy(userId) {
     var businessUser = await this.businessUserLoader.load(userId);
 
-    if (! businessUser.owned_events) {
+    if (! businessUser.owned_event_ids) {
       const rows = await this.db.query(
         `
         SELECT
@@ -537,19 +608,14 @@ class Model {
         [ userId ]
       );
 
-      businessUser.owned_events = rows.map (_ => _.id);
+      businessUser.owned_event_ids = rows.map (_ => _.id);
 
       this.businessUserLoader
         .clear(userId)
         .prime(userId, businessUser);
     }
 
-    var res = new Array(businessUser.owned_events.length);
-    for (var i = 0; i < businessUser.owned_events.length; ++i) {
-      res[i] = await this.eventLoader.load(businessUser.owned_events[i]);
-    }
-
-    return res;
+    return await this.eventLoader.loadMany(businessUser.owned_event_ids);
   }
 
   static async getBusinessUpdate(id) {
@@ -562,7 +628,7 @@ class Model {
         SELECT
           JSON_INSERT(
             updated_data,
-            '$.approved', approved
+            '$.status', status
           ) AS data
         FROM
           business_tentative_update
@@ -596,7 +662,7 @@ class Model {
         UPDATE
           business
         SET
-          approved = ?
+          status = ?
         WHERE
           id = ?
         `,
@@ -621,7 +687,7 @@ class Model {
         UPDATE
           business_tentative_update
         SET
-          approved = ?
+          status = ?
         WHERE
           business_id = ?
         `,
@@ -725,7 +791,7 @@ class Model {
         UPDATE
           event
         SET
-          approved = ?
+          status = ?
         WHERE
           id = ?
         `,
@@ -752,7 +818,7 @@ class Model {
             props,
             '$.id', id,
             '$.owner', owner,
-            '$.approved', approved,
+            '$.status', status,
             '$.rating', calculated_rating,
             '$.display_name', display_name,
             '$.display_picture', display_picture,
@@ -762,8 +828,8 @@ class Model {
         FROM
           business
         WHERE
-          approved = 'TENTATIVE' OR
-          approved = 'REJECTED'
+          status = 'TENTATIVE' OR
+          status = 'REJECTED'
         `
       );
 
@@ -787,8 +853,8 @@ class Model {
         FROM
           business_tentative_update
         WHERE
-          approved = 'TENTATIVE' OR
-          approved = 'REJECTED'
+          status = 'TENTATIVE' OR
+          status = 'REJECTED'
         `
       );
 
@@ -812,7 +878,7 @@ class Model {
             props,
             '$.id', id,
             '$.owner', owner,
-            '$.approved', approved,
+            '$.status', status,
             '$.display_name', display_name,
             '$.display_picture', display_picture,
             '$.type', \`type\`
@@ -820,8 +886,8 @@ class Model {
         FROM
           event
         WHERE
-          approved = 'TENTATIVE' OR
-          approved = 'REJECTED'
+          status = 'TENTATIVE' OR
+          status = 'REJECTED'
         `
       );
 
@@ -1438,6 +1504,18 @@ class Model {
 
     return id;
   }
+
+  static async getOrderedBusinesses(type, offset, count) {
+    return this.orderedBusinessLoader.get(type).loadMany(
+      Array.from(Array(count), (_, i) => i + offset)
+    );
+  }
+
+  static async getOrderedEvents(offset, count) {
+    return this.orderedEventLoader.loadMany(
+      Array.from(Array(count), (_, i) => i + offset)
+    );
+  }
 }
 
 Model.db = new Database({
@@ -1476,6 +1554,9 @@ Model.businessUserLoader = new DataLoader(
     while (i < ids.length) res[i++] = null;
 
     return res;
+  },
+  {
+    cacheKeyFn: k => parseInt(k)
   }
 );
 
@@ -1511,6 +1592,9 @@ Model.publicUserLoader = new DataLoader(
     while (i < ids.length) res[i++] = null;
 
     return res;
+  },
+  {
+    cacheKeyFn: k => String(k)
   }
 );
 
@@ -1524,7 +1608,7 @@ Model.businessLoader = new DataLoader(
           props,
           '$.id', id,
           '$.owner', owner,
-          '$.approved', approved,
+          '$.status', status,
           '$.rating', calculated_rating,
           '$.display_name', display_name,
           '$.display_picture', display_picture,
@@ -1553,6 +1637,9 @@ Model.businessLoader = new DataLoader(
     while (i < ids.length) res[i++] = null;
 
     return res;
+  },
+  {
+    cacheKeyFn: k => parseInt(k)
   }
 );
 
@@ -1604,6 +1691,9 @@ Model.orderedBusinessLoader = new Map(
         while (i < keys.length) res[i++] = null;
 
         return res;
+      },
+      {
+        cacheKeyFn: k => parseInt(k)
       }
     )
   ]
@@ -1619,7 +1709,7 @@ Model.eventLoader = new DataLoader(
           props,
           '$.id', id,
           '$.owner', owner,
-          '$.approved', approved,
+          '$.status', status,
           '$.display_name', display_name,
           '$.display_picture', display_picture,
           '$.type', \`type\`
@@ -1646,6 +1736,9 @@ Model.eventLoader = new DataLoader(
     while (i < ids.length) res[i++] = null;
 
     return res;
+  },
+  {
+    cacheKeyFn: k => parseInt(k)
   }
 );
 
@@ -1679,6 +1772,9 @@ Model.orderedEventLoader = new DataLoader(
     while (i < keys.length) res[i++] = null;
 
     return res;
+  },
+  {
+    cacheKeyFn: k => parseInt(k)
   }
 );
 
@@ -1715,6 +1811,9 @@ Model.msgThreadLoader = new DataLoader(
     while (i < ids.length) res[i++] = null;
 
     return res;
+  },
+  {
+    cacheKeyFn: k => parseInt(k)
   }
 );
 
@@ -1749,6 +1848,9 @@ Model.msgLoader = new DataLoader(
       res[i] = messages;
     }
     return res;
+  },
+  {
+    cacheKeyFn: k => parseInt(k)
   }
 );
 

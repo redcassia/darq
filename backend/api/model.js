@@ -842,6 +842,13 @@ class Model {
     try {
       var business = await this.businessLoader.load(targetId);
 
+      if (! business) {
+        throw new ApolloError(
+          "Target does not exist",
+          'NO_SUCH_TARGET'
+        );
+      }
+
       const result = await this.db.query(
         `
         INSERT INTO

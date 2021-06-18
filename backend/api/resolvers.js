@@ -116,7 +116,16 @@ const resolvers = {
     async business(_, { id }, { user }) {
       _validateAuthenticatedPublicUser(user);
 
-      return Locale.apply(await Model.businessLoader.load(id), user.locale);
+      const b = await Model.businessLoader.load(id);
+      if (b) {
+        return Locale.apply(b, user.locale);
+      }
+      else {
+        throw new ApolloError(
+          "Business does not exist",
+          'NO_SUCH_BUSINESS'
+        );
+      }
     },
 
     async businesses(_, { limit, offset, type, sub_types }, { user }) {
@@ -189,7 +198,16 @@ const resolvers = {
     async event(_, { id }, { user }) {
       _validateAuthenticatedPublicUser(user);
 
-      return Locale.apply(await Model.eventLoader.load(id), user.locale);
+      const e = await Model.eventLoader.load(id);
+      if (e) {
+        return Locale.apply(e, user.locale);
+      }
+      else {
+        throw new ApolloError(
+          "Event does not exist",
+          'NO_SUCH_EVENT'
+        );
+      }
     },
 
     async events(_, { limit, offset, type }, { user }) {
@@ -300,6 +318,13 @@ const resolvers = {
 
       var thread = await Model.msgThreadLoader.load(threadId);
 
+      if (! thread) {
+        throw new ApolloError(
+          "Thread does not exist",
+          'NO_SUCH_THREAD'
+        );
+      }
+
       if (user.type == 'BUSINESS') {
         if (thread.business_user_id != user.id) {
           throw new ApolloError(
@@ -342,6 +367,13 @@ const resolvers = {
       }
 
       var thread = await Model.msgThreadLoader.load(threadId);
+
+      if (! thread) {
+        throw new ApolloError(
+          "Thread does not exist",
+          'NO_SUCH_THREAD'
+        );
+      }
 
       if (user.type == 'BUSINESS') {
 
@@ -895,6 +927,14 @@ const resolvers = {
       if (user.type == 'BUSINESS') {
         if (threadId) {
           var thread = await Model.msgThreadLoader.load(threadId);
+
+          if (! thread) {
+            throw new ApolloError(
+              "Thread does not exist",
+              'NO_SUCH_THREAD'
+            );
+          }
+
           if (thread.business_user_id == user.id) {
             return [ thread ];
           }
@@ -914,6 +954,14 @@ const resolvers = {
       else {
         if (threadId) {
           var thread = await Model.msgThreadLoader.load(threadId);
+
+          if (! thread) {
+            throw new ApolloError(
+              "Thread does not exist",
+              'NO_SUCH_THREAD'
+            );
+          }
+
           if (thread.public_user_id == user.id) {
             return [ thread ];
           }

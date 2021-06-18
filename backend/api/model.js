@@ -1462,6 +1462,12 @@ class Model {
       `
     );
 
+    this.orderedBusinessLoader.clearAll();
+    this.businessUserLoader.clearAll();
+    this.businessLoader.clearAll();
+    this.msgThreadLoader.clearAll();
+    this.msgLoader.clearAll();
+
     // delete all "deleted" events ////////////////////////////////////////////
     const deletedEventIds = await db.query(
       `
@@ -1494,7 +1500,8 @@ class Model {
       `
     );
 
-    this.businessUserLoader.clearAll();
+    this.orderedEventLoader.clearAll();
+    this.eventLoader.clearAll();
 
     // list all approved businesses /////////////////////////////////////////////
     await db.query(

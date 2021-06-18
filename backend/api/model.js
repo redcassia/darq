@@ -1462,7 +1462,7 @@ class Model {
       `
     );
 
-    this.orderedBusinessLoader.clearAll();
+    this.orderedBusinessLoader.forEach(l => l.clearAll());
     this.businessUserLoader.clearAll();
     this.businessLoader.clearAll();
     this.msgThreadLoader.clearAll();

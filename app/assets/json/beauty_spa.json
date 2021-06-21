@@ -7,9 +7,7 @@
     "columns": {
       "start": [
         {
-          "widget": "picture",
-          "height": 69.0,
-          "width": 70.0,
+          "widget": "profile_picture_list_page",
           "data": ["display_picture"]
         },
         {
@@ -57,7 +55,7 @@
           "height": 10.0
         },
         {
-          "widget": "contact_button",
+          "widget": "contact_button_list_page",
           "titleText": "contact_us",
           "data": ["id"]
         }
@@ -68,15 +66,13 @@
   "detailed": {
     "appbar": {
       "filter": false,
-      "text": "contact_us"
+      "title": "beauty_spa"
     },
     "columns": {
       "header": {
         "start": [
           {
-            "widget": "picture",
-            "height": 79.0,
-            "width": 80.0,
+            "widget": "profile_picture_detailed_page",
             "data": ["display_picture"]
           },
           {
@@ -86,19 +82,23 @@
           {
             "widget": "rating",
             "data": ["rating"]
+          },
+          {
+            "widget": "vertical_spacer",
+            "height": 6.0
+          },
+          {
+            "widget": "contact_button_detailed_page",
+            "titleText": "contact_us"
           }
         ],
         "end": [
           {
-            "widget": "text",
-            "textSize": "title9",
-            "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.7 },
+            "widget": "display_name_detailed_page",
             "data": ["display_name"]
           },
           {
-            "widget": "text",
-            "textSize": "title11Odd",
-            "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.5 },
+            "widget": "basic_text_detailed_page",
             "data": ["sub_type_string"]
           },
           {
@@ -107,8 +107,6 @@
           },
           {
             "widget": "text_with_icon",
-            "textSize": "title11Odd",
-            "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.5 },
             "iconName": "address.png",
             "joinedData": {
               "separator": ", ",
@@ -132,8 +130,6 @@
           },
           {
             "widget": "phone_number",
-            "textSize": "title10OddUnderlined",
-            "textColor": {"r": 66, "g": 102, "b": 119, "o": 1.0 },
             "iconName": "telephone.png",
             "maxElements": 2,
             "data": ["phone_number"]

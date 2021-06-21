@@ -5,7 +5,7 @@
     <item>
         <bitmap
             android:adjustViewBounds="true"
-            android:gravity="fill_horizontal|fill_vertical"
+            android:gravity="center"
             android:src="@mipmap/tab" />
     </item>
 </layer-list>

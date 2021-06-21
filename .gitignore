@@ -443,6 +443,7 @@ fabric.properties
 .DS_store
 
 .vscode/
+/.idea/
 
 # MySQL workbench backup file
 *.mwb.bak

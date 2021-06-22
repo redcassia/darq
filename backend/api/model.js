@@ -1569,7 +1569,7 @@ class Model {
       `
       SET SQL_SAFE_UPDATES = 0;
 
-      SET @curRow := 0;
+      SET @curRow := -1;
 
       UPDATE
         business
@@ -1590,7 +1590,7 @@ class Model {
       `
       SET SQL_SAFE_UPDATES = 0;
 
-      SET @curRow := 0;
+      SET @curRow := -1;
 
       UPDATE
         event

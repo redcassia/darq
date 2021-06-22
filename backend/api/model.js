@@ -1402,8 +1402,8 @@ class Model {
     return id;
   }
 
-  static async getOrderedBusinesses(type, offset, count) {
-    return this.orderedBusinessLoader.get(type).loadMany(
+  static async getOrderedBusinesses(offset, count) {
+    return this.orderedBusinessLoader.loadMany(
       Array.from(Array(count), (_, i) => i + offset)
     );
   }
@@ -1462,7 +1462,7 @@ class Model {
       `
     );
 
-    this.orderedBusinessLoader.forEach(l => l.clearAll());
+    this.orderedBusinessLoader.clearAll();
     this.businessUserLoader.clearAll();
     this.businessLoader.clearAll();
     this.msgThreadLoader.clearAll();
@@ -1583,7 +1583,7 @@ class Model {
       SET SQL_SAFE_UPDATES = 1;
       `
     );
-    this.orderedBusinessLoader.forEach(l => l.clearAll());
+    this.orderedBusinessLoader.clearAll();
 
     // update the listing index of events ///////////////////////////////////////
     await db.query(
@@ -1746,61 +1746,42 @@ Model.businessLoader = new DataLoader(
   }
 );
 
-Model.orderedBusinessLoader = new Map(
-  [
-    'SelfEmployedBusiness',
-    'ChildEducationBusiness',
-    'DomesticHelpBusiness',
-    'BeautyBusiness',
-    'TransportationBusiness',
-    'HospitalityBusiness',
-    'StationeryBusiness',
-    'MadeInQatarBusiness',
-    'SportsBusiness',
-    'EntertainmentBusiness',
-    'FoodBusiness',
-    'CleaningAndMaintenanceBusiness'
-  ].map(type =>
-  [
-    type,
-    new DataLoader(
-      async (keys) => {
-        const rows = await Model.db.query(
-          `
-          SELECT
-            id,
-            sub_type,
-            listing_index
-          FROM
-            business
-          WHERE
-            \`type\` = ?
-            AND listing_index IN (?)
-          ORDER BY
-            FIELD(listing_index, ?)
-          `,
-          [ type, keys, keys ]
-        );
+Model.orderedBusinessLoader = new DataLoader(
+  async (keys) => {
+    const rows = await Model.db.query(
+      `
+      SELECT
+        id,
+        type,
+        sub_type,
+        listing_index
+      FROM
+        business
+      WHERE
+        listing_index IN (?)
+      ORDER BY
+        FIELD(listing_index, ?)
+      `,
+      [ keys, keys ]
+    );
 
-        var res = new Array(keys.length);
-        var i = 0;
-        var j = 0;
-        while (i < keys.length && j < rows.length) {
-          res[i] = rows[j].listing_index == keys[i]
-            ? rows[j++]
-            : null;
-          ++i;
-        }
-        while (i < keys.length) res[i++] = null;
+    var res = new Array(keys.length);
+    var i = 0;
+    var j = 0;
+    while (i < keys.length && j < rows.length) {
+      res[i] = rows[j].listing_index == keys[i]
+        ? rows[j++]
+        : null;
+      ++i;
+    }
+    while (i < keys.length) res[i++] = null;
 
-        return res;
-      },
-      {
-        cacheKeyFn: k => parseInt(k)
-      }
-    )
-  ]
-));
+    return res;
+  },
+  {
+    cacheKeyFn: k => parseInt(k)
+  }
+);
 
 Model.eventLoader = new DataLoader(
   async (ids) => {

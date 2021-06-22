@@ -138,12 +138,12 @@ const resolvers = {
 
       // find the real offset according to this filter
       while (count < offset) {
-        var more = await Model.getOrderedBusinesses(type, realOffset, offset - count);
+        var more = await Model.getOrderedBusinesses(realOffset, offset - count);
         if (more.length == 0) break;
 
         for (var b of more) {
           if (b) {
-            if (! sub_types || sub_types.includes(b.sub_type)) {
+            if (b.type == type && (! sub_types || sub_types.includes(b.sub_type))) {
               ++count;
             }
             ++realOffset;
@@ -158,7 +158,7 @@ const resolvers = {
       // collect businesses
       count = 0;
       while (count < limit) {
-        var more = await Model.getOrderedBusinesses(type, realOffset, limit - count);
+        var more = await Model.getOrderedBusinesses(realOffset, limit - count);
         if (more.length == 0) break;
 
         // ids of businesses with correct sub_type
@@ -166,7 +166,7 @@ const resolvers = {
 
         for (var b of more) {
           if (b) {
-            if (! sub_types || sub_types.includes(b.sub_type)) {
+            if (b.type == type && (! sub_types || sub_types.includes(b.sub_type))) {
               ids.push(b.id);
             }
             ++realOffset;

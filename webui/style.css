@@ -1,10 +1,10 @@
 :root {
-    --main-color: #86C2C2;
-    --accent: #E1A854;
+    --main-color: #095D6A;
+    --accent: #F05D48;
     --red: #D31111;
     --green: #4ED16B;
 
-    --dark: #426676;
+    --dark: #0D2434;
     --medium-dark: rgba(66, 102, 118, 0.72);
     --medium: rgba(66, 102, 118, 0.36);
     --medium-light: rgba(245, 249, 250, 0.26);
@@ -157,11 +157,11 @@ input[type='submit'] {
     padding: 12px 26px;
     margin: 20px 0px;
 
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
     border: 0;
-    border-radius: 34.0741px 0px;
+    border-radius: 20px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
 
-    background-color: var(--dark);
+    background-color: var(--main-color);
     color: var(--white);
 }
 
@@ -373,7 +373,7 @@ select:active {
 }
 .multistring-input > button {
     padding: 6px 20px;
-    border-radius: 20px 0;
+    border-radius: 20px;
     margin: 0;
     margin-inline-start: 20px;
 
@@ -560,10 +560,13 @@ hr {
     width: 64px;
     height: 100%;
     margin: 0;
-    padding: 0;
+    padding: 20px 0px;
 
     background-color: var(--light);
     color: var(--main-color);
+
+    display: flex;
+    flex-direction: column;
 }
 
 .side-bar.open {
@@ -571,8 +574,12 @@ hr {
 }
 
 .side-bar > div {
-    margin: 30px 20px;
+    margin: 20px 20px;
     white-space: nowrap;
+}
+
+.side-bar > div > * {
+    vertical-align: middle;
 }
 
 .side-bar > div > span {
@@ -586,16 +593,21 @@ hr {
     line-height: 21px;
 }
 
-.side-bar > div > span.accent {
-    color: var(--accent);
-}
-
 .side-bar.open > div > span {
     display: inline-block;
 }
 
 .side-bar > div.active > span {
-    color: var(--medium-dark);
+    color: var(--accent);
+}
+
+.side-bar-btn.active {
+    filter: brightness(0) saturate(100%) invert(35%) sepia(13%) saturate(4908%) hue-rotate(329deg) brightness(129%) contrast(88%);
+}
+
+.side-bar-btn.bot {
+    margin-top: auto;
+    margin-bottom: 50px;
 }
 
 .screen-content {
@@ -836,7 +848,6 @@ hr {
     max-height: 160px;
     background-blend-mode: normal;
     filter: drop-shadow(0px 2.63091px 2.63091px rgba(0, 0, 0, 0.15));
-    border-radius: 17.5394px 0px;
 }
 
 .profile-big-text {
@@ -906,8 +917,8 @@ hr {
 }
 
 .profile-attachment {
-    border-radius: 23px;
     margin: 0 16px 16px 0;
+    filter: drop-shadow(0px 2.63091px 2.63091px rgba(0, 0, 0, 0.15));
     max-width: 210px;
     max-height: 210px;
 }

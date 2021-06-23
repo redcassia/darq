@@ -144,32 +144,32 @@
             <div class="screen-body">
                 <div class="side-bar">
                     <div class="side-bar-btn" style="text-align: right;">
-                        <img id="hamburger-btn" class="clickable" onClick="toggleHamburger()" src="assets/hamburger-icon.png" data-icon-name="hamburger" class="clickable" />
+                        <img title="Toggle Sidebar" alt="Toggle Sidebar" id="hamburger-btn" class="clickable" onClick="toggleHamburger()" src="assets/hamburger-icon.png" data-icon-name="hamburger" class="clickable" />
                     </div>
 
                     <div id="messages-btn" class="side-bar-btn clickable" onclick="navigateTo('messages')">
-                        <img src="assets/msg-icon.png" data-icon-name="msg" class="clickable" />
+                        <img title="Messages" alt="Messages" src="assets/msg-icon.png" data-icon-name="msg" class="clickable" />
                         <span>Inbox</span>
                     </div>
 
                     <div id="business-btn" class="side-bar-btn clickable" onclick="navigateTo('business')">
-                        <img src="assets/briefcase-icon.png" data-icon-name="briefcase" class="clickable" />
+                        <img title="Businesses" alt="Businesses" src="assets/briefcase-icon.png" data-icon-name="briefcase" class="clickable" />
                         <span>Businesses</span>
                     </div>
 
                     <div id="events-btn" class="side-bar-btn clickable" onclick="navigateTo('event')">
-                        <img src="assets/calendar-icon.png" data-icon-name="calendar" class="clickable" />
+                        <img title="Events" alt="Events" src="assets/calendar-icon.png" data-icon-name="calendar" class="clickable" />
                         <span>Events</span>
                     </div>
 
                     <div id="settings-btn" class="side-bar-btn clickable" onclick="navigateTo('settings')">
-                        <img src="assets/gear-icon.png" data-icon-name="gear" class="clickable" />
+                        <img title="Settings" alt="Settings" src="assets/gear-icon.png" data-icon-name="gear" class="clickable" />
                         <span>Settings</span>
                     </div>
 
-                    <div class="side-bar-btn">
-                        <img src="assets/gear-icon.png" data-icon-name="gear" class="invisible" />
-                        <span class="accent clickable underlined" onclick="signout()">Logout</span>
+                    <div class="side-bar-btn bot clickable" onclick="signout()">
+                        <img title="Logout" alt="Logout" src="assets/logout-icon.png" data-icon-name="logout" />
+                        <span>Logout</span>
                     </div>
                 </div>
 

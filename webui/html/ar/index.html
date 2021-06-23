@@ -74,7 +74,6 @@
 
         <style>
             #main-screen, input, select { direction: rtl; }
-            button { border-radius: 0px 34.0741px; }
             .multistring-input > button { border-radius: 0 20px; }
         </style>
 
@@ -152,28 +151,28 @@
                     </div>
 
                     <div id="messages-btn" class="side-bar-btn clickable" onclick="navigateTo('messages')">
-                        <img src="assets/msg-icon.png" data-icon-name="msg" class="clickable" />
+                        <img title="صندوق البريد" alt="صندوق البريد" src="assets/msg-icon.png" data-icon-name="msg" class="clickable" />
                         <span>صندوق البريد</span>
                     </div>
 
                     <div id="business-btn" class="side-bar-btn clickable" onclick="navigateTo('business')">
-                        <img src="assets/briefcase-icon.png" data-icon-name="briefcase" class="clickable" />
+                        <img title="الأعمال" alt="الأعمال" src="assets/briefcase-icon.png" data-icon-name="briefcase" class="clickable" />
                         <span>الأعمال</span>
                     </div>
 
                     <div id="events-btn" class="side-bar-btn clickable" onclick="navigateTo('event')">
-                        <img src="assets/calendar-icon.png" data-icon-name="calendar" class="clickable" />
+                        <img title="الأحداث" alt="الأحداث" src="assets/calendar-icon.png" data-icon-name="calendar" class="clickable" />
                         <span>الأحداث</span>
                     </div>
 
                     <div id="settings-btn" class="side-bar-btn clickable" onclick="navigateTo('settings')">
-                        <img src="assets/gear-icon.png" data-icon-name="gear" class="clickable" />
+                        <img title="إعدادات" alt="إعدادات" src="assets/gear-icon.png" data-icon-name="gear" class="clickable" />
                         <span>إعدادات</span>
                     </div>
 
-                    <div class="side-bar-btn">
-                        <img src="assets/gear-icon.png" data-icon-name="gear" class="invisible" />
-                        <span class="accent clickable underlined" onclick="signout()">تسجيل خروج</span>
+                    <div class="side-bar-btn bot clickable" onclick="signout()">
+                        <img title="تسجيل خروج" alt="تسجيل خروج" src="assets/logout-icon.png" data-icon-name="logout" />
+                        <span>تسجيل خروج</span>
                     </div>
                 </div>
 

@@ -72,10 +72,6 @@
     left: 0;
     width: 100%;
     height: calc(100% - 150px);
-
-    background: url('assets/home-bottom-bg-2.png') no-repeat, url('assets/home-bottom-bg-1.png') no-repeat;
-    background-size: 200px auto, 100% 170px;
-    background-position: left 30px bottom 70px, bottom;
 }
 
 .inactive-home-pane > .home-pane-content {

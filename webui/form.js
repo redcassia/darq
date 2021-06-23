@@ -16,7 +16,7 @@ class ImgInput {
       if (child.classList[0] == 'img-upload-obj') {
         var first = child.children[0];
         if (first) {
-          if (first.files) {
+          if (first.files && first.files.length > 0) {
             data.push(first.files[0]);
           }
           else if (first.attributes['data-val']) {
@@ -89,28 +89,34 @@ class ImgInput {
           var reader = new FileReader();
 
           reader.onload = function(e) {
-            var div = document.createElement("div");
-            div.setAttribute('class', 'img-upload-obj');
+            // var div = document.createElement("div");
+            // div.setAttribute('class', 'img-upload-obj');
 
             var img = document.createElement("img");
             img.setAttribute('src', e.target.result);
 
             var btn = document.createElement("button");
-            btn.onclick = function() {
+            btn.onclick = function(e) {
+              e.stopPropagation();
               this.parentElement.remove();
             }
 
-            var cloned = inp.cloneNode();
-            cloned.setAttribute('class', 'hidden');
-            div.appendChild(cloned);
-            div.appendChild(img);
-            div.appendChild(btn);
+            var cloned = inp.parentElement.cloneNode();
+            cloned.appendChild(inp.cloneNode());
+            cloned.files = [];
 
             var parent = input.parent();
             if (! parent.hasClass('multiple')) {
               parent.parent().children(".img-upload-obj").remove();
             }
-            parent.before(div);
+            parent.after(cloned);
+
+            ImgInput.applyEventHandlers();
+
+            inp.setAttribute('class', 'hidden');
+            inp.parentElement.setAttribute('class', 'img-upload-obj');
+            inp.parentElement.appendChild(img);
+            inp.parentElement.appendChild(btn);
           };
 
           reader.readAsDataURL(file);

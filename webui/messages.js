@@ -170,6 +170,8 @@ function see() {
 
 function sendMessage(msg) {
 
+  if (msg.length == 0) return;
+
   var id = activeMsgThread.id;
 
   GraphQL.mutation(`

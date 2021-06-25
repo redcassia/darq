@@ -8,7 +8,7 @@
     <div id="threads"></div>
 
 </div><div class="right-aligned-content with-submenu full-height">
-    <div class="hidden" id="thread-view" style="height: 100%;">
+    <div class="hidden" id="thread-view">
         <div id="messages"></div>
         <textarea 
             id="msg-box"
@@ -17,5 +17,9 @@
             }"
             onfocus="see()"
         ></textarea>
+        <i dir="rtl" id="msg-btn" class="fas fa-paper-plane accent clickable" onclick="
+            sendMessage($('#msg-box').val());
+            $('#msg-box').val('');
+        "></i>
     </div>
 </div>

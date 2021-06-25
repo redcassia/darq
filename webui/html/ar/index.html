@@ -72,10 +72,7 @@
 
         </script>
 
-        <style>
-            #main-screen, input, select { direction: rtl; }
-            .multistring-input > button { border-radius: 0 20px; }
-        </style>
+        <style> body { direction: rtl; } </style>
 
         <div id="locale-switcher" onclick="switchLocale('en')" style="left: 0;">English</div>
 
@@ -146,7 +143,7 @@
         <div id="main-screen" class="screen" style="display: none;">
             <div class="screen-body">
                 <div class="side-bar">
-                    <div class="side-bar-btn" style="text-align: right;">
+                    <div class="side-bar-btn" style="text-align: left;">
                         <img id="hamburger-btn" class="clickable" onClick="toggleHamburger()" src="assets/hamburger-icon.png" data-icon-name="hamburger" class="clickable" style="transform: scaleX(-1);" />
                     </div>
 

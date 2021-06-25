@@ -711,6 +711,11 @@ hr {
     max-width: 199px;
 }
 
+#thread-view {
+    position: relative;
+    height: 100%;
+}
+
 .thread-title {
     display: block;
     cursor: pointer;
@@ -790,6 +795,17 @@ hr {
     height: 100px;
     width: 100%;
     margin: 20px 0 0 0;
+}
+
+#msg-btn {
+    position: absolute;
+    bottom: 10px;
+}
+#msg-btn[dir='ltr'], #msg-btn[style*='direction: ltr'] {
+    right: 10px;
+}
+#msg-btn[dir='rtl'], #msg-btn[style*='direction: rtl'] {
+    left: 10px;
 }
 
 /* styles for data preview */

@@ -26,6 +26,19 @@ const server = new ApolloServer({
   context: (integrationCtx) => ({
     user: integrationCtx.req.user
   }),
+  plugins: [
+    {
+      async serverWillStart() {
+        await ServerManager.begin();
+
+        return {
+          async serverWillStop() {
+            await ServerManager.end();
+          }
+        }
+      }
+    }
+  ],
   debug: false
 });
 

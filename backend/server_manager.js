@@ -1,6 +1,27 @@
 var cron = require('node-cron');
 
 class ServerManager {
+
+  static onBegin(f) {
+    this._onBegin.push(f);
+  }
+
+  static async begin() {
+    for (var i = 0; i < this._onBegin.length; ++i) {
+      await this._onBegin[i]();
+    }
+  }
+
+  static onEnd(f) {
+    this._onEnd.push(f);
+  }
+
+  static async end() {
+    for (var i = this._onEnd.length - 1; i >=0 ; --i) {
+      await this._onEnd[i]();
+    }
+  }
+
   static _beginMaintenance() {
     this.inMaintenance = true;
   }
@@ -56,5 +77,7 @@ class ServerManager {
 
 ServerManager.inMaintenance = false;
 ServerManager.waitingRequests = [];
+ServerManager._onBegin = [];
+ServerManager._onEnd = [];
 
 module.exports = ServerManager;

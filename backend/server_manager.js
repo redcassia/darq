@@ -42,14 +42,14 @@ class ServerManager {
 
   static scheduleMaintenance(schedule, maintenanceFunc) {
     cron.schedule(schedule, async () => {
-      console.log("Starting scheduled maintenance");
+      console.info("Starting scheduled maintenance");
 
       try {
         this._beginMaintenance();
         await maintenanceFunc();
         this._endMaintenance();
 
-        console.log("Scheduled maintenance completed");
+        console.info("Scheduled maintenance completed");
       }
       catch (e) {
         console.error(e);
@@ -59,14 +59,14 @@ class ServerManager {
   }
 
   static async doMaintenanceNow(maintenanceFunc) {
-    console.log("Starting maintenance");
+    console.info("Starting maintenance");
 
     try {
       this._beginMaintenance();
       await maintenanceFunc();
       this._endMaintenance();
   
-      console.log("Maintenance completed");
+      console.info("Maintenance completed");
     }
     catch (e) {
       console.error(e);

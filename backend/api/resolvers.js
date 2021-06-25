@@ -11,7 +11,7 @@ const ServerManager = require('../server_manager');
 ServerManager.onBegin(() => {
   // schedule initial and regular maintenance events 5 seconds after server startup
   if (process.env.NODE_ENV != "test") {
-    console.log("Scheduling periodic maintenance");
+    console.info("Scheduling periodic maintenance");
 
     setTimeout(async () => {
         await ServerManager.doMaintenanceNow(
@@ -29,7 +29,9 @@ ServerManager.onBegin(() => {
 });
 
 ServerManager.onEnd(() => {
-  console.log("closing....")
+  if (process.env.NODE_ENV != "test") {
+    console.info("Closing DB connections");
+  }
   Model.db.close();
 });
 

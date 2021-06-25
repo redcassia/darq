@@ -20,13 +20,21 @@ const server = new ApolloServer({
   context: (integrationCtx) => ({
     user: testUser
   }),
+  plugins: [
+    {
+      serverWillStart() {
+        ServerManager.begin();
+
+        return {
+          serverWillStop() {
+            return ServerManager.end();
+          }
+        }
+      }
+    }
+  ],
+  stopOnTerminationSignals: false,
   debug: true
-});
-
-/////
-
-beforeAll(async () => {
-  await ServerManager.begin();
 });
 
 /////
@@ -81,5 +89,5 @@ test('query.user', async () => {
 /////
 
 afterAll(async () => {
-  await ServerManager.end();
+  await server.stop();
 });

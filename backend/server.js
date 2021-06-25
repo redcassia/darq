@@ -1,9 +1,22 @@
 require('dotenv').config()
 const https = require('https')
 const fs = require('fs')
+var process = require('process')
 require('log-timestamp')
 var express = require('express')
 var app = require('./api')
+
+// write PID to file for killing
+fs.writeFileSync('.server.pid', process.pid);
+
+process.on('exit', (code) => {
+  console.info(`Terminating server with exit code = ${code}`);
+  fs.unlinkSync('.server.pid');
+});
+process.on('SIGTERM', function () {
+  console.log('Received SIGTERM');
+  process.exit(0);
+});
 
 if (process.env.CERT_FILE && process.env.KEY_FILE && process.env.HTTPS_PORT) {
   var key = fs.readFileSync(process.env.KEY_FILE);

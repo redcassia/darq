@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "nohup node server.js > server.log &",
+    "stop": "kill $(cat .server.pid)"
   },
   "author": "",
   "license": "ISC",

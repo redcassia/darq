@@ -4,7 +4,7 @@
   "description": "A backend serving the DarQ API and Web-UI",
   "main": "server.js",
   "scripts": {
-    "test": "jest --runInBand",
+    "test": "jest --runInBand --verbose",
     "start": "nohup node server.js > server.log &",
     "stop": "kill $(cat .server.pid)"
   },

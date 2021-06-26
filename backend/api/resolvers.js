@@ -445,7 +445,7 @@ const resolvers = {
 
       return jsonwebtoken.sign(
         {
-          id: await Model.publicUserSignup(),
+          id: await Model.addPublicUser(),
           type: 'PUBLIC',
           locale: locale || 'en'
         },
@@ -456,7 +456,7 @@ const resolvers = {
 
     async authenticatePublicUser(_, { id, locale }) {
 
-      if (await Model.publicUserLogin(id)) {
+      if (await Model.verifyPublicUser(id)) {
           return jsonwebtoken.sign(
             {
               id: id,
@@ -479,7 +479,7 @@ const resolvers = {
 
       Mailer.newUser(
         email,
-        await Model.businessUserSignup(email, password)
+        await Model.addBusinessUser(email, password)
       );
     },
 
@@ -487,7 +487,7 @@ const resolvers = {
 
       return jsonwebtoken.sign(
         {
-          id: await Model.businessUserVerify(email, token),
+          id: await Model.setBusinessUserVerified(email, token),
           type: 'BUSINESS'
         },
         process.env.JWT_SECRET,
@@ -499,7 +499,7 @@ const resolvers = {
 
       return jsonwebtoken.sign(
         {
-          id: await Model.businessUserLogin(email, password),
+          id: await Model.verifyBusinessUser(email, password),
           type: 'BUSINESS'
         },
         process.env.JWT_SECRET,
@@ -510,12 +510,12 @@ const resolvers = {
     async changeBusinessUserPassword(_, { oldPassword, newPassword }, { user }) {
       _validateAuthenticatedBusinessUser(user);
 
-      await Model.businessUserChangePassword(user.id, oldPassword, newPassword);
+      await Model.changeBusinessUserPassword(user.id, oldPassword, newPassword);
     },
 
     async requestBusinessUserPasswordReset(_, { email }) {
 
-      var token = await Model.businessUserRequestResetPassword(email);
+      var token = await Model.requestResetBusinessUserPassword(email);
 
       if (token) Mailer.resetPassword(email, token);
     },
@@ -524,7 +524,7 @@ const resolvers = {
       // return json web token
       return jsonwebtoken.sign(
         {
-          id: await Model.businessUserResetPassword(email, token, newPassword),
+          id: await Model.resetBusinessUserPassword(email, token, newPassword),
           type: 'BUSINESS'
         },
         process.env.JWT_SECRET,

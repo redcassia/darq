@@ -1003,7 +1003,7 @@ class Model {
 
   // Account management ///////////////////////////////////////////////////////
 
-  static async publicUserSignup() {
+  static async addPublicUser() {
     // try for a maximum of 5 rounds
     for (var trials = 0; trials < 5; ++trials) {
       var id = cryptoRandomString({length: 16});
@@ -1035,7 +1035,7 @@ class Model {
     );
   }
 
-  static async publicUserLogin(id) {
+  static async verifyPublicUser(id) {
     var valid = false;
     try {
       const result = await this.db.query(
@@ -1068,7 +1068,7 @@ class Model {
     return valid;
   }
 
-  static async businessUserSignup(email, password) {
+  static async addBusinessUser(email, password) {
     const token = cryptoRandomString({length: 128, type: 'url-safe'});
 
     try {
@@ -1101,7 +1101,7 @@ class Model {
     }
   }
 
-  static async businessUserVerify(email, token) {
+  static async setBusinessUserVerified(email, token) {
     var result;
     try {
       result = await this.db.query(
@@ -1163,7 +1163,7 @@ class Model {
     return id;
   }
 
-  static async businessUserLogin(email, password) {
+  static async verifyBusinessUser(email, password) {
     var result;
       try {
         result = await this.db.query(
@@ -1227,7 +1227,7 @@ class Model {
       return id;
   }
 
-  static async businessUserChangePassword(userId, oldPassword, newPassword) {
+  static async changeBusinessUserPassword(userId, oldPassword, newPassword) {
 
     var result;
     try {
@@ -1281,7 +1281,7 @@ class Model {
     }
   }
 
-  static async businessUserRequestResetPassword(email) {
+  static async requestResetBusinessUserPassword(email) {
     var result;
     try {
       result = await this.db.query(
@@ -1333,7 +1333,7 @@ class Model {
     return token;
   }
 
-  static async businessUserResetPassword(email, token, newPassword) {
+  static async resetBusinessUserPassword(email, token, newPassword) {
 
     var result;
     try {

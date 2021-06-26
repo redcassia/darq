@@ -1971,6 +1971,8 @@ class Model {
       SET SQL_SAFE_UPDATES = 1;
       `
     );
+
+    db.close();
   }
 }
 

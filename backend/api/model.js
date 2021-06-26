@@ -1942,6 +1942,36 @@ class Model {
 
     db.close();
   }
+
+  static async __purge() {
+    var db = new Database({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: (process.env.NODE_ENV == "test") ? process.env.TEST_DB_NAME : process.env.DB_NAME,
+      connectionLimit: 1,
+      multipleStatements: true
+    });
+
+    await db.query(
+      `
+      SET SQL_SAFE_UPDATES = 0;
+      SET FOREIGN_KEY_CHECKS = 0; 
+
+      TRUNCATE TABLE business;
+      TRUNCATE TABLE business_tentative_update;
+      TRUNCATE TABLE business_user;
+      TRUNCATE TABLE event;
+      TRUNCATE TABLE message;
+      TRUNCATE TABLE message_thread;
+      TRUNCATE TABLE public_user;
+      TRUNCATE TABLE rating;
+
+      SET FOREIGN_KEY_CHECKS = 1;
+      SET SQL_SAFE_UPDATES = 1;
+      `
+    );
+  }
 }
 
 module.exports = Model;

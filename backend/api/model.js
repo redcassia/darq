@@ -125,7 +125,13 @@ class Model {
           suffix: '',
           width: 200,
           logger: (_) => {}
-        }).catch((e) => console.error(e));
+        }).catch((ignored) => {
+          fs.copyFile(
+            path.join(process.env.ATTACHMENTS_DIR, attachment),
+            path.join(process.env.ATTACHMENTS_DIR, 'thumb', attachment),
+            () => { }
+          );
+        });
       });
       rs.on('error', () => reject());
       rs.pipe(ws);

@@ -1414,6 +1414,10 @@ class Model {
     );
   }
 
+  static close() {
+    Model.db.close();
+  }
+
   // regular backend maintenance
   static async doMaintenance() {
 

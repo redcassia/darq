@@ -32,7 +32,7 @@ ServerManager.onEnd(() => {
   if (process.env.NODE_ENV != "test") {
     console.info("Closing DB connections");
   }
-  Model.db.close();
+  Model.close();
 });
 
 function _validateAuthenticatedBusinessUser(user) {

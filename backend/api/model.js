@@ -1414,8 +1414,327 @@ class Model {
     );
   }
 
+  static init() {
+    this.db = new Database({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: (process.env.NODE_ENV == "test") ? process.env.TEST_DB_NAME : process.env.DB_NAME,
+      connectionLimit: process.env.DB_CONNECTION_LIMIT
+    });
+
+    this.businessUserLoader = new DataLoader(
+      async (ids) => {
+        const rows = await this.db.query(
+          `
+          SELECT
+            *
+          FROM
+            business_user
+          WHERE
+            id IN (?)
+          ORDER BY
+            FIELD(id, ?)
+          `,
+          [ ids, ids ]
+        );
+
+        var res = new Array(ids.length);
+        var i = 0;
+        var j = 0;
+        while (i < ids.length && j < rows.length) {
+          res[i] = rows[j].id == ids[i]
+            ? rows[j++]
+            : null;
+          ++i;
+        }
+        while (i < ids.length) res[i++] = null;
+
+        return res;
+      },
+      {
+        cacheKeyFn: k => parseInt(k)
+      }
+    );
+
+    this.publicUserLoader = new DataLoader(
+      async (ids) => {
+        const rows = await this.db.query(
+          `
+          SELECT
+            id,
+            create_time,
+            last_login,
+            first_name,
+            last_name
+          FROM
+            public_user
+          WHERE
+            id IN (?)
+          ORDER BY
+            FIELD(id, ?)
+          `,
+          [ ids, ids ]
+        );
+
+        var res = new Array(ids.length);
+        var i = 0;
+        var j = 0;
+        while (i < ids.length && j < rows.length) {
+          res[i] = rows[j].id == ids[i]
+            ? rows[j++]
+            : null;
+          ++i;
+        }
+        while (i < ids.length) res[i++] = null;
+
+        return res;
+      },
+      {
+        cacheKeyFn: k => String(k)
+      }
+    );
+
+    this.businessLoader = new DataLoader(
+      async (ids) => {
+        const rows = await this.db.query(
+          `
+          SELECT
+            id,
+            JSON_INSERT(
+              props,
+              '$.id', id,
+              '$.owner', owner,
+              '$.status', status,
+              '$.rating', calculated_rating,
+              '$.display_name', display_name,
+              '$.display_picture', display_picture,
+              '$.type', \`type\`,
+              '$.sub_type', sub_type
+            ) AS data
+          FROM
+            business
+          WHERE
+            id IN (?)
+          ORDER BY
+            FIELD(id, ?)
+          `,
+          [ ids, ids ]
+        );
+
+        var res = new Array(ids.length);
+        var i = 0;
+        var j = 0;
+        while (i < ids.length && j < rows.length) {
+          res[i] = rows[j].id == ids[i]
+            ? JSON.parse(rows[j++].data)
+            : null;
+          ++i;
+        }
+        while (i < ids.length) res[i++] = null;
+
+        return res;
+      },
+      {
+        cacheKeyFn: k => parseInt(k)
+      }
+    );
+
+    this.orderedBusinessLoader = new DataLoader(
+      async (keys) => {
+        const rows = await this.db.query(
+          `
+          SELECT
+            id,
+            type,
+            sub_type,
+            listing_index
+          FROM
+            business
+          WHERE
+            listing_index IN (?)
+          ORDER BY
+            FIELD(listing_index, ?)
+          `,
+          [ keys, keys ]
+        );
+
+        var res = new Array(keys.length);
+        var i = 0;
+        var j = 0;
+        while (i < keys.length && j < rows.length) {
+          res[i] = rows[j].listing_index == keys[i]
+            ? rows[j++]
+            : null;
+          ++i;
+        }
+        while (i < keys.length) res[i++] = null;
+
+        return res;
+      },
+      {
+        cacheKeyFn: k => parseInt(k)
+      }
+    );
+
+    this.eventLoader = new DataLoader(
+      async (ids) => {
+        const rows = await this.db.query(
+          `
+          SELECT
+            id,
+            JSON_INSERT(
+              props,
+              '$.id', id,
+              '$.owner', owner,
+              '$.status', status,
+              '$.display_name', display_name,
+              '$.display_picture', display_picture,
+              '$.type', \`type\`
+            ) AS data
+          FROM
+            event
+          WHERE
+            id IN (?)
+          ORDER BY
+            FIELD(id, ?)
+          `,
+          [ ids, ids ]
+        );
+
+        var res = new Array(ids.length);
+        var i = 0;
+        var j = 0;
+        while (i < ids.length && j < rows.length) {
+          res[i] = rows[j].id == ids[i]
+            ? JSON.parse(rows[j++].data)
+            : null;
+          ++i;
+        }
+        while (i < ids.length) res[i++] = null;
+
+        return res;
+      },
+      {
+        cacheKeyFn: k => parseInt(k)
+      }
+    );
+
+    this.orderedEventLoader = new DataLoader(
+      async (keys) => {
+        const rows = await this.db.query(
+          `
+          SELECT
+            id,
+            type,
+            listing_index
+          FROM
+            event
+          WHERE
+            listing_index IN (?)
+          ORDER BY
+            FIELD(listing_index, ?)
+          `,
+          [ keys, keys ]
+        );
+
+        var res = new Array(keys.length);
+        var i = 0;
+        var j = 0;
+        while (i < keys.length && j < rows.length) {
+          res[i] = rows[j].listing_index == keys[i]
+            ? rows[j++]
+            : null;
+          ++i;
+        }
+        while (i < keys.length) res[i++] = null;
+
+        return res;
+      },
+      {
+        cacheKeyFn: k => parseInt(k)
+      }
+    );
+
+    this.msgThreadLoader = new DataLoader(
+      async (ids) => {
+        const rows = await this.db.query(
+          `
+          SELECT
+            id,
+            business_id,
+            public_user_id,
+            business_user_id,
+            targetLastSeenIndex,
+            senderLastSeenIndex
+          FROM
+            message_thread
+          WHERE
+            id IN (?)
+          ORDER BY
+            FIELD(id, ?)
+          `,
+          [ ids, ids ]
+        );
+
+        var res = new Array(ids.length);
+        var i = 0;
+        var j = 0;
+        while (i < ids.length && j < rows.length) {
+          res[i] = rows[j].id == ids[i]
+            ? rows[j++]
+            : null;
+          ++i;
+        }
+        while (i < ids.length) res[i++] = null;
+
+        return res;
+      },
+      {
+        cacheKeyFn: k => parseInt(k)
+      }
+    );
+
+    this.msgLoader = new DataLoader(
+      async (ids) => {
+        var res = new Array(ids.length);
+        for (var i = 0; i < ids.length; ++i) {
+          const rows = await this.db.query(
+            `
+            SELECT
+              data AS msg,
+              sender,
+              create_time
+            FROM
+              message
+            WHERE
+              message_thread_id = ?
+            ORDER BY create_time
+            `,
+            [ ids[i] ]
+          );
+
+          var messages = new Array(rows.length);
+          for (var j = 0; j < rows.length; ++j) {
+            messages[j] = {
+              index: j,
+              msg: rows[j].msg,
+              time: rows[j].create_time,
+              sender: rows[j].sender
+            }
+          }
+          res[i] = messages;
+        }
+        return res;
+      },
+      {
+        cacheKeyFn: k => parseInt(k)
+      }
+    );
+  }
+
   static close() {
-    Model.db.close();
+    this.db.close();
   }
 
   // regular backend maintenance
@@ -1446,7 +1765,7 @@ class Model {
       var business = await this.getBusinessWithUpdate(deletedBusinessIds[i].id);
 
       await this._foreachAttachment(business, (a) => this._removeAttachment(a));
-      
+
       if (business.update) {
         await this._foreachAttachment(business.update, (a) => this._removeAttachment(a));
       }
@@ -1624,322 +1943,5 @@ class Model {
     db.close();
   }
 }
-
-Model.db = new Database({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: (process.env.NODE_ENV == "test") ? process.env.TEST_DB_NAME : process.env.DB_NAME,
-  connectionLimit: process.env.DB_CONNECTION_LIMIT
-});
-
-Model.businessUserLoader = new DataLoader(
-  async (ids) => {
-    const rows = await Model.db.query(
-      `
-      SELECT
-        *
-      FROM
-        business_user
-      WHERE
-        id IN (?)
-      ORDER BY
-        FIELD(id, ?)
-      `,
-      [ ids, ids ]
-    );
-
-    var res = new Array(ids.length);
-    var i = 0;
-    var j = 0;
-    while (i < ids.length && j < rows.length) {
-      res[i] = rows[j].id == ids[i]
-        ? rows[j++]
-        : null;
-      ++i;
-    }
-    while (i < ids.length) res[i++] = null;
-
-    return res;
-  },
-  {
-    cacheKeyFn: k => parseInt(k)
-  }
-);
-
-Model.publicUserLoader = new DataLoader(
-  async (ids) => {
-    const rows = await Model.db.query(
-      `
-      SELECT
-        id,
-        create_time,
-        last_login,
-        first_name,
-        last_name
-      FROM
-        public_user
-      WHERE
-        id IN (?)
-      ORDER BY
-        FIELD(id, ?)
-      `,
-      [ ids, ids ]
-    );
-
-    var res = new Array(ids.length);
-    var i = 0;
-    var j = 0;
-    while (i < ids.length && j < rows.length) {
-      res[i] = rows[j].id == ids[i]
-        ? rows[j++]
-        : null;
-      ++i;
-    }
-    while (i < ids.length) res[i++] = null;
-
-    return res;
-  },
-  {
-    cacheKeyFn: k => String(k)
-  }
-);
-
-Model.businessLoader = new DataLoader(
-  async (ids) => {
-    const rows = await Model.db.query(
-      `
-      SELECT
-        id,
-        JSON_INSERT(
-          props,
-          '$.id', id,
-          '$.owner', owner,
-          '$.status', status,
-          '$.rating', calculated_rating,
-          '$.display_name', display_name,
-          '$.display_picture', display_picture,
-          '$.type', \`type\`,
-          '$.sub_type', sub_type
-        ) AS data
-      FROM
-        business
-      WHERE
-        id IN (?)
-      ORDER BY
-        FIELD(id, ?)
-      `,
-      [ ids, ids ]
-    );
-
-    var res = new Array(ids.length);
-    var i = 0;
-    var j = 0;
-    while (i < ids.length && j < rows.length) {
-      res[i] = rows[j].id == ids[i]
-        ? JSON.parse(rows[j++].data)
-        : null;
-      ++i;
-    }
-    while (i < ids.length) res[i++] = null;
-
-    return res;
-  },
-  {
-    cacheKeyFn: k => parseInt(k)
-  }
-);
-
-Model.orderedBusinessLoader = new DataLoader(
-  async (keys) => {
-    const rows = await Model.db.query(
-      `
-      SELECT
-        id,
-        type,
-        sub_type,
-        listing_index
-      FROM
-        business
-      WHERE
-        listing_index IN (?)
-      ORDER BY
-        FIELD(listing_index, ?)
-      `,
-      [ keys, keys ]
-    );
-
-    var res = new Array(keys.length);
-    var i = 0;
-    var j = 0;
-    while (i < keys.length && j < rows.length) {
-      res[i] = rows[j].listing_index == keys[i]
-        ? rows[j++]
-        : null;
-      ++i;
-    }
-    while (i < keys.length) res[i++] = null;
-
-    return res;
-  },
-  {
-    cacheKeyFn: k => parseInt(k)
-  }
-);
-
-Model.eventLoader = new DataLoader(
-  async (ids) => {
-    const rows = await Model.db.query(
-      `
-      SELECT
-        id,
-        JSON_INSERT(
-          props,
-          '$.id', id,
-          '$.owner', owner,
-          '$.status', status,
-          '$.display_name', display_name,
-          '$.display_picture', display_picture,
-          '$.type', \`type\`
-        ) AS data
-      FROM
-        event
-      WHERE
-        id IN (?)
-      ORDER BY
-        FIELD(id, ?)
-      `,
-      [ ids, ids ]
-    );
-
-    var res = new Array(ids.length);
-    var i = 0;
-    var j = 0;
-    while (i < ids.length && j < rows.length) {
-      res[i] = rows[j].id == ids[i]
-        ? JSON.parse(rows[j++].data)
-        : null;
-      ++i;
-    }
-    while (i < ids.length) res[i++] = null;
-
-    return res;
-  },
-  {
-    cacheKeyFn: k => parseInt(k)
-  }
-);
-
-Model.orderedEventLoader = new DataLoader(
-  async (keys) => {
-    const rows = await Model.db.query(
-      `
-      SELECT
-        id,
-        type,
-        listing_index
-      FROM
-        event
-      WHERE
-        listing_index IN (?)
-      ORDER BY
-        FIELD(listing_index, ?)
-      `,
-      [ keys, keys ]
-    );
-
-    var res = new Array(keys.length);
-    var i = 0;
-    var j = 0;
-    while (i < keys.length && j < rows.length) {
-      res[i] = rows[j].listing_index == keys[i]
-        ? rows[j++]
-        : null;
-      ++i;
-    }
-    while (i < keys.length) res[i++] = null;
-
-    return res;
-  },
-  {
-    cacheKeyFn: k => parseInt(k)
-  }
-);
-
-Model.msgThreadLoader = new DataLoader(
-  async (ids) => {
-    const rows = await Model.db.query(
-      `
-      SELECT
-        id,
-        business_id,
-        public_user_id,
-        business_user_id,
-        targetLastSeenIndex,
-        senderLastSeenIndex
-      FROM
-        message_thread
-      WHERE
-        id IN (?)
-      ORDER BY
-        FIELD(id, ?)
-      `,
-      [ ids, ids ]
-    );
-
-    var res = new Array(ids.length);
-    var i = 0;
-    var j = 0;
-    while (i < ids.length && j < rows.length) {
-      res[i] = rows[j].id == ids[i]
-        ? rows[j++]
-        : null;
-      ++i;
-    }
-    while (i < ids.length) res[i++] = null;
-
-    return res;
-  },
-  {
-    cacheKeyFn: k => parseInt(k)
-  }
-);
-
-Model.msgLoader = new DataLoader(
-  async (ids) => {
-    var res = new Array(ids.length);
-    for (var i = 0; i < ids.length; ++i) {
-      const rows = await Model.db.query(
-        `
-        SELECT
-          data AS msg,
-          sender,
-          create_time
-        FROM
-          message
-        WHERE
-          message_thread_id = ?
-        ORDER BY create_time
-        `,
-        [ ids[i] ]
-      );
-
-      var messages = new Array(rows.length);
-      for (var j = 0; j < rows.length; ++j) {
-        messages[j] = {
-          index: j,
-          msg: rows[j].msg,
-          time: rows[j].create_time,
-          sender: rows[j].sender
-        }
-      }
-      res[i] = messages;
-    }
-    return res;
-  },
-  {
-    cacheKeyFn: k => parseInt(k)
-  }
-);
 
 module.exports = Model;

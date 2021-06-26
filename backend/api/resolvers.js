@@ -9,6 +9,8 @@ const Mailer = require('./mailer');
 const ServerManager = require('../server_manager');
 
 ServerManager.onBegin(() => {
+  Model.init();
+
   // schedule initial and regular maintenance events 5 seconds after server startup
   if (process.env.NODE_ENV != "test") {
     console.info("Scheduling periodic maintenance");

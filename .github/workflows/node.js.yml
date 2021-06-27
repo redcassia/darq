@@ -30,7 +30,8 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
-    - run: sudo service mysql start
+    - run: |
+        mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -uroot -ppassword -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password'; flush privileges;"
     - run: |
         cd backend
         mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -uroot -ppassword -e "source model.sql"

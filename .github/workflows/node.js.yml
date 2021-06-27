@@ -33,7 +33,7 @@ jobs:
     - run: sudo /etc/init.d/mysql start
     - run: |
         cd backend
-        mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -uroot -ppassword -e "source model.sql"
+        mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -uroot -proot -e "source model.sql"
         npm install
         cp .env.template .env
         npm test

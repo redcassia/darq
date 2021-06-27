@@ -36,7 +36,7 @@ jobs:
         cd backend
         mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -uroot -ppassword -e "source model.sql"
         mkdir attachments
-        mkdir attachments\thumb
+        mkdir attachments/thumb
         printf "DB_HOST=localhost\nDB_PORT=${{ job.services.mysql.ports['3306'] }}\nDB_USER=root\nDB_PASSWORD=password\nTEST_DB_NAME=darq\nDB_CONNECTION_LIMIT=4\nJWT_SECRET=somereallylongsecretkey\nATTACHMENTS_DIR=attachments\n" > .env
         npm install
         npm test

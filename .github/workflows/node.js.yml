@@ -30,13 +30,26 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
-    - run: |
+
+    - name: Configure MySQL
+      run: |
         mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -uroot -ppassword -e "ALTER USER 'root' IDENTIFIED WITH mysql_native_password BY 'password'; FLUSH PRIVILEGES;"
-    - run: |
+
+    - name: Install Node dependencies
+      run: |
+        cd backend
+        npm install
+
+    - name: Setup test environment
+      run: |
         cd backend
         mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -uroot -ppassword -e "source model.sql"
         mkdir attachments
         mkdir attachments/thumb
         printf "DB_HOST=localhost\nDB_PORT=${{ job.services.mysql.ports['3306'] }}\nDB_USER=root\nDB_PASSWORD=password\nTEST_DB_NAME=darq\nDB_CONNECTION_LIMIT=4\nJWT_SECRET=somereallylongsecretkey\nATTACHMENTS_DIR=attachments\n" > .env
-        npm install
+
+
+    - name: Run tests
+      run: |
+        cd backend
         npm test

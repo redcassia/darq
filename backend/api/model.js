@@ -610,7 +610,7 @@ class Model {
             var oldBusiness = await this.businessLoader.load(id);
 
             if (oldBusiness.attachments) {
-              data.attachments = _updateAttachments(
+              data.attachments = this._updateAttachments(
                 oldBusiness.attachments,
                 data.old_attachments || [],
                 data.attachments || []

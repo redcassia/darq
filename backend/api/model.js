@@ -754,7 +754,8 @@ class Model {
         `
       );
 
-      return rows.map(row => this.businessLoader.load(row.business_id));
+      const ids = rows.map(_ => _.business_id);
+      return await this.businessLoader.loadMany(ids);
     }
     catch (e) {
       console.error(e);

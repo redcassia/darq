@@ -10,7 +10,7 @@ function updateEventsMenu() {
       <div
         class="content-submenu-clickable-box"
         onclick="loadEvent(${id})"
-      >${e["approved"] == 'REJECTED' ? "[REJECTED] - " : ""}${e["display_name"]}</div>
+      >${e["status"] == 'REJECTED' ? "[REJECTED] - " : ""}${e["display_name"]}</div>
     `);
   }
 }
@@ -22,7 +22,7 @@ function reviewEvent(id, approve) {
   `);
   if (! conf) return;
 
-  $("#loading-blanket").show();
+  showLoadingBlanket();
 
   GraphQL.mutation(`
     mutation ($id: ID!, $approve: Boolean!) {
@@ -32,7 +32,7 @@ function reviewEvent(id, approve) {
     id: id,
     approve: approve
   }).then((res) => {
-    $("#loading-blanket").hide();
+    hideLoadingBlanket();
 
     if (res.hasError) {
       
@@ -43,14 +43,14 @@ function reviewEvent(id, approve) {
         delete newEvents[id];
       }
       else {
-        newEvents[id]["approved"] = 'REJECTED';
+        newEvents[id]["status"] = 'REJECTED';
       }
 
       updateEventsMenu();
       document.getElementById("event-content").innerHTML = '';
     }
   }).catch(e => {
-    $("#loading-blanket").hide();
+    hideLoadingBlanket();
 
     console.log(e);
     alert("Failed to approve event");

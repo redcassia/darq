@@ -6,17 +6,21 @@ const { GraphQLScalarType } = require('graphql');
 const Locale = require('./locale');
 const Model = require('./model');
 const Mailer = require('./mailer');
+const ServerManager = require('../server_manager');
 
-function scheduleMaintenance() {
-  Model.startMaintenance().then(() => {
-    // schedule next maintenance
-    // TODO: change when deploying; run every 60 seconds, for development
-    setTimeout(scheduleMaintenance, 60000);
-  });
+async function scheduleMaintenance() {
+  await ServerManager.doMaintenanceNow(
+    () => Model.doMaintenance()
+  );
+
+  ServerManager.scheduleMaintenance(
+    process.env.MAINTENANCE_SCHEDULE,
+    () => Model.doMaintenance()
+  );
 }
 
-// cold-start maintenance starts 60 seconds after server startup
-setTimeout(scheduleMaintenance, 60000);
+// schedule initial and regular maintenance events 5 seconds after server startup
+setTimeout(scheduleMaintenance, 5000);
 
 function _validateAuthenticatedBusinessUser(user) {
   if (! user || user.type != 'BUSINESS') {
@@ -112,66 +116,77 @@ const resolvers = {
     async business(_, { id }, { user }) {
       _validateAuthenticatedPublicUser(user);
 
-      return Locale.apply(await Model.businessLoader.load(id), user.locale);
+      const b = await Model.businessLoader.load(id);
+      if (b) {
+        return Locale.apply(b, user.locale);
+      }
+      else {
+        throw new ApolloError(
+          "Business does not exist",
+          'NO_SUCH_BUSINESS'
+        );
+      }
     },
 
     async businesses(_, { limit, offset, type, sub_types }, { user }) {
       _validateAuthenticatedPublicUser(user);
 
-      var ids = [];
+      var res = [];
 
-      if (sub_types) {
-        var count = 0;
-        var realOffset = 0;
+      var count = 0;
+      var realOffset = 0;
 
-        // find the real offset according to this filter
-        while (count < offset) {
-          var arr = await Model.orderedBusinessLoader.get(type).loadMany(
-            Array.from(Array(offset - count), (_, i) => i + realOffset)
-          );
+      // find the real offset according to this filter
+      while (count < offset) {
+        var more = await Model.getOrderedBusinesses(realOffset, offset - count);
+        if (more.length == 0) break;
 
-          for (var b of arr) {
-            if (b) {
-              if (sub_types.includes(b.sub_type)) ++count;
-              ++realOffset;
+        for (var b of more) {
+          if (b) {
+            if (b.type == type && (! sub_types || sub_types.includes(b.sub_type))) {
+              ++count;
             }
-            else {
-              count = offset;
-            }
+            ++realOffset;
           }
-        }
-
-        // collect the result
-        count = 0;
-        while (count < limit) {
-          var arr = await Model.orderedBusinessLoader.get(type).loadMany(
-            Array.from(Array(limit - count), (_, i) => i + realOffset)
-          );
-
-          for (var b of arr) {
-            if (b) {
-              if (sub_types.includes(b.sub_type)) {
-                ids.push(b.id);
-                ++count;
-              }
-              ++realOffset;
-            }
-            else {
-              count = limit;
-            }
+          else {
+            count = offset;
+            break;
           }
         }
       }
-      else {
-        ids = (
-          await Model.orderedBusinessLoader.get(type).loadMany(
-            Array.from(Array(limit), (_, i) => i + offset)
-          )
-        ).filter(_ => _ != null)
-        .map(_ => _.id);
-      }
 
-      var res = await Model.businessLoader.loadMany(ids);
+      // collect businesses
+      count = 0;
+      while (count < limit) {
+        var more = await Model.getOrderedBusinesses(realOffset, limit - count);
+        if (more.length == 0) break;
+
+        // ids of businesses with correct sub_type
+        var ids = [];
+
+        for (var b of more) {
+          if (b) {
+            if (b.type == type && (! sub_types || sub_types.includes(b.sub_type))) {
+              ids.push(b.id);
+            }
+            ++realOffset;
+          }
+          else {
+            count = limit;
+            break;
+          }
+        }
+
+        // load businesses and validate that every one is
+        // listed (may be deleted or other)
+        more = await Model.businessLoader.loadMany(ids);
+        for (var b of more) {
+          if (b.status == 'LISTED') {
+            res.push(b);
+            ++count;
+          }
+        }
+      }
 
       for (var i = 0; i < res.length; ++i) {
         res[i] = Locale.apply(res[i], user.locale);
@@ -183,63 +198,76 @@ const resolvers = {
     async event(_, { id }, { user }) {
       _validateAuthenticatedPublicUser(user);
 
-      return Locale.apply(await Model.eventLoader.load(id), user.locale);
+      const e = await Model.eventLoader.load(id);
+      if (e) {
+        return Locale.apply(e, user.locale);
+      }
+      else {
+        throw new ApolloError(
+          "Event does not exist",
+          'NO_SUCH_EVENT'
+        );
+      }
     },
 
     async events(_, { limit, offset, type }, { user }) {
       _validateAuthenticatedPublicUser(user);
 
-      var ids = [];
+      var res = [];
 
-      if (type) {
-        var count = 0;
-        var realOffset = 0;
+      var count = 0;
+      var realOffset = 0;
 
-        // find the real offset according to this filter
-        while (count < offset) {
-          var arr= await Model.orderedEventLoader.loadMany(
-            Array.from(Array(offset - count), (_, i) => i + realOffset)
-          );
+      // find the real offset according to this filter
+      while (count < offset) {
+        var more = await Model.getOrderedEvents(realOffset, offset - count);
+        if (more.length == 0) break;
 
-          for (var e of arr) {
-            if (e) {
-              if (e.type == type) ++count;
-              ++realOffset;
+        for (var e of more) {
+          if (e) {
+            if (! type || type == e.type) {
+              ++count;
             }
-            else {
-              count = offset;
-            }
+            ++realOffset;
           }
-        }
-
-        // collect the result
-        count = 0;
-        while (count < limit) {
-          var arr = await Model.orderedEventLoader.loadMany(
-            Array.from(Array(limit - count), (_, i) => i + realOffset)
-          );
-
-          for (var e of arr) {
-            if (e) {
-              if (e.type == type) {
-                ids.push(e.id);
-                ++count;
-              }
-              ++realOffset;
-            }
-            else {
-              count = limit;
-            }
+          else {
+            count = offset;
+            break;
           }
         }
       }
-      else {
-        ids = (
-          await Model.orderedEventLoader.loadMany(
-            Array.from(Array(limit), (_, i) => i + offset)
-          )
-        ).filter(_ => _ != null)
-        .map(_ => _.id);
+
+      // collect events
+      count = 0;
+      while (count < limit) {
+        var more = await Model.getOrderedEvents(realOffset, limit - count);
+        if (more.length == 0) break;
+
+        // ids of events with correct type
+        var ids = [];
+
+        for (var e of more) {
+          if (e) {
+            if (! type || type == e.type) {
+              ids.push(e.id);
+            }
+            ++realOffset;
+          }
+          else {
+            count = limit;
+            break;
+          }
+        }
+
+        // load events and validate that every one is
+        // listed (may be deleted or other)
+        more = await Model.eventLoader.loadMany(ids);
+        for (var e of more) {
+          if (e.status == 'LISTED') {
+            res.push(e);
+            ++count;
+          }
+        }
       }
 
       var res = await Model.eventLoader.loadMany(ids);
@@ -290,6 +318,13 @@ const resolvers = {
 
       var thread = await Model.msgThreadLoader.load(threadId);
 
+      if (! thread) {
+        throw new ApolloError(
+          "Thread does not exist",
+          'NO_SUCH_THREAD'
+        );
+      }
+
       if (user.type == 'BUSINESS') {
         if (thread.business_user_id != user.id) {
           throw new ApolloError(
@@ -332,6 +367,13 @@ const resolvers = {
       }
 
       var thread = await Model.msgThreadLoader.load(threadId);
+
+      if (! thread) {
+        throw new ApolloError(
+          "Thread does not exist",
+          'NO_SUCH_THREAD'
+        );
+      }
 
       if (user.type == 'BUSINESS') {
 
@@ -729,6 +771,13 @@ const resolvers = {
       await Model.updateBusiness(id, data);
     },
 
+    async deleteBusiness(_, { id }, { user }) {
+      _validateAuthenticatedBusinessUser(user);
+      await _validateBusinessOwner(user, id);
+
+      await Model.deleteBusiness(id);
+    },
+
     async addEvent(_, { data }, { user }) {
       _validateAuthenticatedBusinessUser(user);
 
@@ -740,6 +789,13 @@ const resolvers = {
       await _validateEventOwner(user, id);
 
       await Model.updateEvent(id, data);
+    },
+
+    async deleteEvent(_, { id }, { user }) {
+      _validateAuthenticatedBusinessUser(user);
+      await _validateEventOwner(user, id);
+
+      await Model.deleteEvent(id);
     },
 
     // admin mutations
@@ -769,7 +825,7 @@ const resolvers = {
 
       var reviewed = false;
 
-      if (business.approved == 'TENTATIVE' || business.approved == 'REJECTED') {
+      if (business.status == 'TENTATIVE' || business.status == 'REJECTED') {
         await Model.setBusinessApproveStatus(id, approve);
 
         Mailer.businessAdd(
@@ -805,7 +861,7 @@ const resolvers = {
       const event = await Model.eventLoader.load(id);
       const owner = await Model.businessUserLoader.load(event.owner)
 
-      if (event.approved == 'TENTATIVE' || event.approved == 'REJECTED') {
+      if (event.status == 'TENTATIVE' || event.status == 'REJECTED') {
 
         await Model.setEventApproveStatus(id, approve);
 
@@ -871,6 +927,14 @@ const resolvers = {
       if (user.type == 'BUSINESS') {
         if (threadId) {
           var thread = await Model.msgThreadLoader.load(threadId);
+
+          if (! thread) {
+            throw new ApolloError(
+              "Thread does not exist",
+              'NO_SUCH_THREAD'
+            );
+          }
+
           if (thread.business_user_id == user.id) {
             return [ thread ];
           }
@@ -890,6 +954,14 @@ const resolvers = {
       else {
         if (threadId) {
           var thread = await Model.msgThreadLoader.load(threadId);
+
+          if (! thread) {
+            throw new ApolloError(
+              "Thread does not exist",
+              'NO_SUCH_THREAD'
+            );
+          }
+
           if (thread.public_user_id == user.id) {
             return [ thread ];
           }
@@ -958,7 +1030,7 @@ const resolvers = {
     async update(parent, args, { user }) {
       _validateAuthenticatedBusinessUserOrAdmin(user);
 
-      return await Model.getBusinessUpdate(parent.id);
+      return await Model.getBusinessWithUpdate(parent.id).update;
     }
   },
 

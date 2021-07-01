@@ -442,8 +442,11 @@ class ProfileView {
       }
     }
 
+    html += `</div>`;
+
+    html += `<br /><br /><br />`;
+
     html += `
-      </div>
       <div class="profile-medium-text">${e["description"].en}</div>
       <br>
       <div class="profile-medium-text">${e["description"].ar}</div>

@@ -13,7 +13,7 @@ function submitAddBusinessForm(mutationName, inputName, getData) {
     return;
   }
 
-  $("#loading-blanket").show();
+  showLoadingBlanket();
 
   GraphQL.mutation(`
     mutation ($data: ${inputName}!) {
@@ -22,7 +22,7 @@ function submitAddBusinessForm(mutationName, inputName, getData) {
   `, {
     data: data
   }).then(res => {
-    $("#loading-blanket").hide();
+    hideLoadingBlanket();
     Form.unlock();
 
     if (! res.hasError) {
@@ -34,7 +34,7 @@ function submitAddBusinessForm(mutationName, inputName, getData) {
       alert(getString('BUSINESS_ADD_FAIL_ALERT'));
     }
   }).catch(e => {
-    $("#loading-blanket").hide();
+    hideLoadingBlanket();
     Form.unlock();
 
     console.log(e);
@@ -55,7 +55,7 @@ function submitUpdateBusinessForm(mutationName, inputName, id, getData) {
     return;
   }
 
-  $("#loading-blanket").show();
+  showLoadingBlanket();
 
   GraphQL.mutation(`
     mutation ($id: ID!, $data: ${inputName}!) {
@@ -65,7 +65,7 @@ function submitUpdateBusinessForm(mutationName, inputName, id, getData) {
     id: id,
     data: data
   }).then(res => {
-    $("#loading-blanket").hide();
+    hideLoadingBlanket();
     Form.unlock();
 
     if (! res.hasError) {
@@ -77,7 +77,7 @@ function submitUpdateBusinessForm(mutationName, inputName, id, getData) {
       alert(getString('BUSINESS_UPDATE_FAIL_ALERT'));
     }
   }).catch(e => {
-    $("#loading-blanket").hide();
+    hideLoadingBlanket();
     Form.unlock();
 
     console.log(e);
@@ -95,9 +95,9 @@ function updateBusinessesMenu() {
     var b = businesses[id];
     menu.append(`
       <div
-        class="content-submenu-clickable-box"
+        class="content-submenu-clickable-box ${b["status"] == 'DELETED' ? "crossed" : ""}"
         onclick="loadBusiness(${id})"
-      >${b["approved"] == 'REJECTED' ? `[${getString('REJECTED')}] - ` : ""}${b["display_name"]}</div>
+      >${b["status"] == 'REJECTED' ? `[${getString('REJECTED')}] - ` : ""}${b["display_name"]}</div>
     `);
   }
 }
@@ -140,34 +140,100 @@ function editBusiness(id) {
   );
 }
 
+function deleteBusiness(id) {
+  if (! Form.tryLock()) return;
+
+  showLoadingBlanket();
+
+  GraphQL.mutation(`
+    mutation ($id: ID!) {
+      deleteBusiness(id: $id)
+    }
+  `, {
+    id: id
+  }).then(res => {
+    hideLoadingBlanket();
+    Form.unlock();
+
+    if (! res.hasError) {
+      alert(getString('BUSINESS_DELETE_SUCCESS_ALERT'));
+      queryOwnedBusinesses();
+    }
+    else {
+      console.log(res.errors[0]["message"]);
+      alert(getString('BUSINESS_DELETE_FAIL_ALERT'));
+    }
+  }).catch(e => {
+    hideLoadingBlanket();
+    Form.unlock();
+
+    console.log(e);
+    alert(getString('BUSINESS_DELETE_FAIL_ALERT'));
+  });
+}
+
+function showDeleteBusinessConfirmation(id) {
+  showBlanket(`
+    <div class="window">
+      <div class="h5 dark">
+        <span class="red">${getString('WARNING')}</span> ${getString('BUSINESS_DELETE_WARNING')}
+        <span class="red">'${businesses[id]["display_name"]}'</span>
+      </div>
+      <br />
+      <div id="invalid-business-name-confirm" class="h6 red hidden">
+        Invalid business name
+      </div>
+      <input id="business-name-confirm" type="text" />
+      <br />
+      <button class="red-bg" onclick="
+        if ($('#business-name-confirm').val() == '${businesses[id]["display_name"]}')
+          deleteBusiness(${id});
+        else
+          $('#invalid-business-name-confirm').show();
+      ">${getString('DELETE')}</button>
+    </div>
+  `);
+}
+
 function loadBusiness(id) {
 
   if (businesses[id]) {
     var b = businesses[id];
     var html = `
-      <div class"h6">
-        <span class="accent">Status: </span>
-        ${getString('BUSINESS_APPROVE_STATUS')[b["approved"]]}
-      </div>
-    `;
+      <div class="container full-height">
+        ${b["status"] == 'DELETED' ? `
+          <div class='container-dimmer inside-left-aligned-content'></div>
+        ` : ""}
 
-    if (b["update"]) {
-      html += `
-        <div class"h6">
-          <span class="accent">Update status: </span>
-          ${getString('BUSINESS_UPDATE_APPROVE_STATUS')[b["update"]["approved"]]}
+        <div>
+          <div class="profile-top-bar-left">
+            <div class"h6">
+              <span class="accent">${getString('STATUS')}: </span>
+              ${getString('BUSINESS_STATUS')[b["status"]]}
+            </div>
+
+            ${b["update"] ? `
+              <div class"h6">
+                <span class="accent">${getString('UPDATE_STATUS')}: </span>
+                ${getString('BUSINESS_UPDATE_STATUS')[b["update"]["status"]]}
+              </div>
+            ` : ""}
+          </div><div class="profile-top-bar-right">
+            <span class="profile-top-bar-block h6 accent clickable" onclick="editBusiness(${id})">
+              <i class="far fa-edit"></i>
+            </span>
+            <span class="profile-top-bar-block h6 accent clickable " onclick="showDeleteBusinessConfirmation(${id})">
+              <i class="far fa-trash-alt"></i>
+            </span>
+          </div>
         </div>
-      `;
-    }
 
-    html +=`
-      <br />
-      <div class="h6 clickable underlined" onclick="editBusiness(${id})">
-        <i class="fas fa-pencil-alt"></i> ${getString('EDIT')}
+        <br />
+        <br />
+        <br />
+
+        ${ProfileView.generateBusinessView(b)}
       </div>
-      <br />
-      <br />
-      ${ProfileView.generateBusinessView(b)}
     `;
 
     document.getElementById("business-content").innerHTML = html;

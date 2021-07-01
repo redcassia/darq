@@ -3,69 +3,83 @@ const graphqlEndpoint = "api";
 const attachmentsEndpoint = "attachment";
 
 const strings = {
-  BUSINESS_APPROVE_STATUS: {
+  BUSINESS_STATUS: {
     en: {
       TENTATIVE: "Your business is waiting to be approved.",
       APPROVED: "Congratulations! Your business is approved and will be listed on DarQ in the next 24 hours.",
-      APPROVED_AND_LISTED: "Your business is listed on DarQ!",
+      LISTED: "Your business is listed on DarQ!",
       REJECTED: "Your business information has been rejected. Please contact DarQ administrators.",
+      DELETED: "Your business has been tentatively deleted and will be removed from our system in the next 24 hours."
     },
     ar: {
-      TENTATIVE: "عملك ينتظر الموافقة.",
-      APPROVED: "تهانينا! تمت الموافقة على عملك وسيتم إدراجه في DarQ خلال الـ 24 ساعة القادمة.",
-      APPROVED_AND_LISTED: "عملك مدرج في DarQ!",
-      REJECTED: "تم رفض معلومات عملك. يرجى الاتصال بمسؤولي DarQ.",
+      TENTATIVE: "نشاطك التجاري ينتظر الموافقة.",
+      APPROVED: "تهانينا! تمت الموافقة على نشاطك التجاري وسيتم إدراجه في DarQ خلال الـ 24 ساعة القادمة.",
+      LISTED: "نشاطك التجاري مدرج في DarQ!",
+      REJECTED: "تم رفض معلومات نشاطك التجاري. يرجى الاتصال بمسؤولي DarQ.",
+      DELETED: "تم حذف نشاطك التجاري مؤقتًا وستتم إزالته من نظامنا خلال الـ 24 ساعة القادمة."
     },
   },
 
-  BUSINESS_UPDATE_APPROVE_STATUS: {
+  BUSINESS_UPDATE_STATUS: {
     en: {
       TENTATIVE: "The updated data is waiting to be approved.",
       APPROVED: "The updated data has been approved and will be listed shortly.",
-      APPROVED_AND_LISTED: "The updated data has been approved and listed on DarQ!",
+      LISTED: "The updated data has been approved and listed on DarQ!",
       REJECTED: "The updated information has been rejected. Please contact the DarQ administrators.",
     },
     ar: {
       TENTATIVE: "البيانات المحدثة في انتظار الموافقة عليها.",
       APPROVED: "تمت الموافقة على البيانات المحدثة وسيتم إدراجها قريبًا.",
-      APPROVED_AND_LISTED: "تمت الموافقة على البيانات المحدثة وإدراجها في DarQ!",
+      LISTED: "تمت الموافقة على البيانات المحدثة وإدراجها في DarQ!",
       REJECTED: "تم رفض المعلومات المحدثة. يرجى الاتصال بمسؤولي DarQ.",
     },
   },
 
-  EVENT_APPROVE_STATUS: {
+  EVENT_STATUS: {
     en: {
       TENTATIVE: "Your event is waiting to be approved.",
       APPROVED: "Congratulations! Your event is approved and will be listed on DarQ in the next 24 hours.",
-      APPROVED_AND_LISTED: "Your event is listed on DarQ!",
+      LISTED: "Your event is listed on DarQ!",
       REJECTED: "Your event information has been rejected. Please contact DarQ administrators.",
+      DELETED: "Your event has been tentatively deleted and will be removed from our system in the next 24 hours."
     },
     ar: {
       TENTATIVE: "حدثك ينتظر الموافقة عليه.",
       APPROVED: "تهانينا! تمت الموافقة على الحدث الخاص بك وسيتم إدراجه في DarQ خلال الـ 24 ساعة القادمة.",
-      APPROVED_AND_LISTED: "حدثك مدرج في DarQ!",
+      LISTED: "حدثك مدرج في DarQ!",
       REJECTED: "تم رفض معلومات الحدث الخاص بك. يرجى الاتصال بمسؤولي DarQ.",
+      DELETED: "تم حذف حدثك مؤقتًا وستتم إزالته من نظامنا خلال الـ 24 ساعة القادمة."
     },
   },
 
   BUSINESS_ADD_SUCCESS_ALERT: {
     en: "Your business has been added. The data will be reviewed and we will contact you shortly.",
-    ar: "تمت إضافة عملك. ستتم مراجعة البيانات وسنتصل بك قريبًا.",
+    ar: "تم إضافة نشاطك التجاري. ستتم مراجعة البيانات وسنتصل بك قريبًا.",
   },
 
   BUSINESS_ADD_FAIL_ALERT: {
     en: "Failed to add business.",
-    ar: "فشل إضافة العمل.",
+    ar: "فشل إضافة النشاط التجاري.",
   },
 
   BUSINESS_UPDATE_SUCCESS_ALERT: {
     en: "Your business has been updated. The data will be reviewed and we will contact you shortly.",
-    ar: "تم تحديث عملك. ستتم مراجعة البيانات وسنتصل بك قريبًا.",
+    ar: "تم تحديث نشاطك التجاري. ستتم مراجعة البيانات وسنتصل بك قريبًا.",
   },
 
   BUSINESS_UPDATE_FAIL_ALERT: {
     en: "Failed to update business.",
-    ar: "فشل تحديث العمل",
+    ar: "فشل تحديث النشاط التجاري",
+  },
+
+  BUSINESS_DELETE_SUCCESS_ALERT: {
+    en: "Your business is now being removed from our system.",
+    ar: "يتم الآن إزالة نشاطك التجاري من نظامنا.",
+  },
+
+  BUSINESS_DELETE_FAIL_ALERT: {
+    en: "Failed to delete business.",
+    ar: "فشل حذف النشاط التجاري.",
   },
 
   EVENT_ADD_SUCCESS_ALERT: {
@@ -88,6 +102,31 @@ const strings = {
     ar: "فشل تحديث الحدث.",
   },
 
+  EVENT_DELETE_SUCCESS_ALERT: {
+    en: "Your event is now being deleted from our system.",
+    ar: "يتم الآن حذف حدثك من نظامنا.",
+  },
+
+  EVENT_DELETE_FAIL_ALERT: {
+    en: "Failed to delete event.",
+    ar: "فشل حذف الحدث.",
+  },
+
+  BUSINESS_DELETE_WARNING: {
+    en: "This action is irreversible and will permanently remove your business from our system. To confirm please type your business's display name",
+    ar: "لا يمكن التراجع عن هذا الإجراء وسيؤدي إلى إزالة نشاطك التجاري بشكل دائم من نظامنا. للتأكيد ، يرجى كتابة اسم نشاطك التجاري",
+  },
+
+  EVENT_DELETE_WARNING: {
+    en: "This action is irreversible and will permanently remove your event from our system. To confirm please type your event's display name",
+    ar: "لا يمكن التراجع عن هذا الإجراء وسيؤدي إلى إزالة الحدث الخاص بك نهائيًا من نظامنا. للتأكيد ، يرجى كتابة اسم الحدث الخاص بك",
+  },
+
+  WARNING: {
+    en: "Warning:",
+    ar: "تحذير:",
+  },
+
   REJECTED: {
     en: "REJECTED",
     ar: "مرفوض",
@@ -96,6 +135,11 @@ const strings = {
   EDIT: {
     en: "Edit",
     ar: "تعديل",
+  },
+
+  DELETE: {
+    en: "Delete",
+    ar: "حذف",
   },
 
   MISSING_EMAIL_ALERT: {
@@ -175,7 +219,7 @@ const strings = {
 
   NEW_MESSAGES: {
     en: "New messages",
-    ar: "رسائل جديدة",
+    ar: "الرسائل الجديدة",
   },
 
   PASSWORD_CHANGE_SUCCESS_ALERT: {
@@ -347,6 +391,16 @@ const strings = {
     en: "Organizer",
     ar: "المنظم",
   },
+
+  STATUS: {
+    en: "Status",
+    ar: "الحالة",
+  },
+
+  UPDATE_STATUS: {
+    en: "Update status:",
+    ar: "حالة التحديث",
+  },
 }
 
 function getString(str) {
@@ -395,13 +449,47 @@ function isValidEmail(email) {
   return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email);
 }
 
+function showBlanket(content, dismissable = true) {
+  if (content) {
+    document.getElementById("blanket").innerHTML = `
+      <div id="blanket-content">${content}</div>
+    `;
+    $("#blanket-content").click(function(e){
+      e.stopPropagation();
+    });
+  }
+  else {
+    document.getElementById("blanket").innerHTML = "";
+  }
+
+  if (dismissable) {
+    $("#blanket").click(function(e) { hideBlanket(); });
+  }
+  else {
+    $("#blanket").click(function(e) { });
+  }
+
+  $("#blanket").show();
+}
+
+function hideBlanket() {
+  $("#blanket").hide();
+  document.getElementById("blanket").innerHTML = "";
+}
+
+function showLoadingBlanket() {
+  showBlanket('<i class="fas fa-sync fa-spin accent" style="font-size: 40px;"></i>', false);
+}
+
+var hideLoadingBlanket = hideBlanket;
+
 var showLoadingScreen;
 function _attemptToShowLoadBlanket() {
   if (inWelcome) {
     showLoadingScreen = setTimeout(_attemptToShowLoadBlanket, 50);
   }
   else {
-    $("#loading-blanket").show();
+    showLoadingBlanket();
   }
 }
 async function loadingScreen(func) {
@@ -410,12 +498,12 @@ async function loadingScreen(func) {
   await func();
 
   clearTimeout(showLoadingScreen);
-  $("#loading-blanket").hide();
+  hideLoadingBlanket();
 }
 
 const __elementaryBusinessQueryFields = `
   id
-  approved
+  status
   rating
   display_name
   display_picture
@@ -670,7 +758,7 @@ const _businessQueryFields = `
 
 const _eventQueryFields = `
   id
-  approved
+  status
   display_name
   display_picture
   type

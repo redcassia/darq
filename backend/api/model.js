@@ -12,139 +12,99 @@ const Database = require('./database');
 
 class Model {
 
-  // regular backend maintenance
-  static async startMaintenance() {
+  // Businesses/Events ////////////////////////////////////////////////////////
 
-    // TODO: uncomment when deploying
-    // console.log("Starting scheduled maintenance");
+  static async _foreachAttachment(data, f) {
+    if (data.display_picture) {
+      await f(data.display_picture);
+    }
 
-    var db = new Database({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      connectionLimit: 1,
-      multipleStatements: true
-    });
+    if (data.picture) {
+      await f(data.picture);
+    }
 
-    // list all approved businesses /////////////////////////////////////////////
-    await db.query(
-      `
-      SET SQL_SAFE_UPDATES = 0;
+    if (data.government_id) {
+      await f(data.government_id);
+    }
 
-      UPDATE
-        business
-      SET
-        approved = 'APPROVED_AND_LISTED'
-      WHERE
-        approved = 'APPROVED'
-      ;
+    if (data.trade_license) {
+      await f(data.trade_license);
+    }
 
-      SET SQL_SAFE_UPDATES = 1;
-      `
-    );
+    if (data.personnel) {
+      for (var i = 0; i < data.personnel.length; ++i) {
+        if (data.personnel[i].picture) {
+          await f(data.personnel[i].picture);
+        }
 
-    // list all approved events /////////////////////////////////////////////////
-    await db.query(
-      `
-      SET SQL_SAFE_UPDATES = 0;
+        if (data.personnel[i].attachments) {
+          for (var j = 0; j < data.personnel[i].attachments.length; ++j) {
+            await f(data.personnel[i].attachments[j]);
+          }
+        }
+      }
+    }
 
-      UPDATE
-        event
-      SET
-        approved = 'APPROVED_AND_LISTED'
-      WHERE
-        approved = 'APPROVED'
-      ;
+    if (data.attachments) {
+      for (var i = 0; i < data.attachments.length; ++i) {
+        await f(data.attachments[i]);
+      }
+    }
 
-      SET SQL_SAFE_UPDATES = 1;
-      `
-    );
-
-    // calculate business ratings ///////////////////////////////////////////////
-    await db.query(
-      `
-      SET SQL_SAFE_UPDATES = 0;
-
-      UPDATE
-        business
-      SET
-        calculated_rating = (
-          SELECT
-            AVG(stars)
-          FROM
-            rating
-          WHERE
-            rating.business_id = business.id
-        )
-      WHERE
-        approved = 'APPROVED_AND_LISTED'
-      ;
-
-      SET SQL_SAFE_UPDATES = 1;
-      `
-    );
-
-    this.businessLoader.clearAll();
-    this.eventLoader.clearAll();
-
-    // update the listing index of businesses ///////////////////////////////////
-    await db.query(
-      `
-      SET SQL_SAFE_UPDATES = 0;
-
-      SET @curRow := 0;
-
-      UPDATE
-        business
-      SET
-        listing_index = (@curRow := @curRow + 1)
-      WHERE
-        approved = 'APPROVED_AND_LISTED'
-      ORDER BY calculated_rating DESC
-      ;
-
-      SET SQL_SAFE_UPDATES = 1;
-      `
-    );
-    this.orderedBusinessLoader.forEach(l => l.clearAll());
-
-    // update the listing index of events ///////////////////////////////////////
-    await db.query(
-      `
-      SET SQL_SAFE_UPDATES = 0;
-
-      SET @curRow := 0;
-
-      UPDATE
-        event
-      SET
-        listing_index = (@curRow := @curRow + 1)
-      WHERE
-        end > CURRENT_TIMESTAMP
-        AND approved = 'APPROVED_AND_LISTED'
-      ORDER BY start
-      ;
-
-      UPDATE
-        event
-      SET
-        listing_index = -1
-      WHERE
-        listing_index >= 0
-        AND end <= CURRENT_TIMESTAMP
-      ;
-
-      SET SQL_SAFE_UPDATES = 1;
-      `
-    );
-
-    this.orderedEventLoader.clearAll();
-
-    db.close();
+    if (data.menu) {
+      for (var i = 0; i < data.menu.length; ++i) {
+        await f(data.menu[i]);
+      }
+    }
   }
 
-  // Businesses/Events ////////////////////////////////////////////////////////
+  static async _mapAttachment(data, f) {
+    if (data.display_picture) {
+      data.display_picture = await f(data.display_picture);
+    }
+
+    if (data.picture) {
+      data.picture = await f(data.picture);
+    }
+
+    if (data.government_id) {
+      data.government_id = await f(data.government_id);
+    }
+
+    if (data.trade_license) {
+      data.trade_license = await f(data.trade_license);
+    }
+
+    if (data.personnel) {
+      for (var i = 0; i < data.personnel.length; ++i) {
+        if (data.personnel[i].picture) {
+          data.personnel[i].picture =
+            await f(data.personnel[i].picture);
+        }
+
+        if (data.personnel[i].attachments) {
+          for (var j = 0; j < data.personnel[i].attachments.length; ++j) {
+            data.personnel[i].attachments[j] =
+              await f(data.personnel[i].attachments[j]);
+          }
+        }
+      }
+    }
+
+    if (data.attachments) {
+      for (var i = 0; i < data.attachments.length; ++i) {
+        data.attachments[i] = await f(data.attachments[i]);
+      }
+    }
+
+    if (data.menu) {
+      for (var i = 0; i < data.menu.length; ++i) {
+        data.menu[i] = await f(data.menu[i]);
+      }
+    }
+
+    return data;
+  }
 
   static _generateAttachmentName() {
     return cryptoRandomString({length: 55, type: 'url-safe'});
@@ -173,56 +133,19 @@ class Model {
   }
 
   static async _storeAttachments(data) {
-    if (data.display_picture) {
-      data.display_picture = await this._writeAttachmentToFile(data.display_picture);
-    }
-
-    if (data.picture) {
-      data.picture = await this._writeAttachmentToFile(data.picture);
-    }
-
-    if (data.government_id) {
-      data.government_id = await this._writeAttachmentToFile(data.government_id);
-    }
-
-    if (data.trade_license) {
-      data.trade_license = await this._writeAttachmentToFile(data.trade_license);
-    }
-
-    if (data.personnel) {
-      for (var i = 0; i < data.personnel.length; ++i) {
-        if (data.personnel[i].picture) {
-          data.personnel[i].picture =
-            await this._writeAttachmentToFile(data.personnel[i].picture);
-        }
-
-        if (data.personnel[i].attachments) {
-          for (var j = 0; j < data.personnel[i].attachments.length; ++j) {
-            data.personnel[i].attachments[j] =
-              await this._writeAttachmentToFile(data.personnel[i].attachments[j]);
-          }
-        }
-      }
-    }
-
-    if (data.attachments) {
-      for (var i = 0; i < data.attachments.length; ++i) {
-        data.attachments[i] = await this._writeAttachmentToFile(data.attachments[i]);
-      }
-    }
-
-    if (data.menu) {
-      for (var i = 0; i < data.menu.length; ++i) {
-        data.menu[i] = await this._writeAttachmentToFile(data.menu[i]);
-      }
-    }
-
-    return data;
+    return this._mapAttachment(
+      data,
+      (a) => this._writeAttachmentToFile(a)
+    );
   }
 
   static _removeAttachment(attachment) {
-    fs.unlink(path.join(process.env.ATTACHMENTS_DIR, attachment), () => {});
-    fs.unlink(path.join(process.env.ATTACHMENTS_DIR, 'thumb', attachment), () => {});
+
+    var img = path.join(process.env.ATTACHMENTS_DIR, attachment);
+    if (fs.existsSync(img)) fs.unlink(img, () => {});
+
+    var thumb = path.join(process.env.ATTACHMENTS_DIR, 'thumb', attachment);
+    if (fs.existsSync(thumb)) fs.unlink(thumb, () => {});
   }
 
   static _updateAttachments(original, kept, added) {
@@ -285,7 +208,7 @@ class Model {
             (?, ?)
           ON DUPLICATE KEY UPDATE
             updated_data = JSON_MERGE_PATCH(updated_data, ?),
-            approved = 'TENTATIVE'
+            status = 'TENTATIVE'
         `,
         [
           id,
@@ -379,6 +302,28 @@ class Model {
     }
 
     return data;
+  }
+
+  static async deleteBusiness(id) {
+    try {
+      await this.db.query(
+        `
+        UPDATE
+          business
+        SET
+          status = 'DELETED'
+        WHERE
+          id = ?
+        `,
+        [ id ]
+      );
+
+      this.businessLoader.clear(id);
+    }
+    catch(e) {
+      console.error(e);
+      throw new ApolloError("Failed to delete business.", 'DELETE_BUSINESS_FAILED');
+    }
   }
 
   static async addEvent(data, owner) {
@@ -490,10 +435,32 @@ class Model {
     }
   }
 
+  static async deleteEvent(id) {
+    try {
+      await this.db.query(
+        `
+        UPDATE
+          event
+        SET
+          status = 'DELETED'
+        WHERE
+          id = ?
+        `,
+        [ id ]
+      );
+
+      this.eventLoader.clear(id);
+    }
+    catch(e) {
+      console.error(e);
+      throw new ApolloError("Failed to delete event.", 'DELETE_EVENT_FAILED');
+    }
+  }
+
   static async getBusinessesOwnedBy(userId) {
     var businessUser = await this.businessUserLoader.load(userId);
 
-    if (! businessUser.owned_businesses) {
+    if (! businessUser.owned_business_ids) {
       const rows = await this.db.query(
         `
         SELECT
@@ -506,25 +473,20 @@ class Model {
         [ userId ]
       );
 
-      businessUser.owned_businesses = rows.map (_ => _.id);
+      businessUser.owned_business_ids = rows.map (_ => _.id);
 
       this.businessUserLoader
         .clear(userId)
         .prime(userId, businessUser);
     }
 
-    var res = new Array(businessUser.owned_businesses.length);
-    for (var i = 0; i < businessUser.owned_businesses.length; ++i) {
-      res[i] = await this.businessLoader.load(businessUser.owned_businesses[i]);
-    }
-
-    return res;
+    return await this.businessLoader.loadMany(businessUser.owned_business_ids);
   }
 
   static async getEventsOwnedBy(userId) {
     var businessUser = await this.businessUserLoader.load(userId);
 
-    if (! businessUser.owned_events) {
+    if (! businessUser.owned_event_ids) {
       const rows = await this.db.query(
         `
         SELECT
@@ -537,23 +499,17 @@ class Model {
         [ userId ]
       );
 
-      businessUser.owned_events = rows.map (_ => _.id);
+      businessUser.owned_event_ids = rows.map (_ => _.id);
 
       this.businessUserLoader
         .clear(userId)
         .prime(userId, businessUser);
     }
 
-    var res = new Array(businessUser.owned_events.length);
-    for (var i = 0; i < businessUser.owned_events.length; ++i) {
-      res[i] = await this.eventLoader.load(businessUser.owned_events[i]);
-    }
-
-    return res;
+    return await this.eventLoader.loadMany(businessUser.owned_event_ids);
   }
 
-  static async getBusinessUpdate(id) {
-
+  static async getBusinessWithUpdate(id) {
     var business = await this.businessLoader.load(id);
 
     if (business.update === undefined) {
@@ -562,7 +518,7 @@ class Model {
         SELECT
           JSON_INSERT(
             updated_data,
-            '$.approved', approved
+            '$.status', status
           ) AS data
         FROM
           business_tentative_update
@@ -584,7 +540,7 @@ class Model {
         .prime(id, business);
     }
 
-    return business.update;
+    return business;
   }
 
   // Business/Event approval //////////////////////////////////////////////////
@@ -596,7 +552,7 @@ class Model {
         UPDATE
           business
         SET
-          approved = ?
+          status = ?
         WHERE
           id = ?
         `,
@@ -621,7 +577,7 @@ class Model {
         UPDATE
           business_tentative_update
         SET
-          approved = ?
+          status = ?
         WHERE
           business_id = ?
         `,
@@ -725,7 +681,7 @@ class Model {
         UPDATE
           event
         SET
-          approved = ?
+          status = ?
         WHERE
           id = ?
         `,
@@ -752,7 +708,7 @@ class Model {
             props,
             '$.id', id,
             '$.owner', owner,
-            '$.approved', approved,
+            '$.status', status,
             '$.rating', calculated_rating,
             '$.display_name', display_name,
             '$.display_picture', display_picture,
@@ -762,8 +718,8 @@ class Model {
         FROM
           business
         WHERE
-          approved = 'TENTATIVE' OR
-          approved = 'REJECTED'
+          status = 'TENTATIVE' OR
+          status = 'REJECTED'
         `
       );
 
@@ -787,8 +743,8 @@ class Model {
         FROM
           business_tentative_update
         WHERE
-          approved = 'TENTATIVE' OR
-          approved = 'REJECTED'
+          status = 'TENTATIVE' OR
+          status = 'REJECTED'
         `
       );
 
@@ -812,7 +768,7 @@ class Model {
             props,
             '$.id', id,
             '$.owner', owner,
-            '$.approved', approved,
+            '$.status', status,
             '$.display_name', display_name,
             '$.display_picture', display_picture,
             '$.type', \`type\`
@@ -820,8 +776,8 @@ class Model {
         FROM
           event
         WHERE
-          approved = 'TENTATIVE' OR
-          approved = 'REJECTED'
+          status = 'TENTATIVE' OR
+          status = 'REJECTED'
         `
       );
 
@@ -885,6 +841,13 @@ class Model {
   static async createMessageThread(targetId, senderId) {
     try {
       var business = await this.businessLoader.load(targetId);
+
+      if (! business) {
+        throw new ApolloError(
+          "Target does not exist",
+          'NO_SUCH_TARGET'
+        );
+      }
 
       const result = await this.db.query(
         `
@@ -1438,6 +1401,224 @@ class Model {
 
     return id;
   }
+
+  static async getOrderedBusinesses(offset, count) {
+    return this.orderedBusinessLoader.loadMany(
+      Array.from(Array(count), (_, i) => i + offset)
+    );
+  }
+
+  static async getOrderedEvents(offset, count) {
+    return this.orderedEventLoader.loadMany(
+      Array.from(Array(count), (_, i) => i + offset)
+    );
+  }
+
+  // regular backend maintenance
+  static async doMaintenance() {
+
+    var db = new Database({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      connectionLimit: 1,
+      multipleStatements: true
+    });
+
+    // delete all "deleted" businesses ////////////////////////////////////////
+    const deletedBusinessIds = await db.query(
+      `
+      SELECT
+        id
+      FROM
+        business
+      WHERE
+        status = 'DELETED'
+      `
+    );
+
+    for (var i = 0; i < deletedBusinessIds.length; ++i) {
+      var business = await this.getBusinessWithUpdate(deletedBusinessIds[i].id);
+
+      await this._foreachAttachment(business, (a) => this._removeAttachment(a));
+      
+      if (business.update) {
+        await this._foreachAttachment(business.update, (a) => this._removeAttachment(a));
+      }
+    }
+
+    await db.query(
+      `
+      SET SQL_SAFE_UPDATES = 0;
+
+      DELETE FROM
+        business
+      WHERE
+        status = 'DELETED'
+      ;
+
+      SET SQL_SAFE_UPDATES = 1;
+      `
+    );
+
+    this.orderedBusinessLoader.clearAll();
+    this.businessUserLoader.clearAll();
+    this.businessLoader.clearAll();
+    this.msgThreadLoader.clearAll();
+    this.msgLoader.clearAll();
+
+    // delete all "deleted" events ////////////////////////////////////////////
+    const deletedEventIds = await db.query(
+      `
+      SELECT
+        id
+      FROM
+        event
+      WHERE
+        status = 'DELETED'
+      `
+    );
+
+    for (var i = 0; i < deletedEventIds.length; ++i) {
+      var event = await this.eventLoader.load(deletedEventIds[i].id);
+
+      await this._foreachAttachment(event, (a) => this._removeAttachment(a));
+    }
+
+    await db.query(
+      `
+      SET SQL_SAFE_UPDATES = 0;
+
+      DELETE FROM
+        event
+      WHERE
+        status = 'DELETED'
+      ;
+
+      SET SQL_SAFE_UPDATES = 1;
+      `
+    );
+
+    this.orderedEventLoader.clearAll();
+    this.eventLoader.clearAll();
+
+    // list all approved businesses /////////////////////////////////////////////
+    await db.query(
+      `
+      SET SQL_SAFE_UPDATES = 0;
+
+      UPDATE
+        business
+      SET
+        status = 'LISTED'
+      WHERE
+        status = 'APPROVED'
+      ;
+
+      SET SQL_SAFE_UPDATES = 1;
+      `
+    );
+
+    // list all approved events /////////////////////////////////////////////////
+    await db.query(
+      `
+      SET SQL_SAFE_UPDATES = 0;
+
+      UPDATE
+        event
+      SET
+        status = 'LISTED'
+      WHERE
+        status = 'APPROVED'
+      ;
+
+      SET SQL_SAFE_UPDATES = 1;
+      `
+    );
+
+    // calculate business ratings ///////////////////////////////////////////////
+    await db.query(
+      `
+      SET SQL_SAFE_UPDATES = 0;
+
+      UPDATE
+        business
+      SET
+        calculated_rating = (
+          SELECT
+            AVG(stars)
+          FROM
+            rating
+          WHERE
+            rating.business_id = business.id
+        )
+      WHERE
+        status = 'LISTED'
+      ;
+
+      SET SQL_SAFE_UPDATES = 1;
+      `
+    );
+
+    this.businessLoader.clearAll();
+    this.eventLoader.clearAll();
+
+    // update the listing index of businesses ///////////////////////////////////
+    await db.query(
+      `
+      SET SQL_SAFE_UPDATES = 0;
+
+      SET @curRow := -1;
+
+      UPDATE
+        business
+      SET
+        listing_index = (@curRow := @curRow + 1)
+      WHERE
+        status = 'LISTED'
+      ORDER BY calculated_rating DESC
+      ;
+
+      SET SQL_SAFE_UPDATES = 1;
+      `
+    );
+    this.orderedBusinessLoader.clearAll();
+
+    // update the listing index of events ///////////////////////////////////////
+    await db.query(
+      `
+      SET SQL_SAFE_UPDATES = 0;
+
+      SET @curRow := -1;
+
+      UPDATE
+        event
+      SET
+        listing_index = (@curRow := @curRow + 1)
+      WHERE
+        end > CURRENT_TIMESTAMP
+        AND status = 'LISTED'
+      ORDER BY start
+      ;
+
+      UPDATE
+        event
+      SET
+        listing_index = -1
+      WHERE
+        listing_index >= 0
+        AND end <= CURRENT_TIMESTAMP
+      ;
+
+      SET SQL_SAFE_UPDATES = 1;
+      `
+    );
+
+    this.orderedEventLoader.clearAll();
+
+    db.close();
+  }
 }
 
 Model.db = new Database({
@@ -1476,6 +1657,9 @@ Model.businessUserLoader = new DataLoader(
     while (i < ids.length) res[i++] = null;
 
     return res;
+  },
+  {
+    cacheKeyFn: k => parseInt(k)
   }
 );
 
@@ -1511,6 +1695,9 @@ Model.publicUserLoader = new DataLoader(
     while (i < ids.length) res[i++] = null;
 
     return res;
+  },
+  {
+    cacheKeyFn: k => String(k)
   }
 );
 
@@ -1524,7 +1711,7 @@ Model.businessLoader = new DataLoader(
           props,
           '$.id', id,
           '$.owner', owner,
-          '$.approved', approved,
+          '$.status', status,
           '$.rating', calculated_rating,
           '$.display_name', display_name,
           '$.display_picture', display_picture,
@@ -1553,61 +1740,48 @@ Model.businessLoader = new DataLoader(
     while (i < ids.length) res[i++] = null;
 
     return res;
+  },
+  {
+    cacheKeyFn: k => parseInt(k)
   }
 );
 
-Model.orderedBusinessLoader = new Map(
-  [
-    'SelfEmployedBusiness',
-    'ChildEducationBusiness',
-    'DomesticHelpBusiness',
-    'BeautyBusiness',
-    'TransportationBusiness',
-    'HospitalityBusiness',
-    'StationeryBusiness',
-    'MadeInQatarBusiness',
-    'SportsBusiness',
-    'EntertainmentBusiness',
-    'FoodBusiness',
-    'CleaningAndMaintenanceBusiness'
-  ].map(type =>
-  [
-    type,
-    new DataLoader(
-      async (keys) => {
-        const rows = await Model.db.query(
-          `
-          SELECT
-            id,
-            sub_type,
-            listing_index
-          FROM
-            business
-          WHERE
-            \`type\` = ?
-            AND listing_index IN (?)
-          ORDER BY
-            FIELD(listing_index, ?)
-          `,
-          [ type, keys, keys ]
-        );
+Model.orderedBusinessLoader = new DataLoader(
+  async (keys) => {
+    const rows = await Model.db.query(
+      `
+      SELECT
+        id,
+        type,
+        sub_type,
+        listing_index
+      FROM
+        business
+      WHERE
+        listing_index IN (?)
+      ORDER BY
+        FIELD(listing_index, ?)
+      `,
+      [ keys, keys ]
+    );
 
-        var res = new Array(keys.length);
-        var i = 0;
-        var j = 0;
-        while (i < keys.length && j < rows.length) {
-          res[i] = rows[j].listing_index == keys[i]
-            ? rows[j++]
-            : null;
-          ++i;
-        }
-        while (i < keys.length) res[i++] = null;
+    var res = new Array(keys.length);
+    var i = 0;
+    var j = 0;
+    while (i < keys.length && j < rows.length) {
+      res[i] = rows[j].listing_index == keys[i]
+        ? rows[j++]
+        : null;
+      ++i;
+    }
+    while (i < keys.length) res[i++] = null;
 
-        return res;
-      }
-    )
-  ]
-));
+    return res;
+  },
+  {
+    cacheKeyFn: k => parseInt(k)
+  }
+);
 
 Model.eventLoader = new DataLoader(
   async (ids) => {
@@ -1619,7 +1793,7 @@ Model.eventLoader = new DataLoader(
           props,
           '$.id', id,
           '$.owner', owner,
-          '$.approved', approved,
+          '$.status', status,
           '$.display_name', display_name,
           '$.display_picture', display_picture,
           '$.type', \`type\`
@@ -1646,6 +1820,9 @@ Model.eventLoader = new DataLoader(
     while (i < ids.length) res[i++] = null;
 
     return res;
+  },
+  {
+    cacheKeyFn: k => parseInt(k)
   }
 );
 
@@ -1679,6 +1856,9 @@ Model.orderedEventLoader = new DataLoader(
     while (i < keys.length) res[i++] = null;
 
     return res;
+  },
+  {
+    cacheKeyFn: k => parseInt(k)
   }
 );
 
@@ -1715,6 +1895,9 @@ Model.msgThreadLoader = new DataLoader(
     while (i < ids.length) res[i++] = null;
 
     return res;
+  },
+  {
+    cacheKeyFn: k => parseInt(k)
   }
 );
 
@@ -1749,6 +1932,9 @@ Model.msgLoader = new DataLoader(
       res[i] = messages;
     }
     return res;
+  },
+  {
+    cacheKeyFn: k => parseInt(k)
   }
 );
 

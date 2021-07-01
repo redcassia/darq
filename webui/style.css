@@ -449,6 +449,25 @@ hr {
     padding: 0;
 }
 
+.container {
+    position: relative;
+    height: auto;
+}
+
+.container.full-height {
+    min-height: 100%;
+}
+
+.container-dimmer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+}
+
 .clickable:hover {
     cursor: pointer;
 }
@@ -471,6 +490,10 @@ hr {
     text-decoration: underline;
 }
 
+.crossed {
+    text-decoration: line-through;
+}
+
 .hidden {
     display: none;
 }
@@ -481,21 +504,27 @@ hr {
 
 /* specialized styles for screen arrangement */
 
-#loading-blanket {
+#blanket {
     position: fixed;
     z-index: 1000;
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background-color: rgba(0, 0, 0, 0.3);
-    color: var(--dark);
-    font-size: 100px;
+    background-color: rgba(0, 0, 0, 0.7);
+    text-align: center;
 }
-#loading-blanket > * {
+#blanket > * {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+.window {
+    background-color: var(--white);
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 550px;
 }
 
 #main-screen {
@@ -616,6 +645,13 @@ hr {
 }
 .left-aligned-content.full-height, .right-aligned-content.full-height {
     height: calc(100% - 64px);
+}
+
+.container-dimmer.inside-left-aligned-content {
+    top: -32px;
+    left: -32px;
+    width: calc(100% + 64px);
+    height: calc(100% + 64px);
 }
 
 .content-submenu {
@@ -745,6 +781,22 @@ hr {
 }
 
 /* styles for data preview */
+
+.profile-top-bar-left {
+    display: inline-block;
+    width: calc(100% - 110px);
+    margin-inline-end: 20px;
+}
+
+.profile-top-bar-right {
+    display: inline-block;
+    vertical-align: top;
+    width: 90px;
+}
+
+.profile-top-bar-block {
+    margin-inline-start: 20px;
+}
 
 .profile-left-pane {
     display: inline-block;

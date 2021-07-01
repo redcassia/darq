@@ -1107,7 +1107,7 @@ class Model {
     }
   }
 
-  static async setBusinessUserVerified(email, token) {
+  static async verifyBusinessUser(email, token) {
     var result;
     try {
       result = await this.db.query(
@@ -1169,7 +1169,7 @@ class Model {
     return id;
   }
 
-  static async verifyBusinessUser(email, password) {
+  static async isValidBusinessUser(email, password) {
     var result;
       try {
         result = await this.db.query(

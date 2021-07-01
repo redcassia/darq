@@ -489,7 +489,7 @@ const resolvers = {
 
       return jsonwebtoken.sign(
         {
-          id: await Model.setBusinessUserVerified(email, token),
+          id: await Model.verifyBusinessUser(email, token),
           type: 'BUSINESS'
         },
         process.env.JWT_SECRET,
@@ -501,7 +501,7 @@ const resolvers = {
 
       return jsonwebtoken.sign(
         {
-          id: await Model.verifyBusinessUser(email, password),
+          id: await Model.isValidBusinessUser(email, password),
           type: 'BUSINESS'
         },
         process.env.JWT_SECRET,

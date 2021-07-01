@@ -1041,7 +1041,7 @@ class Model {
     );
   }
 
-  static async verifyPublicUser(id) {
+  static async isValidPublicUser(id) {
     var valid = false;
     try {
       const result = await this.db.query(

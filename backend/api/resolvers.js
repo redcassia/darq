@@ -458,7 +458,7 @@ const resolvers = {
 
     async authenticatePublicUser(_, { id, locale }) {
 
-      if (await Model.verifyPublicUser(id)) {
+      if (await Model.isValidPublicUser(id)) {
           return jsonwebtoken.sign(
             {
               id: id,

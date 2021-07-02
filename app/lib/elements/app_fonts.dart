@@ -25,6 +25,10 @@ class AppFonts {
         return title8(color: clr, fontWeight: fontWeight);
       case "title9":
         return title9(color: clr, fontWeight: fontWeight);
+      case "title9Odd":
+        return title9Odd(color: clr, fontWeight: fontWeight);
+      case "title10":
+        return title10(color: clr, fontWeight: fontWeight);
       case "text1":
         return text1(color: clr, fontWeight: fontWeight);
       case "text2":
@@ -42,6 +46,8 @@ class AppFonts {
       case "text8":
         return text8(color: clr, fontWeight: fontWeight);
       case "text9":
+        return text9(color: clr, fontWeight: fontWeight);
+      case "text10":
         return text9(color: clr, fontWeight: fontWeight);
     }
   }
@@ -128,58 +134,96 @@ class AppFonts {
         color: color);
   }
 
+  static TextStyle title9Odd({Color color, FontWeight fontWeight}) {
+    return TextStyle(
+        fontFamily: 'Roboto',
+        fontSize: 11.ssp,
+        fontWeight: fontWeight ?? FontWeight.w500,
+        color: color);
+  }
+
+  static TextStyle title10({Color color, FontWeight fontWeight}) {
+    return TextStyle(
+        fontFamily: 'Roboto',
+        fontSize: 10.ssp,
+        fontWeight: fontWeight ?? FontWeight.w500,
+        color: color);
+  }
+
   static TextStyle text1({Color color, FontWeight fontWeight}) {
     return TextStyle(
-        fontSize: 26.ssp, fontWeight: fontWeight?? FontWeight.normal, color: color);
+        fontSize: 26.ssp,
+        fontWeight: fontWeight ?? FontWeight.normal,
+        color: color);
   }
 
   static TextStyle text2({Color color, FontWeight fontWeight}) {
     return TextStyle(
-        fontSize: 24.ssp, fontWeight: fontWeight?? FontWeight.normal, color: color);
+        fontSize: 24.ssp,
+        fontWeight: fontWeight ?? FontWeight.normal,
+        color: color);
   }
 
   static TextStyle text3({Color color, FontWeight fontWeight}) {
     return TextStyle(
-        fontSize: 22.ssp, fontWeight: fontWeight?? FontWeight.normal, color: color);
+        fontSize: 22.ssp,
+        fontWeight: fontWeight ?? FontWeight.normal,
+        color: color);
   }
 
   static TextStyle text4({Color color, FontWeight fontWeight}) {
     return TextStyle(
-        fontSize: 20.ssp, fontWeight: fontWeight?? FontWeight.normal, color: color);
+        fontSize: 20.ssp,
+        fontWeight: fontWeight ?? FontWeight.normal,
+        color: color);
   }
 
   static TextStyle text5({Color color, FontWeight fontWeight}) {
     return TextStyle(
-        fontSize: 18.ssp, fontWeight: fontWeight?? FontWeight.normal, color: color);
+        fontSize: 18.ssp,
+        fontWeight: fontWeight ?? FontWeight.normal,
+        color: color);
   }
 
   static TextStyle text6({Color color, FontWeight fontWeight}) {
     return TextStyle(
-        fontSize: 16.ssp, fontWeight: fontWeight?? FontWeight.normal, color: color);
+        fontSize: 16.ssp,
+        fontWeight: fontWeight ?? FontWeight.normal,
+        color: color);
   }
 
   static TextStyle text7({Color color, FontWeight fontWeight}) {
     return TextStyle(
-        fontSize: 14.ssp, fontWeight: fontWeight?? FontWeight.normal, color: color);
+        fontSize: 14.ssp,
+        fontWeight: fontWeight ?? FontWeight.normal,
+        color: color);
   }
 
   static TextStyle text8({Color color, FontWeight fontWeight}) {
     return TextStyle(
-        fontSize: 12.ssp, fontWeight: fontWeight?? FontWeight.normal, color: color);
+        fontSize: 12.ssp,
+        fontWeight: fontWeight ?? FontWeight.normal,
+        color: color);
   }
 
   static TextStyle text9odd({Color color, FontWeight fontWeight}) {
     return TextStyle(
-        fontSize: 11.ssp, fontWeight: fontWeight?? FontWeight.normal, color: color);
+        fontSize: 11.ssp,
+        fontWeight: fontWeight ?? FontWeight.normal,
+        color: color);
   }
 
   static TextStyle text9({Color color, FontWeight fontWeight}) {
     return TextStyle(
-        fontSize: 10.ssp, fontWeight: fontWeight?? FontWeight.normal, color: color);
+        fontSize: 10.ssp,
+        fontWeight: fontWeight ?? FontWeight.normal,
+        color: color);
   }
 
   static TextStyle text10({Color color, FontWeight fontWeight}) {
     return TextStyle(
-        fontSize: 8.ssp, fontWeight: fontWeight?? FontWeight.normal, color: color);
+        fontSize: 8.ssp,
+        fontWeight: fontWeight ?? FontWeight.normal,
+        color: color);
   }
 }

@@ -105,7 +105,9 @@ Widget generateWidget(BuildContext context, dynamic layout, dynamic allData,
         data = translate(data);
       } catch (e) {}
       return Text(data,
-          style: AppFonts.makeStyle(layout["textSize"], layout["textColor"]));
+          style: AppFonts.makeStyle(layout["textSize"], layout["textColor"],
+              fontWeight:
+                  layout["fontWeight"] != null ? FontWeight.w700 : null));
 
     case "website_with_title":
       if (data == null) return null;
@@ -134,11 +136,13 @@ Widget generateWidget(BuildContext context, dynamic layout, dynamic allData,
       if (layout["trailingText"] == null) {
         return TextLeadingRow(
             title: translate(layout["titleText"]),
-            titleStyle:
-                AppFonts.makeStyle(layout["titleSize"], layout["titleColor"]),
+            titleStyle: AppFonts.makeStyle(
+                layout["titleSize"], layout["titleColor"],
+                fontWeight:
+                    layout['titleFontWeight'] != null ? FontWeight.w700 : null),
             txt: data.toString(),
-            txtStyle:
-                AppFonts.makeStyle(layout["textSize"], layout["textColor"]));
+            txtStyle: AppFonts.makeStyle(
+                layout["textSize"], layout["textColor"]));
       } else {
         return TextLeadingRow(
             title: translate(layout["titleText"]),
@@ -335,7 +339,7 @@ Widget generateWidget(BuildContext context, dynamic layout, dynamic allData,
           txt: data["all_day"]
               ? "${translate("24_hrs")}"
               : "${LocaleStorageTimeService.formatTime("${data["open"]}")} - ${LocaleStorageTimeService.formatTime("${data["close"]}")}",
-          textStyle:  AppFonts.text9odd(
+          textStyle: AppFonts.text9odd(
               color: Color(AppColors.black).withOpacity(0.5),
               fontWeight: FontWeight.w700));
 
@@ -344,8 +348,8 @@ Widget generateWidget(BuildContext context, dynamic layout, dynamic allData,
       return Text(
           data["all_day"]
               ? translate("24_hrs")
-              : "${LocaleStorageTimeService.formatTime("0000-00-00 ${data["open"]}")} - ${LocaleStorageTimeService.formatTime("0000-00-00 ${data["close"]}")}",
-          style: AppFonts.title9(color: Color.fromRGBO(0, 0, 0, 0.7)));
+              : "${LocaleStorageTimeService.formatTime("${data["open"]}")} - ${LocaleStorageTimeService.formatTime("${data["close"]}")}",
+          style: AppFonts.title9(color: Color.fromRGBO(13, 36, 52, 1.0),fontWeight: FontWeight.w700));
 
     case 'duration':
       if (data == null) return null;
@@ -479,7 +483,7 @@ Widget generateWidget(BuildContext context, dynamic layout, dynamic allData,
           return DetailsPage(jsonFile: jsonFile, id: data);
         })),
         child: Text(translate("view_details"),
-            style: AppFonts.title9(color: Color(0xFFE1A854))),
+            style: AppFonts.title9Odd(color: Color(AppColors.burntSienna))),
       );
 
     case "contact_button_list_page":

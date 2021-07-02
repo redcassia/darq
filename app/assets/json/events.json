@@ -14,8 +14,9 @@
       "end": [
         {
           "widget": "text",
-          "textSize": "title9",
-          "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.7 },
+          "textSize": "title8",
+          "textColor": {"r": 38, "g": 58, "b": 72, "o": 1.0 },
+          "fontWeight": "FontWeight.w700",
           "data": ["display_name"]
         },
         {
@@ -24,8 +25,9 @@
         },
         {
           "widget": "text",
-          "textSize": "title11Odd",
-          "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.7 },
+          "textSize": "title9Odd",
+          "textColor": {"r": 13, "g": 36, "b": 52, "o": 1.0 },
+          "fontWeight": "FontWeight.w700",
           "data": ["street_address"]
         },
         {
@@ -42,8 +44,9 @@
         },
         {
           "widget": "text",
-          "textSize": "text10w500",
-          "textColor": { "r": 0, "g": 0, "b": 0, "o": 0.37 },
+          "textSize": "title9Odd",
+          "textColor": {"r": 13, "g": 36, "b": 52, "o": 1.0 },
+          "fontWeight": "FontWeight.w700",
           "data": ["type"]
         },
         {

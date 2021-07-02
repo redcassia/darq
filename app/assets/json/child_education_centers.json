@@ -24,7 +24,8 @@
         {
           "widget": "text",
           "textSize": "title9",
-          "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.7 },
+          "textColor": {"r": 13, "g": 36, "b": 52, "o": 1.0},
+          "fontWeight": "w700",
           "data": ["display_name"]
         },
         {
@@ -34,7 +35,8 @@
         {
           "widget": "text_with_title",
           "titleText": "address",
-          "titleSize": "title11",
+          "titleSize": "title10",
+          "titleFontWeight": "FontWeight.w700",
           "titleColor": {"r": 0, "g": 0, "b": 0, "o": 0.7 },
           "textSize": "text10",
           "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.7 },
@@ -47,7 +49,8 @@
         {
           "widget": "text_with_title",
           "titleText": "founded",
-          "titleSize": "title11",
+          "titleSize": "title10",
+          "titleFontWeight": "FontWeight.w700",
           "titleColor": {"r": 0, "g": 0, "b": 0, "o": 0.7 },
           "textSize": "text10",
           "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.7 },
@@ -60,7 +63,8 @@
         {
           "widget": "text_with_title",
           "titleText": "curriculum",
-          "titleSize": "title11",
+          "titleSize": "title10",
+          "titleFontWeight": "FontWeight.w700",
           "titleColor": {"r": 0, "g": 0, "b": 0, "o": 0.7 },
           "textSize": "text10",
           "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.7 },

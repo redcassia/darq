@@ -92,6 +92,24 @@ class TestData {
     return fs.existsSync(path.join(process.env.ATTACHMENTS_DIR, 'thumb', attachment));
   }
 
+  static async addBusinessUsers() {
+    for (var user in this.businessUsers) {
+      this.businessUsers[user].token = await Model.addBusinessUser(
+        this.businessUsers[user].email,
+        this.businessUsers[user].password
+      );
+    }
+  }
+
+  static async verifyBusinessUsers() {
+    for (var user in this.businessUsers) {
+      this.businessUsers[user].id = await Model.verifyBusinessUser(
+        this.businessUsers[user].email,
+        this.businessUsers[user].token
+      );
+    }
+  }
+
   static async addBusinesses() {
     for (var user in this.businesses) {
       for (var i in this.businesses[user]) {
@@ -100,6 +118,17 @@ class TestData {
         this.businesses[user][i].id = await Model.addBusiness(
           copy,
           this.businessUsers[user].id
+        );
+      }
+    }
+  }
+
+  static async approveBusinesses() {
+    for (var user in this.businesses) {
+      for (var i in this.businesses[user]) {
+        await Model.setBusinessApproveStatus(
+          this.businesses[user][i].id,
+          true
         );
       }
     }
@@ -158,6 +187,17 @@ class TestData {
     }
   }
 
+  static async approveEvents() {
+    for (var user in this.events) {
+      for (var i in this.events[user]) {
+        await Model.setEventApproveStatus(
+          this.events[user][i].id,
+          true
+        );
+      }
+    }
+  }
+
   static async updateEvents() {
     for (var user in this.events) {
       for (var i in this.events[user]) {
@@ -171,6 +211,28 @@ class TestData {
         );
       }
     }
+  }
+
+  static getBusinesses(pred = null) {
+    var res = [];
+    for (var user in this.businesses) {
+      for (const b of this.businesses[user]) {
+        var copy = JSON.parse(JSON.stringify(b));
+        if (pred == null || pred(copy)) res.push(b);
+      }
+    }
+    return res;
+  }
+
+  static getEvents(pred = null) {
+    var res = [];
+    for (var user in this.events) {
+      for (const e of this.events[user]) {
+        var copy = JSON.parse(JSON.stringify(e));
+        if (pred == null || pred(copy)) res.push(e);
+      }
+    }
+    return res;
   }
 
   static async removeData() {

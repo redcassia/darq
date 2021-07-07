@@ -66,23 +66,13 @@ test('Model.publicUserLoader.load', async () => {
 /////
 
 test('Model.addBusinessUser', async () => {
-  for (var user in TestData.businessUsers) {
-    TestData.businessUsers[user].token = await Model.addBusinessUser(
-      TestData.businessUsers[user].email,
-      TestData.businessUsers[user].password
-    );
-  }
+  await TestData.addBusinessUsers();
 });
 
 /////
 
 test('Model.setBusinessUserVerified', async () => {
-  for (var user in TestData.businessUsers) {
-    TestData.businessUsers[user].id = await Model.verifyBusinessUser(
-      TestData.businessUsers[user].email,
-      TestData.businessUsers[user].token
-    );
-  }
+  await TestData.verifyBusinessUsers();
 });
 
 /////
@@ -278,14 +268,7 @@ test('Model.getTentativeBusinesses', async () => {
 /////
 
 test('Model.setBusinessApproveStatus', async () => {
-  for (var user in TestData.businesses) {
-    for (var i in TestData.businesses[user]) {
-      await Model.setBusinessApproveStatus(
-        TestData.businesses[user][i].id,
-        true
-      );
-    }
-  }
+  await TestData.approveBusinesses();
 
   var tentative = await Model.getTentativeBusinesses();
   expect(tentative.length).toBe(0);
@@ -815,14 +798,7 @@ test('Model.getTentativeEvents', async () => {
 /////
 
 test('Model.setEventApproveStatus', async () => {
-  for (var user in TestData.events) {
-    for (var i in TestData.events[user]) {
-      await Model.setEventApproveStatus(
-        TestData.events[user][i].id,
-        true
-      );
-    }
-  }
+  await TestData.approveEvents();
 
   var tentative = await Model.getTentativeEvents();
   expect(tentative.length).toBe(0);

@@ -218,10 +218,54 @@ class TestData {
     for (var user in this.businesses) {
       for (const b of this.businesses[user]) {
         var copy = JSON.parse(JSON.stringify(b));
-        if (pred == null || pred(copy)) res.push(b);
+        if (pred == null || pred(copy)) res.push(copy);
       }
     }
     return res;
+  }
+
+  static getBusinessUpdates(pred = null) {
+    var res = [];
+    for (var user in this.businesses) {
+      for (const i in this.businesses[user]) {
+        var copy = JSON.parse(JSON.stringify(this.businesses[user][i]));
+        if (pred == null || pred(copy)) {
+          var copy = JSON.parse(JSON.stringify(this.businessUpdates[user][i]));
+          res.push(copy);
+        }
+      }
+    }
+    return res;
+  }
+
+  static getUpdatedBusinesses(pred = null) {
+    var res = [];
+    for (var user in this.businesses) {
+      for (const i in this.businesses[user]) {
+        var copy = JSON.parse(JSON.stringify(this.businesses[user][i]));
+        if (pred == null || pred(copy)) {
+          var copy = JSON.parse(JSON.stringify(this.updatedBusinesses[user][i]));
+          res.push(copy);
+        }
+      }
+    }
+    return res;
+  }
+
+  static prepareBusinessForGraphQL(b) {
+    var copy = JSON.parse(JSON.stringify(b));
+
+    if (copy.type) {
+      if (copy.type == 'StationeryBusiness' && copy.sub_type) {
+        delete copy.sub_type;
+      }
+      delete copy.type;
+    }
+    if (copy.id) delete copy.id;
+
+    copy = this._putAttachments(copy);
+
+    return copy;
   }
 
   static getEvents(pred = null) {
@@ -233,6 +277,44 @@ class TestData {
       }
     }
     return res;
+  }
+
+  static getEventUpdates(pred = null) {
+    var res = [];
+    for (var user in this.events) {
+      for (const i in this.events[user]) {
+        var copy = JSON.parse(JSON.stringify(this.events[user][i]));
+        if (pred == null || pred(copy)) {
+          var copy = JSON.parse(JSON.stringify(this.eventUpdates[user][i]));
+          res.push(copy);
+        }
+      }
+    }
+    return res;
+  }
+
+  static getUpdatedEvents(pred = null) {
+    var res = [];
+    for (var user in this.events) {
+      for (const i in this.events[user]) {
+        var copy = JSON.parse(JSON.stringify(this.events[user][i]));
+        if (pred == null || pred(copy)) {
+          var copy = JSON.parse(JSON.stringify(this.updatedEvents[user][i]));
+          res.push(copy);
+        }
+      }
+    }
+    return res;
+  }
+
+  static prepareEventForGraphQL(e) {
+    var copy = JSON.parse(JSON.stringify(e));
+
+    if (copy.id) delete copy.id;
+
+    copy = this._putAttachments(copy);
+
+    return copy;
   }
 
   static async removeData() {
@@ -421,7 +503,10 @@ TestData.businesses = {
       display_picture: "attach2",
       city: 'DOHA',
       sub_type: 'OTHER',
-      sub_type_string: "Dumbest thing ever",
+      sub_type_string: {
+        en: "Dumbest thing ever",
+        ar: "Dumbest thing ever"
+      },
       trade_license: "attach1",
       trade_license_number: "123454326789",
       street_address: "456 Definitely Not A Fake st",
@@ -470,7 +555,7 @@ TestData.businesses = {
           attachments: [
             "attach3"
           ],
-          education: '',
+          education: 'SECONDARY',
           height: "10 ft",
           weight: "250 kg",
           skills: [
@@ -529,7 +614,10 @@ TestData.businesses = {
       display_picture: "attach3",
       city: 'DOHA',
       sub_type: 'OTHER',
-      sub_type_string: "I feel pretty",
+      sub_type_string: {
+        en: "I feel pretty",
+        ar: "I feel pretty",
+      },
       trade_license: "attach2",
       trade_license_number: "1234",
       street_address: "789 Lovely St",
@@ -542,7 +630,16 @@ TestData.businesses = {
         ar: "We'll make you look nice"
       },
       home_service_available: true,
-      services: [ "hair", "makeup", "nails" ],
+      services: [
+        {
+          en: "hair", 
+          ar: "hair",
+        },
+        {
+          en: "makeup",
+          ar: "makeup",
+        },
+      ],
       website: "www.i-feel-pretty.com",
       attachments: [
         "attach2",
@@ -555,7 +652,10 @@ TestData.businesses = {
       display_picture: "attach1",
       city: 'DOHA',
       sub_type: 'OTHER',
-      sub_type_string: "Chauffeur",
+      sub_type_string: {
+        en: "Chauffeur",
+        ar: "Chauffeur",
+      },
       trade_license: "attach2",
       trade_license_number: "12345",
       street_address: "123 A St",
@@ -569,7 +669,16 @@ TestData.businesses = {
         en: "something",
         ar: "another thing",
       },
-      services: [ "driving", "vroom vroom" ],
+      services: [
+        {
+          en: "driving",
+          ar: "driving",
+        },
+        {
+          en: "vroom vroom",
+          ar: "vroom vroom",
+        },
+      ],
       website: "www.vroom-vroom.com",
       attachments: [
         "attach1",
@@ -582,7 +691,10 @@ TestData.businesses = {
       display_picture: "attach1",
       city: 'DOHA',
       sub_type: 'OTHER',
-      sub_type_string: "Catering",
+      sub_type_string: {
+        en: "Catering",
+        ar: "Catering",
+      },
       trade_license: "attach3",
       trade_license_number: "12345",
       street_address: "123 Su casa",
@@ -593,10 +705,19 @@ TestData.businesses = {
       },
       home_service_available: false,
       charge: {
-        value: "67657",
+        value: 67657,
         currency: 'QAR'
       },
-      services: [ "food", "whatnot" ],
+      services: [
+        {
+          en: "food",
+          ar: "food",
+        },
+        {
+          en: "whatnot",
+          ar: "whatnot",
+        },
+      ],
       website:"www.mi-casa-su-casa.com",
       attachments: [
         "attach2"
@@ -630,7 +751,10 @@ TestData.businesses = {
       display_picture: "attach2",
       city: 'DOHA',
       sub_type: 'OTHER',
-      sub_type_string: "Dairy shop",
+      sub_type_string: {
+        en: "Dairy shop",
+        ar: "Dairy shop",
+      },
       street_address: "1 Milky way",
       phone_number: [ "43764876" ],
       description: {
@@ -741,7 +865,10 @@ TestData.businesses = {
       display_picture: "attach2",
       city: 'DOHA',
       sub_type: 'OTHER',
-      sub_type_string: "Squeaky",
+      sub_type_string: {
+        en: "Squeaky",
+        ar: "Squeaky",
+      },
       trade_license: "attach1",
       trade_license_number: "1234546",
       street_address: "24334 X St",
@@ -820,7 +947,20 @@ TestData.businessUpdates = {
     },
     {       // type: 'BeautyBusiness'
       home_service_available: false,
-      services: [ "hair", "makeup" ],
+      services: [
+        {
+          en: "hair", 
+          ar: "hair",
+        },
+        {
+          en: "makeup",
+          ar: "makeup",
+        },
+        {
+          en: "nails",
+          ar: "nails",
+        },
+      ],
     },
     {       // type: 'TransportationBusiness'
       display_name: "We get you over there",
@@ -1013,7 +1153,7 @@ TestData.updatedBusinesses = {
           attachments: [
             "attach3"
           ],
-          education: '',
+          education: 'SECONDARY',
           height: "10 ft",
           weight: "250 kg",
           skills: [
@@ -1072,7 +1212,10 @@ TestData.updatedBusinesses = {
       display_picture: "attach3",
       city: 'DOHA',
       sub_type: 'OTHER',
-      sub_type_string: "I feel pretty",
+      sub_type_string: {
+        en: "I feel pretty",
+        ar: "I feel pretty",
+      },
       trade_license: "attach2",
       trade_license_number: "1234",
       street_address: "789 Lovely St",
@@ -1085,7 +1228,20 @@ TestData.updatedBusinesses = {
         ar: "We'll make you look nice"
       },
       home_service_available: false,
-      services: [ "hair", "makeup" ],
+      services: [
+        {
+          en: "hair", 
+          ar: "hair",
+        },
+        {
+          en: "makeup",
+          ar: "makeup",
+        },
+        {
+          en: "nails",
+          ar: "nails",
+        },
+      ],
       website: "www.i-feel-pretty.com",
       attachments: [
         "attach2",
@@ -1098,7 +1254,10 @@ TestData.updatedBusinesses = {
       display_picture: "attach1",
       city: 'DOHA',
       sub_type: 'OTHER',
-      sub_type_string: "Chauffeur",
+      sub_type_string: {
+        en: "Chauffeur",
+        ar: "Chauffeur",
+      },
       trade_license: "attach2",
       trade_license_number: "12345",
       street_address: "123 A St",
@@ -1112,7 +1271,16 @@ TestData.updatedBusinesses = {
         en: "something",
         ar: "another thing",
       },
-      services: [ "driving", "vroom vroom" ],
+      services: [
+        {
+          en: "driving",
+          ar: "driving",
+        },
+        {
+          en: "vroom vroom",
+          ar: "vroom vroom",
+        },
+      ],
       website: "www.vroom-vroom.com",
       attachments: [
         "attach1",
@@ -1125,7 +1293,10 @@ TestData.updatedBusinesses = {
       display_picture: "attach1",
       city: 'DOHA',
       sub_type: 'OTHER',
-      sub_type_string: "Catering",
+      sub_type_string: {
+        en: "Catering",
+        ar: "Catering",
+      },
       trade_license: "attach3",
       trade_license_number: "12345",
       street_address: "123 Su casa",
@@ -1136,10 +1307,19 @@ TestData.updatedBusinesses = {
       },
       home_service_available: true,
       charge: {
-        value: "67657",
+        value: 67657,
         currency: 'QAR'
       },
-      services: [ "food", "whatnot" ],
+      services: [
+        {
+          en: "food",
+          ar: "food",
+        },
+        {
+          en: "whatnot",
+          ar: "whatnot",
+        },
+      ],
       website:"www.mi-casa-su-casa.com",
       attachments: [
         "attach2"
@@ -1173,7 +1353,10 @@ TestData.updatedBusinesses = {
       display_picture: "attach3",
       city: 'DOHA',
       sub_type: 'OTHER',
-      sub_type_string: "Dairy shop",
+      sub_type_string: {
+        en: "Dairy shop",
+        ar: "Dairy shop",
+      },
       street_address: "1 Milky way",
       phone_number: [ "43764876" ],
       description: {
@@ -1289,7 +1472,10 @@ TestData.updatedBusinesses = {
       display_picture: "attach2",
       city: 'DOHA',
       sub_type: 'OTHER',
-      sub_type_string: "Squeaky",
+      sub_type_string: {
+        en: "Squeaky",
+        ar: "Squeaky",
+      },
       trade_license: "attach1",
       trade_license_number: "1234546",
       street_address: "24334 X St",

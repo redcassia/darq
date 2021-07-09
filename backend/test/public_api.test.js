@@ -12,7 +12,7 @@ const TestData = require("./test_data");
 const typeDefs = gql(fs.readFileSync(path.join(__dirname, "../api/schema.graphql"), "utf-8"));
 const resolvers = require('../api/resolvers');
 
-var testUser = { }
+var testUser = null
 
 const server = new ApolloServer({
   schema: makeExecutableSchema({

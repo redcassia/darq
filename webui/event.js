@@ -105,10 +105,10 @@ function loadEvent(id) {
               ${getString('EVENT_STATUS')[e["status"]]}
             </div>
           </div><div class="profile-top-bar-right">
-            <span class="profile-top-bar-block h6 accent clickable" onclick="editEvent(${id})">
+            <span title="${getString('EDIT')}" alt="${getString('EDIT')}" class="profile-top-bar-block h6 accent clickable" onclick="editEvent(${id})">
               <i class="far fa-edit"></i>
             </span>
-            <span class="profile-top-bar-block h6 accent clickable " onclick="showDeleteEventConfirmation(${id})">
+            <span title="${getString('DELETE')}" alt="${getString('DELETE')}" class="profile-top-bar-block h6 accent clickable " onclick="showDeleteEventConfirmation(${id})">
               <i class="far fa-trash-alt"></i>
             </span>
           </div>

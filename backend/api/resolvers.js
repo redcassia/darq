@@ -8,19 +8,34 @@ const Model = require('./model');
 const Mailer = require('./mailer');
 const ServerManager = require('../server_manager');
 
-async function scheduleMaintenance() {
-  await ServerManager.doMaintenanceNow(
-    () => Model.doMaintenance()
-  );
+ServerManager.onBegin(() => {
+  Model.init();
 
-  ServerManager.scheduleMaintenance(
-    process.env.MAINTENANCE_SCHEDULE,
-    () => Model.doMaintenance()
-  );
-}
+  // schedule initial and regular maintenance events 5 seconds after server startup
+  if (process.env.NODE_ENV != "test") {
+    console.info("Scheduling periodic maintenance");
 
-// schedule initial and regular maintenance events 5 seconds after server startup
-setTimeout(scheduleMaintenance, 5000);
+    setTimeout(async () => {
+        await ServerManager.doMaintenanceNow(
+          () => Model.doMaintenance()
+        );
+      
+        ServerManager.scheduleMaintenance(
+          process.env.MAINTENANCE_SCHEDULE,
+          () => Model.doMaintenance()
+        );
+      },
+      5000
+    );
+  }
+});
+
+ServerManager.onEnd(() => {
+  if (process.env.NODE_ENV != "test") {
+    console.info("Closing DB connections");
+  }
+  Model.close();
+});
 
 function _validateAuthenticatedBusinessUser(user) {
   if (! user || user.type != 'BUSINESS') {
@@ -432,7 +447,7 @@ const resolvers = {
 
       return jsonwebtoken.sign(
         {
-          id: await Model.publicUserSignup(),
+          id: await Model.addPublicUser(),
           type: 'PUBLIC',
           locale: locale || 'en'
         },
@@ -443,7 +458,7 @@ const resolvers = {
 
     async authenticatePublicUser(_, { id, locale }) {
 
-      if (await Model.publicUserLogin(id)) {
+      if (await Model.isValidPublicUser(id)) {
           return jsonwebtoken.sign(
             {
               id: id,
@@ -466,7 +481,7 @@ const resolvers = {
 
       Mailer.newUser(
         email,
-        await Model.businessUserSignup(email, password)
+        await Model.addBusinessUser(email, password)
       );
     },
 
@@ -474,7 +489,7 @@ const resolvers = {
 
       return jsonwebtoken.sign(
         {
-          id: await Model.businessUserVerify(email, token),
+          id: await Model.verifyBusinessUser(email, token),
           type: 'BUSINESS'
         },
         process.env.JWT_SECRET,
@@ -486,7 +501,7 @@ const resolvers = {
 
       return jsonwebtoken.sign(
         {
-          id: await Model.businessUserLogin(email, password),
+          id: await Model.isValidBusinessUser(email, password),
           type: 'BUSINESS'
         },
         process.env.JWT_SECRET,
@@ -497,12 +512,12 @@ const resolvers = {
     async changeBusinessUserPassword(_, { oldPassword, newPassword }, { user }) {
       _validateAuthenticatedBusinessUser(user);
 
-      await Model.businessUserChangePassword(user.id, oldPassword, newPassword);
+      await Model.changeBusinessUserPassword(user.id, oldPassword, newPassword);
     },
 
     async requestBusinessUserPasswordReset(_, { email }) {
 
-      var token = await Model.businessUserRequestResetPassword(email);
+      var token = await Model.requestResetBusinessUserPassword(email);
 
       if (token) Mailer.resetPassword(email, token);
     },
@@ -511,7 +526,7 @@ const resolvers = {
       // return json web token
       return jsonwebtoken.sign(
         {
-          id: await Model.businessUserResetPassword(email, token, newPassword),
+          id: await Model.resetBusinessUserPassword(email, token, newPassword),
           type: 'BUSINESS'
         },
         process.env.JWT_SECRET,

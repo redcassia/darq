@@ -1,0 +1,55 @@
+# This workflow will do a clean install of node dependencies, configure mysql database,
+# and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Node.js CI
+
+on: [ push, pull_request ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [10.x]
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: password
+        ports:
+          - 3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Configure MySQL
+      run: |
+        mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -uroot -ppassword -e "ALTER USER 'root' IDENTIFIED WITH mysql_native_password BY 'password'; FLUSH PRIVILEGES;"
+
+    - name: Install Node dependencies
+      run: |
+        cd backend
+        npm install
+
+    - name: Setup test environment
+      run: |
+        cd backend
+        mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -uroot -ppassword -e "source model.sql"
+        mkdir attachments
+        mkdir attachments/thumb
+        printf "DB_HOST=localhost\nDB_PORT=${{ job.services.mysql.ports['3306'] }}\nDB_USER=root\nDB_PASSWORD=password\nTEST_DB_NAME=darq\nDB_CONNECTION_LIMIT=4\nJWT_SECRET=somereallylongsecretkey\nATTACHMENTS_DIR=attachments\nADMIN_KEY=admin\n" > .env
+
+
+    - name: Run tests
+      run: |
+        cd backend
+        npm test

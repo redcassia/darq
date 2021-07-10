@@ -14,10 +14,13 @@ const resolvers = require('./api/resolvers');
 // authentication middleware
 const auth = jwt({
   secret: process.env.JWT_SECRET,
+  algorithms: ['RS256'],
   credentialsRequired: false
 });
 
-const server = new ApolloServer({
+console.info("Creating Apollo server");
+
+const apiServer = new ApolloServer({
   schema: makeExecutableSchema({
     typeDefs: typeDefs,
     resolvers: resolvers,
@@ -26,6 +29,20 @@ const server = new ApolloServer({
   context: (integrationCtx) => ({
     user: integrationCtx.req.user
   }),
+  plugins: [
+    {
+      serverWillStart() {
+        ServerManager.begin();
+
+        return {
+          serverWillStop() {
+            return ServerManager.end();
+          }
+        }
+      }
+    }
+  ],
+  stopOnTerminationSignals: false,
   debug: false
 });
 
@@ -40,7 +57,7 @@ app.use('/api', auth, function (err, req, res, next) {
   if (err) return next();
   return next(err);
 });
-server.applyMiddleware({ app, path: '/api' });
+apiServer.applyMiddleware({ app, path: '/api' });
 
 const webui_dir = path.join(__dirname, '..', 'webui')
 
@@ -118,4 +135,4 @@ app.get('/verifyuser', async (req, res) => {
 
 app.use('/privacy', express.static(path.join(webui_dir, 'privacy_policy.html')))
 
-module.exports = app
+module.exports = { app, apiServer }

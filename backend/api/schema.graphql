@@ -1,32 +1,45 @@
 type Query {
-  user: User
+  # public API
+
   business(id: ID!): Business
   businesses(limit: Int! = 100, offset: Int! = 0, type: BusinessType!, sub_types: [String]): [Business!]!
   event(id: ID!): Event
   events(limit: Int! = 100, offset: Int! = 0, type: EventType): [Event!]!
 
-  # admin queries
+  # public/business API
+
+  user: User
+
+  # admin API
 
   admin: Admin!
 }
 
 type Mutation {
-  setLocale(locale: Locale!): String
+
+  # public API
 
   createPublicUser(locale: Locale): String!
-  authenticatePublicUser(id: ID!, locale: Locale): String!
 
-  createBusinessUser(email: String!, password: String!): Void
-  verifyBusinessUser(email: String!, token: String!): String!
-  authenticateBusinessUser(email: String!, password: String!): String!
-  changeBusinessUserPassword(oldPassword: String!, newPassword: String!): Void
-  requestBusinessUserPasswordReset(email: String!): Void
-  resetBusinessUserPassword(email: String!, token: String!, newPassword: String!): String!
+  authenticatePublicUser(id: ID!, locale: Locale): String!
 
   rateBusiness(id: ID!, stars: Int!): Void
 
-  sendMessage(msg: String!, threadId: ID, targetBusinessId: ID): MessageThread!
-  seeMessage(threadId: ID!, index: Int!): MessageThread!
+  setLocale(locale: Locale!): String
+
+  # business API
+
+  createBusinessUser(email: String!, password: String!): Void
+
+  verifyBusinessUser(email: String!, token: String!): String!
+
+  authenticateBusinessUser(email: String!, password: String!): String!
+
+  changeBusinessUserPassword(oldPassword: String!, newPassword: String!): Void
+
+  requestBusinessUserPasswordReset(email: String!): Void
+
+  resetBusinessUserPassword(email: String!, token: String!, newPassword: String!): String!
 
   addSelfEmployedBusiness(data: NewSelfEmployedBusinessInput!): Void
   updateSelfEmployedBusiness(id: ID!, data: UpdateSelfEmployedBusinessInput!): Void
@@ -71,7 +84,12 @@ type Mutation {
 
   deleteEvent(id: ID!): Void
 
-  # admin mutations
+  # public/business API
+
+  sendMessage(msg: String!, threadId: ID, targetBusinessId: ID): MessageThread!
+  seeMessage(threadId: ID!, index: Int!): MessageThread!
+
+  # admin API
 
   authenticateAdmin(key: String!): String
 

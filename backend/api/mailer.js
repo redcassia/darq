@@ -6,6 +6,8 @@ const sender = `"DarQ" <noreply@${process.env.DOMAIN}>`
 class Mailer {
   static async _sendMail(email, subject, message) {
 
+    if (process.env.NODE_ENV == "test") return;
+
     try {
     // const mailTransporter = nodemailer.createTransport({
     //   host: "smtp.ethereal.email",

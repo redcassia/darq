@@ -220,10 +220,10 @@ function loadBusiness(id) {
             ` : ""}
           </div><div class="profile-top-bar-right">
             <span title="${getString('EDIT')}" alt="${getString('EDIT')}" class="profile-top-bar-block h6 accent clickable" onclick="editBusiness(${id})">
-              <i class="far fa-edit"></i>
+              <i class="fas fa-edit"></i>
             </span>
             <span title="${getString('DELETE')}" alt="${getString('DELETE')}" class="profile-top-bar-block h6 accent clickable " onclick="showDeleteBusinessConfirmation(${id})">
-              <i class="far fa-trash-alt"></i>
+              <i class="fas fa-trash"></i>
             </span>
           </div>
         </div>

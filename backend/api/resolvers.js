@@ -437,9 +437,16 @@ const resolvers = {
       _validateAuthenticatedPublicUser(user);
 
       return jsonwebtoken.sign(
-        { id: user.id, type: 'PUBLIC', locale: locale },
+        {
+          id: user.id,
+          type: 'PUBLIC',
+          locale: locale
+        },
         process.env.JWT_SECRET,
-        { expiresIn: '1d' }
+        {
+          algorithm: 'HS256',
+          expiresIn: '1d'
+        }
       );
     },
 
@@ -452,7 +459,10 @@ const resolvers = {
           locale: locale || 'en'
         },
         process.env.JWT_SECRET,
-        { expiresIn: '1d' }
+        {
+          algorithm: 'HS256',
+          expiresIn: '1d'
+        }
       );
     },
 
@@ -466,7 +476,10 @@ const resolvers = {
               locale: locale || 'en'
             },
             process.env.JWT_SECRET,
-            { expiresIn: '1d' }
+            {
+              algorithm: 'HS256',
+              expiresIn: '1d'
+            }
           );
       }
       else {
@@ -493,7 +506,10 @@ const resolvers = {
           type: 'BUSINESS'
         },
         process.env.JWT_SECRET,
-        { expiresIn: '1d' }
+        {
+          algorithm: 'HS256',
+          expiresIn: '1d'
+        }
       );
     },
 
@@ -505,7 +521,10 @@ const resolvers = {
           type: 'BUSINESS'
         },
         process.env.JWT_SECRET,
-        { expiresIn: '1d' }
+        {
+          algorithm: 'HS256',
+          expiresIn: '1d'
+        }
       );
     },
 
@@ -530,7 +549,10 @@ const resolvers = {
           type: 'BUSINESS'
         },
         process.env.JWT_SECRET,
-        { expiresIn: '1d' }
+        {
+          algorithm: 'HS256',
+          expiresIn: '1d'
+        }
       );
     },
 
@@ -819,9 +841,14 @@ const resolvers = {
 
       if (key == process.env.ADMIN_KEY) {
         return jsonwebtoken.sign(
-          { type: 'ADMIN' },
+          {
+            type: 'ADMIN'
+          },
           process.env.JWT_SECRET,
-          { expiresIn: '1d' }
+          {
+            algorithm: 'HS256',
+            expiresIn: '1d'
+          }
         );
       }
       else {

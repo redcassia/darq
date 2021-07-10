@@ -129,7 +129,7 @@ const strings = {
 
   REJECTED: {
     en: "REJECTED",
-    ar: "مرفوض",
+    ar: "تم رفضه",
   },
 
   EDIT: {

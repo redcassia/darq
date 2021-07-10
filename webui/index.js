@@ -49,16 +49,6 @@ function welcomeToDarQ(d) {
 }
 
 function setGlobalEventHandlers() {
-  // change the side bar icons to darker versions when 'active' class changes
-  $(".side-bar-btn").on('classChange', function() {
-    var icon = $(this).children('img');
-    if ($(this).hasClass('active')) {
-      icon.attr('src', "assets/" + icon.attr('data-icon-name') + "-icon-dark.png");
-    }
-    else {
-      icon.attr('src', "assets/" + icon.attr('data-icon-name') + "-icon.png");
-    }
-  });
 }
 
 function loadFirstPage(path) {
@@ -400,6 +390,4 @@ function navigateTo(path, onComplete) {
 
     default: break;
   }
-
-  $(".side-bar").children().trigger("classChange");
 }

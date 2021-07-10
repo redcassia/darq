@@ -14,7 +14,7 @@
         <div id="signin-screen" class="screen" style="z-index: 1;">
             <div class="home-pane active-home-pane">
                 <div id="signin-form" class="home-pane-content dark">
-                    <input type="password" id="signin-key" placeholder="Key" onkeydown="if (event.keyCode === 13 ) signin();"/> <br/>
+                    <input type="password" id="signin-key" placeholder="Key" onkeydown="if (event.code === 'Enter') signin();"/> <br/>
                     <button onclick="signin()">Sign in</button>
                 </div>
             </div>

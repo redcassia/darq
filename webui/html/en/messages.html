@@ -12,7 +12,7 @@
         <div id="messages"></div>
         <textarea 
             id="msg-box"
-            onkeydown="if (event.keyCode === 13) {
+            onkeydown="if (event.code === 'Enter') {
                 event.preventDefault(); sendMessage(this.value); this.value = ''; 
             }"
             onfocus="see()"

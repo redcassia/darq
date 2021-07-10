@@ -91,9 +91,9 @@
                         <br/>
                         <span class="accent h3">DarQ</span>
                     </h4>
-                    <input type="email" id="signup-email" placeholder="Email" onkeydown="if (event.keyCode === 13 ) signup();" /> <br/>
-                    <input type="password" id="signup-password" placeholder="Password" onkeydown="if (event.keyCode === 13 ) signup();" /> <br/>
-                    <input type="password" id="signup-password-confirm" placeholder="Confirm Password" onkeydown="if (event.keyCode === 13 ) signup();" /> <br/>
+                    <input type="email" id="signup-email" placeholder="Email" onkeydown="if (event.code === 'Enter') signup();" /> <br/>
+                    <input type="password" id="signup-password" placeholder="Password" onkeydown="if (event.code === 'Enter') signup();" /> <br/>
+                    <input type="password" id="signup-password-confirm" placeholder="Confirm Password" onkeydown="if (event.code === 'Enter') signup();" /> <br/>
                     <button onclick="signup()">Create Account</button>
                 </div>
             </div>
@@ -107,8 +107,8 @@
                         <br/>
                         <span class="accent h3">DarQ</span>
                     </h4>
-                    <input type="email" id="signin-email" placeholder="Email" onkeydown="if (event.keyCode === 13 ) signin();"/> <br/>
-                    <input type="password" id="signin-password" placeholder="Password" onkeydown="if (event.keyCode === 13 ) signin();"/> <br/>
+                    <input type="email" id="signin-email" placeholder="Email" onkeydown="if (event.code === 'Enter') signin();"/> <br/>
+                    <input type="password" id="signin-password" placeholder="Password" onkeydown="if (event.code === 'Enter') signin();"/> <br/>
                     <div style="text-align: right;">
                         <span class="clickable" onclick="switchToForgotPassword()">Forgot password?</span>
                     </div>
@@ -117,13 +117,13 @@
 
                 <div id="forgot-password-form" class="home-pane-content dark" style="display: none;">
                     <h4>Forgot password?</h4>
-                    <input type="email" id="reset-password-email" placeholder="Email" onkeydown="if (event.keyCode === 13 ) requestPasswordReset();"/> <br/>
+                    <input type="email" id="reset-password-email" placeholder="Email" onkeydown="if (event.code === 'Enter') requestPasswordReset();"/> <br/>
                     <button onclick="requestPasswordReset()">Reset Password</button>
                 </div>
 
                 <div id="reset-password-form" class="home-pane-content dark" style="display: none;">
-                    <input type="password" id="reset-password" placeholder="Password" onkeydown="if (event.keyCode === 13 ) resetPassword();" /> <br/>
-                    <input type="password" id="reset-password-conf" placeholder="Confirm Password" onkeydown="if (event.keyCode === 13 ) resetPassword();" /> <br/>
+                    <input type="password" id="reset-password" placeholder="Password" onkeydown="if (event.code === 'Enter') resetPassword();" /> <br/>
+                    <input type="password" id="reset-password-conf" placeholder="Confirm Password" onkeydown="if (event.code === 'Enter') resetPassword();" /> <br/>
                     <button onclick="resetPassword()">Reset Password</button>
                 </div>
             </div>

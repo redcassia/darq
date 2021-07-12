@@ -14,7 +14,7 @@ const resolvers = require('./api/resolvers');
 // authentication middleware
 const auth = jwt({
   secret: process.env.JWT_SECRET,
-  algorithms: ['RS256'],
+  algorithms: ['HS256'],
   credentialsRequired: false
 });
 

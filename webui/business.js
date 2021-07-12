@@ -33,12 +33,15 @@ function submitAddBusinessForm(mutationName, inputName, getData) {
       console.log(res.errors[0]["message"]);
       alert(getString('BUSINESS_ADD_FAIL_ALERT'));
     }
+
   }).catch(e => {
     hideLoadingBlanket();
     Form.unlock();
 
     console.log(e);
     alert(getString('BUSINESS_ADD_FAIL_ALERT'));
+
+    window.location.hash =  window.location.hash.split('&')[0];
   });
 }
 
@@ -76,12 +79,16 @@ function submitUpdateBusinessForm(mutationName, inputName, id, getData) {
       console.log(res.errors[0]["message"]);
       alert(getString('BUSINESS_UPDATE_FAIL_ALERT'));
     }
+
+    window.location.hash =  window.location.hash.split('&')[0];
   }).catch(e => {
     hideLoadingBlanket();
     Form.unlock();
 
     console.log(e);
     alert(getString('BUSINESS_UPDATE_FAIL_ALERT'));
+
+    window.location.hash =  window.location.hash.split('&')[0];
   });
 }
 
@@ -278,14 +285,12 @@ function queryOwnedBusinesses() {
 }
 
 var currentForm;
-var formLoadOnComplete;
 function loadForm(formName, onComplete) {
 
   $("#business-type-select").val(formName);
 
   if (formName.length > 0 && currentForm != formName) {
     currentForm = formName;
-    formLoadOnComplete = onComplete;
 
     DynamicLoader.unloadFrom('business-content');
     DynamicLoader.loadTo(
@@ -298,6 +303,7 @@ function loadForm(formName, onComplete) {
         hash[1] = formName;
         window.location.hash = hash.join('&');
         Form.applyEventHandlers();
+        if (onComplete) onComplete();
       }
     );
   }

@@ -162,10 +162,7 @@ function queryOwnedEvents() {
   });
 }
 
-var formLoadOnComplete;
 function showCreateForm(onComplete) {
-  formLoadOnComplete = onComplete;
-
   DynamicLoader.unloadFrom('event-content');
   DynamicLoader.loadTo(
     'event-content',
@@ -177,6 +174,7 @@ function showCreateForm(onComplete) {
       hash[1] = 'event_form';
       window.location.hash = hash.join('&');
       Form.applyEventHandlers();
+      if (onComplete) onComplete();
     }
 );
 }

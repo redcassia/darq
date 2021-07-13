@@ -21,6 +21,5 @@ $(document).ready(function () {
       }
     ]);
 
-    if (formLoadOnComplete) formLoadOnComplete();
   });
 });

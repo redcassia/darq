@@ -243,6 +243,8 @@ function loadBusiness(id) {
       </div>
     `;
 
+    window.location.hash =  window.location.hash.split('&')[0];
+
     document.getElementById("business-content").innerHTML = html;
 
     console.log(`Selected business ${id}`);

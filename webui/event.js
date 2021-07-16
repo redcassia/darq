@@ -121,6 +121,8 @@ function loadEvent(id) {
       </div>
     `;
 
+    window.location.hash = window.location.hash.split('&')[0];
+
     document.getElementById("event-content").innerHTML = html;
 
     console.log(`Selected event ${id}`);

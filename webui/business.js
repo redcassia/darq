@@ -182,7 +182,7 @@ function deleteBusiness(id) {
 function showDeleteBusinessConfirmation(id) {
   showBlanket(`
     <div class="window">
-      <div class="h5 dark">
+      <div class="h5">
         <span class="red">${getString('WARNING')}</span> ${getString('BUSINESS_DELETE_WARNING')}
         <span class="red">'${businesses[id]["display_name"]}'</span>
       </div>

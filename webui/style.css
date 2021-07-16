@@ -155,7 +155,7 @@ input[type='submit'] {
     line-height: 21px;
 
     padding: 12px 26px;
-    margin: 20px 0px;
+    margin: 20px 0 0 0;
 
     border: 0;
     border-radius: 20px;
@@ -173,6 +173,10 @@ input[type='submit']:focus {
 button:active,
 input[type='submit']:active {
     box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.15);
+}
+
+button + button {
+    margin-inline-start: 20px;
 }
 
 .form-line {
@@ -522,10 +526,15 @@ hr {
 }
 
 .window {
+    color: var(--dark);
     background-color: var(--white);
     border: 2px solid var(--main-color);
-    padding: 20px;
+    border-radius: 4px;
+    padding: 40px;
     max-width: 550px;
+
+    animation: slideInDown;
+    animation-duration: .25s;
 }
 
 #main-screen {

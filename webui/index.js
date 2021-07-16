@@ -207,8 +207,9 @@ function signin() {
     }
   });
 }
-function signout() {
-  if (confirm(getString('CONFIRM_LOGOUT'))) {
+
+async function signout() {
+  if (await confirm(getString('CONFIRM_LOGOUT'))) {
     CookieManager.clear('token');
     location.reload();
   }

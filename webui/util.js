@@ -38,11 +38,15 @@ function isValidEmail(email) {
   return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email);
 }
 
-const BLANKET_FADE_DURATION = 150;
+///////////////////////////////////////////////////////////////////////////////
 
-function showBlanket(content, dismissable = true) {
+const BLANKET_FADE_DURATION = 200;
+
+function showBlanket(content, dismissible = true, onDismiss) {
+  const blanket = document.getElementById("blanket");
+
   if (content) {
-    document.getElementById("blanket").innerHTML = `
+    blanket.innerHTML = `
       <div id="blanket-content">${content}</div>
     `;
     $("#blanket-content").click(function(e){
@@ -50,21 +54,27 @@ function showBlanket(content, dismissable = true) {
     });
   }
   else {
-    document.getElementById("blanket").innerHTML = "";
+    blanket.innerHTML = "";
   }
 
-  if (dismissable) {
-    $("#blanket").click(function(e) { hideBlanket(); });
+  if (dismissible) {
+    $(blanket).click(function(e) {
+      e.stopPropagation();
+
+      hideBlanket();
+
+      if (onDismiss) onDismiss();
+    });
   }
   else {
     $("#blanket").click(function(e) { });
   }
 
-  $("#blanket").fadeIn(BLANKET_FADE_DURATION);
+  $(blanket).fadeIn(BLANKET_FADE_DURATION);
 }
 
 function hideBlanket() {
-  $("#blanket").hide();
+  $("#blanket").fadeOut(BLANKET_FADE_DURATION);
   document.getElementById("blanket").innerHTML = "";
 }
 
@@ -108,6 +118,47 @@ async function loadingScreen(func) {
   showLoadingBlanketIfLongDelay();
   await func();
   hideLoadingBlanket();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+var __alertResolver;
+
+function alert(message) {
+  return new Promise((resolve, reject) => {
+    __alertResolver = resolve;
+
+    showBlanket(
+      `
+      <div class="window">
+        <div class="h5">${message}</div>
+        <br />
+        <button class="accent-bg" onclick="hideBlanket(); __alertResolver()">${getString('OK')}</button>
+      </div>
+      `,
+      true,
+      () => { resolve(); }
+    );
+  });
+}
+
+function confirm(message) {
+  return new Promise((resolve, reject) => {
+    __alertResolver = resolve;
+
+    showBlanket(
+      `
+      <div class="window">
+        <div class="h5">${message}</div>
+        <br />
+        <button onclick="hideBlanket(); __alertResolver(false)">${getString('CANCEL')}</button>
+        <button class="accent-bg" onclick="hideBlanket(); __alertResolver(true)">${getString('OK')}</button>
+      </div>
+      `,
+      true,
+      () => { resolve(false); }
+    );
+  });
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -191,8 +191,9 @@ function signin() {
     }
   });
 }
-function signout() {
-  if (confirm("Are you sure you want to Logout?")) {
+
+async function signout() {
+  if (await confirm("Are you sure you want to Logout?")) {
     CookieManager.clear('token');
     location.reload();
   }

@@ -30,13 +30,13 @@ function updateBusinessesMenu() {
   }
 }
 
-function reviewBusiness(id, approve) {
+async function reviewBusiness(id, approve) {
 
   var b;
   if (newBusinesses[id]) b = newBusinesses[id];
   else if (updatedBusinesses[id]) b = updatedBusinesses[id];
 
-  var conf = confirm(`
+  var conf = await confirm(`
     Are you sure you want to ${approve ? "Approve" : "Reject"} business '${b["display_name"]}'
   `);
   if (! conf) return;

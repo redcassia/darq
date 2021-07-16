@@ -59,7 +59,7 @@ app.use('/api', auth, function (err, req, res, next) {
 });
 apiServer.applyMiddleware({ app, path: '/api' });
 
-const webui_dir = path.join(__dirname, '..', 'webui')
+const webui_dir = path.join(__dirname, '..', 'webui');
 
 app.use('/', express.static(webui_dir));
 

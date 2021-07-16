@@ -4,7 +4,7 @@ const fs = require('fs')
 var process = require('process')
 require('log-timestamp')
 var express = require('express')
-const { app, apiServer } = require('./api')
+const { app, apiServer } = require('./app')
 
 // write PID to file for killing
 fs.writeFileSync('.server.pid', process.pid);

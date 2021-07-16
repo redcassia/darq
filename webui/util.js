@@ -38,7 +38,7 @@ function isValidEmail(email) {
   return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email);
 }
 
-///////////////////////////////////////////////////////////////////////////////
+const BLANKET_FADE_DURATION = 150;
 
 function showBlanket(content, dismissable = true) {
   if (content) {
@@ -60,7 +60,7 @@ function showBlanket(content, dismissable = true) {
     $("#blanket").click(function(e) { });
   }
 
-  $("#blanket").show();
+  $("#blanket").fadeIn(BLANKET_FADE_DURATION);
 }
 
 function hideBlanket() {

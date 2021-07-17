@@ -97,3 +97,12 @@
 #locale-switcher:hover {
     cursor: pointer;
 }
+
+.back-btn {
+    display: inline-block;
+    color: var(--accent);
+    margin-inline-end: 20px;
+}
+.back-btn:hover{
+    cursor: pointer;
+}

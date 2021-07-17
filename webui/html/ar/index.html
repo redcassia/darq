@@ -119,13 +119,16 @@
                     <input type="email" id="signin-email" placeholder="البريد الإلكتروني" onkeydown="if (event.code === 'Enter') signin();"/> <br/>
                     <input type="password" id="signin-password" placeholder="كلمه السر" onkeydown="if (event.code === 'Enter') signin();"/> <br/>
                     <div style="text-align: right;">
-                        <span class="clickable" onclick="switchToForgotPassword()">نسيت كلمة السر؟</span>
+                        <span class="clickable" onclick="toggleForgotPassword()">نسيت كلمة السر؟</span>
                     </div>
                     <button onclick="signin()">تسجيل الدخول</button>
                 </div>
 
                 <div id="forgot-password-form" class="home-pane-content dark" style="display: none;">
-                    <h4 style="text-align: right;">نسيت كلمة السر؟</h4>
+                    <h4 style="text-align: right;">
+                        <i class="back-btn fas fa-arrow-right" onclick="toggleForgotPassword()"></i>
+                        نسيت كلمة السر؟
+                    </h4>
                     <input type="email" id="reset-password-email" placeholder="البريد الإلكتروني" onkeydown="if (event.code === 'Enter') requestPasswordReset();"/> <br/>
                     <button onclick="requestPasswordReset()">إعادة تعيين كلمة المرور</button>
                 </div>

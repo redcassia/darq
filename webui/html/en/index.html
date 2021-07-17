@@ -112,13 +112,16 @@
                     <input type="email" id="signin-email" placeholder="Email" onkeydown="if (event.code === 'Enter') signin();"/> <br/>
                     <input type="password" id="signin-password" placeholder="Password" onkeydown="if (event.code === 'Enter') signin();"/> <br/>
                     <div style="text-align: right;">
-                        <span class="clickable" onclick="switchToForgotPassword()">Forgot password?</span>
+                        <span class="clickable" onclick="toggleForgotPassword()">Forgot password?</span>
                     </div>
                     <button onclick="signin()">Sign in</button>
                 </div>
 
                 <div id="forgot-password-form" class="home-pane-content dark" style="display: none;">
-                    <h4 style="text-align: left;">Forgot password?</h4>
+                    <h4 style="text-align: left;">
+                        <i class="back-btn fas fa-arrow-left" onclick="toggleForgotPassword()"></i>
+                        Forgot password?
+                    </h4>
                     <input type="email" id="reset-password-email" placeholder="Email" onkeydown="if (event.code === 'Enter') requestPasswordReset();"/> <br/>
                     <button onclick="requestPasswordReset()">Reset Password</button>
                 </div>

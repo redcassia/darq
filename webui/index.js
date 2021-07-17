@@ -14,7 +14,7 @@ function switchLocale(locale) {
   });
 }
 
-function switchToForgotPassword() {
+function toggleForgotPassword() {
   $("#signin-form").animate({
     height: 'toggle'
   }, slideSpeed);

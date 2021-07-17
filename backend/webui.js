@@ -108,6 +108,14 @@ class WebUI {
 
               break;
 
+            case ".ico":
+              v = {
+                type: 'image/vnd.microsoft.icon',
+                data: await WebUI._getFile(p)
+              }
+
+              break;
+
             default:
               v = null;
               break;

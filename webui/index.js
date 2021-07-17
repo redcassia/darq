@@ -87,9 +87,14 @@ $(document).ready(function() {
 
   if (hash[0] == '#resetpwd') {
     $("#reset-password-form").show();
+    $(".inactive-home-pane > .home-pane-content").hide();
+
     welcomeToSignin(0);
-    resetPwdEmail = hash[1].substr(6);
-    resetPwdToken = hash[2].substr(6);
+
+    if (hash.length >= 2) {
+      resetPwdEmail = hash[1].substr(6);
+      resetPwdToken = hash[2].substr(6);
+    }
   }
   else if (CookieManager.exists('token')) {
     GraphQL.query(`

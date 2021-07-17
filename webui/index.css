@@ -90,9 +90,12 @@
     top: 0;
 
     background-color: transparent;
-    color: white;
+    color: var(--white);
     padding: 20px;
     font-size: 14px;
+}
+#locale-switcher[inverted="inverted"] {
+    color: var(--dark);
 }
 #locale-switcher:hover {
     cursor: pointer;

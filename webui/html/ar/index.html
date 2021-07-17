@@ -15,7 +15,7 @@
 
         <script>
             function switchToSignup() {
-                const slideDisplacement = $("#signin-screen > .active-home-pane").width()
+                const slideDisplacement = $("#signin-screen > .active-home-pane").width();
 
                 $(".inactive-home-pane > .home-pane-content").hide();
                 $("#signin-form").hide();
@@ -36,12 +36,14 @@
                     $("#signin-form").show();
                     $(this).css({
                         right: '0'
-                    })
+                    });
                 });
+
+                $("#locale-switcher").attr("inverted", "inverted");
             }
 
             function switchToSignin() {
-                const slideDisplacement = $("#signin-screen > .active-home-pane").width()
+                const slideDisplacement = $("#signin-screen > .active-home-pane").width();
 
                 $(".inactive-home-pane > .home-pane-content").hide();
                 $("#signup-form").hide();
@@ -60,7 +62,9 @@
                     $("#signup-form").show();
                     $(this).css({
                         right: '0'
-                    })
+                    });
+
+                    $("#locale-switcher").removeAttr("inverted");
                 });
             }
 

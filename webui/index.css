@@ -26,8 +26,8 @@
     min-width: 400px;
     height: auto;
     top: 150px;
-    left: 50%;
-    transform: translate(-50%, 0);
+    margin: auto;
+    text-align: center;
 }
 
 .home-pane-content > input {
@@ -51,9 +51,6 @@
 
 .active-home-pane > .home-pane-content > button {
     position: relative;
-    left: 50%;
-    transform: translate(-50%, 0);
-
     background-color: var(--main-color);
 }
 

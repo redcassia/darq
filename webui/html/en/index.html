@@ -14,7 +14,7 @@
 
         <script>
             function switchToSignup() {
-                const slideDisplacement = $("#signin-screen > .inactive-home-pane").offset().left;
+                const slideDisplacement = $("#signin-screen > .active-home-pane").width()
 
                 $(".inactive-home-pane > .home-pane-content").hide();
                 $("#signin-form").hide();
@@ -24,7 +24,7 @@
                 $("#signup-form").css({
                     left: '-100%'
                 }).animate({
-                    left: '50%'
+                    left: '0'
                 }, slideSpeed);
                 $("#signin-screen > .inactive-home-pane").animate({
                     left: '-=' + slideDisplacement + 'px'
@@ -34,13 +34,13 @@
                     $(".inactive-home-pane > .home-pane-content").show();
                     $("#signin-form").show();
                     $(this).css({
-                    left: '0px'
+                        left: '0'
                     })
                 });
             }
 
             function switchToSignin() {
-                const slideDisplacement = $("#signin-screen > .inactive-home-pane").offset().left;
+                const slideDisplacement = $("#signin-screen > .active-home-pane").width()
 
                 $(".inactive-home-pane > .home-pane-content").hide();
                 $("#signup-form").hide();
@@ -48,7 +48,7 @@
                 $("#signin-form").css({
                     left: '200%'
                 }).animate({
-                    left: '50%'
+                    left: '0'
                 }, slideSpeed);
                 $("#signup-screen > .inactive-home-pane").animate({
                     left: '+=' + slideDisplacement + 'px'
@@ -58,7 +58,7 @@
                     $(".inactive-home-pane > .home-pane-content").show();
                     $("#signup-form").show();
                     $(this).css({
-                    left: '0px'
+                        left: '0'
                     })
                 });
             }
@@ -88,7 +88,7 @@
 
             <div class="home-pane active-home-pane">
                 <div id="signup-form" class="home-pane-content dark">
-                    <h4>
+                    <h4 style="text-align: left;">
                         <span>Create an account to <br/> engage with customers on</span>
                         <br/>
                         <span class="accent h3">DarQ</span>
@@ -104,7 +104,7 @@
         <div id="signin-screen" class="screen" style="z-index: 1;">
             <div class="home-pane active-home-pane">
                 <div id="signin-form" class="home-pane-content dark" style="display: none;">
-                    <h4>
+                    <h4 style="text-align: left;">
                         <span>Sign in to <br/> engage with customers on</span>
                         <br/>
                         <span class="accent h3">DarQ</span>
@@ -118,7 +118,7 @@
                 </div>
 
                 <div id="forgot-password-form" class="home-pane-content dark" style="display: none;">
-                    <h4>Forgot password?</h4>
+                    <h4 style="text-align: left;">Forgot password?</h4>
                     <input type="email" id="reset-password-email" placeholder="Email" onkeydown="if (event.code === 'Enter') requestPasswordReset();"/> <br/>
                     <button onclick="requestPasswordReset()">Reset Password</button>
                 </div>

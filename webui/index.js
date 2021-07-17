@@ -211,6 +211,7 @@ function signin() {
 async function signout() {
   if (await confirm(getString('CONFIRM_LOGOUT'))) {
     CookieManager.clear('token');
+    window.location.hash = "";
     location.reload();
   }
 }

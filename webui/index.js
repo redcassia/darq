@@ -3,6 +3,8 @@ const welcomeSpeed = 150;
 
 function switchLocale(locale) {
   CookieManager.set("locale", locale, 1000);
+
+  $("#locale-switcher").removeAttr("inverted");
   $("#welcome-screen").show();
   $("#main-screen").hide();
   $("#welcome-screen > .inactive-home-pane").animate({

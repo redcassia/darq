@@ -7,6 +7,7 @@ var fs = require('fs')
 var path = require('path')
 
 const ServerManager = require('./server_manager');
+const { WebUI } = require('./webui');
 
 const typeDefs = gql(fs.readFileSync(path.join(__dirname, "api/schema.graphql"), "utf-8"));
 const resolvers = require('./api/resolvers');
@@ -46,6 +47,8 @@ const apiServer = new ApolloServer({
   debug: false
 });
 
+////////////////////////////////////////////////////////////////////////////////
+
 const app = express();
 
 app.use(function(req, res, next){
@@ -53,60 +56,50 @@ app.use(function(req, res, next){
   else next();
 });
 
+////////////////////////////////////////////////////////////////////////////////
+
 app.use('/api', auth, function (err, req, res, next) {
   if (err) return next();
   return next(err);
 });
+
 apiServer.applyMiddleware({ app, path: '/api' });
 
-const webui_dir = path.join(__dirname, '..', 'webui');
-
-app.use('/', express.static(webui_dir));
-
-app.get('/', (req, res) => {
-  var cookies = cookie.parse(req.headers.cookie || '');
-
-  var locale;
-  if (cookies.locale !== undefined) {
-    locale = cookies.locale;
-  }
-  else {
-    res.setHeader('Set-Cookie', cookie.serialize('locale', 'en', {
-      maxAge: 60 * 60 * 24 * 1000, // 1000 days
-      sameSite: 'strict'
-    }));
-
-    locale = "en";
-  }
-
-  res.sendFile(path.join(webui_dir, 'html', locale, 'index.html'));
-});
-
-app.get('/*.html', (req, res) => {
-
-  var cookies = cookie.parse(req.headers.cookie || '');
-
-  var locale;
-  if (cookies.locale !== undefined) {
-    locale = cookies.locale;
-  }
-  else {
-    res.setHeader('Set-Cookie', cookie.serialize('locale', 'en', {
-      sameSite: 'strict'
-    }));
-
-    locale = "en";
-  }
-
-  res.sendFile(path.join(webui_dir, 'html', locale, req.url));
-});
+////////////////////////////////////////////////////////////////////////////////
 
 app.use('/attachment', express.static(
   process.env.ATTACHMENTS_DIR,
   { dotfiles:'allow' }
 ));
 
-app.use('/admin', express.static(path.join(webui_dir, 'admin.html')));
+////////////////////////////////////////////////////////////////////////////////
+
+const webui = new WebUI(path.join(__dirname, '..', 'webui'));
+
+app.get('/', (req, res, next) => {
+  if (req.url == "/") req.url = "/index.html";
+  next();
+});
+
+app.get('/*.html', (req, res, next) => {
+  const locale = webui.getOrSetLocale(req, res);
+  req.url = path.join('html', locale, req.url);
+  next();
+});
+
+app.get('/admin', (req, res, next) => {
+  req.url = "/admin.html";
+  next();
+});
+
+app.get('/privacy', (req, res, next) => {
+  req.url = "/privacy_policy.html";
+  next();
+});
+
+app.use('/', (req, res, next) => {
+  webui.handleRequest(req, res, next);
+});
 
 app.get('/verifyuser', async (req, res) => {
   const email = req.query.email;
@@ -133,6 +126,6 @@ app.get('/verifyuser', async (req, res) => {
   res.end();
 });
 
-app.use('/privacy', express.static(path.join(webui_dir, 'privacy_policy.html')))
+////////////////////////////////////////////////////////////////////////////////
 
 module.exports = { app, apiServer }

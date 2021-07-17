@@ -58,8 +58,8 @@ const strings = {
   },
 
   BUSINESS_ADD_FAIL_ALERT: {
-    en: "Failed to add business.",
-    ar: "فشل إضافة النشاط التجاري.",
+    en: "Failed to add business",
+    ar: "فشل إضافة النشاط التجاري",
   },
 
   BUSINESS_UPDATE_SUCCESS_ALERT: {
@@ -68,48 +68,48 @@ const strings = {
   },
 
   BUSINESS_UPDATE_FAIL_ALERT: {
-    en: "Failed to update business.",
+    en: "Failed to update business",
     ar: "فشل تحديث النشاط التجاري",
   },
 
   BUSINESS_DELETE_SUCCESS_ALERT: {
-    en: "Your business is now being removed from our system.",
-    ar: "يتم الآن إزالة نشاطك التجاري من نظامنا.",
+    en: "Your business is now being removed from our system",
+    ar: "يتم الآن إزالة نشاطك التجاري من نظامنا",
   },
 
   BUSINESS_DELETE_FAIL_ALERT: {
-    en: "Failed to delete business.",
-    ar: "فشل حذف النشاط التجاري.",
+    en: "Failed to delete business",
+    ar: "فشل حذف النشاط التجاري",
   },
 
   EVENT_ADD_SUCCESS_ALERT: {
-    en: "Your event has been added. The data will be reviewed and we will contact you shortly.",
-    ar: "تمت إضافة الحدث الخاص بك. ستتم مراجعة البيانات وسنتصل بك قريبًا.",
+    en: "Your event has been added. The data will be reviewed and we will contact you shortly",
+    ar: "تمت إضافة الحدث الخاص بك. ستتم مراجعة البيانات وسنتصل بك قريبًا",
   },
 
   EVENT_ADD_FAIL_ALERT: {
-    en: "Failed to add event.",
-    ar: "فشل إضافة الحدث.",
+    en: "Failed to add event",
+    ar: "فشل إضافة الحدث",
   },
 
   EVENT_UPDATE_SUCCESS_ALERT: {
-    en: "Your event has been updated.",
-    ar: "تم تحديث الحدث الخاص بك.",
+    en: "Your event has been updated",
+    ar: "تم تحديث الحدث الخاص بك",
   },
 
   EVENT_UPDATE_FAIL_ALERT: {
-    en: "Failed to update event.",
-    ar: "فشل تحديث الحدث.",
+    en: "Failed to update event",
+    ar: "فشل تحديث الحدث",
   },
 
   EVENT_DELETE_SUCCESS_ALERT: {
-    en: "Your event is now being deleted from our system.",
-    ar: "يتم الآن حذف حدثك من نظامنا.",
+    en: "Your event is now being deleted from our system",
+    ar: "يتم الآن حذف حدثك من نظامنا",
   },
 
   EVENT_DELETE_FAIL_ALERT: {
-    en: "Failed to delete event.",
-    ar: "فشل حذف الحدث.",
+    en: "Failed to delete event",
+    ar: "فشل حذف الحدث",
   },
 
   BUSINESS_DELETE_WARNING: {
@@ -143,33 +143,33 @@ const strings = {
   },
 
   MISSING_EMAIL_ALERT: {
-    en: "Please enter your email.",
-    ar: "يرجى إدخال البريد الإلكتروني الخاص بك.",
+    en: "Please enter your email",
+    ar: "يرجى إدخال البريد الإلكتروني الخاص بك",
   },
 
   INVALID_EMAIL_ALERT: {
-    en: "Please enter a valid email address.",
-    ar: "يرجى إدخال بريد إلكتروني صالح.",
+    en: "Please enter a valid email address",
+    ar: "يرجى إدخال بريد إلكتروني صالح",
   },
 
   MISSING_PASSWORD_ALERT: {
-    en: "Please enter your password.",
-    ar: "يرجى إدخال كلمة السر.",
+    en: "Please enter your password",
+    ar: "يرجى إدخال كلمة السر",
   },
 
   SHORT_PASSWORD_ALERT: {
-    en: "Your password must be 8 characters or more.",
-    ar: "يجب أن تتكون كلمة السر الخاصة بك من 8 أحرف أو أكثر.",
+    en: "Your password must be 8 characters or more",
+    ar: "يجب أن تتكون كلمة السر الخاصة بك من 8 أحرف أو أكثر",
   },
 
   MISSING_PASSWORD_CONFIRM_ALERT: {
-    en: "Please confirm your password.",
-    ar: "يرجى تأكيد كلمة السر الخاصة بك.",
+    en: "Please confirm your password",
+    ar: "يرجى تأكيد كلمة السر الخاصة بك",
   },
 
   MISMATCHING_PASSWORDS_ALERT: {
-    en: "Passwords do not match.",
-    ar: "كلمة السر غير مطابقة.",
+    en: "Passwords do not match",
+    ar: "كلمة السر غير مطابقة",
   },
 
   SINGUP_SUCCESS_ALERT: {
@@ -188,8 +188,8 @@ const strings = {
   },
 
   SIGNIN_REJECTED_ALERT: {
-    en: "Invalid email or password.",
-    ar: "البريد الإلكتروني أو كلمة السر خاطئة.",
+    en: "Invalid email or password",
+    ar: "البريد الإلكتروني أو كلمة السر خاطئة",
   },
 
   CONFIRM_LOGOUT: {
@@ -198,18 +198,18 @@ const strings = {
   },
 
   RESET_PASSWORD_REQUEST_SUCCESS_ALERT: {
-    en: "Please check your email.",
-    ar: "يرجى التحقق من بريدك الالكتروني.",
+    en: "Please check your email",
+    ar: "يرجى التحقق من بريدك الالكتروني",
   },
 
   RESET_PASSWORD_REQUEST_FAIL_ALERT: {
-    en: "Failed to request a password reset.",
-    ar: "فشل طلب إعادة تعيين كلمة السر.",
+    en: "Failed to request a password reset",
+    ar: "فشل طلب إعادة تعيين كلمة السر",
   },
 
   RESET_PASSWORD_FAIL_ALERT: {
-    en: "Reset password failed.",
-    ar: "فشل إعادة تعيين كلمة السر.",
+    en: "Reset password failed",
+    ar: "فشل إعادة تعيين كلمة السر",
   },
 
   YOU: {
@@ -223,13 +223,13 @@ const strings = {
   },
 
   PASSWORD_CHANGE_SUCCESS_ALERT: {
-    en: "Your password has been changed.",
-    ar: "تم تغيير كلمة السر الخاصة بك.",
+    en: "Your password has been changed",
+    ar: "تم تغيير كلمة السر الخاصة بك",
   },
 
   PASSWORD_CHANGE_FAIL_ALERT: {
-    en: "Password change failed.",
-    ar: "فشل تغيير كلمة السر.",
+    en: "Password change failed",
+    ar: "فشل تغيير كلمة السر",
   },
 
   REQUIRED_FIELD_ALERT_1: {
@@ -400,6 +400,16 @@ const strings = {
   UPDATE_STATUS: {
     en: "Update status:",
     ar: "حالة التحديث",
+  },
+
+  OK: {
+    en: "OK",
+    ar: "موافقة",
+  },
+
+  CANCEL: {
+    en: "Cancel",
+    ar: "إلغاء",
   },
 }
 

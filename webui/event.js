@@ -67,7 +67,7 @@ function deleteEvent(id) {
 function showDeleteEventConfirmation(id) {
   showBlanket(`
     <div class="window">
-      <div class="h5 dark">
+      <div class="h5">
         <span class="red">${getString('WARNING')}</span> ${getString('EVENT_DELETE_WARNING')}
         <span class="red">'${events[id]["display_name"]}'</span>
       </div>
@@ -120,6 +120,8 @@ function loadEvent(id) {
         ${ProfileView.generateEventView(e)}
       </div>
     `;
+
+    window.location.hash = window.location.hash.split('&')[0];
 
     document.getElementById("event-content").innerHTML = html;
 

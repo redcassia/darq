@@ -3,6 +3,8 @@ const welcomeSpeed = 150;
 
 function switchLocale(locale) {
   CookieManager.set("locale", locale, 1000);
+
+  $("#locale-switcher").removeAttr("inverted");
   $("#welcome-screen").show();
   $("#main-screen").hide();
   $("#welcome-screen > .inactive-home-pane").animate({
@@ -14,7 +16,7 @@ function switchLocale(locale) {
   });
 }
 
-function switchToForgotPassword() {
+function toggleForgotPassword() {
   $("#signin-form").animate({
     height: 'toggle'
   }, slideSpeed);
@@ -87,9 +89,14 @@ $(document).ready(function() {
 
   if (hash[0] == '#resetpwd') {
     $("#reset-password-form").show();
+    $(".inactive-home-pane > .home-pane-content").hide();
+
     welcomeToSignin(0);
-    resetPwdEmail = hash[1].substr(6);
-    resetPwdToken = hash[2].substr(6);
+
+    if (hash.length >= 2) {
+      resetPwdEmail = hash[1].substr(6);
+      resetPwdToken = hash[2].substr(6);
+    }
   }
   else if (CookieManager.exists('token')) {
     GraphQL.query(`
@@ -207,9 +214,11 @@ function signin() {
     }
   });
 }
-function signout() {
-  if (confirm(getString('CONFIRM_LOGOUT'))) {
+
+async function signout() {
+  if (await confirm(getString('CONFIRM_LOGOUT'))) {
     CookieManager.clear('token');
+    window.location.hash = "";
     location.reload();
   }
 }

@@ -15,9 +15,9 @@ function updateEventsMenu() {
   }
 }
 
-function reviewEvent(id, approve) {
+async function reviewEvent(id, approve) {
 
-  var conf = confirm(`
+  var conf = await confirm(`
     Are you sure you want to ${approve ? "Approve" : "Reject"} event '${newEvents[id]["display_name"]}'
   `);
   if (! conf) return;

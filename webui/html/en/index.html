@@ -3,7 +3,9 @@
 <html>
     <head>
         <title>DarQ</title>
+
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
         <link rel="stylesheet" href="style.css">
         <link rel="stylesheet" href="index.css">
     </head>
@@ -12,7 +14,7 @@
 
         <script>
             function switchToSignup() {
-                const slideDisplacement = $("#signin-screen > .inactive-home-pane").offset().left;
+                const slideDisplacement = $("#signin-screen > .active-home-pane").width();
 
                 $(".inactive-home-pane > .home-pane-content").hide();
                 $("#signin-form").hide();
@@ -22,7 +24,7 @@
                 $("#signup-form").css({
                     left: '-100%'
                 }).animate({
-                    left: '50%'
+                    left: '0'
                 }, slideSpeed);
                 $("#signin-screen > .inactive-home-pane").animate({
                     left: '-=' + slideDisplacement + 'px'
@@ -32,13 +34,15 @@
                     $(".inactive-home-pane > .home-pane-content").show();
                     $("#signin-form").show();
                     $(this).css({
-                    left: '0px'
-                    })
+                        left: '0'
+                    });
+
+                    $("#locale-switcher").attr("inverted", "inverted");
                 });
             }
 
             function switchToSignin() {
-                const slideDisplacement = $("#signin-screen > .inactive-home-pane").offset().left;
+                const slideDisplacement = $("#signin-screen > .active-home-pane").width();
 
                 $(".inactive-home-pane > .home-pane-content").hide();
                 $("#signup-form").hide();
@@ -46,7 +50,7 @@
                 $("#signin-form").css({
                     left: '200%'
                 }).animate({
-                    left: '50%'
+                    left: '0'
                 }, slideSpeed);
                 $("#signup-screen > .inactive-home-pane").animate({
                     left: '+=' + slideDisplacement + 'px'
@@ -56,8 +60,10 @@
                     $(".inactive-home-pane > .home-pane-content").show();
                     $("#signup-form").show();
                     $(this).css({
-                    left: '0px'
-                    })
+                        left: '0'
+                    });
+
+                    $("#locale-switcher").removeAttr("inverted");
                 });
             }
 
@@ -86,7 +92,7 @@
 
             <div class="home-pane active-home-pane">
                 <div id="signup-form" class="home-pane-content dark">
-                    <h4>
+                    <h4 style="text-align: left;">
                         <span>Create an account to <br/> engage with customers on</span>
                         <br/>
                         <span class="accent h3">DarQ</span>
@@ -102,7 +108,7 @@
         <div id="signin-screen" class="screen" style="z-index: 1;">
             <div class="home-pane active-home-pane">
                 <div id="signin-form" class="home-pane-content dark" style="display: none;">
-                    <h4>
+                    <h4 style="text-align: left;">
                         <span>Sign in to <br/> engage with customers on</span>
                         <br/>
                         <span class="accent h3">DarQ</span>
@@ -110,13 +116,16 @@
                     <input type="email" id="signin-email" placeholder="Email" onkeydown="if (event.code === 'Enter') signin();"/> <br/>
                     <input type="password" id="signin-password" placeholder="Password" onkeydown="if (event.code === 'Enter') signin();"/> <br/>
                     <div style="text-align: right;">
-                        <span class="clickable" onclick="switchToForgotPassword()">Forgot password?</span>
+                        <span class="clickable" onclick="toggleForgotPassword()">Forgot password?</span>
                     </div>
                     <button onclick="signin()">Sign in</button>
                 </div>
 
                 <div id="forgot-password-form" class="home-pane-content dark" style="display: none;">
-                    <h4>Forgot password?</h4>
+                    <h4 style="text-align: left;">
+                        <i class="back-btn fas fa-arrow-left" onclick="toggleForgotPassword()"></i>
+                        Forgot password?
+                    </h4>
                     <input type="email" id="reset-password-email" placeholder="Email" onkeydown="if (event.code === 'Enter') requestPasswordReset();"/> <br/>
                     <button onclick="requestPasswordReset()">Reset Password</button>
                 </div>

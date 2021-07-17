@@ -32,107 +32,6 @@ function welcomeToSignin(d) {
 }
 
 function setGlobalEventHandlers() {
-  // change the side bar icons to darker versions when 'active' class changes
-  $(".side-bar-btn").on('classChange', function() {
-    var icon = $(this).children('img');
-    if ($(this).hasClass('active')) {
-      icon.attr('src', "assets/" + icon.attr('data-icon-name') + "-icon-dark.png");
-    }
-    else {
-      icon.attr('src', "assets/" + icon.attr('data-icon-name') + "-icon.png");
-    }
-  });
-
-  $("form").submit(function(e) {
-    e.preventDefault();
-  });
-
-  $(".img-input").click(function() {
-    $(this).children()[0].click();
-  });
-  $(".img-input > input").change(function() {
-    var inp = this;
-    var input = $(this);
-    if (input.get()[0].files) {
-      for (file of input.get()[0].files) {
-        var reader = new FileReader();
-  
-        reader.onload = function(e) {
-          var div = document.createElement("div");
-          div.setAttribute('class', 'img-upload-obj');
-  
-          var img = document.createElement("img");
-          img.setAttribute('src', e.target.result);
-  
-          var btn = document.createElement("button");
-          btn.onclick = function() {
-            div.remove();
-          }
-  
-          var cloned = inp.cloneNode();
-          cloned.setAttribute('class', 'hidden');
-          div.appendChild(cloned);
-          div.appendChild(img);
-          div.appendChild(btn);
-  
-          var parent = input.parent();
-          if (! parent.hasClass('multiple')) {
-            parent.parent().children(".img-upload-obj").remove();
-          }
-          parent.before(div);
-        };
-  
-        reader.readAsDataURL(file);
-      }
-    }
-  });
-
-  $(".multistring-input > button").click(function() {
-    var input = $(this).parent().children('input')[0];
-    var val = input.value;
-
-    if (val.length > 0) {
-      var div = document.createElement("div");
-      div.setAttribute('class', 'string-obj');
-      div.setAttribute('data-string', val);
-  
-      var p = document.createElement("p");
-      p.textContent = val;
-  
-      var btn = document.createElement("button");
-      btn.setAttribute('class', 'remove-btn');
-      btn.onclick = function() {
-        div.remove();
-      }
-  
-      div.appendChild(p);
-      div.appendChild(btn);
-
-      $(this).parent().children('div')[0].append(div);
-      input.value = "";
-    }
-  });
-
-  $(".multiform > button").click(function() {
-    $(this).parent().append(
-      $($(this).parent().children('.template')[0])
-        .clone()
-        .removeClass("template")
-        .addClass("sub-form")
-    );
-
-    $(".remove-btn").click(function() {
-      this.parentElement.remove();
-    });
-  });
-
-  $("select").change(function() {
-    var next = $(this).next();
-    if (next.hasClass('show-when-other')) {
-      if ($(this).val() == 'OTHER') next.show();
-      else next.hide();
-    }
-  })
 }
 
 function loadFirstPage() {
@@ -191,8 +90,9 @@ function signin() {
     }
   });
 }
-function signout() {
-  if (confirm("Are you sure you want to Logout?")) {
+
+async function signout() {
+  if (await confirm("Are you sure you want to Logout?")) {
     CookieManager.clear('token');
     location.reload();
   }

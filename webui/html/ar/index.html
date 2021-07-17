@@ -3,7 +3,9 @@
 <html>
     <head>
         <title>DarQ</title>
+
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
         <link rel="stylesheet" href="style.css">
         <link rel="stylesheet" href="index.css">
     </head>
@@ -13,7 +15,7 @@
 
         <script>
             function switchToSignup() {
-                const slideDisplacement = $("#signin-screen > .active-home-pane").offset().left;
+                const slideDisplacement = $("#signin-screen > .active-home-pane").width();
 
                 $(".inactive-home-pane > .home-pane-content").hide();
                 $("#signin-form").hide();
@@ -23,7 +25,7 @@
                 $("#signup-form").css({
                     right: '-100%'
                 }).animate({
-                    right: '50%'
+                    right: '0'
                 }, slideSpeed);
                 $("#signin-screen > .inactive-home-pane").animate({
                     right: '-=' + slideDisplacement + 'px'
@@ -33,13 +35,15 @@
                     $(".inactive-home-pane > .home-pane-content").show();
                     $("#signin-form").show();
                     $(this).css({
-                        right: '0px'
-                    })
+                        right: '0'
+                    });
                 });
+
+                $("#locale-switcher").attr("inverted", "inverted");
             }
 
             function switchToSignin() {
-                const slideDisplacement = $("#signin-screen > .active-home-pane").offset().left;
+                const slideDisplacement = $("#signin-screen > .active-home-pane").width();
 
                 $(".inactive-home-pane > .home-pane-content").hide();
                 $("#signup-form").hide();
@@ -47,7 +51,7 @@
                 $("#signin-form").css({
                     right: '200%'
                 }).animate({
-                    right: '50%'
+                    right: '0'
                 }, slideSpeed);
                 $("#signup-screen > .inactive-home-pane").animate({
                     right: '+=' + slideDisplacement + 'px'
@@ -57,8 +61,10 @@
                     $(".inactive-home-pane > .home-pane-content").show();
                     $("#signup-form").show();
                     $(this).css({
-                        right: '0px'
-                    })
+                        right: '0'
+                    });
+
+                    $("#locale-switcher").removeAttr("inverted");
                 });
             }
 
@@ -72,7 +78,7 @@
 
         </script>
 
-        <style> body { direction: rtl; } </style>
+        <style> html body { direction: rtl; } </style>
 
         <div id="locale-switcher" onclick="switchLocale('en')" style="left: 0;">English</div>
 
@@ -82,8 +88,9 @@
             <div class="home-pane active-home-pane">
                 <div id="signup-form" class="home-pane-content dark">
                     <h4 style="text-align: right;">
+                        <span>قم بإنشاء حساب <br/> للتفاعل مع العملاء على</span>
+                        <br/>
                         <span class="accent h3">DarQ</span>
-                        <span>إنشاء حساب على</span>
                     </h4>
                     <input type="email" id="signup-email" placeholder="البريد الإلكتروني" onkeydown="if (event.code === 'Enter') signup();" /> <br/>
                     <input type="password" id="signup-password" placeholder="كلمه السر" onkeydown="if (event.code === 'Enter') signup();" /> <br/>
@@ -111,19 +118,23 @@
             <div class="home-pane active-home-pane">
                 <div id="signin-form" class="home-pane-content dark" style="display: none;">
                     <h4 style="text-align: right;">
+                        <span>سجّل الدخول <br/> للتفاعل مع العملاء على</span>
+                        <br/>
                         <span class="accent h3">DarQ</span>
-                        <span>سجّل الدخول إلى</span>
                     </h4>
                     <input type="email" id="signin-email" placeholder="البريد الإلكتروني" onkeydown="if (event.code === 'Enter') signin();"/> <br/>
                     <input type="password" id="signin-password" placeholder="كلمه السر" onkeydown="if (event.code === 'Enter') signin();"/> <br/>
                     <div style="text-align: right;">
-                        <span class="clickable" onclick="switchToForgotPassword()">نسيت كلمة السر؟</span>
+                        <span class="clickable" onclick="toggleForgotPassword()">نسيت كلمة السر؟</span>
                     </div>
                     <button onclick="signin()">تسجيل الدخول</button>
                 </div>
 
                 <div id="forgot-password-form" class="home-pane-content dark" style="display: none;">
-                    <h4>نسيت كلمة السر؟</h4>
+                    <h4 style="text-align: right;">
+                        <i class="back-btn fas fa-arrow-right" onclick="toggleForgotPassword()"></i>
+                        نسيت كلمة السر؟
+                    </h4>
                     <input type="email" id="reset-password-email" placeholder="البريد الإلكتروني" onkeydown="if (event.code === 'Enter') requestPasswordReset();"/> <br/>
                     <button onclick="requestPasswordReset()">إعادة تعيين كلمة المرور</button>
                 </div>

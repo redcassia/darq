@@ -26,8 +26,8 @@
     min-width: 400px;
     height: auto;
     top: 150px;
-    left: 50%;
-    transform: translate(-50%, 0);
+    margin: auto;
+    text-align: center;
 }
 
 .home-pane-content > input {
@@ -51,9 +51,6 @@
 
 .active-home-pane > .home-pane-content > button {
     position: relative;
-    left: 50%;
-    transform: translate(-50%, 0);
-
     background-color: var(--main-color);
 }
 
@@ -93,10 +90,22 @@
     top: 0;
 
     background-color: transparent;
-    color: white;
+    color: var(--white);
     padding: 20px;
     font-size: 14px;
 }
+#locale-switcher[inverted="inverted"] {
+    color: var(--dark);
+}
 #locale-switcher:hover {
+    cursor: pointer;
+}
+
+.back-btn {
+    display: inline-block;
+    color: var(--accent);
+    margin-inline-end: 20px;
+}
+.back-btn:hover{
     cursor: pointer;
 }

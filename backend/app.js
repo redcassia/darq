@@ -82,8 +82,10 @@ app.get('/', (req, res, next) => {
 });
 
 app.get('/*.html', (req, res, next) => {
-  const locale = webui.getOrSetLocale(req, res);
-  req.url = path.join('html', locale, req.url);
+  if (! req.url.startsWith("/admin")) {
+    const locale = webui.getOrSetLocale(req, res);
+    req.url = path.join('html', locale, req.url);
+  }
   next();
 });
 

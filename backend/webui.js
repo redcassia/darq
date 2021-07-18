@@ -169,7 +169,7 @@ class WebUI {
 
             case ".ico":
               v = {
-                type: 'image/vnd.microsoft.icon',
+                type: 'image/x-icon',
                 data: await WebUI._getFile(p)
               }
 

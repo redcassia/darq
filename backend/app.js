@@ -19,8 +19,6 @@ const auth = jwt({
   credentialsRequired: false
 });
 
-console.info("Creating Apollo server");
-
 const apiServer = new ApolloServer({
   schema: makeExecutableSchema({
     typeDefs: typeDefs,
@@ -82,8 +80,10 @@ app.get('/', (req, res, next) => {
 });
 
 app.get('/*.html', (req, res, next) => {
-  const locale = webui.getOrSetLocale(req, res);
-  req.url = path.join('html', locale, req.url);
+  if (! req.url.startsWith("/admin")) {
+    const locale = webui.getOrSetLocale(req, res);
+    req.url = path.join('html', locale, req.url);
+  }
   next();
 });
 

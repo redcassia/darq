@@ -19,8 +19,6 @@ const auth = jwt({
   credentialsRequired: false
 });
 
-console.info("Creating Apollo server");
-
 const apiServer = new ApolloServer({
   schema: makeExecutableSchema({
     typeDefs: typeDefs,

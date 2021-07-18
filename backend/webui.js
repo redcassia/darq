@@ -216,7 +216,11 @@ class WebUI {
       next();
     }
     else {
-      res.type(resource.type).send(resource.data).end();
+      res
+        .set('Cache-Control', 'public, max-age=3600')
+        .type(resource.type)
+        .send(resource.data)
+        .end();
     }
   }
 }

@@ -164,7 +164,7 @@ const content = {
     "/assets/user-icon-dark.png",
     "/assets/user-icon.png",
   ],
-  "image/vnd.microsoft.icon": [
+  "image/x-icon": [
     "/favicon.ico"
   ]
 }

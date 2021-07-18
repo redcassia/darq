@@ -141,7 +141,7 @@ class WebUI {
 
             case ".js":
               v = {
-                type: 'JavaScript',
+                type: 'text/javascript',
                 data: this.minify
                   ? await WebUI._minifyJs(p)
                   : await WebUI._getFile(p)

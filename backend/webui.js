@@ -218,7 +218,7 @@ class WebUI {
     }
     else {
       if (this.doCache) {
-        res.set('Cache-Control', 'public, max-age=3600')
+        res.set('Cache-Control', 'public, max-age=36000, immutable')
       }
 
       res.type(resource.type)

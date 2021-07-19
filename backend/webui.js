@@ -116,7 +116,8 @@ class WebUI {
   }
 
   async _get(k) {
-    var v;
+    var v = null;
+
     try {
       const ext = path.extname(k);
       const p = path.join(this.dir, k);
@@ -168,14 +169,10 @@ class WebUI {
 
         break;
 
-      default:
-        v = null;
-        break;
+      default: break;
       }
     }
-    catch (e) {
-      v = null;
-    }
+    catch (ignored) { }
 
     return v;
   }
@@ -183,11 +180,11 @@ class WebUI {
   constructor(dir) {
     this.dir = dir;
 
-    this.doMinify = process.env.NODE_ENV == "prod";
+    this.doMinify = process.env.NODE_ENV != "dev";
     this.doCache = process.env.NODE_ENV != "dev";
 
     this.loader = new DataLoader(
-      async (keys) => keys.map((k) => _get(k))
+      async (keys) => keys.map(async (k) => await this._get(k))
     )
   }
 

@@ -31,12 +31,10 @@ async function reviewEvent(id, approve) {
   `,{
     id: id,
     approve: approve
-  }).then((res) => {
-    hideLoadingBlanket();
-
+  }).then(async (res) => {
     if (res.hasError) {
-      
-      alert(`Failed to ${approve ? "Approve" : "Reject"} event`);
+      console.log(res.errors[0]["message"]);
+      await alert(`Failed to ${approve ? "Approve" : "Reject"} event`);
     }
     else {
       if (approve) {
@@ -49,11 +47,9 @@ async function reviewEvent(id, approve) {
       updateEventsMenu();
       document.getElementById("event-content").innerHTML = '';
     }
-  }).catch(e => {
-    hideLoadingBlanket();
-
+  }).catch(async (e) => {
     console.log(e);
-    alert("Failed to approve event");
+    await alert("Failed to approve event");
   });
 }
 

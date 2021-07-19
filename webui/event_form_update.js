@@ -24,24 +24,22 @@ function submitForm() {
   `, {
     id: initialData["id"],
     data: data
-  }).then(res => {
-    hideLoadingBlanket();
+  }).then(async (res) => {
     Form.unlock();
 
     if (!res.hasError) {
-      alert(getString('EVENT_UPDATE_SUCCESS_ALERT'));
+      await alert(getString('EVENT_UPDATE_SUCCESS_ALERT'));
       queryOwnedEvents();
     }
     else {
       console.log(res.errors[0]["message"]);
-      alert(getString('EVENT_UPDATE_FAIL_ALERT'));
+      await alert(getString('EVENT_UPDATE_FAIL_ALERT'));
     }
-  }).catch(e => {
-    hideLoadingBlanket();
+  }).catch(async (e) => {
     Form.unlock();
 
     console.log(e);
-    alert(getString('EVENT_UPDATE_FAIL_ALERT'));
+    await alert(getString('EVENT_UPDATE_FAIL_ALERT'));
   });
 }
 

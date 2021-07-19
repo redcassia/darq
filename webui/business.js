@@ -21,25 +21,24 @@ function submitAddBusinessForm(mutationName, inputName, getData) {
     }
   `, {
     data: data
-  }).then(res => {
-    hideLoadingBlanket();
+  }).then(async (res) => {
     Form.unlock();
 
     if (! res.hasError) {
-      alert(getString('BUSINESS_ADD_SUCCESS_ALERT'));
+      await alert(getString('BUSINESS_ADD_SUCCESS_ALERT'));
       queryOwnedBusinesses();
     }
     else {
       console.log(res.errors[0]["message"]);
-      alert(getString('BUSINESS_ADD_FAIL_ALERT'));
+      await alert(getString('BUSINESS_ADD_FAIL_ALERT'));
     }
 
-  }).catch(e => {
-    hideLoadingBlanket();
+    window.location.hash =  window.location.hash.split('&')[0];
+  }).catch(async (e) => {
     Form.unlock();
 
     console.log(e);
-    alert(getString('BUSINESS_ADD_FAIL_ALERT'));
+    await alert(getString('BUSINESS_ADD_FAIL_ALERT'));
 
     window.location.hash =  window.location.hash.split('&')[0];
   });
@@ -67,26 +66,24 @@ function submitUpdateBusinessForm(mutationName, inputName, id, getData) {
   `, {
     id: id,
     data: data
-  }).then(res => {
-    hideLoadingBlanket();
+  }).then(async (res) => {
     Form.unlock();
 
     if (! res.hasError) {
-      alert(getString('BUSINESS_UPDATE_SUCCESS_ALERT'));
+      await alert(getString('BUSINESS_UPDATE_SUCCESS_ALERT'));
       queryOwnedBusinesses();
     }
     else {
       console.log(res.errors[0]["message"]);
-      alert(getString('BUSINESS_UPDATE_FAIL_ALERT'));
+      await alert(getString('BUSINESS_UPDATE_FAIL_ALERT'));
     }
 
     window.location.hash =  window.location.hash.split('&')[0];
-  }).catch(e => {
-    hideLoadingBlanket();
+  }).catch(async (e) => {
     Form.unlock();
 
     console.log(e);
-    alert(getString('BUSINESS_UPDATE_FAIL_ALERT'));
+    await alert(getString('BUSINESS_UPDATE_FAIL_ALERT'));
 
     window.location.hash =  window.location.hash.split('&')[0];
   });
@@ -158,24 +155,22 @@ function deleteBusiness(id) {
     }
   `, {
     id: id
-  }).then(res => {
-    hideLoadingBlanket();
+  }).then(async (res) => {
     Form.unlock();
 
     if (! res.hasError) {
-      alert(getString('BUSINESS_DELETE_SUCCESS_ALERT'));
+      await alert(getString('BUSINESS_DELETE_SUCCESS_ALERT'));
       queryOwnedBusinesses();
     }
     else {
       console.log(res.errors[0]["message"]);
-      alert(getString('BUSINESS_DELETE_FAIL_ALERT'));
+      await alert(getString('BUSINESS_DELETE_FAIL_ALERT'));
     }
-  }).catch(e => {
-    hideLoadingBlanket();
+  }).catch(async (e) => {
     Form.unlock();
 
     console.log(e);
-    alert(getString('BUSINESS_DELETE_FAIL_ALERT'));
+    await alert(getString('BUSINESS_DELETE_FAIL_ALERT'));
   });
 }
 

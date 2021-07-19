@@ -21,13 +21,13 @@ function changePassword() {
       mutation ($oldPassword: String!, $newPassword: String!) {
         changeBusinessUserPassword(oldPassword: $oldPassword, newPassword: $newPassword)
       }
-    `, data).then(res => {
+    `, data).then(async (res) => {
       if (! res.hasError) {
-        alert(getString('PASSWORD_CHANGE_SUCCESS_ALERT'));
+        await alert(getString('PASSWORD_CHANGE_SUCCESS_ALERT'));
         navigateTo('settings');
       }
       else {
-        alert(getString('PASSWORD_CHANGE_FAIL_ALERT'));
+        await alert(getString('PASSWORD_CHANGE_FAIL_ALERT'));
       }
     })
   }

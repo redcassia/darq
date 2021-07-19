@@ -115,78 +115,79 @@ class WebUI {
     });
   }
 
+  async _get(k) {
+    var v;
+    try {
+      const ext = path.extname(k);
+      const p = path.join(this.dir, k);
+
+      switch (ext) {
+      case ".html":
+        v = {
+          type: 'text/html',
+          data: this.doMinify
+            ? await WebUI._minifyHtml(p)
+            : await WebUI._getFile(p)
+        };
+
+        break;
+
+      case ".js":
+        v = {
+          type: 'text/javascript',
+          data: this.doMinify
+            ? await WebUI._minifyJs(p)
+            : await WebUI._getFile(p)
+        }
+
+        break;
+
+      case ".css":
+        v = {
+          type: 'text/css',
+          data: this.doMinify
+            ? await WebUI._minifyCss(p)
+            : await WebUI._getFile(p)
+        }
+
+        break;
+
+      case ".png":
+        v = {
+          type: 'image/png',
+          data: await WebUI._getFile(p)
+        }
+
+        break;
+
+      case ".ico":
+        v = {
+          type: 'image/x-icon',
+          data: await WebUI._getFile(p)
+        }
+
+        break;
+
+      default:
+        v = null;
+        break;
+      }
+    }
+    catch (e) {
+      v = null;
+    }
+
+    return v;
+  }
+
   constructor(dir) {
     this.dir = dir;
 
-    this.minify = process.env.NODE_ENV == "prod";
+    this.doMinify = process.env.NODE_ENV == "prod";
+    this.doCache = process.env.NODE_ENV != "dev";
 
     this.loader = new DataLoader(
-      async (keys) => {
-        return keys.map(async (k) => {
-          var v;
-          try {
-            const ext = path.extname(k);
-            const p = path.join(this.dir, k);
-
-            switch (ext) {
-            case ".html":
-              v = {
-                type: 'text/html',
-                data: this.minify
-                  ? await WebUI._minifyHtml(p)
-                  : await WebUI._getFile(p)
-              };
-
-              break;
-
-            case ".js":
-              v = {
-                type: 'text/javascript',
-                data: this.minify
-                  ? await WebUI._minifyJs(p)
-                  : await WebUI._getFile(p)
-              }
-
-              break;
-
-            case ".css":
-              v = {
-                type: 'text/css',
-                data: this.minify
-                  ? await WebUI._minifyCss(p)
-                  : await WebUI._getFile(p)
-              }
-
-              break;
-
-            case ".png":
-              v = {
-                type: 'image/png',
-                data: await WebUI._getFile(p)
-              }
-
-              break;
-
-            case ".ico":
-              v = {
-                type: 'image/x-icon',
-                data: await WebUI._getFile(p)
-              }
-
-              break;
-
-            default:
-              v = null;
-              break;
-            }
-          }
-          catch (e) {
-            v = null;
-          }
-
-          return v;
-        });
-      }
+      async (keys) => keys.map((k) => _get(k))
     )
   }
 
@@ -210,15 +211,20 @@ class WebUI {
   }
 
   async handleRequest(req, res, next) {
-    var resource = await this.loader.load(req.url);
+    var resource = 
+      this.doCache
+        ? await this.loader.load(req.url)
+        : await this._get(req.url);
 
     if (resource == null) {
       next();
     }
     else {
-      res
-        .set('Cache-Control', 'public, max-age=3600')
-        .type(resource.type)
+      if (this.doCache) {
+        res.set('Cache-Control', 'public, max-age=3600')
+      }
+
+      res.type(resource.type)
         .send(resource.data)
         .end();
     }

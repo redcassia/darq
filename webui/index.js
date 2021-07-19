@@ -19,10 +19,10 @@ function switchLocale(locale) {
 function toggleForgotPassword() {
   $("#signin-form").animate({
     height: 'toggle'
-  }, slideSpeed);
+  }, slideSpeed, "linear");
   $("#forgot-password-form").animate({
     height: 'toggle'
-  }, slideSpeed);
+  }, slideSpeed, "linear");
 }
 
 function switchToWelcome() {

@@ -52,6 +52,11 @@ const strings = {
     },
   },
 
+  ENDED_EVENT: {
+    en: "The event has ended.",
+    ar: "تجاوز الحدث تاريخ انتهائه.",
+  },
+
   BUSINESS_ADD_SUCCESS_ALERT: {
     en: "Your business has been added. The data will be reviewed and we will contact you shortly.",
     ar: "تم إضافة نشاطك التجاري. ستتم مراجعة البيانات وسنتصل بك قريبًا.",
@@ -130,6 +135,11 @@ const strings = {
   REJECTED: {
     en: "REJECTED",
     ar: "تم رفضه",
+  },
+
+  ENDED: {
+    en: "ENDED",
+    ar: "انتهى",
   },
 
   EDIT: {

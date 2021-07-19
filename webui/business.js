@@ -214,7 +214,7 @@ function loadBusiness(id) {
 
         <div>
           <div class="profile-top-bar-left">
-            <div class"h6">
+            <div class="h6">
               <span class="accent">${getString('STATUS')}: </span>
               ${getString('BUSINESS_STATUS')[b["status"]]}
             </div>

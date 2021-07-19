@@ -12,7 +12,13 @@ function updateEventsMenu() {
       <div
         class="content-submenu-clickable-box ${e["status"] == 'DELETED' ? "crossed" : ""}"
         onclick="loadEvent(${e["id"]})"
-      >${e["status"] == 'REJECTED' ? `[${getString('REJECTED')}] - ` : ""}${e["display_name"]}</div>
+      >${
+        e["status"] == 'REJECTED'
+        ? `[${getString('REJECTED')}] - `
+        : new Date() > new Date(e["duration"]["end"])
+          ? `[${getString('ENDED')}] - `
+          : ""
+      }${e["display_name"]}</div>
     `);
   }
 }
@@ -100,9 +106,13 @@ function loadEvent(id) {
 
         <div>
           <div class="profile-top-bar-left">
-            <div class"h6">
+            <div class="h6">
               <span class="accent">${getString('STATUS')}: </span>
-              ${getString('EVENT_STATUS')[e["status"]]}
+              ${
+                new Date() > new Date(e["duration"]["end"])
+                  ? getString('ENDED_EVENT')
+                  : getString('EVENT_STATUS')[e["status"]]
+              }
             </div>
           </div><div class="profile-top-bar-right">
             <span title="${getString('EDIT')}" alt="${getString('EDIT')}" class="profile-top-bar-block h6 accent clickable" onclick="editEvent(${id})">

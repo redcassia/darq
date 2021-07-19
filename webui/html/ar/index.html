@@ -100,6 +100,9 @@
                     <input type="password" id="signup-password" placeholder="كلمه السر" onkeydown="if (event.code === 'Enter') signup();" /> <br/>
                     <input type="password" id="signup-password-confirm" placeholder="تأكيد كلمة السر" onkeydown="if (event.code === 'Enter') signup();" /> <br/>
                     <button onclick="signup()">إنشاء حساب</button>
+                    <span id="signup-spinner" class="btn-spinner">
+                        <i class="fas fa-sync fa-spin accent" style="font-size: 18px;"></i>
+                    </span>
                 </div>
             </div>
 
@@ -132,6 +135,9 @@
                         <span class="clickable" onclick="toggleForgotPassword()">نسيت كلمة السر؟</span>
                     </div>
                     <button onclick="signin()">تسجيل الدخول</button>
+                    <span id="signin-spinner" class="btn-spinner">
+                        <i class="fas fa-sync fa-spin accent" style="font-size: 18px;"></i>
+                    </span>
                 </div>
 
                 <div id="forgot-password-form" class="home-pane-content dark" style="display: none;">
@@ -141,12 +147,18 @@
                     </h4>
                     <input type="email" id="reset-password-email" placeholder="البريد الإلكتروني" onkeydown="if (event.code === 'Enter') requestPasswordReset();"/> <br/>
                     <button onclick="requestPasswordReset()">إعادة تعيين كلمة المرور</button>
+                    <span id="request-password-reset-spinner" class="btn-spinner">
+                        <i class="fas fa-sync fa-spin accent" style="font-size: 18px;"></i>
+                    </span>
                 </div>
 
                 <div id="reset-password-form" class="home-pane-content dark" style="display: none;">
                     <input type="password" id="reset-password" placeholder="كلمه السر" onkeydown="if (event.code === 'Enter') resetPassword();" /> <br/>
                     <input type="password" id="reset-password-conf" placeholder="تأكيد كلمة السر" onkeydown="if (event.code === 'Enter') resetPassword();" /> <br/>
                     <button onclick="resetPassword()">إعادة تعيين كلمة المرور</button>
+                    <span id="password-reset-spinner" class="btn-spinner">
+                        <i class="fas fa-sync fa-spin accent" style="font-size: 18px;"></i>
+                    </span>
                 </div>
             </div>
         </div>

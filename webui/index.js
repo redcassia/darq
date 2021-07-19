@@ -164,6 +164,8 @@ function signup() {
     return;
   }
 
+  $("#signup-spinner").show();
+
   GraphQL.mutation(`
     mutation ($email: String!, $password: String!) {
       createBusinessUser(email: $email, password: $password)
@@ -172,6 +174,8 @@ function signup() {
     "email": email,
     "password": pass
   }).then(res => {
+    $("#signup-spinner").hide();
+
     if (! res.hasError) {
       alert(getString('SINGUP_SUCCESS_ALERT'));
       switchToSignin();
@@ -196,6 +200,8 @@ function signin() {
     return;
   }
 
+  $("#signin-spinner").show();
+
   GraphQL.mutation(`
     mutation ($email: String!, $password: String!) {
       authenticateBusinessUser(email: $email, password: $password)
@@ -204,6 +210,8 @@ function signin() {
     "email": email,
     "password": pass
   }).then(res => {
+    $("#signin-spinner").hide();
+
     if (! res.hasError) {
       CookieManager.set('token', res.data["authenticateBusinessUser"], 1);
       loadFirstPage();
@@ -237,6 +245,8 @@ function requestPasswordReset() {
     return;
   }
 
+  $("#request-password-reset-spinner").show();
+
   GraphQL.mutation(`
     mutation($email: String!) {
       requestBusinessUserPasswordReset(email: $email)
@@ -244,6 +254,8 @@ function requestPasswordReset() {
   `, {
     email: email
   }).then(res => {
+    $("#request-password-reset-spinner").hide();
+
     if (! res.hasError) {
       alert(getString('RESET_PASSWORD_REQUEST_SUCCESS_ALERT'));
     }
@@ -278,6 +290,8 @@ function resetPassword() {
     return;
   }
 
+  $("#password-reset-spinner").show();
+
   GraphQL.mutation(`
     mutation($email: String!, $token: String!, $newPassword: String!) {
       resetBusinessUserPassword(email: $email, token: $token, newPassword: $newPassword)
@@ -287,6 +301,8 @@ function resetPassword() {
     token: resetPwdToken,
     newPassword: pass
   }).then(res => {
+    $("#password-reset-spinner").hide();
+
     if (! res.hasError) {
       window.location.hash = '';
       CookieManager.set('token', res.data["resetBusinessUserPassword"], 1);

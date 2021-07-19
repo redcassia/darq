@@ -67,7 +67,13 @@ apiServer.applyMiddleware({ app, path: '/api' });
 
 app.use('/attachment', express.static(
   process.env.ATTACHMENTS_DIR,
-  { dotfiles:'allow' }
+  {
+    fallthrough: false,
+    index: false,
+    dotfiles:'allow',
+    immutable: true,
+    maxAge: "1d",
+  }
 ));
 
 ////////////////////////////////////////////////////////////////////////////////

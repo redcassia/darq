@@ -80,7 +80,7 @@ function hideBlanket() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-const LONG_LOADING_TIME = 75;
+const LONG_LOADING_TIME = 50;
 
 var showLoadingBlanketTimer;
 function clearLoadingBlanketTimer() {

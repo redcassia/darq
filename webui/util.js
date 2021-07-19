@@ -91,7 +91,7 @@ function clearLoadingBlanketTimer() {
 }
 
 function showLoadingBlanket() {
-  showBlanket('<i class="fas fa-sync fa-spin accent" style="font-size: 40px;"></i>', false);
+  showBlanket('<i class="fas fa-sync-alt fa-spin accent" style="font-size: 40px;"></i>', false);
 }
 
 function hideLoadingBlanket() {

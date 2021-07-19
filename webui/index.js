@@ -173,15 +173,15 @@ function signup() {
   `, {
     "email": email,
     "password": pass
-  }).then(res => {
+  }).then(async (res) => {
     $("#signup-spinner").hide();
 
     if (! res.hasError) {
-      alert(getString('SINGUP_SUCCESS_ALERT'));
+      await alert(getString('SINGUP_SUCCESS_ALERT'));
       switchToSignin();
     }
     else {
-      alert(getString(res.errors[0]["extensions"]["code"]));
+      await alert(getString(res.errors[0]["extensions"]["code"]));
     }
   });
 }

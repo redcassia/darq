@@ -70,11 +70,15 @@ function showBlanket(content, dismissible = true, onDismiss) {
     $("#blanket").click(function(e) { });
   }
 
-  $(blanket).fadeIn(BLANKET_FADE_DURATION);
+  if ($(blanket).is(":hidden")) {
+    $(blanket).fadeIn(BLANKET_FADE_DURATION);
+  }
 }
 
 function hideBlanket() {
-  $("#blanket").fadeOut(BLANKET_FADE_DURATION);
+  if ($("#blanket").is(":visible")) {
+    $("#blanket").fadeOut(BLANKET_FADE_DURATION);
+  }
   document.getElementById("blanket").innerHTML = "";
 }
 

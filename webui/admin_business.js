@@ -50,12 +50,10 @@ async function reviewBusiness(id, approve) {
   `,{
     id: id,
     approve: approve
-  }).then((res) => {
-    hideLoadingBlanket();
-
+  }).then(async (res) => {
     if (res.hasError) {
       console.log(res.errors[0]["message"]);
-      alert(`Failed to ${approve ? "Approve" : "Reject"} business`);
+      await alert(`Failed to ${approve ? "Approve" : "Reject"} business`);
     }
     else {
       if (approve) {
@@ -70,11 +68,9 @@ async function reviewBusiness(id, approve) {
       updateBusinessesMenu();
       document.getElementById("business-content").innerHTML = '';
     }
-  }).catch(e => {
-    hideLoadingBlanket();
-
+  }).catch(async (e) => {
     console.log(e);
-    alert("Failed to approve business");
+    await alert("Failed to approve business");
   });
 }
 

@@ -1758,7 +1758,7 @@ class Model {
       multipleStatements: true
     });
 
-    // delete all "deleted" businesses ////////////////////////////////////////
+    // delete all "deleted" businesses /////////////////////////////////////////
     const deletedBusinessIds = await db.query(
       `
       SELECT
@@ -1794,13 +1794,7 @@ class Model {
       `
     );
 
-    this.orderedBusinessLoader.clearAll();
-    this.businessUserLoader.clearAll();
-    this.businessLoader.clearAll();
-    this.msgThreadLoader.clearAll();
-    this.msgLoader.clearAll();
-
-    // delete all "deleted" events ////////////////////////////////////////////
+    // delete all "deleted" events /////////////////////////////////////////////
     const deletedEventIds = await db.query(
       `
       SELECT
@@ -1832,10 +1826,44 @@ class Model {
       `
     );
 
-    this.orderedEventLoader.clearAll();
-    this.eventLoader.clearAll();
+    // delete stale business users /////////////////////////////////////////////
+    await db.query(
+      `
+      SET SQL_SAFE_UPDATES = 0;
 
-    // list all approved businesses /////////////////////////////////////////////
+      DELETE FROM
+        business_user
+      WHERE
+        (
+          verified = 0
+          AND CURRENT_TIMESTAMP > TIMESTAMPADD(DAY,3,create_time)
+        )
+        OR (
+          verified = 1
+          AND CURRENT_TIMESTAMP > TIMESTAMPADD(YEAR,2,last_login)
+        )
+      ;
+
+      SET SQL_SAFE_UPDATES = 1;
+      `
+    );
+
+    // delete stale public users ///////////////////////////////////////////////
+    await db.query(
+      `
+      SET SQL_SAFE_UPDATES = 0;
+
+      DELETE FROM
+        public_user
+      WHERE
+        CURRENT_TIMESTAMP > TIMESTAMPADD(YEAR,1,last_login)
+      ;
+
+      SET SQL_SAFE_UPDATES = 1;
+      `
+    );
+
+    // list all approved businesses ////////////////////////////////////////////
     await db.query(
       `
       SET SQL_SAFE_UPDATES = 0;
@@ -1852,7 +1880,7 @@ class Model {
       `
     );
 
-    // list all approved events /////////////////////////////////////////////////
+    // list all approved events ////////////////////////////////////////////////
     await db.query(
       `
       SET SQL_SAFE_UPDATES = 0;
@@ -1869,7 +1897,7 @@ class Model {
       `
     );
 
-    // calculate business ratings ///////////////////////////////////////////////
+    // calculate business ratings //////////////////////////////////////////////
     await db.query(
       `
       SET SQL_SAFE_UPDATES = 0;
@@ -1893,10 +1921,7 @@ class Model {
       `
     );
 
-    this.businessLoader.clearAll();
-    this.eventLoader.clearAll();
-
-    // update the listing index of businesses ///////////////////////////////////
+    // update the listing index of businesses //////////////////////////////////
     await db.query(
       `
       SET SQL_SAFE_UPDATES = 0;
@@ -1915,9 +1940,8 @@ class Model {
       SET SQL_SAFE_UPDATES = 1;
       `
     );
-    this.orderedBusinessLoader.clearAll();
 
-    // update the listing index of events ///////////////////////////////////////
+    // update the listing index of events //////////////////////////////////////
     await db.query(
       `
       SET SQL_SAFE_UPDATES = 0;
@@ -1947,7 +1971,15 @@ class Model {
       `
     );
 
+    // clear caches ////////////////////////////////////////////////////////////
+    this.businessUserLoader.clearAll();
+    this.publicUserLoader.clearAll();
+    this.businessLoader.clearAll();
+    this.orderedBusinessLoader.clearAll();
+    this.eventLoader.clearAll();
     this.orderedEventLoader.clearAll();
+    this.msgThreadLoader.clearAll();
+    this.msgLoader.clearAll();
 
     db.close();
   }

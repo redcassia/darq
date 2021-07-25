@@ -9,8 +9,216 @@ var thumb = require('node-thumbnail').thumb;
 
 const Locale = require('./locale');
 const Database = require('./database');
+const Payment = require('./payment');
 
 class Model {
+
+  // Payments /////////////////////////////////////////////////////////////////
+
+  static async setBusinessSubscriptionPrices(prices) {
+    var db;
+    var conn;
+
+    try {
+      db = new Database({
+        host: process.env.DB_HOST,
+        port: process.env.DB_PORT,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: (process.env.NODE_ENV == "test") ? process.env.TEST_DB_NAME : process.env.DB_NAME,
+        connectionLimit: 1,
+        multipleStatements: true
+      });
+
+      conn = await db.getConnection();
+
+      await db.query({
+        conn: conn,
+        sql: `SET SQL_SAFE_UPDATES = 0`
+      });
+
+      await db.beginTransaction(conn);
+
+      await db.query({
+        conn: conn,
+        sql: `
+          TRUNCATE TABLE business_subscription_price
+        `
+      });
+
+      await db.query({
+        conn: conn,
+        sql: `
+          INSERT INTO
+            business_subscription_price (months, amount)
+          VALUES
+            ?
+        `,
+        args: [
+          prices.map(_ => [ _.months, _.amount ])
+        ]
+      });
+
+      await db.commit(conn);
+
+      this.businessSubscriptionPrices = null;
+    }
+    catch (e) {
+      if (conn) await db.rollback(conn);
+
+      console.log(e);
+      throw new ApolloError(
+        "Failed to update business subscription prices.",
+        "UPDATE_BUSINESS_SUBSCRIPTION_PRICES_FAILED"
+      );
+    }
+    finally {
+      if (conn) conn.release();
+      if (db) db.close();
+    }
+  }
+
+  static async calculateBusinessSubscriptionPrice(months) {
+    if (! this.businessSubscriptionPrices) {
+      this.businessSubscriptionPrices = await this.db.query(
+        `
+        SELECT
+          months,
+          amount
+        FROM
+          business_subscription_price
+        `
+      );
+    }
+
+    var rem = months;
+    var total = 0;
+    while (rem > 0) {
+      var closestMax = 0;
+      for (var i = 1; i < this.businessSubscriptionPrices.length; ++i) {
+        if (
+          this.businessSubscriptionPrices[i].months > this.businessSubscriptionPrices[closestMax].months
+          && this.businessSubscriptionPrices[i].months <= rem
+        ) {
+          closestMax = i;
+        }
+      }
+
+      rem -= this.businessSubscriptionPrices[closestMax].months;
+      total += this.businessSubscriptionPrices[closestMax].amount;
+    }
+
+    return total;
+  }
+
+  static async extendBusinessSubscription(userId, businessId, months, amount) {
+
+    if (months < 1 || months > 12) {
+      throw new ApolloError(
+        "Invalid range for months. Please provide a months input in the range [1, 12]. Payment was not executed.",
+        'INVALID_BUSINESS_SUBSCRIPTION_MONTHS_INPUT'
+      );
+    }
+
+    // validate payment amount to make sure that the agreed upon value
+    // is consistent; e.g. prices may change while this request was in-transit
+    if (await this.calculateBusinessSubscriptionPrice(months) != amount) {
+      throw new ApolloError(
+        "Invalid amount for subscription extension. Payment was not executed.",
+        'INVALID_BUSINESS_SUBSCRIPTION_PAYMENT_AMOUNT'
+      );
+    }
+
+    // make payment
+    const payment = await Payment.execute({
+      amount: amount
+    });
+
+    const user = await this.businessUserLoader.load(userId);
+    const business = await this.businessLoader.load(businessId);
+
+    var conn;
+
+    try {
+      conn = await this.db.getConnection();
+
+      await this.db.beginTransaction(conn);
+
+      // store payment information
+      await this.db.query({
+        conn: conn,
+        sql: `
+          INSERT INTO
+            payment (
+              amount,
+              amount_after_deductions,
+              description,
+              payment_provider,
+              id_at_payment_provider,
+              business_user_id,
+              business_id
+            )
+          VALUES
+            (?, ?, ?, ?, ?, ?, ?)
+        `,
+        args: [
+          amount,
+          amount,
+          `User '${user.email}' extends subscription of business `
+            + `'${business.display_name}' by '${months}' months`,
+          payment.provider,
+          payment.id,
+          userId,
+          businessId
+        ]
+      });
+
+      // extend duration for business
+      await this.db.query({
+        conn: conn,
+        sql: `
+          UPDATE
+            business
+          SET
+            status = 
+              CASE WHEN status = 'EXPIRED'
+                THEN 'APPROVED'
+                ELSE status
+              END,
+            expiry_date = 
+              CASE WHEN status = 'EXPIRED'
+                THEN DATE_ADD(DATE_ADD(CURRENT_DATE, INTERVAL ? MONTH), INTERVAL 1 DAY)
+                ELSE DATE_ADD(expiry_date, INTERVAL ? MONTH)
+              END
+          WHERE
+            id = ?
+        `,
+        args: [ months, months, businessId ]
+      });
+
+      await this.db.commit(conn);
+
+      this.businessLoader.clear(businessId);
+    }
+    catch (e) {
+      if (conn) {
+        await this.db.rollback(conn);
+        conn.release();
+        conn = null;
+      }
+
+      await Payment.rollback(payment);
+
+      console.error(e);
+      throw new ApolloError(
+        "Failed to extend subscription duration.",
+        "EXTEND_BUSINESS_SUBSCRIPTION_FAILED"
+      );
+    }
+    finally {
+      if (conn) conn.release();
+    }
+  }
 
   // Businesses/Events ////////////////////////////////////////////////////////
 
@@ -558,7 +766,8 @@ class Model {
         UPDATE
           business
         SET
-          status = ?
+          status = ?,
+          expiry_date = DATE_ADD(CURRENT_DATE, INTERVAL 3 DAY)
         WHERE
           id = ?
         `,
@@ -1514,6 +1723,7 @@ class Model {
               '$.id', id,
               '$.owner', owner,
               '$.status', status,
+              '$.expiry_date', expiry_date,
               '$.rating', calculated_rating,
               '$.display_name', display_name,
               '$.display_picture', display_picture,
@@ -1748,240 +1958,310 @@ class Model {
   // regular backend maintenance
   static async doMaintenance() {
 
-    var db = new Database({
-      host: process.env.DB_HOST,
-      port: process.env.DB_PORT,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: (process.env.NODE_ENV == "test") ? process.env.TEST_DB_NAME : process.env.DB_NAME,
-      connectionLimit: 1,
-      multipleStatements: true
-    });
-
-    // delete all "deleted" businesses /////////////////////////////////////////
-    const deletedBusinessIds = await db.query(
-      `
-      SELECT
-        id
-      FROM
-        business
-      WHERE
-        status = 'DELETED'
-      `
-    );
-
-    for (var i = 0; i < deletedBusinessIds.length; ++i) {
-      var business = await this.getBusinessWithUpdate(deletedBusinessIds[i].id);
-
-      await this._foreachAttachment(business, (a) => this._removeAttachment(a));
-
-      if (business.update) {
-        await this._foreachAttachment(business.update, (a) => this._removeAttachment(a));
+    // deletes all attachments of all given business ids
+    const bulkDeleteBusinessAttachments = async (ids) => {
+      for (var i = 0; i < ids.length; ++i) {
+        var business = await this.getBusinessWithUpdate(ids[i].id);
+  
+        await this._foreachAttachment(business, (a) => this._removeAttachment(a));
+  
+        if (business.update) {
+          await this._foreachAttachment(business.update, (a) => this._removeAttachment(a));
+        }
       }
-    }
+    };
 
-    await db.query(
-      `
-      SET SQL_SAFE_UPDATES = 0;
+    // deletes all attachments of all given event ids
+    const bulkDeleteEventAttachments = async (ids) => {
+      for (var i = 0; i < ids.length; ++i) {
+        var event = await this.eventLoader.load(ids[i].id);
+  
+        await this._foreachAttachment(event, (a) => this._removeAttachment(a));
+      }
+    };
 
-      DELETE FROM
-        business
-      WHERE
-        status = 'DELETED'
-      ;
+    var db;
+    var conn;
+    try {
+      db = new Database({
+        host: process.env.DB_HOST,
+        port: process.env.DB_PORT,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: (process.env.NODE_ENV == "test") ? process.env.TEST_DB_NAME : process.env.DB_NAME,
+        connectionLimit: 1,
+        multipleStatements: true
+      });
 
-      SET SQL_SAFE_UPDATES = 1;
-      `
-    );
+      conn = await db.getConnection();
 
-    // delete all "deleted" events /////////////////////////////////////////////
-    const deletedEventIds = await db.query(
-      `
-      SELECT
-        id
-      FROM
-        event
-      WHERE
-        status = 'DELETED'
-      `
-    );
+      await db.query({
+        conn: conn,
+        sql: `SET SQL_SAFE_UPDATES = 0`
+      });
 
-    for (var i = 0; i < deletedEventIds.length; ++i) {
-      var event = await this.eventLoader.load(deletedEventIds[i].id);
+      await db.beginTransaction(conn);
 
-      await this._foreachAttachment(event, (a) => this._removeAttachment(a));
-    }
+      // get a single snapshot of current timestamp for consistency
+      const now = (await db.query({
+        conn: conn,
+        sql: `SELECT CURRENT_TIMESTAMP`
+      }))[0].CURRENT_TIMESTAMP;
 
-    await db.query(
-      `
-      SET SQL_SAFE_UPDATES = 0;
+      //// stale public users //////////////////////////////////////////////////
 
-      DELETE FROM
-        event
-      WHERE
-        status = 'DELETED'
-      ;
-
-      SET SQL_SAFE_UPDATES = 1;
-      `
-    );
-
-    // delete stale business users /////////////////////////////////////////////
-    await db.query(
-      `
-      SET SQL_SAFE_UPDATES = 0;
-
-      DELETE FROM
-        business_user
-      WHERE
-        (
-          verified = 0
-          AND CURRENT_TIMESTAMP > TIMESTAMPADD(DAY,3,create_time)
-        )
-        OR (
-          verified = 1
-          AND CURRENT_TIMESTAMP > TIMESTAMPADD(YEAR,2,last_login)
-        )
-      ;
-
-      SET SQL_SAFE_UPDATES = 1;
-      `
-    );
-
-    // delete stale public users ///////////////////////////////////////////////
-    await db.query(
-      `
-      SET SQL_SAFE_UPDATES = 0;
-
-      DELETE FROM
-        public_user
-      WHERE
-        CURRENT_TIMESTAMP > TIMESTAMPADD(YEAR,1,last_login)
-      ;
-
-      SET SQL_SAFE_UPDATES = 1;
-      `
-    );
-
-    // list all approved businesses ////////////////////////////////////////////
-    await db.query(
-      `
-      SET SQL_SAFE_UPDATES = 0;
-
-      UPDATE
-        business
-      SET
-        status = 'LISTED'
-      WHERE
-        status = 'APPROVED'
-      ;
-
-      SET SQL_SAFE_UPDATES = 1;
-      `
-    );
-
-    // list all approved events ////////////////////////////////////////////////
-    await db.query(
-      `
-      SET SQL_SAFE_UPDATES = 0;
-
-      UPDATE
-        event
-      SET
-        status = 'LISTED'
-      WHERE
-        status = 'APPROVED'
-      ;
-
-      SET SQL_SAFE_UPDATES = 1;
-      `
-    );
-
-    // calculate business ratings //////////////////////////////////////////////
-    await db.query(
-      `
-      SET SQL_SAFE_UPDATES = 0;
-
-      UPDATE
-        business
-      SET
-        calculated_rating = (
-          SELECT
-            AVG(stars)
-          FROM
-            rating
+      // delete stale public users
+      await db.query({
+        conn: conn,
+        sql: `
+          DELETE FROM
+            public_user
           WHERE
-            rating.business_id = business.id
-        )
-      WHERE
-        status = 'LISTED'
-      ;
+            ? > TIMESTAMPADD(YEAR, 1, last_login)
+        `,
+        args: [ now ]
+      });
 
-      SET SQL_SAFE_UPDATES = 1;
-      `
-    );
+      //// stale business users ////////////////////////////////////////////////
 
-    // update the listing index of businesses //////////////////////////////////
-    await db.query(
-      `
-      SET SQL_SAFE_UPDATES = 0;
+      // delete business attachments of stale business users
+      await bulkDeleteBusinessAttachments(await db.query({
+        conn: conn,
+        sql: `
+          SELECT
+            business.id AS id
+          FROM
+            business JOIN business_user ON business.owner = business_user.id
+          WHERE
+            (
+              business_user.verified = 1
+              AND ? > TIMESTAMPADD(YEAR, 2, business_user.last_login)
+            )
+        `,
+        args: [ now ]
+      }));
 
-      SET @curRow := -1;
+      // delete event attachments of stale business users
+      await bulkDeleteEventAttachments(await db.query({
+        conn: conn,
+        sql: `
+          SELECT
+            event.id AS id
+          FROM
+            event JOIN business_user ON event.owner = business_user.id
+          WHERE
+            (
+              business_user.verified = 1
+              AND ? > TIMESTAMPADD(YEAR, 2, business_user.last_login)
+            )
+        `,
+        args: [ now ]
+      }));
 
-      UPDATE
-        business
-      SET
-        listing_index = (@curRow := @curRow + 1)
-      WHERE
-        status = 'LISTED'
-      ORDER BY calculated_rating DESC
-      ;
+      // delete stale business users
+      await db.query({
+        conn: conn,
+        sql: `
+          DELETE FROM
+            business_user
+          WHERE
+            (
+              verified = 0
+              AND ? > TIMESTAMPADD(DAY, 3, create_time)
+            )
+            OR (
+              verified = 1
+              AND ? > TIMESTAMPADD(YEAR, 2, last_login)
+            )
+        `,
+        args: [ now, now ]
+      });
 
-      SET SQL_SAFE_UPDATES = 1;
-      `
-    );
+      //// businesses //////////////////////////////////////////////////////////
 
-    // update the listing index of events //////////////////////////////////////
-    await db.query(
-      `
-      SET SQL_SAFE_UPDATES = 0;
+      // delete attachments of "deleted" businesses
+      await bulkDeleteBusinessAttachments(await db.query({
+        conn: conn,
+        sql: `
+          SELECT
+            id
+          FROM
+            business
+          WHERE
+            status = 'DELETED'
+        `
+      }));
 
-      SET @curRow := -1;
+      // delete "deleted" businesses
+      await db.query({
+        conn: conn,
+        sql: `
+          DELETE FROM
+            business
+          WHERE
+            status = 'DELETED'
+        `
+      });
 
-      UPDATE
-        event
-      SET
-        listing_index = (@curRow := @curRow + 1)
-      WHERE
-        end > CURRENT_TIMESTAMP
-        AND status = 'LISTED'
-      ORDER BY start
-      ;
+      // unlist expired businesses
+      await db.query({
+        conn: conn,
+        sql: `
+          UPDATE
+            business
+          SET
+            listing_index = -1,
+            status = 'EXPIRED'
+          WHERE
+            status = 'LISTED'
+            AND ? > expiry_date
+        `,
+        args: [ now ]
+      });
 
-      UPDATE
-        event
-      SET
-        listing_index = -1
-      WHERE
-        listing_index >= 0
-        AND end <= CURRENT_TIMESTAMP
-      ;
+      // list approved businesses
+      await db.query({
+        conn: conn,
+        sql: `
+        UPDATE
+          business
+        SET
+          status = 'LISTED'
+        WHERE
+          status = 'APPROVED'
+        `
+      });
 
-      SET SQL_SAFE_UPDATES = 1;
-      `
-    );
+      // update listed business ratings
+      await db.query({
+        conn: conn,
+        sql: `
+          UPDATE
+            business
+          SET
+            calculated_rating = (
+              SELECT
+                AVG(stars)
+              FROM
+                rating
+              WHERE
+                rating.business_id = business.id
+            )
+          WHERE
+            status = 'LISTED'
+        `
+      });
 
-    // clear caches ////////////////////////////////////////////////////////////
-    this.businessUserLoader.clearAll();
-    this.publicUserLoader.clearAll();
-    this.businessLoader.clearAll();
-    this.orderedBusinessLoader.clearAll();
-    this.eventLoader.clearAll();
-    this.orderedEventLoader.clearAll();
-    this.msgThreadLoader.clearAll();
-    this.msgLoader.clearAll();
+      // update businesses' listing index
+      await db.query({
+        conn: conn,
+        sql: `
+          SET @curRow := -1;
 
-    db.close();
+          UPDATE
+            business
+          SET
+            listing_index = (@curRow := @curRow + 1)
+          WHERE
+            status = 'LISTED'
+          ORDER BY calculated_rating DESC
+          ;
+        `
+      });
+
+      //// events //////////////////////////////////////////////////////////////
+
+      // delete attachments of "deleted" events
+      await bulkDeleteEventAttachments(await db.query({
+        conn: conn,
+        sql: `
+          SELECT
+            id
+          FROM
+            event
+          WHERE
+            status = 'DELETED'
+        `
+      }));
+
+      // delete "deleted" events
+      await db.query({
+        conn: conn,
+        sql: `
+          DELETE FROM
+            event
+          WHERE
+            status = 'DELETED'
+        `
+      });
+
+      // unlist expired events
+      await db.query({
+        conn: conn,
+        sql: `
+          UPDATE
+            event
+          SET
+            listing_index = -1,
+            status = 'EXPIRED'
+          WHERE
+            status = 'LISTED'
+            AND ? > end
+        `,
+        args: [ now ]
+      });
+
+      // list approved events
+      await db.query({
+        conn: conn,
+        sql: `
+          UPDATE
+            event
+          SET
+            status = 'LISTED'
+          WHERE
+            status = 'APPROVED'
+        `
+      });
+
+      // update events' listing index
+      await db.query({
+        conn: conn,
+        sql: `
+          SET @curRow := -1;
+
+          UPDATE
+            event
+          SET
+            listing_index = (@curRow := @curRow + 1)
+          WHERE
+            status = 'LISTED'
+          ORDER BY start
+          ;
+        `
+      });
+
+      await db.commit(conn);
+
+      // clear caches
+      this.businessUserLoader.clearAll();
+      this.publicUserLoader.clearAll();
+      this.businessLoader.clearAll();
+      this.orderedBusinessLoader.clearAll();
+      this.eventLoader.clearAll();
+      this.orderedEventLoader.clearAll();
+      this.msgThreadLoader.clearAll();
+      this.msgLoader.clearAll();
+    }
+    catch (e) {
+      if (conn) await db.rollback(conn);
+
+      console.error("Unexpected error while performing maintenance. ", e)
+    }
+    finally {
+      if (conn) conn.release();
+      if (db) db.close();
+    }
   }
 
   static async __purge() {
@@ -2001,11 +2281,13 @@ class Model {
       SET FOREIGN_KEY_CHECKS = 0; 
 
       TRUNCATE TABLE business;
+      TRUNCATE TABLE business_subscription_price;
       TRUNCATE TABLE business_tentative_update;
       TRUNCATE TABLE business_user;
       TRUNCATE TABLE event;
       TRUNCATE TABLE message;
       TRUNCATE TABLE message_thread;
+      TRUNCATE TABLE payment;
       TRUNCATE TABLE public_user;
       TRUNCATE TABLE rating;
 

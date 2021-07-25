@@ -1,3 +1,4 @@
+const { extendBusinessSubscription } = require("../api/model");
 const Model = require("../api/model");
 const TestData = require("./test_data");
 
@@ -400,6 +401,116 @@ test('Model.updateDomesticHelpPersonnel', async () => {
       expect(b.status).toBe('LISTED');
 
       TestData.validate(b, TestData.updatedBusinesses[user][i]);
+    }
+  }
+});
+
+/////
+
+test('Model.setBusinessSubscriptionPrices', async () => {
+  await Model.setBusinessSubscriptionPrices([
+    {
+      months: 1,
+      amount: 100
+    },
+    {
+      months: 3,
+      amount: 280
+    },
+    {
+      months: 6,
+      amount: 560
+    },
+    {
+      months: 12,
+      amount: 1100
+    }
+  ]);
+});
+
+/////
+
+test('Model.calculateBusinessSubscriptionPrice', async () => {
+  const testValues = [
+    { months: 1, expected: 100 },
+    { months: 2, expected: 100 + 100 },
+    { months: 3, expected: 280 },
+    { months: 4, expected: 280 + 100 },
+    { months: 5, expected: 280 + 100 + 100 },
+    { months: 6, expected: 560 },
+    { months: 7, expected: 560 + 100 },
+    { months: 8, expected: 560 + 100 + 100 },
+    { months: 9, expected: 560 + 280 },
+    { months: 10, expected: 560 + 280 + 100 },
+    { months: 11, expected: 560 + 280 + 100 + 100 },
+    { months: 12, expected: 1100 },
+  ];
+
+  for (const t of testValues) {
+    const res = await Model.calculateBusinessSubscriptionPrice(t.months);
+    expect(res).toBe(t.expected);
+  }
+});
+
+/////
+
+test('Model.extendBusinessSubscription', async () => {
+  for (const user in TestData.businesses) {
+    const u = TestData.businessUsers[user];
+
+    for (const b of TestData.businesses[user]) {
+      var oldDate = new Date((await Model.businessLoader.load(b.id)).expiry_date);
+
+      expect(oldDate > new Date()).toBeTruthy();
+
+      var months = Math.floor(Math.random() * 12) + 1;
+
+      try {
+        await Model.extendBusinessSubscription(
+          u.id,
+          b.id,
+          0,
+          0
+        );
+
+        expect(true).toBeFalsy();
+      }
+      catch(ignored) { }
+
+      try {
+        await Model.extendBusinessSubscription(
+          u.id,
+          b.id,
+          13,
+          await Model.calculateBusinessSubscriptionPrice(13)
+        );
+
+        expect(true).toBeFalsy();
+      }
+      catch(ignored) { }
+
+      try {
+        await Model.extendBusinessSubscription(
+          u.id,
+          b.id,
+          -1,
+          await Model.calculateBusinessSubscriptionPrice(-1)
+        );
+
+        expect(true).toBeFalsy();
+      }
+      catch(ignored) { }
+
+      await Model.extendBusinessSubscription(
+        u.id,
+        b.id,
+        months,
+        await Model.calculateBusinessSubscriptionPrice(months)
+      );
+
+      var newDate = new Date((await Model.businessLoader.load(b.id)).expiry_date);
+      var expectedNewDate = new Date(oldDate.setMonth(oldDate.getMonth() + months));
+      expect(newDate).toStrictEqual(expectedNewDate);
     }
   }
 });

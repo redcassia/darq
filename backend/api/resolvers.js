@@ -52,7 +52,7 @@ function _validateAuthenticatedBusinessUserOrAdmin(user) {
 function _validateAuthenticatedAdmin(user) {
   if (! user || user.type != 'ADMIN') {
     throw new ApolloError(
-      "Congratulations! You have reached the super-secret part of the API, but you're not authenticated :(",
+      "Congratulations! You have reached the super secret part of the API, but you're not authenticated :(",
       'USER_NOT_AUTHENTICATED'
     );
   }

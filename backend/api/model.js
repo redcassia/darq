@@ -992,8 +992,11 @@ class Model {
         FROM
           event
         WHERE
-          status = 'TENTATIVE' OR
-          status = 'REJECTED'
+          (
+            status = 'TENTATIVE' OR
+            status = 'REJECTED'
+          )
+          AND CURRENT_TIMESTAMP < end
         `
       );
 
@@ -1008,7 +1011,7 @@ class Model {
     }
   }
 
-  // Rating ///////////////////////////////////////////////////////............
+  // Rating ////////////////////////////////////////////////////////////////////
 
   static async setBusinessRating(userId, businessId, stars) {
     try {

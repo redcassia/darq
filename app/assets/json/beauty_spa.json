@@ -39,8 +39,8 @@
         },
         {
           "widget": "text_overflowed",
-          "textSize": "text9",
-          "textColor": { "r": 0, "g": 0, "b": 0, "o": 0.37 },
+          "textSize": "title9",
+          "textColor": {"r": 13, "g": 36, "b": 52, "o": 1.0 },
           "data": ["description"]
         },
         {
@@ -155,9 +155,10 @@
           "widget": "bool_text_with_title",
           "titleText": "home_service",
           "titleSize": "title9",
-          "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
-          "textSize": "title11Odd",
-          "textColor": { "r": 225, "g": 168, "b": 84, "o": 1.0 },
+          "titleColor": { "r": 13, "g": 36, "b": 52, "o": 1.0 },
+          "titleFontWeight": "w700",
+          "textSize": "title9Odd",
+          "textColor": { "r": 83, "g": 177, "b": 117, "o": 1.0 },
           "textIfTrue": "available",
           "textIfFalse": "not_available",
           "data": ["home_service_available"]
@@ -169,9 +170,10 @@
           "widget": "itemized_text_with_title",
           "titleText": "services",
           "titleSize": "title9",
-          "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
+          "titleColor": { "r": 13, "g": 36, "b": 52, "o": 1.0 },
+          "titleFontWeight": "w700",
           "textSize": "text9odd",
-          "textColor": { "r": 0, "g": 0, "b": 0, "o": 0.5 },
+          "textColor": { "r": 9, "g": 93, "b": 106, "o": 1.0 },
           "data": ["services"]
         },
         {
@@ -181,9 +183,10 @@
           "widget": "website_with_title",
           "titleText": "website",
           "titleSize": "title9",
-          "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
+          "titleColor": { "r": 13, "g": 36, "b": 52, "o": 1.0 },
+          "titleFontWeight": "w700",
           "textSize": "text9odd",
-          "textColor": { "r": 66, "g": 102, "b": 118, "o": 1.0 },
+          "textColor": { "r": 9, "g": 93, "b": 106, "o": 1.0 },
           "data": ["website"]
         },
         {
@@ -193,7 +196,8 @@
           "widget": "picture_gallery",
           "titleText": "photos",
           "titleSize": "title9",
-          "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
+          "titleColor": { "r": 13, "g": 36, "b": 52, "o": 1.0 },
+          "titleFontWeight": "w700",
           "data": ["attachments"]
         }
       ]

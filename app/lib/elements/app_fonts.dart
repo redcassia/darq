@@ -49,6 +49,8 @@ class AppFonts {
         return text9(color: clr, fontWeight: fontWeight);
       case "text10":
         return text9(color: clr, fontWeight: fontWeight);
+      case "text9odd":
+        return text9odd(color: clr,fontWeight: fontWeight);
     }
   }
 

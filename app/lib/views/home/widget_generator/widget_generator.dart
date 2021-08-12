@@ -71,7 +71,7 @@ Widget generateWidget(BuildContext context, dynamic layout, dynamic allData,
       if (layout["text"] != null) data = layout["text"];
       if (data == null) return null;
       return Text(data,
-          style: AppFonts.makeStyle(layout["textSize"], layout["textColor"]),
+          style: AppFonts.makeStyle(layout["textSize"], layout["textColor"], fontWeight: layout['fontWeight']?? FontWeight.w500),
           maxLines: 3,
           overflow: TextOverflow.ellipsis);
 
@@ -107,14 +107,14 @@ Widget generateWidget(BuildContext context, dynamic layout, dynamic allData,
       return Text(data,
           style: AppFonts.makeStyle(layout["textSize"], layout["textColor"],
               fontWeight:
-                  layout["fontWeight"] != null ? FontWeight.w700 : null));
+                  layout["fontWeight"] != null ? FontWeight.w500 : FontWeight.w500));
 
     case "website_with_title":
       if (data == null) return null;
       return TextLeadingRow(
           title: translate(layout["titleText"]),
           titleStyle:
-              AppFonts.makeStyle(layout["titleSize"], layout["titleColor"]),
+              AppFonts.makeStyle(layout["titleSize"], layout["titleColor"], fontWeight:  layout['titleFontWeight'] != null ? FontWeight.w700 : FontWeight.w500),
           widget: Link(
               url: data.toString(),
               child: Text(data.toString().split('/').last,
@@ -139,7 +139,7 @@ Widget generateWidget(BuildContext context, dynamic layout, dynamic allData,
             titleStyle: AppFonts.makeStyle(
                 layout["titleSize"], layout["titleColor"],
                 fontWeight:
-                    layout['titleFontWeight'] != null ? FontWeight.w700 : null),
+                    layout['titleFontWeight'] != null ? FontWeight.w700 : FontWeight.w500),
             txt: data.toString(),
             txtStyle: AppFonts.makeStyle(
                 layout["textSize"], layout["textColor"]));
@@ -147,7 +147,7 @@ Widget generateWidget(BuildContext context, dynamic layout, dynamic allData,
         return TextLeadingRow(
             title: translate(layout["titleText"]),
             titleStyle:
-                AppFonts.makeStyle(layout["titleSize"], layout["titleColor"]),
+                AppFonts.makeStyle(layout["titleSize"], layout["titleColor"], fontWeight:  layout['titleFontWeight'] != null ? FontWeight.w700 : FontWeight.w500),
             widget: RichText(
                 textAlign: TextAlign.start,
                 text: TextSpan(
@@ -168,7 +168,7 @@ Widget generateWidget(BuildContext context, dynamic layout, dynamic allData,
       return TextLeadingRow(
           title: translate(layout["titleText"]),
           titleStyle:
-              AppFonts.makeStyle(layout["titleSize"], layout["titleColor"]),
+              AppFonts.makeStyle(layout["titleSize"], layout["titleColor"], fontWeight:  layout['titleFontWeight'] != null ? FontWeight.w700 : FontWeight.w500),
           txt: data
               ? translate(layout["textIfTrue"])
               : translate(layout["textIfFalse"]),
@@ -197,7 +197,7 @@ Widget generateWidget(BuildContext context, dynamic layout, dynamic allData,
           children: <Widget>[
             Text(translate(layout["titleText"]),
                 style: AppFonts.makeStyle(
-                    layout["titleSize"], layout["titleColor"])),
+                    layout["titleSize"], layout["titleColor"], fontWeight:  layout['titleFontWeight'] != null ? FontWeight.w700 : FontWeight.w500)),
             SizedBox(height: 5.h),
             ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
@@ -230,7 +230,7 @@ Widget generateWidget(BuildContext context, dynamic layout, dynamic allData,
         children: <Widget>[
           Text(translate(layout["titleText"]),
               style: AppFonts.makeStyle(
-                  layout["titleSize"], layout["titleColor"])),
+                  layout["titleSize"], layout["titleColor"], fontWeight:  layout['titleFontWeight'] != null ? FontWeight.w700 : FontWeight.w500)),
           SizedBox(height: 17.h),
           for (int i = 0; i < min(data.length, layout["maxElements"]); i++)
             CustomChip(text: data[i]),
@@ -300,7 +300,7 @@ Widget generateWidget(BuildContext context, dynamic layout, dynamic allData,
               children: <Widget>[
                 Text(translate(layout["titleText"]),
                     style: AppFonts.makeStyle(
-                        layout["titleSize"], layout["titleColor"])),
+                        layout["titleSize"], layout["titleColor"], fontWeight:  layout['titleFontWeight'] != null ? FontWeight.w700 : null)),
                 SizedBox(height: 17.h),
                 Flexible(
                     child: ListView.builder(
@@ -373,7 +373,7 @@ Widget generateWidget(BuildContext context, dynamic layout, dynamic allData,
         return TextLeadingRow(
             title: translate(layout["titleText"]),
             titleStyle:
-                AppFonts.makeStyle(layout["titleSize"], layout["titleColor"]),
+                AppFonts.makeStyle(layout["titleSize"], layout["titleColor"], fontWeight:  layout['titleFontWeight'] != null ? FontWeight.w700 : null),
             widget: RichText(
                 textAlign: TextAlign.start,
                 text: Localizations.localeOf(context).languageCode == 'en'
@@ -407,7 +407,7 @@ Widget generateWidget(BuildContext context, dynamic layout, dynamic allData,
         return TextLeadingRow(
             title: translate(layout["titleText"]),
             titleStyle:
-                AppFonts.makeStyle(layout["titleSize"], layout["titleColor"]),
+                AppFonts.makeStyle(layout["titleSize"], layout["titleColor"], fontWeight:  layout['titleFontWeight'] != null ? FontWeight.w700 : null),
             widget: RichText(
                 textAlign: TextAlign.start,
                 text: TextSpan(

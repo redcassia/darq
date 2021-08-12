@@ -142,8 +142,8 @@
         },
         {
           "widget": "text",
-          "textSize": "text8w500",
-          "textColor": {"r": 0, "g": 0, "b": 0, "o": 0.69 },
+          "textSize": "title9",
+          "textColor": {"r": 13, "g": 36, "b": 52, "o": 1.0 },
           "data": ["description"]
         },
         {
@@ -160,9 +160,10 @@
           "widget": "text_with_title",
           "titleText": "ticket_reservation",
           "titleSize": "title9",
-          "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
+          "titleColor": { "r": 13, "g": 36, "b": 52, "o": 1.0 },
+          "titleFontWeight": "w700",
           "textSize": "text9odd",
-          "textColor": { "r": 0, "g": 0, "b": 0, "o": 0.5 },
+          "textColor": { "r": 9, "g": 93, "b": 106, "o": 1.0 },
           "data": ["ticket_website"]
         },
         {
@@ -172,12 +173,13 @@
           "widget": "price",
           "titleText": "ticket_price",
           "titleSize": "title9",
-          "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
+          "titleColor": { "r": 13, "g": 36, "b": 52, "o": 1.0 },
+          "titleFontWeight": "w700",
           "textSize": "title10",
           "textColor": { "r": 0, "g": 0, "b": 0, "o": 0.7 },
           "trailingText": "",
           "trailingTextSize": "title10",
-          "trailingTextColor": { "r": 0, "g": 0, "b": 0, "o": 0.5 },
+          "trailingTextColor": { "r": 9, "g": 93, "b": 106, "o": 1.0 },
           "data": ["ticket_price"]
         },
         {
@@ -187,9 +189,10 @@
           "widget": "text_with_title",
           "titleText": "organizer",
           "titleSize": "title9",
-          "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
+          "titleColor": { "r": 13, "g": 36, "b": 52, "o": 1.0 },
+          "titleFontWeight": "w700",
           "textSize": "text9odd",
-          "textColor": { "r": 0, "g": 0, "b": 0, "o": 0.5 },
+          "textColor": { "r": 9, "g": 93, "b": 106, "o": 1.0 },
           "data": ["organizer"]
         },
         {
@@ -199,7 +202,8 @@
           "widget": "picture_gallery",
           "titleText": "photos",
           "titleSize": "title9",
-          "titleColor": { "r": 0, "g": 0, "b": 0, "o": 0.67 },
+          "titleColor": { "r": 13, "g": 36, "b": 52, "o": 1.0 },
+          "titleFontWeight": "w700",
           "data": ["attachments"]
         }
       ]

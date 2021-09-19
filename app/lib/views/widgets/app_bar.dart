@@ -27,12 +27,18 @@ class AppBarCustom extends StatelessWidget {
         child:
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           InkWell(
-              child: Image(
-                  image: leadingImgAddress != null
-                      ? AssetImage(AssetPath.ImgPath + leadingImgAddress)
-                      : AssetImage(AssetPath.ImgPath + "back.png"),
-                  width: leadingImgAddress != null ? 26.w : 11.67.w,
-                  fit: BoxFit.fitHeight),
+              child: RotatedBox(
+                quarterTurns:
+                Localizations.localeOf(context).languageCode == 'en'
+                    ? 0
+                    : 2,
+                child: Image(
+                    image: leadingImgAddress != null
+                        ? AssetImage(AssetPath.ImgPath + leadingImgAddress)
+                        : AssetImage(AssetPath.ImgPath + "back.png"),
+                    width: leadingImgAddress != null ? 26.w : 11.67.w,
+                    fit: BoxFit.fitHeight),
+              ),
               onTap: () => leadingImgAddress != null
                   ? onLeadingPressed()
                   : Navigator.pop(context)),

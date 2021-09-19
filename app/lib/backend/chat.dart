@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:darq/utils/managers/auth_state_provider.dart';
+import 'package:darq/backend/session.dart';
 import 'package:graphql/client.dart';
 
 class Message {
@@ -53,8 +53,8 @@ class MessageThread {
 class Chat {
   HashMap<String, MessageThread> _threads;
   HashMap<String, MessageThread> _threadsByBusiness;
-  Future<void> _updateThreads({AuthStateProvider auth}) async {
-    var client = auth.getClient;
+  Future<void> _updateThreads() async {
+    var client = await Session.getClient();
     var result = await client.query(QueryOptions(documentNode: gql('''
       query{
         user{
@@ -108,18 +108,18 @@ class Chat {
     }
   }
 
-  Future<List<MessageThread>> getThreads({bool refresh = false, AuthStateProvider auth}) async {
+  Future<List<MessageThread>> getThreads({bool refresh = false}) async {
     if (_threads == null) await _init();
-    if (refresh) await _updateThreads(auth: auth);
+    if (refresh) await _updateThreads();
     var sortedThreads = _threads.values.toList();
     sortedThreads.sort(
-        (a, b) => a.messages.last.time.compareTo(b.messages.last.time) * -1);
+            (a, b) => a.messages.last.time.compareTo(b.messages.last.time) * -1);
     return sortedThreads;
   }
 
-  Future<MessageThread> loadMore({String threadId, AuthStateProvider auth}) async {
+  Future<MessageThread> loadMore(String threadId) async {
     var thread = await getThread(threadId: threadId);
-    var client = auth.getClient;
+    var client = await Session.getClient();
     var result = await client.query(QueryOptions(documentNode: gql(r'''
       query ($threadId: ID!, $maxIndex: Int!){
         user{
@@ -149,9 +149,9 @@ class Chat {
     return thread;
   }
 
-  Future<MessageThread> refreshThread({String threadId, AuthStateProvider auth}) async {
+  Future<MessageThread> refreshThread(String threadId) async {
     var thread = await getThread(threadId: threadId);
-    var client = auth.getClient;
+    var client = await Session.getClient();
     var result = await client.query(QueryOptions(
         documentNode: gql(r'''
       query ($threadId: ID!, $minIndex: Int!){
@@ -184,8 +184,8 @@ class Chat {
     return thread;
   }
 
-  Future<MessageThread> seeMessage({String threadId, AuthStateProvider auth}) async {
-    var client = auth.getClient;
+  Future<MessageThread> seeMessage(String threadId) async {
+    var client = await Session.getClient();
 
     if (threadId != null) {
       var thread = await getThread(threadId: threadId);
@@ -220,8 +220,8 @@ class Chat {
   }
 
   Future<MessageThread> sendMessage(String message,
-      {String threadId, String businessId, AuthStateProvider auth}) async {
-    var client = auth.getClient;
+      {String threadId, String businessId}) async {
+    var client = await Session.getClient();
 
     if (threadId != null) {
       var thread = await getThread(threadId: threadId);
@@ -276,9 +276,9 @@ class Chat {
         throw Exception("Failed to send message to business $businessId");
       }
       _threads.putIfAbsent(result.data["sendMessage"]["id"],
-          () => MessageThread(result.data["sendMessage"]));
+              () => MessageThread(result.data["sendMessage"]));
       _threadsByBusiness.putIfAbsent(result.data["sendMessage"]["target"]["id"],
-          () => MessageThread(result.data["sendMessage"]));
+              () => MessageThread(result.data["sendMessage"]));
       return _threads[result.data["sendMessage"]["id"]];
     } else {
       return null;

@@ -1,6 +1,8 @@
+import 'package:darq/backend/session.dart';
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/constants/app_color_palette.dart';
 import 'package:darq/constants/asset_path.dart';
+import 'package:darq/views/home/bottom_navigation_bar_pages/explore_page.dart';
 import 'package:darq/views/walk_through/continue_button_widget.dart';
 import 'package:darq/views/walk_through/select_language_page.dart';
 import 'package:darq/utils/managers/walk_through_provider.dart';
@@ -8,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:provider/provider.dart';
+import 'package:darq/utils/helpers/screen_dimensions_helper.dart';
 
 class WelcomePage extends StatelessWidget {
   @override
@@ -25,6 +28,8 @@ class Content extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ScreenDimensionsHelper.setScreenHeight =  MediaQuery.of(context).size.height;
+    ScreenDimensionsHelper.setScreenWidth =  MediaQuery.of(context).size.width;
     final stateNotifier =
         Provider.of<FlipProvider>(context, listen: true);
     return stateNotifier.getFlipToToSelectLanguagePage ?

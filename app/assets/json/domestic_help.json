@@ -164,6 +164,11 @@
         {
           "widget": "personnel",
           "data": ["personnel"]
+        },
+        {
+          "widget": "rate_us",
+          "titleText": "rate_this_business",
+          "data": ["rating"]
         }
       ]
     },

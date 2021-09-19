@@ -1,3 +1,4 @@
+/*
 import 'dart:async';
 import 'package:darq/constants/api_path.dart';
 import 'package:graphql/client.dart';
@@ -44,4 +45,4 @@ class Registration {
     String id = await result.data["user"]["id"] as String;
     await LocaleStorageAuthService.setId(id);
   }
-}
+}*/

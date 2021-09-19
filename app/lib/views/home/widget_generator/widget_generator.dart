@@ -4,12 +4,12 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:darq/constants/app_color_palette.dart';
 import 'package:darq/elements/app_fonts.dart';
-import 'package:darq/views/home/home_screens_style_const.dart';
 import 'package:darq/views/home/widget_generator/contact_button.dart';
 import 'package:darq/views/home/widget_generator/profile_pic.dart';
 import 'package:darq/views/screens/chat_room.dart';
 import 'package:darq/views/details_page.dart';
 import 'package:darq/views/screens/personnel_page.dart';
+import 'package:darq/views/screens/rating_screen.dart';
 import 'package:darq/views/widgets/custom_chip.dart';
 import 'package:darq/views/widgets/custom_divider.dart';
 import 'package:darq/views/widgets/default_card.dart';
@@ -71,7 +71,8 @@ Widget generateWidget(BuildContext context, dynamic layout, dynamic allData,
       if (layout["text"] != null) data = layout["text"];
       if (data == null) return null;
       return Text(data,
-          style: AppFonts.makeStyle(layout["textSize"], layout["textColor"], fontWeight: layout['fontWeight']?? FontWeight.w500),
+          style: AppFonts.makeStyle(layout["textSize"], layout["textColor"],
+              fontWeight: layout['fontWeight'] ?? FontWeight.w500),
           maxLines: 3,
           overflow: TextOverflow.ellipsis);
 
@@ -106,15 +107,19 @@ Widget generateWidget(BuildContext context, dynamic layout, dynamic allData,
       } catch (e) {}
       return Text(data,
           style: AppFonts.makeStyle(layout["textSize"], layout["textColor"],
-              fontWeight:
-                  layout["fontWeight"] != null ? FontWeight.w500 : FontWeight.w500));
+              fontWeight: layout["fontWeight"] != null
+                  ? FontWeight.w500
+                  : FontWeight.w500));
 
     case "website_with_title":
       if (data == null) return null;
       return TextLeadingRow(
           title: translate(layout["titleText"]),
-          titleStyle:
-              AppFonts.makeStyle(layout["titleSize"], layout["titleColor"], fontWeight:  layout['titleFontWeight'] != null ? FontWeight.w700 : FontWeight.w500),
+          titleStyle: AppFonts.makeStyle(
+              layout["titleSize"], layout["titleColor"],
+              fontWeight: layout['titleFontWeight'] != null
+                  ? FontWeight.w700
+                  : FontWeight.w500),
           widget: Link(
               url: data.toString(),
               child: Text(data.toString().split('/').last,
@@ -138,16 +143,20 @@ Widget generateWidget(BuildContext context, dynamic layout, dynamic allData,
             title: translate(layout["titleText"]),
             titleStyle: AppFonts.makeStyle(
                 layout["titleSize"], layout["titleColor"],
-                fontWeight:
-                    layout['titleFontWeight'] != null ? FontWeight.w700 : FontWeight.w500),
+                fontWeight: layout['titleFontWeight'] != null
+                    ? FontWeight.w700
+                    : FontWeight.w500),
             txt: data.toString(),
-            txtStyle: AppFonts.makeStyle(
-                layout["textSize"], layout["textColor"]));
+            txtStyle:
+                AppFonts.makeStyle(layout["textSize"], layout["textColor"]));
       } else {
         return TextLeadingRow(
             title: translate(layout["titleText"]),
-            titleStyle:
-                AppFonts.makeStyle(layout["titleSize"], layout["titleColor"], fontWeight:  layout['titleFontWeight'] != null ? FontWeight.w700 : FontWeight.w500),
+            titleStyle: AppFonts.makeStyle(
+                layout["titleSize"], layout["titleColor"],
+                fontWeight: layout['titleFontWeight'] != null
+                    ? FontWeight.w700
+                    : FontWeight.w500),
             widget: RichText(
                 textAlign: TextAlign.start,
                 text: TextSpan(
@@ -167,8 +176,11 @@ Widget generateWidget(BuildContext context, dynamic layout, dynamic allData,
       if (data == null) return null;
       return TextLeadingRow(
           title: translate(layout["titleText"]),
-          titleStyle:
-              AppFonts.makeStyle(layout["titleSize"], layout["titleColor"], fontWeight:  layout['titleFontWeight'] != null ? FontWeight.w700 : FontWeight.w500),
+          titleStyle: AppFonts.makeStyle(
+              layout["titleSize"], layout["titleColor"],
+              fontWeight: layout['titleFontWeight'] != null
+                  ? FontWeight.w700
+                  : FontWeight.w500),
           txt: data
               ? translate(layout["textIfTrue"])
               : translate(layout["textIfFalse"]),
@@ -197,7 +209,10 @@ Widget generateWidget(BuildContext context, dynamic layout, dynamic allData,
           children: <Widget>[
             Text(translate(layout["titleText"]),
                 style: AppFonts.makeStyle(
-                    layout["titleSize"], layout["titleColor"], fontWeight:  layout['titleFontWeight'] != null ? FontWeight.w700 : FontWeight.w500)),
+                    layout["titleSize"], layout["titleColor"],
+                    fontWeight: layout['titleFontWeight'] != null
+                        ? FontWeight.w700
+                        : FontWeight.w500)),
             SizedBox(height: 5.h),
             ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
@@ -230,7 +245,10 @@ Widget generateWidget(BuildContext context, dynamic layout, dynamic allData,
         children: <Widget>[
           Text(translate(layout["titleText"]),
               style: AppFonts.makeStyle(
-                  layout["titleSize"], layout["titleColor"], fontWeight:  layout['titleFontWeight'] != null ? FontWeight.w700 : FontWeight.w500)),
+                  layout["titleSize"], layout["titleColor"],
+                  fontWeight: layout['titleFontWeight'] != null
+                      ? FontWeight.w700
+                      : FontWeight.w500)),
           SizedBox(height: 17.h),
           for (int i = 0; i < min(data.length, layout["maxElements"]); i++)
             CustomChip(text: data[i]),
@@ -300,7 +318,10 @@ Widget generateWidget(BuildContext context, dynamic layout, dynamic allData,
               children: <Widget>[
                 Text(translate(layout["titleText"]),
                     style: AppFonts.makeStyle(
-                        layout["titleSize"], layout["titleColor"], fontWeight:  layout['titleFontWeight'] != null ? FontWeight.w700 : null)),
+                        layout["titleSize"], layout["titleColor"],
+                        fontWeight: layout['titleFontWeight'] != null
+                            ? FontWeight.w700
+                            : null)),
                 SizedBox(height: 17.h),
                 Flexible(
                     child: ListView.builder(
@@ -349,22 +370,29 @@ Widget generateWidget(BuildContext context, dynamic layout, dynamic allData,
           data["all_day"]
               ? translate("24_hrs")
               : "${LocaleStorageTimeService.formatTime("${data["open"]}")} - ${LocaleStorageTimeService.formatTime("${data["close"]}")}",
-          style: AppFonts.title9(color: Color.fromRGBO(13, 36, 52, 1.0),fontWeight: FontWeight.w700));
-
+          style: AppFonts.title9(
+              color: Color.fromRGBO(13, 36, 52, 1.0),
+              fontWeight: FontWeight.w700));
     case 'duration':
       if (data == null) return null;
       return Wrap(children: <Widget>[
         TextLeadingRow(
-            title: translate("start"),
-            titleStyle: kTitle9Rgb_67,
-            txt: LocaleStorageTimeService.formatDateTime(data["start"]),
-            txtStyle: kTitle9Rgb_67),
+          title: translate("start"),
+          titleStyle: AppFonts.title9(
+              color: Color.fromRGBO(13, 36, 52, 1.0),
+              fontWeight: FontWeight.w700),
+          txt: LocaleStorageTimeService.formatDateTime(data["start"]),
+          txtStyle: AppFonts.text9odd(color: Color.fromRGBO(9, 93, 106, 1.0)),
+        ),
         SizedBox(width: 53.h, height: 5.h),
         TextLeadingRow(
-            title: translate("end"),
-            titleStyle: kTitle9Rgb_67,
-            txt: LocaleStorageTimeService.formatDateTime(data["end"]),
-            txtStyle: kTitle9Rgb_67)
+          title: translate("end"),
+          titleStyle: AppFonts.title9(
+              color: Color.fromRGBO(13, 36, 52, 1.0),
+              fontWeight: FontWeight.w700),
+          txt: LocaleStorageTimeService.formatDateTime(data["end"]),
+          txtStyle: AppFonts.text9odd(color: Color.fromRGBO(9, 93, 106, 1.0)),
+        )
       ]);
 
     case 'price':
@@ -372,8 +400,10 @@ Widget generateWidget(BuildContext context, dynamic layout, dynamic allData,
       if (data["value"] != null) {
         return TextLeadingRow(
             title: translate(layout["titleText"]),
-            titleStyle:
-                AppFonts.makeStyle(layout["titleSize"], layout["titleColor"], fontWeight:  layout['titleFontWeight'] != null ? FontWeight.w700 : null),
+            titleStyle: AppFonts.makeStyle(
+                layout["titleSize"], layout["titleColor"],
+                fontWeight:
+                    layout['titleFontWeight'] != null ? FontWeight.w700 : null),
             widget: RichText(
                 textAlign: TextAlign.start,
                 text: Localizations.localeOf(context).languageCode == 'en'
@@ -406,8 +436,10 @@ Widget generateWidget(BuildContext context, dynamic layout, dynamic allData,
       } else {
         return TextLeadingRow(
             title: translate(layout["titleText"]),
-            titleStyle:
-                AppFonts.makeStyle(layout["titleSize"], layout["titleColor"], fontWeight:  layout['titleFontWeight'] != null ? FontWeight.w700 : null),
+            titleStyle: AppFonts.makeStyle(
+                layout["titleSize"], layout["titleColor"],
+                fontWeight:
+                    layout['titleFontWeight'] != null ? FontWeight.w700 : null),
             widget: RichText(
                 textAlign: TextAlign.start,
                 text: TextSpan(
@@ -448,7 +480,7 @@ Widget generateWidget(BuildContext context, dynamic layout, dynamic allData,
       if (data == null || data.length == 0) return null;
       return TextLeadingRow(
           title: translate("experience"),
-          titleStyle: kTitle9Rgb_67,
+          titleStyle: AppFonts.title9(color: Color.fromRGBO(13, 36, 52, 1.0)),
           widget: Flexible(
               child: Column(children: <Widget>[
             SizedBox(height: 3.h),
@@ -517,6 +549,21 @@ Widget generateWidget(BuildContext context, dynamic layout, dynamic allData,
               buttonName: translate(layout["titleText"])),
         ],
       );
+
+    case "rate_us":
+      return InkWell(
+          onTap: () => {
+            print("data:: ${data.toString()}"),
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        RatingScreen(businessId: data.toString() ?? id.toString(),rating: data,))),
+              },
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(margin: EdgeInsets.only(top: 20.h),child: Text(translate(layout["titleText"]) , style: AppFonts.title9Odd(color: Color(AppColors.burntSienna)))),
+          ));
 
     case 'personnel':
       if (data == null) return null;

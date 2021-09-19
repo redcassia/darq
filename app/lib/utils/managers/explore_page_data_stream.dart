@@ -11,9 +11,10 @@ abstract class ExplorePageData {
 }
 
 class GraphQLExpPageData implements ExplorePageData {
-  GraphQLExpPageData({@required this.client}) : assert(client != null);
 
   final GraphQLClient client;
+
+  GraphQLExpPageData({this.client});
 
   Stream<QueryResult> getSnapShots(String query) {
     return client

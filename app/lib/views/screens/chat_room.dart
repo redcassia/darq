@@ -1,19 +1,17 @@
 import 'dart:async';
 
-import 'package:darq/utils/managers/auth_state_provider.dart';
-
 import 'package:darq/backend/chat.dart';
-import 'package:darq/utils/services/local_storage_time_service.dart';
+import 'package:darq/backend/session.dart';
 import 'package:darq/elements/app_fonts.dart';
-import 'package:darq/constants.dart';
-import 'package:darq/views/widgets/app_bars/back_arrow.dart';
-import 'package:darq/views/widgets/app_bars/default_appbar.dart';
+import 'package:darq/views/widgets/app_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_translate/flutter_translate.dart';
-import 'package:provider/provider.dart';
+import 'package:graphql/client.dart';
+
+import '../../constants.dart';
 
 class ChatRoom extends StatefulWidget {
   final String threadId;
@@ -36,11 +34,10 @@ class _ChatRoomState extends State<ChatRoom> {
   bool _refresh = true;
   String _businessName = "";
   bool _messageInFlight = false;
-  AuthStateProvider auth;
   @override
   void initState() {
     super.initState();
-     auth = Provider.of<AuthStateProvider>(context, listen: false);
+
     _chatInstance = new Chat();
     _chatInstance
         .getThread(threadId: widget.threadId, businessId: widget.businessId)
@@ -49,26 +46,26 @@ class _ChatRoomState extends State<ChatRoom> {
         _thread = thread;
         _businessName = thread.targetName;
       });
-      _doRefresh(auth);
+      _doRefresh();
     }).catchError((e) async {
-      // var client = await Session.registerClient();
-      // var result = await client.query(QueryOptions(
-      //     documentNode: gql(
-      //         r'''query($id: ID!) { business(id: $id) { display_name } }'''),
-      //     variables: {"id": widget.businessId}));
-      // if (!result.hasException)
-      //   setState(() {
-      //     _businessName = result.data["business"]["display_name"];
-      //   });
+      var client = await Session.getClient();
+      var result = await client.query(QueryOptions(
+          documentNode: gql(
+              r'''query($id: ID!) { business(id: $id) { display_name } }'''),
+          variables: {"id": widget.businessId}));
+      if (!result.hasException)
+        setState(() {
+          _businessName = result.data["business"]["display_name"];
+        });
     });
 
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.minScrollExtent) {
         _oldMessageCount = _thread.messages.length;
-        _chatInstance.loadMore(threadId: _thread.id,auth: Provider.of<AuthStateProvider>(context, listen: false)).then((_) => setState(() {
-              _thread = _;
-            }));
+        _chatInstance.loadMore(_thread.id).then((_) => setState(() {
+          _thread = _;
+        }));
       } else if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
         _scrollToEnd = false;
@@ -82,20 +79,20 @@ class _ChatRoomState extends State<ChatRoom> {
     super.dispose();
   }
 
-  void _doRefresh(AuthStateProvider auth) {
+  void _doRefresh() {
     if (_thread != null) {
       var lastIndex = _thread.messages.last.index;
-      _chatInstance.refreshThread(threadId: _thread.id, auth: auth).then((_) {
+      _chatInstance.refreshThread(_thread.id).then((_) {
         if (_refresh) {
           setState(() {
             _thread = _;
             if (_.messages.last.index > lastIndex) _scrollToEnd = true;
           });
-          Future.delayed(Duration(seconds: 10), ()=> _doRefresh(auth));
+          Future.delayed(Duration(seconds: 10), _doRefresh);
         }
       });
     } else {
-      if (_refresh) Future.delayed(Duration(seconds: 10), ()=> _doRefresh(auth));
+      if (_refresh) Future.delayed(Duration(seconds: 10), _doRefresh);
     }
   }
 
@@ -104,18 +101,18 @@ class _ChatRoomState extends State<ChatRoom> {
     _messageInFlight = true;
     _chatInstance
         .sendMessage(msg,
-            threadId: _thread?.id ?? null, businessId: widget.businessId)
+        threadId: _thread?.id ?? null, businessId: widget.businessId)
         .then((_) => setState(() {
-              _thread = _;
-              _scrollToEnd = true;
-              _messageInFlight = false;
-            }));
+      _thread = _;
+      _scrollToEnd = true;
+      _messageInFlight = false;
+    }));
   }
 
-  _seeMsg(AuthStateProvider auth) {
+  _seeMsg() {
     if (_thread != null &&
         _thread.messages.last.index > _thread.senderLastSeenIndex) {
-      _chatInstance.seeMessage(threadId: _thread.id, auth: auth).then((_) {
+      _chatInstance.seeMessage(_thread.id).then((_) {
         setState(() {
           _thread = _;
         });
@@ -127,7 +124,7 @@ class _ChatRoomState extends State<ChatRoom> {
     return Column(children: [
       Visibility(
           child: Container(
-            margin: EdgeInsets.only(top: 8.h),
+              margin: EdgeInsets.only(top: 8.h),
               padding: EdgeInsets.symmetric(vertical: 5.h),
               width: double.infinity,
               decoration: BoxDecoration(
@@ -141,7 +138,7 @@ class _ChatRoomState extends State<ChatRoom> {
         child: Column(children: [
           Container(
               alignment:
-                  msg.sender == "PUBLIC" ? Alignment.topRight : Alignment.topLeft,
+              msg.sender == "PUBLIC" ? Alignment.topRight : Alignment.topLeft,
               child: Container(
                   constraints: BoxConstraints(maxWidth: 280.w),
                   padding: EdgeInsets.all(10.w),
@@ -158,15 +155,15 @@ class _ChatRoomState extends State<ChatRoom> {
                               : Colors.black87)))),
           msg.sender == "PUBLIC"
               ? Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                      LocaleStorageTimeService.formatDateTimeMessages(msg.time, fullDate: true),
-                      style: AppFonts.text8(color: Colors.black45)))
+              alignment: Alignment.centerRight,
+              child: Text(
+                  Session.formatDateTimeMessages(msg.time, fullDate: true),
+                  style: AppFonts.text8(color: Colors.black45)))
               : Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                      LocaleStorageTimeService.formatDateTimeMessages(msg.time, fullDate: true),
-                      style: AppFonts.text8(color: Colors.black45)))
+              alignment: Alignment.centerLeft,
+              child: Text(
+                  Session.formatDateTimeMessages(msg.time, fullDate: true),
+                  style: AppFonts.text8(color: Colors.black45)))
         ]),
       )
     ]);
@@ -187,22 +184,22 @@ class _ChatRoomState extends State<ChatRoom> {
 
   Widget _sendMessageArea() {
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 8.w),
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
         color: Colors.white,
         child: Row(children: [
           Expanded(
               child: TextField(
-                style: AppFonts.text7(color: Colors.black),
+                  style: AppFonts.text7(color: Colors.black),
                   keyboardType: TextInputType.multiline,
                   maxLines: 20,
                   minLines: 1,
                   onTap: () {
-                    _seeMsg(auth);
+                    _seeMsg();
                     _scrollToEnd = true;
                     _setScrollPosition();
                   },
                   controller: textFieldController,
-                  cursorColor: Color(0xFF86C2C2),
+                  cursorColor: Color(0xFF095D6A),
                   decoration: InputDecoration(
                     hintText: translate("send_message"),
                     hintStyle: AppFonts.text7(color:  Colors.black38),
@@ -212,11 +209,11 @@ class _ChatRoomState extends State<ChatRoom> {
                   ))),
           RotatedBox(
               quarterTurns:
-                  Localizations.localeOf(context).languageCode == 'en' ? 0 : 4,
+              Localizations.localeOf(context).languageCode == 'en' ? 0 : 4,
               child: IconButton(
                   icon: Icon(Icons.send),
                   iconSize: 30.w,
-                  color: Color(0xFF86C2C2),
+                  color: Color(0xFF095D6A),
                   onPressed: () {
                     if (!_messageInFlight) {
                       _sendMsg(textFieldController.text);
@@ -228,10 +225,9 @@ class _ChatRoomState extends State<ChatRoom> {
 
   @override
   Widget build(BuildContext context) {
-
     if (!_refresh) {
       _refresh = true;
-      _doRefresh(auth);
+      _doRefresh();
     }
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _setScrollPosition();
@@ -240,20 +236,17 @@ class _ChatRoomState extends State<ChatRoom> {
 
     return Scaffold(
         backgroundColor: Color(0xFFE5E5E5),
-        appBar: PreferredSize(
-            preferredSize: Size.fromHeight(ConsDimensions.LargeAppBarHeight.h),
-            child: DefaultAppBar(
-                allowHorizontalPadding: false,
-                title: _businessName,
-                bgImage: "app_bar_rectangle.png",
-                leading: BackArrow(),
-                onLeadingClicked: () => Navigator.pop(context))),
+        appBar:  PreferredSize(
+            preferredSize: Size.fromHeight(90.h),
+            child: AppBarCustom(
+              title: _businessName
+            )),
         body: Column(children: [
           Expanded(
               child: ListView.builder(
                   controller: _scrollController,
                   padding:
-                      EdgeInsets.only(bottom: 11.h),
+                  EdgeInsets.only(bottom: 11.h),
                   itemCount: _thread?.messages?.length ?? 0,
                   itemBuilder: (BuildContext context, int i) {
                     /// check if sender is current user id

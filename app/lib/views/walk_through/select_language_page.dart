@@ -1,43 +1,46 @@
-import 'package:darq/utils/managers/auth_state_provider.dart';
-import 'package:darq/utils/services/auth/localization_service.dart';
+import 'package:darq/backend/session.dart';
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/constants/app_color_palette.dart';
 import 'package:darq/constants/asset_path.dart';
 import 'package:darq/utils/managers/walk_through_provider.dart';
+import 'package:darq/views/home/home_page_.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_translate/flutter_translate.dart';
+import 'package:graphql/client.dart';
 import 'package:provider/provider.dart';
 
 class SelectLanguagePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(translate("select_your_language"),
-              style: AppFonts.title4(color: Color(AppColors.cyprus))),
-          SizedBox(height: 3.h),
-          Image(
-              image: AssetImage(AssetPath.ImgPath + "select_language.png"),
-              width: 283.w,
-              fit: BoxFit.fitHeight),
-          SizedBox(height: 88.h),
-          SelectLanguage(),
-          SizedBox(height: 53.h)
-        ]);
+    return Scaffold(
+      body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(translate("select_your_language"),
+                style: AppFonts.title4(color: Color(AppColors.cyprus))),
+            SizedBox(height: 3.h),
+            Image(
+                image: AssetImage(AssetPath.ImgPath + "select_language.png"),
+                width: 283.w,
+                fit: BoxFit.fitHeight),
+            SizedBox(height: 88.h),
+            SelectLanguage(),
+            SizedBox(height: 53.h)
+          ]),
+    );
   }
 }
 
 class SelectLanguage extends StatelessWidget {
-  const SelectLanguage({Key key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    final authState =
-        Provider.of<AuthStateProvider>(context, listen: false);
-    final stateNotifier = Provider.of<SelectLangWidgetsProvider>(context, listen: false);
+    final stateNotifier = Provider.of<SelectLangWidgetsProvider>(context, listen: true);
+    GraphQLClient client;
+
+    Session.getClient().then((value) => client = value);
+
     return Column(children: [
       Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
         SizedBox(width: 5.w),
@@ -52,7 +55,16 @@ class SelectLanguage extends StatelessWidget {
               await changeLocale(context, 'en_US');
               stateNotifier.setLoadingIndicator = true;
               stateNotifier.setSelectedLangIsEnglish = true;
-              await GraphQLLocalization.setGraphQLLocale("en", authState);
+              await Session.setLocale('en');
+              stateNotifier.setLoadingIndicator = false;
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => HomePage(client: client),
+                ),
+                    (route) => false,
+              );
+
             }),
         Container(width: 3.w, color: Color(AppColors.cyprus), height: 16.h),
         InkWell(
@@ -68,7 +80,15 @@ class SelectLanguage extends StatelessWidget {
               await changeLocale(context, 'ar');
               stateNotifier.setLoadingIndicator = true;
               stateNotifier.setSelectedLangIsEnglish = false;
-              await GraphQLLocalization.setGraphQLLocale("ar", authState);
+              await Session.setLocale('ar');
+              stateNotifier.setLoadingIndicator = false;
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => HomePage(client: client),
+                ),
+                    (route) => false,
+              );
             }),
         SizedBox(width: 5.w)
       ]),

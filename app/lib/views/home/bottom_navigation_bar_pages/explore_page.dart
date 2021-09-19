@@ -1,3 +1,4 @@
+import 'package:darq/backend/session.dart';
 import 'package:darq/utils/managers/explore_page_data_stream.dart';
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/utils/ui/photo_stream_viewer_with_indicator.dart';
@@ -12,6 +13,7 @@ import 'package:darq/constants/asset_path.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:graphql/client.dart';
 import 'package:provider/provider.dart';
 
 class ExplorePage extends StatelessWidget {
@@ -50,7 +52,7 @@ class BuildContent extends StatelessWidget {
           SizedBox(height: 16.h),
           Header(),
           SizedBox(height: 20.h),
-          Text("Events",
+          Text(translate("events"),
               style: AppFonts.title6(color: Color(AppColors.cyprus))),
           SizedBox(height: 20),
           PhotoStreamViewerWithIndicator(
@@ -61,21 +63,21 @@ class BuildContent extends StatelessWidget {
               height: 183.h,
               width: 264.14.w,
               containerRadius: 22.w,
-              listTitle: "Made in Qatar",
+              listTitle: translate("made_in_qatar"),
               titleStyle: AppFonts.title6(color: Color(AppColors.white)),
               subTitleStyle: AppFonts.title8(color: Color(AppColors.white)),
               stream: database.madeInQatarBusinessHLStream()),
           PhotoStreamViewerWithNoIndicator(
               jsonFile: "child_education_centers.json",
-              listTitle: "Child Education Centers",
+              listTitle: translate("child_education_centers"),
               stream: database.childEducationCentersBusinessHLStream()),
           PhotoStreamViewerWithNoIndicator(
               jsonFile: "entertainment.json",
-              listTitle: "Entertainment",
+              listTitle: translate("entertainment"),
               stream: database.entertainmentBusinessHLStream()),
           PhotoStreamViewerWithNoIndicator(
               jsonFile: "cuisine.json",
-              listTitle: "Cuisine",
+              listTitle: translate("cuisine"),
               stream: database.cuisineBusinessHLStream())
         ]);
   }
@@ -109,7 +111,7 @@ class Header extends StatelessWidget {
                 RoundedButton(
                     height: 23.h,
                     padding: 19.w,
-                    buttonName: "Community",
+                    buttonName: translate("community"),
                     buttonColor: Color(AppColors.burntSienna),
                     borderRadius: 27.w,
                     textStyle: AppFonts.text8(

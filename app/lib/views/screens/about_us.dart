@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/constants/asset_path.dart';
 import 'package:darq/constants.dart';
+import 'package:darq/views/widgets/app_bar.dart';
 import 'package:darq/views/widgets/app_bars/back_arrow.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -18,53 +19,22 @@ class _AboutUsState extends State<AboutUs> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xFFE5E5E5),
         extendBodyBehindAppBar: false,
-        appBar: PreferredSize(
-            preferredSize: Size.fromHeight(ConsDimensions.SmallAppBarHeight.h),
-            child: Container(
-                decoration: BoxDecoration(
-                    color: Color(0xFF86C2C2),
-                    borderRadius: Localizations.localeOf(context)
-                                .languageCode ==
-                            'en'
-                        ? BorderRadius.only(
-                            bottomRight: Radius.circular(45),
-                          )
-                        : BorderRadius.only(bottomLeft: Radius.circular(45))),
-                padding: EdgeInsets.only(top: 33.h, bottom: 22.h),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      BackArrow(
-                          backArrowBgColor:
-                              Color.fromRGBO(134, 194, 194, 0.69)),
-                      Image(
-                          width: 38.w,
-                          fit: BoxFit.fitHeight,
-                          image:
-                              AssetImage(AssetPath.ImgPath + "logo_notxt.png")),
-                      Visibility(
-                          maintainInteractivity: false,
-                          maintainSize: true,
-                          maintainAnimation: true,
-                          maintainState: true,
-                          visible: false,
-                          child: BackArrow(
-                              backArrowBgColor:
-                                  Color.fromRGBO(134, 194, 194, 0.69)))
-                    ]))),
+        appBar:  PreferredSize(
+            preferredSize: Size.fromHeight(90.h),
+            child: AppBarCustom(
+                title: translate("about_app")
+            )),
         body: SingleChildScrollView(
             child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 20.w),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(translate("about_us"),
-                        style: AppFonts.text4(color: Color(0xFF476C7B))),
+                    Center(child: Image(image: AssetImage(AssetPath.ImgPath+ "about_app.png"))),
                     SizedBox(height: 26.h),
                     Text(translate("about_us_txt"),
-                        style: AppFonts.text6(color: Color(0xFF476C7B))),
+                        style: AppFonts.text7(color: Color(0xFF263A48),fontWeight: FontWeight.w500)),
                     SizedBox(height: 15.h),
                     Center(
                         child: Text(translate("welcome_to_darq"),

@@ -6,9 +6,10 @@ import 'package:darq/utils/helpers/screen_dimensions_helper.dart';
 import 'package:darq/views/home/bottom_navigation_bar_pages/community_page.dart';
 import 'package:darq/views/screens/about_us.dart';
 import 'package:darq/views/screens/change_lang.dart';
-import 'package:darq/views/screens/chat_list.dart';
+import 'package:darq/views/home/bottom_navigation_bar_pages/chat_list.dart';
 import 'package:darq/views/home/bottom_navigation_bar_pages/listing_page.dart';
 import 'package:darq/views/home/home_page_.dart';
+import 'package:darq/views/walk_through/select_language_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_translate/flutter_translate.dart';
@@ -73,12 +74,20 @@ class _CustomDrawerState extends State<CustomDrawer> {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
             Widget>[
           SizedBox(height: 58.h),
-          Align(
-            alignment: Alignment.centerRight,
-            child: Image(
-                image: AssetImage(AssetPath.ImgPath + "menu.png"),
-                width: 19.5.w,
-                fit: BoxFit.fitHeight),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end ,
+            children: [
+              RotatedBox(
+                quarterTurns:
+                Localizations.localeOf(context).languageCode == 'en'
+                    ? 0
+                    : 2,
+                child: Image(
+                    image: AssetImage(AssetPath.ImgPath + "menu.png"),
+                    width: 19.5.w,
+                    fit: BoxFit.fitHeight),
+              ),
+            ],
           ),
           DrawerItem(
               txt: translate("home"),
@@ -148,7 +157,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
               onPress: () => Navigator.push(context,
                   MaterialPageRoute(builder: (context) => ChangeLang()))),
           DrawerItem(
-              txt: translate("about_us"),
+              txt: translate("about_app"),
               icon: "about_us.png",
               onPress: () => Navigator.push(
                   context, MaterialPageRoute(builder: (context) => AboutUs()))),

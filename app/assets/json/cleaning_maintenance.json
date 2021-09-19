@@ -201,6 +201,11 @@
           "titleColor": { "r": 13, "g": 36, "b": 52, "o": 1.0 },
           "titleFontWeight": "w700",
           "data": ["attachments"]
+        },
+        {
+          "widget": "rate_us",
+          "titleText": "rate_this_business",
+          "data": ["rating"]
         }
       ]
     },

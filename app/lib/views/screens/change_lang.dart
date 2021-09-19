@@ -1,10 +1,14 @@
 import 'dart:ui';
 
+import 'package:darq/backend/session.dart';
+import 'package:darq/constants/app_color_palette.dart';
 import 'package:darq/utils/managers/auth_state_provider.dart';
 import 'package:darq/utils/services/auth/localization_service.dart';
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/constants/asset_path.dart';
 import 'package:darq/constants.dart';
+import 'package:darq/views/home/home_page_.dart';
+import 'package:darq/views/widgets/app_bar.dart';
 import 'package:darq/views/widgets/app_bars/back_arrow.dart';
 import 'package:darq/views/widgets/app_bars/default_appbar.dart';
 import 'package:darq/views/widgets/button.dart';
@@ -24,60 +28,48 @@ class ChangeLang extends StatefulWidget {
 class _ChangeLangState extends State<ChangeLang> {
   @override
   Widget build(BuildContext context) {
-
-    final auth = Provider.of<AuthStateProvider>(context, listen: false);
     return Scaffold(
         backgroundColor: Color(0xFFE5E5E5),
-        appBar: PreferredSize(
-            preferredSize: Size.fromHeight(ConsDimensions.LargeAppBarHeight.h),
-            child: DefaultAppBar(
-                allowHorizontalPadding: false,
-                bgImage: "app_bar_rectangle.png",
-                leading: BackArrow(),
-                onLeadingClicked: () => Navigator.pop(context))),
-        body: DefaultCard(
-            margin: EdgeInsets.only(
-                right: 20.w, left: 20.w, bottom: 10.h, top: 10.h),
-            child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 30.h),
-                child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(translate("change_lang_text"),
-                          style: AppFonts.title7(
-                              color: Color.fromRGBO(0, 0, 0, 0.7))),
-                      SizedBox(height: 20.h),
-                      Image(
-                          fit: BoxFit.fitHeight,
-                          width: 250.w,
-                          height: 140.h,
-                          image: AssetImage(
-                              AssetPath.ImgPath + "choose_lang_img.png")),
-                      SizedBox(height: 30.h),
-                      RoundedButton(
-                          borderRadius: 34.1,
-                          textStyle: AppFonts.title7(color: Colors.white),
-                          height: 46.h,
-                          padding: 109.w,
-                          buttonName: "English",
-                          buttonColor: Color(0xFF426676),
-                          onPressed: () {
-                            changeLocale(context, 'en_US');
-                            GraphQLLocalization.setGraphQLLocale('en',auth);
-                          }),
-                      SizedBox(height: 11.h),
-                      RoundedButton(
-                          borderRadius: 34.1,
-                          textStyle: AppFonts.title7(color: Colors.white),
-                          height: 46.h,
-                          padding: 109.w,
-                          buttonName: "العربية",
-                          buttonColor: Color(0xFFE1A854),
-                          onPressed: () {
-                            changeLocale(context, 'ar');
-                            GraphQLLocalization.setGraphQLLocale('ar',auth);
-                          })
-                    ]))));
+        appBar:  PreferredSize(
+            preferredSize: Size.fromHeight(90.h),
+            child: AppBarCustom(
+                title: translate("change_lang_text")
+            )),
+        body: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+          Image(
+              image: AssetImage(AssetPath.ImgPath + "select_language.png"),
+              width: 283.w,
+              fit: BoxFit.fitHeight),
+          SizedBox(height: 35.h,),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+            SizedBox(width: 5.w),
+            InkWell(
+                child: Text("English",
+                    style: AppFonts.title7(
+                        color:  Color(AppColors.cyprus))),
+                onTap: () async {
+                  await changeLocale(context, 'en_US');
+                  await Session.setLocale('en');
+                  Navigator.pop(context);
+                }),
+            Container(width: 3.w, color: Color(AppColors.cyprus), height: 16.h),
+            InkWell(
+                child: Text(
+                  "العربية",
+                  style: AppFonts.title7(
+                      color: Color(AppColors.black).withOpacity(0.36)),
+                ),
+                onTap: () async {
+                  await changeLocale(context, 'ar');
+                  await Session.setLocale('ar');
+                  Navigator.pop(context);
+                  ;
+                }),
+            SizedBox(width: 5.w)
+          ]),
+          SizedBox(height: 40.h),
+        ]));
   }
 }

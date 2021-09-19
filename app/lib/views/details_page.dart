@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:darq/backend/session.dart';
 import 'package:darq/utils/managers/auth_state_provider.dart';
 import 'package:darq/constants/asset_path.dart';
 import 'package:darq/views/home/widget_generator/widget_generator.dart';
@@ -13,7 +14,6 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:graphql/client.dart';
-import 'package:provider/provider.dart';
 
 class DetailsPage extends StatefulWidget {
   final String id;
@@ -46,11 +46,11 @@ class _DetailsPageState extends State<DetailsPage> {
     });
   }
 
-  loadData(BuildContext context) {
-    final user = Provider.of<AuthStateProvider>(context, listen: false);
-    user.getClient
+  loadData() {
+    Session.getClient().then((client) => client
         .query(QueryOptions(
-            documentNode: gql(_layout["query"]), variables: {'id': widget.id}))
+        documentNode: gql(_layout["query"]),
+        variables: {'id': widget.id}))
         .then((result) {
       if (!result.hasException)
         setState(() {
@@ -58,13 +58,14 @@ class _DetailsPageState extends State<DetailsPage> {
           _data = new Map<String, dynamic>();
           _data.addAll(_originalData);
         });
-    });
+    }));
   }
+
 
   _loadLayoutAndData(BuildContext context) {
     rootBundle.loadString(AssetPath.JsonFilePath + widget.jsonFile).then((js) {
       setState(() => _layout = json.decode(js)["detailed"]);
-      loadData(context);
+      loadData();
     });
   }
 

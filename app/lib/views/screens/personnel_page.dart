@@ -4,7 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/constants.dart';
 import 'package:darq/utils/services/local_storage_time_service.dart';
-import 'package:darq/views/home/home_screens_style_const.dart';
+import 'package:darq/views/widgets/app_bar.dart';
 import 'package:darq/views/widgets/app_bars/profile_appbar.dart';
 import 'package:darq/views/widgets/custom_chip.dart';
 import 'package:darq/views/widgets/custom_divider.dart';
@@ -42,6 +42,7 @@ int getAge(String birthDate) {
 class _PersonnelPageState extends State<PersonnelPage> {
   String phoneNumber;
   String phoneNumberWithNoSpaces;
+  Map<String, dynamic> _layout;
 
   @override
   void initState() {
@@ -52,287 +53,279 @@ class _PersonnelPageState extends State<PersonnelPage> {
       phoneNumber = LocaleStorageTimeService.formatInt(int.parse(phoneNumber));
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xFF426676),
         appBar: PreferredSize(
-            preferredSize: Size.fromHeight(ConsDimensions.SmallAppBarHeight.w),
-            child: ProfileAppBar(
-                id: widget.id,
-                rateButton: false,
-                filterIndicator: false,
-                buttonName: translate("contact_us"))),
-        body: DefaultCard(
-            margin: EdgeInsets.only(bottom: 33.h, right: 20.w, left: 20.w),
-            child: SingleChildScrollView(
-                child: Column(
+            preferredSize: Size.fromHeight(90.h),
+            child: AppBarCustom(
+                title: widget.data == null
+                    ? ""
+                    : translate(widget.data["profession"]),
+          )),
+        body: SingleChildScrollView(
+            child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 33.h,horizontal: 20.w),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        SizedBox(
-                            height: 80.w,
-                            child: Picture(
-                                height: 79.h,
-                                width: 80.w,
-                                photo: widget.data["picture"])),
-                        SizedBox(width: 17.w),
-                        Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(widget.data["name"],
-                                  style: AppFonts.title9(
-                                      color: Color.fromRGBO(0, 0, 0, 0.67))),
-                              SizedBox(height: 5.h),
-                              DataWidget(
-                                  data: translate(widget.data["profession"])),
-                              SizedBox(height: 3.h),
-                              DataWidget(
-                                  data: translate(widget.data["gender"])),
-                              SizedBox(height: 3.h),
-                              DataWidget(
-                                  data: translate(widget.data["nationality"]))
+                      SizedBox(
+                          height: 80.w,
+                          child: Picture(
+                              height: 79.h,
+                              width: 80.w,
+                              photo: widget.data["picture"])),
+                      SizedBox(width: 17.w),
+                      Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(widget.data["name"],
+                                style:  AppFonts.title8(color: Color.fromRGBO(13, 36, 52, 1.0),fontWeight: FontWeight.w700),),
+                            SizedBox(height: 5.h),
+                            DataWidget(
+                                data: translate(widget.data["profession"])),
+                            SizedBox(height: 3.h),
+                            DataWidget(
+                                data: translate(widget.data["gender"])),
+                            SizedBox(height: 3.h),
+                            DataWidget(
+                                data: translate(widget.data["nationality"]))
+                          ])
+                    ]),
+                Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 14.h),
+                      CustomDivider(),
+                      BipartiteRow(
+                          leftTitle: translate("religion"),
+                          leftTxt: widget.data["religion"],
+                          rightTitle: translate("salary"),
+                          rightTxt:
+                              "${LocaleStorageTimeService.formatInt(widget.data["salary"]["value"])} ${translate(widget.data["salary"]["currency"])}"),
+                      CustomDivider(),
+                      widget.data["profession"] == "Driver"
+                          ? Column(children: [
+                              SizedBox(height: 17.h),
+                              TextLeadingRow(
+                                  title: translate("license_expiration_date"),
+                                  titleStyle:  AppFonts.title9(color: Color.fromRGBO(13, 36, 52, 1.0),fontWeight: FontWeight.w700),
+                                  txt: LocaleStorageTimeService.formatDate(
+                                      widget.data["license_expiry_date"]),
+                                  txtStyle: AppFonts.text9odd(color: Color.fromRGBO(9, 93, 106, 1.0)),),
+                              SizedBox(height: 17.h),
+                              CustomDivider()
                             ])
-                      ]),
-                  Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 14.h),
-                        CustomDivider(),
-                        BipartiteRow(
-                            leftTitle: translate("religion"),
-                            leftTxt: widget.data["religion"],
-                            rightTitle: translate("salary"),
-                            rightTxt:
-                                "${LocaleStorageTimeService.formatInt(widget.data["salary"]["value"])} ${translate(widget.data["salary"]["currency"])}"),
-                        CustomDivider(),
-                        widget.data["profession"] == "Driver"
-                            ? Column(children: [
-                                SizedBox(height: 17.h),
-                                TextLeadingRow(
-                                    title: translate("license_expiration_date"),
-                                    titleStyle: kTitle9Rgb_67,
-                                    txt: LocaleStorageTimeService.formatDate(
-                                        widget.data["license_expiry_date"]),
-                                    txtStyle: kTitle9Rgb_67),
-                                SizedBox(height: 17.h),
-                                CustomDivider()
-                              ])
-                            : Container(),
-                        SizedBox(height: 17.h),
-                        TextLeadingRow(
-                            title: translate("date_of_birth"),
-                            titleStyle: kTitle9Rgb_67,
-                            txt: LocaleStorageTimeService.formatDate(
-                                widget.data["date_of_birth"]),
-                            txtStyle: kTitle9Rgb_67),
-                        SizedBox(height: 17.h),
-                        CustomDivider(),
-                        BipartiteRow(
-                            leftTitle: translate("status"),
-                            leftTxt: translate(widget.data["marital_status"]),
-                            rightTitle: translate("age"),
-                            rightTxt: LocaleStorageTimeService.formatInt(
-                                getAge(widget.data["date_of_birth"]))),
-                        CustomDivider(),
-                        BipartiteRow(
-                            leftTitle: translate("contact"),
-                            leftWidget: InkWell(
-                                onTap: () async {
-                                  if (await canLaunch("tel:$phoneNumber")) {
-                                    await launch("tel:$phoneNumber");
-                                  } else {
-                                    throw 'Could not launch $phoneNumber';
-                                  }
-                                },
-                                child:
-                                    Text(phoneNumber, style: kTitle9Rgb_67)),
-                            rightTitle: widget.data["profession"] != "Driver"
-                                ? translate("children")
-                                : "",
-                            rightTxt: widget.data["number_of_children"] != null
-                                ? LocaleStorageTimeService.formatInt(
-                                    widget.data["number_of_children"])
-                                : ""),
-                        CustomDivider(),
-                        widget.data["profession"] != "Driver"
-                            ? Column(children: [
-                                SizedBox(height: 17.h),
-                                TextLeadingRow(
-                                    title: translate("education"),
-                                    titleStyle: kTitle9Rgb_67,
-                                    txt: translate(widget.data["education"]),
-                                    txtStyle: kTitle9Rgb_67),
-                                SizedBox(height: 17.h),
-                                CustomDivider()
-                              ])
-                            : Container(),
-                        SizedBox(height: 17.h),
-                        Wrap(
-                            spacing: 6.w,
-                            crossAxisAlignment: WrapCrossAlignment.start,
-                            children: <Widget>[
-                              Text(translate("languages"),
-                                  style: kTitle9Rgb_67),
+                          : Container(),
+                      SizedBox(height: 17.h),
+                      TextLeadingRow(
+                          title: translate("date_of_birth"),
+                          titleStyle:  AppFonts.title9(color: Color.fromRGBO(13, 36, 52, 1.0),fontWeight: FontWeight.w700),
+                          txt: LocaleStorageTimeService.formatDate(
+                              widget.data["date_of_birth"]),
+                          txtStyle: AppFonts.text9odd(color: Color.fromRGBO(9, 93, 106, 1.0)),),
+                      SizedBox(height: 17.h),
+                      CustomDivider(),
+                      BipartiteRow(
+                          leftTitle: translate("status"),
+                          leftTxt: translate(widget.data["marital_status"]),
+                          rightTitle: translate("age"),
+                          rightTxt: LocaleStorageTimeService.formatInt(
+                              getAge(widget.data["date_of_birth"]))),
+                      CustomDivider(),
+                      BipartiteRow(
+                          leftTitle: translate("contact"),
+                          leftWidget: InkWell(
+                              onTap: () async {
+                                if (await canLaunch("tel:$phoneNumber")) {
+                                  await launch("tel:$phoneNumber");
+                                } else {
+                                  throw 'Could not launch $phoneNumber';
+                                }
+                              },
+                              child:
+                                  Text(phoneNumber, style: AppFonts.text9odd(color: Color.fromRGBO(9, 93, 106, 1.0)),)),
+                          rightTitle: widget.data["profession"] != "Driver"
+                              ? translate("children")
+                              : "",
+                          rightTxt: widget.data["number_of_children"] != null
+                              ? LocaleStorageTimeService.formatInt(
+                                  widget.data["number_of_children"])
+                              : ""),
+                      CustomDivider(),
+                      widget.data["profession"] != "Driver"
+                          ? Column(children: [
+                              SizedBox(height: 17.h),
+                              TextLeadingRow(
+                                  title: translate("education"),
+                                  titleStyle:  AppFonts.title9(color: Color.fromRGBO(13, 36, 52, 1.0),fontWeight: FontWeight.w700),
+                                  txt: translate(widget.data["education"]),
+                                  txtStyle: AppFonts.text9odd(color: Color.fromRGBO(9, 93, 106, 1.0)),),
+                              SizedBox(height: 17.h),
+                              CustomDivider()
+                            ])
+                          : Container(),
+                      SizedBox(height: 17.h),
+                      Wrap(
+                          spacing: 6.w,
+                          crossAxisAlignment: WrapCrossAlignment.start,
+                          children: <Widget>[
+                            Text(translate("languages"),
+                                style: AppFonts.title9(color: Color.fromRGBO(13, 36, 52, 1.0),fontWeight: FontWeight.w700)),
+                            SizedBox(height: 17.h),
+                            for (int i = 0;
+                                i < widget.data["languages"]?.length ?? 0;
+                                i++)
+                              CustomChip(text: widget.data["languages"][i])
+                          ]),
+                      SizedBox(height: 17.h),
+                      CustomDivider(),
+                      SizedBox(height: 17.h),
+                      TextLeadingRow(
+                          title: translate("experience"),
+                          titleStyle:  AppFonts.title9(color: Color.fromRGBO(13, 36, 52, 1.0),fontWeight: FontWeight.w700),
+                          widget: widget.data["experience"].length != 0
+                              ? Flexible(
+                                  child: Column(children: <Widget>[
+                                  SizedBox(height: 3.h),
+                                  ListView.builder(
+                                      physics: NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      padding: EdgeInsets.zero,
+                                      itemCount:
+                                          widget.data["experience"].length,
+                                      itemBuilder:
+                                          (BuildContext context, int i) {
+                                        return Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Text(
+                                                  "${translate(widget.data["experience"][i]["country"])}${widget.data["experience"][i]["institution"] != null ? " - ${widget.data["experience"][i]["institution"]}" : ""}",
+                                                  style: AppFonts.title9(
+                                                      color: Color.fromRGBO(
+                                                          0, 0, 0, 0.69))),
+                                              Text(
+                                                  "${LocaleStorageTimeService.formatDate(widget.data["experience"][i]["from"])}   -   ${widget.data["experience"][i]["in_position"] ? translate("present") : "${LocaleStorageTimeService.formatDate(widget.data["experience"][i]["to"])}"}",
+                                                  style: AppFonts.text9odd(color: Color.fromRGBO(9, 93, 106, 1.0)),),
+                                              SizedBox(height: 4.h)
+                                            ]);
+                                      })
+                                ]))
+                              : Text(translate("none"),
+                                  style: AppFonts.text9odd(color: Color.fromRGBO(9, 93, 106, 1.0)),)),
+                      SizedBox(height: 17.h),
+                      CustomDivider(),
+                      widget.isDriver
+                          ? Container()
+                          : BipartiteRow(
+                              leftTitle: translate("height"),
+                              leftWidget: RichText(
+                                  textAlign: TextAlign.start,
+                                  text: TextSpan(
+                                      style: AppFonts.text9odd(color: Color.fromRGBO(9, 93, 106, 1.0)),
+                                      children: <TextSpan>[
+                                        TextSpan(
+                                            text: LocaleStorageTimeService.formatInt(int.parse(
+                                                widget.data["height"]))),
+                                        TextSpan(
+                                            text: translate("cm"),
+                                            style: AppFonts.text9odd(color: Color.fromRGBO(9, 93, 106, 1.0)),)
+                                      ])),
+                              rightTitle: translate("weight"),
+                              rightWidget: RichText(
+                                  textAlign: TextAlign.start,
+                                  text: TextSpan(
+                                      style: AppFonts.text9odd(color: Color.fromRGBO(9, 93, 106, 1.0)),
+                                      children: <TextSpan>[
+                                        TextSpan(
+                                            text: LocaleStorageTimeService.formatInt(int.parse(
+                                                widget.data["weight"]))),
+                                        TextSpan(
+                                            text: translate("kg"),
+                                            style: AppFonts.text9odd(color: Color.fromRGBO(9, 93, 106, 1.0)),)
+                                      ])),
+                            ),
+                      widget.isDriver ? Container() : CustomDivider(),
+                      widget.isDriver ? Container() : SizedBox(height: 17.h),
+                      widget.isDriver
+                          ? Container()
+                          : Wrap(spacing: 6.w, children: <Widget>[
+                              Text(translate("skills"), style: AppFonts.title9(color: Color.fromRGBO(13, 36, 52, 1.0),fontWeight: FontWeight.w700)),
                               SizedBox(height: 17.h),
                               for (int i = 0;
-                                  i < widget.data["languages"]?.length ?? 0;
+                                  i < widget.data["skills"]?.length ?? 0;
                                   i++)
-                                CustomChip(text: widget.data["languages"][i])
+                                CustomChip(text: widget.data["skills"][i])
                             ]),
-                        SizedBox(height: 17.h),
-                        CustomDivider(),
-                        SizedBox(height: 17.h),
-                        TextLeadingRow(
-                            title: translate("experience"),
-                            titleStyle: kTitle9Rgb_67,
-                            widget: widget.data["experience"].length != 0
-                                ? Flexible(
-                                    child: Column(children: <Widget>[
-                                    SizedBox(height: 3.h),
-                                    ListView.builder(
-                                        physics: NeverScrollableScrollPhysics(),
-                                        shrinkWrap: true,
-                                        padding: EdgeInsets.zero,
-                                        itemCount:
-                                            widget.data["experience"].length,
-                                        itemBuilder:
-                                            (BuildContext context, int i) {
-                                          return Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: <Widget>[
-                                                Text(
-                                                    "${translate(widget.data["experience"][i]["country"])}${widget.data["experience"][i]["institution"] != null ? " - ${widget.data["experience"][i]["institution"]}" : ""}",
-                                                    style: AppFonts.title9(
-                                                        color: Color.fromRGBO(
-                                                            0, 0, 0, 0.69))),
-                                                Text(
-                                                    "${LocaleStorageTimeService.formatDate(widget.data["experience"][i]["from"])}   -   ${widget.data["experience"][i]["in_position"] ? translate("present") : "${LocaleStorageTimeService.formatDate(widget.data["experience"][i]["to"])}"}",
-                                                    style: AppFonts.text9(
-                                                        color: Color.fromRGBO(
-                                                            0, 0, 0, 0.5))),
-                                                SizedBox(height: 4.h)
-                                              ]);
-                                        })
+                      widget.isDriver ? Container() : SizedBox(height: 17.h),
+                      widget.isDriver ? Container() : CustomDivider(),
+                      SizedBox(height: 17.h),
+                      widget.data["attachments"].length != 0
+                          ? SizedBox(
+                              height: 125.h,
+                              child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(translate("attachments"),
+                                        style: AppFonts.title9(color: Color.fromRGBO(13, 36, 52, 1.0),fontWeight: FontWeight.w700)),
+                                    SizedBox(height: 17.h),
+                                    Flexible(
+                                        child: ListView.builder(
+                                            scrollDirection: Axis.horizontal,
+                                            shrinkWrap: true,
+                                            padding: EdgeInsets.zero,
+                                            itemCount: widget
+                                                    .data["attachments"]
+                                                    ?.length ??
+                                                0,
+                                            itemBuilder:
+                                                (BuildContext context,
+                                                    int index) {
+                                              return Padding(
+                                                  padding: EdgeInsets.only(
+                                                      right: 6.w),
+                                                  child: InkWell(
+                                                      child: CachedNetworkImage(
+                                                          imageUrl:
+                                                              "http://redcassia.com:3001/attachment/${widget.data["attachments"][index]}",
+                                                          placeholder: (context,
+                                                                  url) =>
+                                                              CircularProgressIndicator(),
+                                                          errorWidget:
+                                                              (context, url,
+                                                                      error) =>
+                                                                  Icon(Icons
+                                                                      .error),
+                                                          filterQuality:
+                                                              FilterQuality
+                                                                  .high,
+                                                          width: 141.w,
+                                                          height: 91.h,
+                                                          fit:
+                                                              BoxFit.contain),
+                                                      onTap: () {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder: (context) =>
+                                                                    FullImageWrapper(
+                                                                        imageProvider:
+                                                                            "http://redcassia.com:3001/attachment/${widget.data["attachments"][index]}")));
+                                                      }));
+                                            }))
                                   ]))
-                                : Text(translate("none"),
-                                    style: kTitle9Rgb_67)),
-                        SizedBox(height: 17.h),
-                        CustomDivider(),
-                        widget.isDriver
-                            ? Container()
-                            : BipartiteRow(
-                                leftTitle: translate("height"),
-                                leftWidget: RichText(
-                                    textAlign: TextAlign.start,
-                                    text: TextSpan(
-                                        style: kTitle9Rgb_67,
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                              text: LocaleStorageTimeService.formatInt(int.parse(
-                                                  widget.data["height"]))),
-                                          TextSpan(
-                                              text: translate("cm"),
-                                              style: AppFonts.title9(
-                                                  color: Color.fromRGBO(
-                                                      0, 0, 0, 0.7)))
-                                        ])),
-                                rightTitle: translate("weight"),
-                                rightWidget: RichText(
-                                    textAlign: TextAlign.start,
-                                    text: TextSpan(
-                                        style: kTitle9Rgb_67,
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                              text: LocaleStorageTimeService.formatInt(int.parse(
-                                                  widget.data["weight"]))),
-                                          TextSpan(
-                                              text: translate("kg"),
-                                              style: AppFonts.title9(
-                                                  color: Color.fromRGBO(
-                                                      0, 0, 0, 0.7)))
-                                        ])),
-                              ),
-                        widget.isDriver ? Container() : CustomDivider(),
-                        widget.isDriver ? Container() : SizedBox(height: 17.h),
-                        widget.isDriver
-                            ? Container()
-                            : Wrap(spacing: 6.w, children: <Widget>[
-                                Text(translate("skills"), style: kTitle9Rgb_67),
-                                SizedBox(height: 17.h),
-                                for (int i = 0;
-                                    i < widget.data["skills"]?.length ?? 0;
-                                    i++)
-                                  CustomChip(text: widget.data["skills"][i])
-                              ]),
-                        widget.isDriver ? Container() : SizedBox(height: 17.h),
-                        widget.isDriver ? Container() : CustomDivider(),
-                        SizedBox(height: 17.h),
-                        widget.data["attachments"].length != 0
-                            ? SizedBox(
-                                height: 125.h,
-                                child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Text(translate("attachments"),
-                                          style: kTitle9Rgb_67),
-                                      SizedBox(height: 17.h),
-                                      Flexible(
-                                          child: ListView.builder(
-                                              scrollDirection: Axis.horizontal,
-                                              shrinkWrap: true,
-                                              padding: EdgeInsets.zero,
-                                              itemCount: widget
-                                                      .data["attachments"]
-                                                      ?.length ??
-                                                  0,
-                                              itemBuilder:
-                                                  (BuildContext context,
-                                                      int index) {
-                                                return Padding(
-                                                    padding: EdgeInsets.only(
-                                                        right: 6.w),
-                                                    child: InkWell(
-                                                        child: CachedNetworkImage(
-                                                            imageUrl:
-                                                                "http://redcassia.com:3001/attachment/${widget.data["attachments"][index]}",
-                                                            placeholder: (context,
-                                                                    url) =>
-                                                                CircularProgressIndicator(),
-                                                            errorWidget:
-                                                                (context, url,
-                                                                        error) =>
-                                                                    Icon(Icons
-                                                                        .error),
-                                                            filterQuality:
-                                                                FilterQuality
-                                                                    .high,
-                                                            width: 141.w,
-                                                            height: 91.h,
-                                                            fit:
-                                                                BoxFit.contain),
-                                                        onTap: () {
-                                                          Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                  builder: (context) =>
-                                                                      FullImageWrapper(
-                                                                          imageProvider:
-                                                                              "http://redcassia.com:3001/attachment/${widget.data["attachments"][index]}")));
-                                                        }));
-                                              }))
-                                    ]))
-                            : Container()
-                      ])
-                ]))));
+                          : Container()
+                    ])
+              ]),
+            )));
   }
 }
 
@@ -374,19 +367,19 @@ class BipartiteRow extends StatelessWidget {
     return Row(children: [
       TextLeadingRow(
           title: leftTitle,
-          titleStyle: kTitle9Rgb_67,
+          titleStyle:  AppFonts.title9(color: Color.fromRGBO(13, 36, 52, 1.0),fontWeight: FontWeight.w700),
           txt: leftTxt,
           widget: leftWidget,
-          txtStyle: kTitle9Rgb_67),
+          txtStyle: AppFonts.text9odd(color: Color.fromRGBO(9, 93, 106, 1.0)),),
       SizedBox(width: 9.w),
       Container(height: 45.h, width: 1.5.h, color: Color(0xFFE5E5E5)),
       SizedBox(width: 9.w),
       TextLeadingRow(
           title: rightTitle,
-          titleStyle: kTitle9Rgb_67,
+          titleStyle:  AppFonts.title9(color: Color.fromRGBO(13, 36, 52, 1.0),fontWeight: FontWeight.w700),
           txt: rightTxt,
           widget: rightWidget,
-          txtStyle: kTitle9Rgb_67)
+          txtStyle: AppFonts.text9odd(color: Color.fromRGBO(9, 93, 106, 1.0)),)
     ]);
   }
 }

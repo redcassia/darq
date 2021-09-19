@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:ui';
+import 'package:darq/backend/session.dart';
 import 'package:darq/utils/managers/auth_state_provider.dart';
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/constants/app_color_palette.dart';
@@ -36,15 +37,14 @@ class _ListingPageState extends State<ListingPage> {
   String local;
 
   _loadData() {
-    GraphQLClient client =
-        Provider.of<AuthStateProvider>(context, listen: false).getClient;
-    client
+    Session.getClient().then((client) => client
         .query(QueryOptions(
-            documentNode: gql(_layout["query"]),
-            variables: {'sub_types': widget.filterPredicate}))
+        documentNode: gql(_layout["query"]),
+        variables: {'sub_types': widget.filterPredicate}))
         .then((result) {
-      if (!result.hasException) setState(() => _data = result.data["items"]);
-    });
+      if (!result.hasException)
+        setState(() => _data = result.data["items"]);
+    }));
   }
 
   _loadLayoutAndData() {

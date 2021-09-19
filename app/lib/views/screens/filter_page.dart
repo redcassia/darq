@@ -1,6 +1,8 @@
 import 'dart:ui';
+import 'package:darq/backend/session.dart';
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/constants.dart';
+import 'package:darq/utils/managers/auth_state_provider.dart';
 import 'package:darq/views/widgets/button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +10,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:graphql/client.dart';
+import 'package:provider/provider.dart';
 
 class ListItem {
   bool isSelected = false;
@@ -31,19 +34,20 @@ class _FilterPageState extends State<FilterPage> {
   List<ListItem> _values = [];
 
   _queryValues() {
-    // Session.registerClient().then((client) => client
-    //         .query(QueryOptions(documentNode: gql(widget.valuesQuery)))
-    //         .then((result) {
-    //       if (!result.hasException)
-    //         setState(() {
-    //           _values = result.data["__type"]["enumValues"]
-    //               .map<ListItem>((_) => ListItem(_["name"],
-    //                   isSelected:
-    //                       widget.selectedValues?.contains(_["name"]) ?? false))
-    //               .toList();
-    //         });
-    //     }));
+    Session.getClient().then((client) => client
+        .query(QueryOptions(documentNode: gql(widget.valuesQuery)))
+        .then((result) {
+      if (!result.hasException)
+        setState(() {
+          _values = result.data["__type"]["enumValues"]
+              .map<ListItem>((_) => ListItem(_["name"],
+              isSelected:
+              widget.selectedValues?.contains(_["name"]) ?? false))
+              .toList();
+        });
+    }));
   }
+
 
   @override
   void initState() {

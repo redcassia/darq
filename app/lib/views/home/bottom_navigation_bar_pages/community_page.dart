@@ -18,7 +18,8 @@ class CommunityPage extends StatelessWidget {
             preferredSize: Size.fromHeight(50.h),
             child: enableBackButton ? AppBarCustom() : Text("")),
         body: Container(
-            margin: EdgeInsets.only(left: 20.w, right: 20.w, top:enableBackButton ? 20.h : 60.h ),
+            margin: EdgeInsets.only(
+                left: 20.w, right: 20.w, top: enableBackButton ? 20.h : 60.h),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(translate("we_are_your_community"),
@@ -26,7 +27,7 @@ class CommunityPage extends StatelessWidget {
               SizedBox(height: 10.h),
               Text(translate("choose_what_you_need"),
                   style: AppFonts.title7(color: Color(AppColors.cyprus))),
-                  SizedBox(height: 10.h),
+              SizedBox(height: 10.h),
               Center(
                   child: Image(
                       image:
@@ -39,36 +40,36 @@ class CommunityPage extends StatelessWidget {
                           children: [
                     LargeRoundedButton(
                         imgName: "beauty_spa",
-                        txt: "Beauty & Spa",
+                        txt: translate("beauty_spa"),
                         jsonFile: "beauty_spa.json"),
                     LargeRoundedButton(
                         imgName: "sports",
-                        txt: "Sports",
+                        txt: translate("sports"),
                         jsonFile: "sports.json"),
                     LargeRoundedButton(
                         imgName: "limousine",
-                        txt: "Limousine",
+                        txt: translate("limousine"),
                         jsonFile: "limousine.json"),
                     LargeRoundedButton(
                       imgName: "hospitality",
-                      txt: "Hospitality",
+                      txt: translate("hospitality"),
                       jsonFile: "hospitality.json",
                     ),
                     LargeRoundedButton(
                         imgName: "cleaning_maintenance",
-                        txt: "Cleaning & Maintenance",
+                        txt: translate("cleaning_maintenance"),
                         jsonFile: "cleaning_maintenance.json"),
                     LargeRoundedButton(
                         imgName: "self_employed",
-                        txt: "Self Employed",
+                        txt: translate("self_employed"),
                         jsonFile: "self_employed.json"),
                     LargeRoundedButton(
                         imgName: "domestic_help",
-                        txt: "Domestic Help",
+                        txt: translate("domestic_help"),
                         jsonFile: "domestic_help.json"),
                     LargeRoundedButton(
                         imgName: "stationeries",
-                        txt: "Stationeries",
+                        txt: translate("stationeries"),
                         jsonFile: "stationeries.json")
                   ])))
             ])));

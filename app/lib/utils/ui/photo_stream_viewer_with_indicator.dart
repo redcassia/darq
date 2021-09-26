@@ -1,7 +1,7 @@
 import 'package:darq/constants/app_color_palette.dart';
 import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/models/explore_page_data.dart';
-import 'package:darq/views/details_page.dart';
+import 'package:darq/views/screens/details_page.dart';
 import 'package:darq/views/widgets/titled_img.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';

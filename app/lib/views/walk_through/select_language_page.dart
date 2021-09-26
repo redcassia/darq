@@ -57,6 +57,7 @@ class SelectLanguage extends StatelessWidget {
               stateNotifier.setSelectedLangIsEnglish = true;
               await Session.setLocale('en');
               stateNotifier.setLoadingIndicator = false;
+              Session.setClient();
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
@@ -82,6 +83,7 @@ class SelectLanguage extends StatelessWidget {
               stateNotifier.setSelectedLangIsEnglish = false;
               await Session.setLocale('ar');
               stateNotifier.setLoadingIndicator = false;
+              Session.setClient();
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(

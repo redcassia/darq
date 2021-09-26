@@ -7,7 +7,7 @@ import 'package:darq/elements/app_fonts.dart';
 import 'package:darq/views/home/widget_generator/contact_button.dart';
 import 'package:darq/views/home/widget_generator/profile_pic.dart';
 import 'package:darq/views/screens/chat_room.dart';
-import 'package:darq/views/details_page.dart';
+import 'package:darq/views/screens/details_page.dart';
 import 'package:darq/views/screens/personnel_page.dart';
 import 'package:darq/views/screens/rating_screen.dart';
 import 'package:darq/views/widgets/custom_chip.dart';

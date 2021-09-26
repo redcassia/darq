@@ -12,6 +12,17 @@ class Session {
   static GraphQLClient _client;
   static String _locale;
 
+  static Future<void> setClient() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool("client", true);
+  }
+
+  static Future<bool> getSavedClient() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.getBool("client");
+  }
+
+
   static Future<void> setLocale(String locale) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('locale', locale);
